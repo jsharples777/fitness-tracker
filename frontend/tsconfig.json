@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "lib": ["es2015","dom"],
+    "module": "es6",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2015",
+    "allowJs": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react"
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+
+}

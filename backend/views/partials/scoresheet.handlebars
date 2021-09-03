@@ -1,0 +1,42 @@
+<div id="scoreSheetZone" class="container-fluid scoresheet d-none pt-3 pb-3">
+    {{#if user}}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>Collaborate</strong> Type a username or drag a user from the user search panel to here to invite them to joint in to the scoresheet.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {{/if}}
+
+    <div class="row">
+        <div class="col-sm-12 offset-sm-0 offset-md-2 col-md-8">
+            <div class="card m-0">
+                <div class="card-header bg-light text-black-50">
+                    <div class="container-fluid">
+                        <div class="row">
+                        <h1 style="font-size:40pt" id="selectedBoardGame" class="col-sm-12 col-md-10">Board Game</h1>
+                        </div>
+                        <div class="d-flex w-100 justify-content-between">
+                            {{#if user}}
+                              <input class="col-sm-7" style="width: 70%" type="text" placeholder="Add user" id="ssFastSearchUserNames" data-source="fastSearchUserNames">
+                            {{else}}
+                                <input class="col-sm-7" style="width: 70%" type="text" placeholder="Add user" id="ssFastSearchUserNames" data-source="fastSearchUserNames" disabled>
+
+                            {{/if}}
+                              <button type="submit" class="col-sm-3 ml-2 btn btn-warning btn-circle btn-md" id="leaveScoreSheet"><i class="fas fa-sign-out-alt"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="scoreSheet"></div>
+                </div>
+                <div class="card-footer bg-light">
+                        <div class="d-flex w-100 justify-content-between">
+                            <div id="timerDisplay" class="timer bg-dark text-right pr-1">00:00</div><button type="submit" class="btn btn-success" id="startStopTimer" style="width: 30%">Start <i class='fas fa-hourglass-start'></i></button>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="webrtc" class="row m-3"></div>
+</div>

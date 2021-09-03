@@ -1,0 +1,12 @@
+{
+  "extends": "airbnb",
+  "env": {
+    "browser": "true"
+  },
+  "rules": {
+    "no-console": "off",
+    "no-restricted-globals": "off",
+    "react/prop-types": "off",
+    "import/extensions": ["error","always",{"ignorePackages": true}]
+  }
+}

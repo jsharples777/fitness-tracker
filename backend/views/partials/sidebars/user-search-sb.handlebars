@@ -1,0 +1,37 @@
+<div id="userSearchSideBar" class="sidebar-left bg-info">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 pb-3 align-items-end">
+                <button type="button" class="close text-white" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">User Search <i class="fas fa-search"></i></div>
+                    <div class="card-body scroll-user-search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="name" id="fastSearchUserNames" data-source="fastSearchUserNames">
+                        </div>
+                        <div id="recentUserSearches" class="list-group list-group-flush">
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3" id="favouriteUsersDropZone">
+                    <div  class="card-header">Favourite Users <i class="fas fa-user-plus"></i></div>
+                    <div class="card-body scroll-favourite-users">
+                        <div id="favouriteUsers" class="list-group list-group-flush">
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3" id="blockedUsersDropZone">
+                    <div  class="card-header">Blocked Users <i class="fas fa-user-slash"></i></div>
+                    <div class="card-body scroll-blocked-users">
+                        <div id="blockedUsers" class="list-group list-group-flush">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

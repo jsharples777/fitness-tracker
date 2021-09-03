@@ -1,0 +1,29 @@
+td.bg-ohanami-blue {
+    background-color: #7499ff;
+}
+
+td.bg-ohanami-green {
+    background-color: #55a46d;
+}
+
+td.bg-ohanami-grey {
+    background-color: #7e7c7d;
+}
+
+td.bg-ohanami-pink {
+    background-color: #c280c6;
+}
+
+td.bg-readonly {
+    background-color: #f2f4fb;
+}
+
+td.bg-heading {
+    font-weight: bold;
+}
+
+td.bg-readonly-heading {
+    background-color: #f2f4fb;
+    font-weight: bold;
+}
+

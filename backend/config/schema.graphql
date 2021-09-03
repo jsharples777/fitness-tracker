@@ -1,0 +1,113 @@
+type BoardGame {
+    gameId: Int!
+    name:String!
+    year: Int
+}
+
+type Id {
+    id:Int!
+}
+
+type StringId {
+    id:String!
+}
+
+input BoardGameDetailInput {
+    gameId: Int!
+    name: String!
+    thumb: String
+    image: String
+    description: String
+    year: Int
+    minPlayers: Int
+    maxPlayers: Int
+    minPlayTime: Int
+    maxPlayTime: Int
+    minAge: Int
+    designers: String
+    artists: String
+    publisher: String
+    numOfRaters: Int
+    averageScore: Float
+    rank: Int
+    categories: String
+}
+
+type BoardGameDetail {
+    id: Int,
+    gameId: Int!
+    name: String!
+    thumb: String
+    image: String
+    description: String
+    year: Int
+    minPlayers: Int
+    maxPlayers: Int
+    minPlayTime: Int
+    maxPlayTime: Int
+    minAge: Int
+    designers: String
+    artists: String
+    publisher: String
+    numOfRaters: Int
+    averageScore: Float
+    rank: Int
+    categories: String
+    scoresheets: [ScoreSheet]
+}
+
+type ScoreSheet {
+    id:String!
+    player1: String,
+    score1: Int,
+    player2: String,
+    score2: Int,
+    player3: String,
+    score3: Int,
+    player4: String,
+    score4: Int,
+    player5: String,
+    score5: Int,
+    player6: String,
+    score6: Int,
+    player7: String,
+    score7: Int,
+    createdOn: String
+}
+
+input ScoreSheetInput {
+    id: String!
+    players: [String],
+    scores: [Int],
+    jsonData: String,
+    createdOn: String
+}
+
+type User {
+    id: Int!,
+    username: String!
+}
+
+type IdGameId {
+    id: Int!,
+    gameId: Int!
+}
+
+type NumberResults {
+    result: Int!
+}
+
+##### top level declarations
+type Query {
+    findBoardGames(query:String!): [BoardGame]
+    getBoardGameDetails(gameId:Int!): BoardGameDetail
+    findUsers: [User]
+    getMyBoardGameCollection(userId: Int): [BoardGameDetail]
+}
+
+type Mutation {
+    addToMyCollection(userId: Int, boardGame: BoardGameDetailInput): IdGameId
+    removeFromMyCollection(userId: Int, boardGameId: Int):NumberResults
+    addScoreSheetToBoardGame(userId: Int, boardGameId: Int, sheet: ScoreSheetInput): StringId
+    removeScoreSheet(sheetId:String):NumberResults
+}

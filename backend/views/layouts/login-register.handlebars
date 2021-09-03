@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+{{> headers/header-main }}
+<body>
+{{> navigation/navigation }}
+{{#if error}}
+    <div class="alert alert-danger">{{error}}</div>
+{{/if}}
+{{{body}}}
+<div id="root">
+</div>
+{{> footers/footer-main }}
+</body>
+{{> jsincludes/js-vendors}}
+{{> jsincludes/js-popovers-tooltips}}
+<script>
+    let loggedInUserId = -1;
+</script>
+</html>

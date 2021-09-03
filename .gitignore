@@ -1,0 +1,12 @@
+/.idea/
+/node_modules/
+/server/log/
+/backend/node_modules/
+/frontend/node_modules/
+/git-crypt-key
+/frontend/dist/
+/backend/dist/css/
+/backend/dist/js/*.map
+/backend/dist/js/*.ts
+/backend/db/queue.json
+/backend/keytmp.pem

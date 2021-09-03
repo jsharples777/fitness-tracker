@@ -1,0 +1,451 @@
+/*
+*
+*  Fonts
+*
+ */
+@font-face {
+    font-family: 'digital';
+    src: url('/assets/digital-7.ttf');
+}
+.enter-message {
+    width:30vw;
+}
+
+/* headings for the site using the new font */
+h1 {
+    font-family: 'Special Elite', cursive;
+    font-weight: bold;
+    font-size: 32px;
+}
+
+h2 {
+    font-family: 'Special Elite', cursive;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+
+/*
+*
+*  Notifications
+*
+ */
+.notifications {
+    position:fixed;
+    top:0;
+    width:100%;
+    right:0;
+    z-index: 998;
+}
+.notifications .notification {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    z-index: 999;
+    transition: all 500ms ease-in-out;
+    width: 30vw
+}
+
+/* hovering over badges and icons */
+.badge:hover {
+    cursor: pointer;
+}
+
+i:hover {
+    cursor: pointer;
+}
+
+
+/* card scrolling on side bars*/
+.scroll {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.hscroll {
+    overflow-x: scroll;
+}
+
+/*
+*
+*  Sidebars, styles, content styling, scrolling
+*
+ */
+
+/* standard list items in the sidebars */
+.my-list-item {
+    margin-top: 3px;
+    margin-bottom: 1px;
+    margin-left:2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+/* scrolling if the sidebar cards */
+.scroll-user-search {
+    height: 20vh;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+.scroll-favourite-users {
+    height: 20vh;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+.scroll-blocked-users {
+    height: 20vh;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.scroll-bgg-search {
+    height: 70vh;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.scroll-chatlogs {
+    height: 30vh;
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+
+.scroll-score-sheet {
+    width: 100vw;
+    max-width:100vw;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+}
+
+.scroll-score-sheet-active {
+    width: 100%;
+    max-width: 200%;
+    overflow-x: auto;
+}
+
+
+
+/* The sidebar sty styles, left, right and bottom */
+.sidebar-left {
+    height: 100%; /* 100% Full-height */
+    width: 0px; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Stay on top */
+    top: 0px;
+    left: 0;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 10px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+.sidebar-bottom {
+    height: 0px; /* 25% Full-height */
+    width: 100%; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    bottom: 0px;
+    right: 0;
+    /*overflow-y: hidden;  Disable horizontal scroll */
+    padding-bottom: 0px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+.sidebar-right {
+    height: 100%; /* 100% Full-height */
+    width: 0px; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 2; /* Stay on top */
+    top: 0px;
+    right: 0;
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 10px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+
+/* Position and style the close button (top right corner) */
+.closebtn-right {
+    position: absolute;
+    top: 0;
+    left: 25px;
+    font-size: 36px;
+    margin-right: 50px;
+}
+
+/* The button used to open the sidebar */
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+}
+
+.openbtn:hover {
+    background-color: #444;
+}
+
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+    transition: margin-left .5s; /* If you want a transition effect */
+    transition: margin-right .5s; /* If you want a transition effect */
+    padding: 20px;
+}
+
+
+
+/*
+*
+*  Circle buttons in Boostrap
+*
+ */
+.btn-circle.btn-xsm {
+    width: 18px;
+    height: 18px;
+    padding: 3px 0px;
+    border-radius: 10px;
+    font-size: 8px;
+    text-align: center;
+}
+
+
+.btn-circle.btn-sm {
+    width: 30px;
+    height: 30px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    font-size: 8px;
+    text-align: center;
+}
+.btn-circle.btn-md {
+    width: 50px;
+    height: 50px;
+    padding: 7px 10px;
+    border-radius: 25px;
+    font-size: 14px;
+    text-align: center;
+}
+.btn-circle.btn-xl {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    border-radius: 35px;
+    font-size: 12px;
+    text-align: center;
+}
+
+/*
+*
+*  Chat room styles
+*
+ */
+.room {
+    background: #EAEAEA;
+    padding:0.5em;
+}
+
+.messages {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    width: auto !important;
+    overflow:auto;
+    min-height:20vw;
+    max-height:20vw;
+}
+
+.message{
+    width: 75%;
+    margin: 0.5em;
+}
+
+.my-message {
+    align-self: flex-end;
+}
+
+.message-sender{
+    font-size: x-small;
+    opacity: 0.7;
+    margin-left:5px;
+}
+
+.message-content {
+    font-size: small;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    color: rgba(0,0,0,.7);
+    background: white;
+}
+
+.my-message-content {
+    font-size: small;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    color: white;
+    background: #408EEA;
+}
+
+
+/*
+*
+*  Main screen
+*
+ */
+.root {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../img/splash.jpg');
+    background-size: cover;
+    background-repeat: repeat-y;
+    padding-top: 10px;
+}
+
+.root-login {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../img/login.jpg');
+    background-size: cover;
+    background-repeat: repeat-y;
+    padding-top: 110px;
+}
+
+.root-registration {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../img/registration.jpg');
+    background-size: cover;
+    background-repeat: repeat-y;
+    padding-top: 110px;
+}
+
+/*
+*
+*  Score sheet screen
+*
+ */
+.scoresheet {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../img/scoresheet2.jpg');
+    background-size: cover;
+    background-repeat: repeat-y;
+    padding-top: 110px;
+}
+
+/* timer font */
+.timer {
+    font-family: 'digital';
+    font-size: 36pt;
+    color: white;
+    width: 40%;
+}
+
+/* score card side background image sizing */
+.score-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.score-card {
+    margin-right: 20px;
+}
+
+/* video */
+.video {
+    width:200px;
+    height:200px;
+}
+
+/* keep the messages where they are (left or right) */
+@media(max-width : 30em){
+    .room.messages{
+        flex: 1;
+    }
+}
+
+
+@media(max-width: 500px) {
+    .btn-circle.btn-md {
+        width: 30px;
+        height: 30px;
+        padding: 6px 0px;
+        border-radius: 15px;
+        font-size: 8px;
+        text-align: center;
+    }
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .notifications .notification {
+        width: 50vw
+    }
+    .timer {
+        font-size: 20pt;
+        width: 40%;
+    }
+    .messages {
+        min-height: 40vw;
+        max-height: 40vw;
+    }
+    .root-login {
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+    .root-registration {
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+    .enter-message {
+        width:60vw;
+    }
+
+}
+
+@media screen and (max-width: 467px) {
+    .notifications .notification {
+        width: 80vw
+    }
+    .sidebar-left {
+        padding-top: 0px;
+        top:0;
+    }
+    .sidebar-right {
+        padding-top: 0px;
+        top:0;
+    }
+    .root-login {
+        background-image: url('../img/login-vertical.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+    .root-registration {
+        background-image: url('../img/registration-vertical.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+    .enter-message {
+        width:70vw;
+    }
+
+    .scroll-score-sheet {
+        width: 100vw;
+        max-width:100vw;
+        height: 800px;
+        max-height: 800px;
+        overflow-y: auto;
+        flex-wrap: wrap;
+    }
+
+    .score-card {
+        margin-top: 20px;
+    }
+
+}
+
+
