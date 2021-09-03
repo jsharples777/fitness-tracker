@@ -1,3 +1,5 @@
+import {Attribute} from "../ui-framework/ConfigurationTypes";
+
 class BrowserUtil {
     constructor() {
     }
@@ -62,10 +64,10 @@ class BrowserUtil {
         });
     }
 
-    addAttributes(element: HTMLElement, attributes: any[] | undefined) {
+    addAttributes(element: HTMLElement, attributes: Attribute[] | undefined) {
         if (attributes) {
             attributes.forEach((attribute: any) => {
-                element.setAttribute(attribute[0], attribute[1]);
+                element.setAttribute(attribute.name, attribute.value);
             });
         }
     }

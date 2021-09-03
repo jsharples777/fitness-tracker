@@ -1,5 +1,5 @@
 import debug from 'debug';
-import SidebarView from './SidebarView';
+import SidebarView from '../ui-framework/SidebarView';
 import {StateManager} from '../state/StateManager';
 import {ChatEventListener} from "../socket/ChatEventListener";
 import {NotificationController} from "../socket/NotificationController";

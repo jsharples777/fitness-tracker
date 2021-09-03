@@ -15,3 +15,10 @@ export type ScoreSheet = {
     timerGoing: boolean
 }
 
+export const STATE_NAME_User:string = 'users';
+export const STATE_NAME_BoardGames:string = 'boardGames';
+export const STATE_NAME_Scores:string = 'scores';
+export const STATE_NAME_RecentUserSearches:string = 'recentUserSearches';
+export const STATE_NAME_BGSearchResults:string = 'bggSearchResults';
+export const STATE_NAME_ScoreSheet:string = 'scoreSheet';
+

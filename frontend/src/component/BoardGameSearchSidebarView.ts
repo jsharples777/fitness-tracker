@@ -1,5 +1,5 @@
 import debug from 'debug';
-import SidebarView from './SidebarView';
+import SidebarView from '../ui-framework/SidebarView';
 import {StateManager} from '../state/StateManager';
 import {isSameGame} from '../util/EqualityFunctions';
 import browserUtil from "../util/BrowserUtil";
@@ -18,8 +18,8 @@ class BoardGameSearchSidebarView extends SidebarView {
     // @ts-ignore
     private buttonEl: HTMLButtonElement;
 
-    constructor(applicationView: any, htmlDocument: HTMLDocument, stateManager: StateManager) {
-        super(applicationView, htmlDocument, applicationView.state.ui.boardGameSearchSideBar, applicationView.state.uiPrefs.boardGameSearchSideBar, stateManager);
+    constructor(stateManager: StateManager) {
+        super(applicationView.state.ui.boardGameSearchSideBar, applicationView.state.uiPrefs.boardGameSearchSideBar, stateManager);
 
         this.config = applicationView.state;
 
@@ -82,7 +82,6 @@ class BoardGameSearchSidebarView extends SidebarView {
     eventClickItem(event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        console.log(event.target);
         // @ts-ignore
         const boardGameId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId);
         // @ts-ignore
