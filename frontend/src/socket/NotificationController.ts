@@ -1,6 +1,6 @@
 import {ChatManager} from "./ChatManager";
 import {ChatEventListener} from "./ChatEventListener";
-import notifier from "../notification/NotificationManager";
+import NotificationManager from "../notification/NotificationManager";
 import debug from 'debug';
 import {ChatLog, Invitation, InviteType, Message} from "./Types";
 import {ChatUserEventListener} from "./ChatUserEventListener";
@@ -42,7 +42,7 @@ export class NotificationController implements ChatEventListener, ChatUserEventL
         if ((this.doNotDisturb)) return;
 
         // notify the user of the new chat
-        notifier.show('Room', `User ${username} has declined the invitation to join you.`, 'info', 7000);
+        NotificationManager.getInstance().show('Room', `User ${username} has declined the invitation to join you.`, 'info', 7000);
     }
 
 
@@ -60,7 +60,7 @@ export class NotificationController implements ChatEventListener, ChatUserEventL
 
         } else {
             // notify the user of the new chat
-            notifier.show('Chat Room', `User ${invite.from} has invited you.`, 'info', 7000);
+            NotificationManager.getInstance().show('Chat Room', `User ${invite.from} has invited you.`, 'info', 7000);
         }
 
         return result;
@@ -119,7 +119,7 @@ export class NotificationController implements ChatEventListener, ChatUserEventL
             // get the last message added, it won't be from ourselves (the chat manager takes care of that)
             if (log.messages.length > 0) {
                 const displayMessage = log.messages[log.messages.length - 1];
-                notifier.show(displayMessage.from, displayMessage.message, 'message', 3000);
+                NotificationManager.getInstance().show(displayMessage.from, displayMessage.message, 'message', 3000);
             }
         }
     }
@@ -139,7 +139,7 @@ export class NotificationController implements ChatEventListener, ChatUserEventL
 
         // provide visual notifications if do not disturb is not on
         if (this.doNotDisturb) return;
-        notifier.show(username, `User ${username} has logged in.`, 'warning', 5000);
+        NotificationManager.getInstance().show(username, `User ${username} has logged in.`, 'warning', 5000);
     }
 
     handleFavouriteUserLoggedOut(username: string): void {
@@ -149,7 +149,7 @@ export class NotificationController implements ChatEventListener, ChatUserEventL
 
         // provide visual notifications if do not disturb is not on
         if (this.doNotDisturb) return;
-        notifier.show(username, `User ${username} has logged out.`, 'priority', 4000);
+        NotificationManager.getInstance().show(username, `User ${username} has logged out.`, 'priority', 4000);
 
     }
 
@@ -177,7 +177,7 @@ export class NotificationController implements ChatEventListener, ChatUserEventL
         if (this.doNotDisturb) return;
         if (messages.length === 0) return;
 
-        notifier.show("Offline messages received", `You have received ${messages.length} messages since you last logged out.`);
+        NotificationManager.getInstance().show("Offline messages received", `You have received ${messages.length} messages since you last logged out.`);
     }
 
 

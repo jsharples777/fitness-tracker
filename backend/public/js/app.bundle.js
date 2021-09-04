@@ -759,15 +759,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
-/* harmony import */ var _component_UserSearchSidebarView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component/UserSearchSidebarView */ "./src/component/UserSearchSidebarView.ts");
-/* harmony import */ var _component_ChatSidebarView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component/ChatSidebarView */ "./src/component/ChatSidebarView.ts");
+/* harmony import */ var _component_UserSearchSidebarView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component/UserSearchView */ "./src/component/UserSearchSidebarView.ts");
+/* harmony import */ var _component_ChatSidebarView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component/ChatLogsView */ "./src/component/ChatSidebarView.ts");
 /* harmony import */ var _component_BoardGameSearchSidebarView__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component/BoardGameSearchSidebarView */ "./src/component/BoardGameSearchSidebarView.ts");
 /* harmony import */ var _component_BoardGameView__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component/BoardGameView */ "./src/component/BoardGameView.tsx");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
 /* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./util/BrowserUtil */ "./src/util/BrowserUtil.ts");
 /* harmony import */ var _component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/ScoreSheetController */ "./src/component/ScoreSheetController.ts");
-/* harmony import */ var _component_ScoreSheetView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/ScoreSheetView */ "./src/component/ScoreSheetView.ts");
-/* harmony import */ var _component_ScoreSheetSidebarView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/ScoreSheetSidebarView */ "./src/component/ScoreSheetSidebarView.ts");
+/* harmony import */ var _component_ScoreSheetView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/ScoreSheetDetailView */ "./src/component/ScoreSheetView.ts");
+/* harmony import */ var _component_ScoreSheetSidebarView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/ScoreSheetsView */ "./src/component/ScoreSheetSidebarView.ts");
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -2943,7 +2943,7 @@ var AbstractView = /*#__PURE__*/function () {
 
 /***/ "./src/component/BoardGameSearchSidebarView.ts":
 /*!*****************************************************!*\
-  !*** ./src/component/BoardGameSearchSidebarView.ts ***!
+  !*** ./src/component/BoardGameSearchSidebar.ts ***!
   \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -2952,7 +2952,7 @@ var AbstractView = /*#__PURE__*/function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarView */ "./src/component/SidebarView.ts");
+/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
 /* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
 /* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
 /* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../network/DownloadManager */ "./src/network/DownloadManager.ts");
@@ -3613,7 +3613,7 @@ var CallManager = /*#__PURE__*/function () {
 
 /***/ "./src/component/ChatSidebarView.ts":
 /*!******************************************!*\
-  !*** ./src/component/ChatSidebarView.ts ***!
+  !*** ./src/component/ChatLogsView.ts ***!
   \******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -3622,7 +3622,7 @@ var CallManager = /*#__PURE__*/function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarView */ "./src/component/SidebarView.ts");
+/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
 /* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../socket/NotificationController */ "./src/socket/NotificationController.ts");
 /* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../socket/ChatManager */ "./src/socket/ChatManager.ts");
 /* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
@@ -4080,7 +4080,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _socket_Types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../socket/Types */ "./src/socket/Types.ts");
 /* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../notification/NotificationManager */ "./src/notification/NotificationManager.ts");
-/* harmony import */ var _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ScoreSheetView */ "./src/component/ScoreSheetView.ts");
+/* harmony import */ var _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ScoreSheetDetailView */ "./src/component/ScoreSheetView.ts");
 /* harmony import */ var _util_UUID__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/UUID */ "./src/util/UUID.ts");
 /* harmony import */ var _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../socket/SocketManager */ "./src/socket/SocketManager.ts");
 /* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../socket/ChatManager */ "./src/socket/ChatManager.ts");
@@ -4690,7 +4690,7 @@ ScoreSheetController.SOURCE_View = 'ssv';
 
 /***/ "./src/component/ScoreSheetSidebarView.ts":
 /*!************************************************!*\
-  !*** ./src/component/ScoreSheetSidebarView.ts ***!
+  !*** ./src/component/ScoreSheetsView.ts ***!
   \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -4699,7 +4699,7 @@ ScoreSheetController.SOURCE_View = 'ssv';
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarView */ "./src/component/SidebarView.ts");
+/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
@@ -4912,9 +4912,9 @@ var ScoreSheetSidebarView = /*#__PURE__*/function (_SidebarView) {
 
 /***/ "./src/component/ScoreSheetView.ts":
 /*!*****************************************!*\
-  !*** ./src/component/ScoreSheetView.ts ***!
+  !*** ./src/component/ScoreSheetDetailView.ts ***!
   \*****************************************/
-/*! exports provided: ScoreSheetView */
+/*! exports provided: ScoreSheetDetailView */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5248,7 +5248,7 @@ var ScoreSheetView = /*#__PURE__*/function () {
 
 /***/ "./src/component/SidebarView.ts":
 /*!**************************************!*\
-  !*** ./src/component/SidebarView.ts ***!
+  !*** ./src/component/SidebarViewContainer.ts ***!
   \**************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -5371,7 +5371,7 @@ var SidebarView = /*#__PURE__*/function (_AbstractView) {
 
 /***/ "./src/component/UserSearchSidebarView.ts":
 /*!************************************************!*\
-  !*** ./src/component/UserSearchSidebarView.ts ***!
+  !*** ./src/component/UserSearchView.ts ***!
   \************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -5380,7 +5380,7 @@ var SidebarView = /*#__PURE__*/function (_AbstractView) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarView */ "./src/component/SidebarView.ts");
+/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
 /* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
 /* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../socket/NotificationController */ "./src/socket/NotificationController.ts");
 /* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");

@@ -43,6 +43,11 @@ export type Background = {
     elementClasses:string
 }
 
+export type Droppable = {
+    acceptTypes:string[];
+    acceptFrom?:string[];
+}
+
 export type ContentDetail = {
     containerClasses:string,
     textElementType:string,
@@ -51,7 +56,8 @@ export type ContentDetail = {
     badge?:Badgeable,
     delete?:Deletable,
     drag?:Draggable,
-    background?:Background
+    background?:Background,
+    drop?:Droppable
 }
 
 export const EXTRA_ACTION_ATTRIBUTE_NAME:string = 'view-extra-action';
@@ -71,32 +77,36 @@ export enum Modifier {
 }
 
 export type ViewDOMConfig = {
-    containerId:string,
     resultsContainerId:string,
     resultsElementType:string,
     resultsElementAttributes?:[Attribute],
     resultsClasses:string,
     keyId:string,
     dataSourceId:string,
-    modifiers:ModifierClasses,
-    icons:IconClasses,
+    modifiers?:ModifierClasses,
+    icons?:IconClasses,
     detail:ContentDetail,
-    extraActions?:[ExtraAction],
+    extraActions?:ExtraAction[],
 }
 
-enum SidebarLocation {
+export enum SidebarLocation {
     top,
     right,
     left,
     bottom
 }
-export type SideBarPref = {
+export type SidebarPrefs = {
+    id:string,
     location: SidebarLocation,
     expandedSize: string
 }
 
+export type SidebarViewConfig = {
+    containerId:string
+}
+
 export type ViewPrefs = {
-    sidebar?:SideBarPref
+    sidebar?:SidebarPrefs
 }
 
 

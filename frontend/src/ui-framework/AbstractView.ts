@@ -10,25 +10,25 @@ import {
     EXTRA_ACTION_ATTRIBUTE_NAME,
     Modifier,
     ViewDOMConfig,
-    ViewPrefs
 } from "./ConfigurationTypes";
+import {ViewListener} from "./ViewListener";
+import {View} from "./View";
 import {isSame} from "../util/EqualityFunctions";
 
 const avLogger = debug('view-ts');
 const avLoggerDetails = debug('view-ts-detail');
 
-export default abstract class AbstractView implements StateChangeListener {
+export default abstract class AbstractView implements StateChangeListener, View {
     protected uiConfig: ViewDOMConfig;
-    protected uiPrefs: ViewPrefs;
 
-    protected stateManager: StateManager;
-    protected stateName: string;
+    protected stateManager: StateManager|null;
+    protected stateName: string|null;
 
     protected eventForwarder: ViewListenerForwarder;
+    protected containerEl: HTMLElement|null = null;
 
-    protected constructor(uiConfig: ViewDOMConfig, uiPrefs: ViewPrefs, stateManager: StateManager, stateName:string) {
+    protected constructor(uiConfig: ViewDOMConfig, stateManager: StateManager|null, stateName:string|null) {
         this.uiConfig = uiConfig;
-        this.uiPrefs = uiPrefs;
         this.stateManager = stateManager;
         this.stateName = stateName;
         this.eventForwarder = new ViewListenerForwarder();
@@ -41,13 +41,18 @@ export default abstract class AbstractView implements StateChangeListener {
         this.eventClickItem = this.eventClickItem.bind(this);
         this.eventDeleteClickItem = this.eventDeleteClickItem.bind(this);
         this.eventActionClicked = this.eventActionClicked.bind(this);
+        this.handleDrop = this.handleDrop.bind(this);
 
         // setup state listener
-        this.stateManager.addChangeListenerForName(stateName,this);
+        if (this.stateManager && this.stateName) this.stateManager.addChangeListenerForName(this.stateName,this);
 
     }
 
-    public onDocumentLoaded(): void {
+    addEventListener(listener: ViewListener) {
+        this.eventForwarder.addListener(listener);
+    }
+
+    onDocumentLoaded(): void {
         this.eventForwarder.documentLoaded(this);
     }
 
@@ -56,15 +61,15 @@ export default abstract class AbstractView implements StateChangeListener {
     }
 
     stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {
-        this.updateView(name, this.stateManager.getStateByName(name));
+        if (this.stateManager && this.stateName) this.updateView(name, this.stateManager.getStateByName(name));
     }
 
     stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {
-        this.updateView(name, this.stateManager.getStateByName(name));
+        if (this.stateManager && this.stateName) this.updateView(name, this.stateManager.getStateByName(name));
     }
 
     stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {
-        this.updateView(name, this.stateManager.getStateByName(name));
+        if (this.stateManager && this.stateName) this.updateView(name, this.stateManager.getStateByName(name));
     }
 
     protected eventClickItem(event: MouseEvent): void {
@@ -77,9 +82,15 @@ export default abstract class AbstractView implements StateChangeListener {
 
         // @ts-ignore
         avLoggerDetails(`Item with id ${itemId} clicked from ${dataSource}`);
+        let compareWith = {};
+        // @ts-ignore
+        compareWith[this.uiConfig.keyId] = itemId;
+        avLoggerDetails(compareWith);
 
-        let selectedItem = this.stateManager.findItemInState(this.stateName,{id: parseInt(itemId)}, isSame);
-        if (selectedItem) this.eventForwarder.itemSelected(this,selectedItem);
+        if (this.stateManager && this.stateName) {
+            let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+            if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
+        }
     }
 
     protected eventDeleteClickItem(event: MouseEvent): void {
@@ -92,13 +103,18 @@ export default abstract class AbstractView implements StateChangeListener {
 
         // @ts-ignore
         avLoggerDetails(`Item with id ${itemId} attempting delete from ${dataSource}`);
+        let compareWith = {};
+        // @ts-ignore
+        compareWith[this.uiConfig.keyId] = itemId;
+        avLoggerDetails(compareWith);
 
-        let selectedItem = this.stateManager.findItemInState(this.stateName,{id: parseInt(itemId)}, isSame);
-        if (selectedItem) {
-            const shouldDelete = this.eventForwarder.itemDeleteStarted(this,selectedItem);
-            if (shouldDelete) {
-                this.stateManager.removeItemFromState(this.stateName,selectedItem,isSame,false);
-                this.eventForwarder.itemDeleted(this,selectedItem);
+        if (this.stateManager && this.stateName) {
+            let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+            if (selectedItem) {
+                const shouldDelete = this.eventForwarder.itemDeleteStarted(this, selectedItem);
+                if (shouldDelete) {
+                    this.eventForwarder.itemDeleted(this, selectedItem);
+                }
             }
         }
     }
@@ -115,10 +131,16 @@ export default abstract class AbstractView implements StateChangeListener {
 
         // @ts-ignore
         avLoggerDetails(`Item with id ${itemId} attempting delete from ${dataSource}`);
+        let compareWith = {};
+        // @ts-ignore
+        compareWith[this.uiConfig.keyId] = itemId;
+        avLoggerDetails(compareWith);
 
-        let selectedItem = this.stateManager.findItemInState(this.stateName,{id: parseInt(itemId)}, isSame);
-        if (selectedItem) {
-            this.eventForwarder.itemAction(this,actionName,selectedItem);
+        if (this.stateManager && this.stateName) {
+            let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+            if (selectedItem) {
+                this.eventForwarder.itemAction(this, actionName, selectedItem);
+            }
         }
     }
 
@@ -132,36 +154,48 @@ export default abstract class AbstractView implements StateChangeListener {
         // @ts-ignore
         avLoggerDetails(`Item with id ${itemId} getting drag data from ${dataSource}`);
 
-        let selectedItem = this.stateManager.findItemInState(this.stateName,{id: parseInt(itemId)}, isSame);
-        if (selectedItem) {
-            selectedItem[DRAGGABLE_TYPE] = this.uiConfig.detail.drag?.type;
-            selectedItem[DRAGGABLE_FROM] = this.uiConfig.detail.drag?.from;
+        let compareWith = {};
+        // @ts-ignore
+        compareWith[this.uiConfig.keyId] = itemId;
+
+        let selectedItem = {};
+
+        if (this.stateManager && this.stateName) {
+            selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+            if (selectedItem) {
+                // @ts-ignore
+                selectedItem[DRAGGABLE_TYPE] = this.uiConfig.detail.drag?.type;
+                // @ts-ignore
+                selectedItem[DRAGGABLE_FROM] = this.uiConfig.detail.drag?.from;
+            }
         }
         return selectedItem;
     }
 
-    protected abstract getIdForStateItem(name: string, item: any): string;
+    abstract getIdForStateItem(name: string, item: any): string;
+    abstract getDisplayValueForStateItem(name: string, item: any): string;
+    compareStateItemsForEquality(item1:any, item2:any) :boolean {
+        return isSame(item1,item2);
+    }
 
-    protected abstract getDisplayValueForStateItem(name: string, item: any): string;
-
-    protected getModifierForStateItem(name: string, item: any): Modifier {
+    getModifierForStateItem(name: string, item: any): Modifier {
         return Modifier.normal;
     }
 
-    protected getSecondaryModifierForStateItem(name: string, item: any): Modifier {
+    getSecondaryModifierForStateItem(name: string, item: any): Modifier {
         return Modifier.normal;
     }
 
-    protected getBadgeValue(name: string, item: any): number {
+    getBadgeValue(name: string, item: any): number {
         return 0;
     }
 
-    protected getBackgroundImage(name: string, item: any): string {
+    getBackgroundImage(name: string, item: any): string {
         return '';
     }
 
-    protected updateView(name: string, newState: any): void {
-        this.createResultsForState(name,newState);
+    updateView(name: string, newState: any): void {
+        this.createResultsForState(name, newState);
     }
 
     protected eventStartDrag(event: DragEvent) {
@@ -289,82 +323,115 @@ export default abstract class AbstractView implements StateChangeListener {
         textEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
         const displayText = this.getDisplayValueForStateItem(name, item);
         // add modifiers for patient state
-        const modifier = this.getModifierForStateItem(name, item);
-        const secondModifier = this.getSecondaryModifierForStateItem(name, item);
-        switch (modifier) {
-            case Modifier.normal: {
-                avLogger('Abstract View: normal item');
-                browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.normal);
-                if (this.uiConfig.icons.normal) {
-                    textEl.innerHTML = displayText + '  ' + this.uiConfig.icons.normal;
-                } else {
-                    textEl.innerText = displayText;
-                }
-
-                switch (secondModifier) {
-                    case Modifier.warning: {
-                        browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.normal, false);
-                        browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
-                        if (this.uiConfig.icons.warning) {
-                            textEl.innerHTML += '  ' + this.uiConfig.icons.warning;
-                        }
-                        break;
+        if (this.uiConfig.modifiers) {
+            const modifier = this.getModifierForStateItem(name, item);
+            const secondModifier = this.getSecondaryModifierForStateItem(name, item);
+            switch (modifier) {
+                case Modifier.normal: {
+                    avLogger('Abstract View: normal item');
+                    browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.normal);
+                    if (this.uiConfig.icons && this.uiConfig.icons.normal) {
+                        let iconEl = document.createElement('i');
+                        browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.normal);
+                        iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                        iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                        textEl.appendChild(iconEl);
                     }
-                    case Modifier.active: {
-                        if (this.uiConfig.icons.active) {
-                            textEl.innerHTML += '  ' + this.uiConfig.icons.active;
-                        }
-
-                    }
-                }
-
-                break;
-            }
-            case Modifier.active: {
-                avLogger('Abstract View: active item', 10);
-                browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.active);
-                if (this.uiConfig.icons.active) {
-                    textEl.innerHTML = displayText + '  ' + this.uiConfig.icons.active;
-                } else {
                     textEl.innerText = displayText;
-                }
-                switch (secondModifier) {
-                    case Modifier.warning: {
-                        browserUtil.addRemoveClasses(childEl,this.uiConfig.modifiers.active, false);
-                        browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
-                        if (this.uiConfig.icons.warning) {
-                            textEl.innerHTML += '  ' + this.uiConfig.icons.warning;
-                        }
-                        break;
-                    }
-                }
-                break;
-            }
-            case Modifier.inactive: {
-                avLogger('Abstract View: inactive item', 10);
-                browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.inactive);
-                if (this.uiConfig.icons.inactive) {
-                    textEl.innerHTML = displayText + '  ' + this.uiConfig.icons.inactive;
-                } else {
-                    textEl.innerText = displayText;
-                }
-                switch (secondModifier) {
-                    case Modifier.warning: {
-                        if (this.uiConfig.icons.warning) {
-                            browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.inactive, false);
+
+                    switch (secondModifier) {
+                        case Modifier.warning: {
+                            browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.normal, false);
                             browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
-                            textEl.innerHTML += '  ' + this.uiConfig.icons.warning;
+                            if (this.uiConfig.icons && this.uiConfig.icons.warning) {
+                                let iconEl = document.createElement('i');
+                                browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.warning);
+                                iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                                iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                                textEl.appendChild(iconEl);
+                            }
+                            break;
                         }
-                        break;
-                    }
-                    case Modifier.active: {
-                        if (this.uiConfig.icons.active) {
-                            textEl.innerHTML += '  ' + this.uiConfig.icons.active;
+                        case Modifier.active: {
+                            if (this.uiConfig.icons && this.uiConfig.icons.active) {
+                                let iconEl = document.createElement('i');
+                                browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.active);
+                                iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                                iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                                textEl.appendChild(iconEl);
+                            }
+
                         }
-                        break;
                     }
+
+                    break;
                 }
-                break;
+                case Modifier.active: {
+                    avLogger('Abstract View: active item', 10);
+                    browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.active);
+                    if (this.uiConfig.icons && this.uiConfig.icons.active) {
+                        let iconEl = document.createElement('i');
+                        browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.active);
+                        iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                        iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                        textEl.appendChild(iconEl);
+                    }
+                    textEl.innerText = displayText;
+
+                    switch (secondModifier) {
+                        case Modifier.warning: {
+                            browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.active, false);
+                            browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
+                            if (this.uiConfig.icons && this.uiConfig.icons.warning) {
+                                let iconEl = document.createElement('i');
+                                browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.warning);
+                                iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                                iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                                textEl.appendChild(iconEl);
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case Modifier.inactive: {
+                    avLogger('Abstract View: inactive item', 10);
+                    browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.inactive);
+                    if (this.uiConfig.icons && this.uiConfig.icons.inactive) {
+                        let iconEl = document.createElement('i');
+                        browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.inactive);
+                        iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                        iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                        textEl.appendChild(iconEl);
+                    }
+                    textEl.innerText = displayText;
+
+                    switch (secondModifier) {
+                        case Modifier.warning: {
+                            if (this.uiConfig.icons && this.uiConfig.icons.warning) {
+                                browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.inactive, false);
+                                browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
+                                let iconEl = document.createElement('i');
+                                browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.warning);
+                                iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                                iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                                textEl.appendChild(iconEl);
+                            }
+                            break;
+                        }
+                        case Modifier.active: {
+                            if (this.uiConfig.icons && this.uiConfig.icons.active) {
+                                let iconEl = document.createElement('i');
+                                browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.active);
+                                iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+                                iconEl.setAttribute(this.uiConfig.dataSourceId, dataSource);
+                                textEl.appendChild(iconEl);
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                }
             }
         }
         return childEl;
@@ -384,6 +451,44 @@ export default abstract class AbstractView implements StateChangeListener {
             avLogger(`Abstract View: Adding child ${item.id}`);
             if (viewEl) viewEl.appendChild(childEl);
         });
+    }
+
+    setContainedBy(container: HTMLElement): void {
+        this.containerEl = container;
+        if (this.uiConfig.detail.drop) {
+            container.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
+            container.addEventListener('drop', this.handleDrop);
+
+        }
+
+    }
+
+    handleDrop(event: Event) {
+        avLogger('drop event');
+        // @ts-ignore
+        const draggedObjectJSON = event.dataTransfer.getData(DRAGGABLE_KEY_ID);
+        const draggedObject = JSON.parse(draggedObjectJSON);
+        avLoggerDetails(draggedObject);
+
+        // check to see if we accept the dropped type and source
+        const droppedObjectType = draggedObject[DRAGGABLE_TYPE];
+        const droppedObjectFrom = draggedObject[DRAGGABLE_FROM];
+        avLogger(`drop event from ${droppedObjectFrom} with type ${droppedObjectType}`);
+        if (this.uiConfig.detail.drop) {
+            const acceptType = (this.uiConfig.detail.drop.acceptTypes.findIndex((objectType) => objectType === droppedObjectType) >= 0);
+            let acceptFrom = true;
+            if (acceptType) {
+                if (this.uiConfig.detail.drop.acceptFrom) {
+                    acceptFrom = (this.uiConfig.detail.drop.acceptFrom.findIndex((from) => from === droppedObjectFrom) >= 0);
+                }
+                avLoggerDetails(`accepted type? ${acceptType} and from? ${acceptFrom}`);
+                if (acceptType && acceptFrom) {
+                    this.eventForwarder.itemDropped(this,draggedObject);
+                }
+            }
+        }
     }
 
 }

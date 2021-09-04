@@ -2,24 +2,32 @@ import debug from 'debug';
 import MemoryBufferStateManager from "./state/MemoryBufferStateManager";
 import StateChangeListener from "./state/StateChangeListener";
 import {StateManager} from "./state/StateManager";
-import {RESTApiStateManager} from "./state/RESTApiStateManager";
-import socketManager from "./socket/SocketManager";
+import SocketManager from "./socket/SocketManager";
 import AsyncStateManagerWrapper from "./state/AsyncStateManagerWrapper";
 import {AggregateStateManager} from "./state/AggregateStateManager";
 import SocketListenerDelegate from "./SocketListenerDelegate";
 import {ChatManager} from "./socket/ChatManager";
 import {NotificationController} from "./socket/NotificationController";
 import {GraphQLApiStateManager} from "./state/GraphQLApiStateManager";
-import {Decorator} from "./AppTypes";
-import downloader from "./network/DownloadManager";
+import {API_Config, Decorator, STATE_NAMES} from "./AppTypes";
+import Downloader from "./network/DownloadManager";
 import BrowserStorageStateManager from "./state/BrowserStorageStateManager";
-import {ScoreSheetController} from "./component/ScoreSheetController";
+import {ScoreSheetController} from "./component/controller/ScoreSheetController";
 import {isSameGame} from "./util/EqualityFunctions";
 
 const cLogger = debug('controller-ts');
 const cLoggerDetail = debug('controller-ts-detail');
 
 class Controller implements StateChangeListener {
+    private static _instance: Controller;
+
+    public static getInstance(): Controller {
+        if (!(Controller._instance)) {
+            Controller._instance = new Controller();
+        }
+        return Controller._instance;
+    }
+
     protected applicationView: any;
     protected clientSideStorage: any;
     protected config: any;
@@ -28,49 +36,34 @@ class Controller implements StateChangeListener {
     // @ts-ignore
     protected displayedBoardGamesStateManager: StateManager;
 
+    public static eventDataKeyId:string =  'board-game-id';
 
-    constructor() {
-    }
+
+    constructor() {}
 
     connectToApplication(applicationView: any, clientSideStorage: any) {
         this.applicationView = applicationView;
         this.clientSideStorage = clientSideStorage;
-        this.config = this.applicationView.state;
         // setup the API calls
-        let apiStateManager = RESTApiStateManager.getInstance();
-        apiStateManager.initialise([
-            {
-                stateName: this.config.stateNames.boardGames,
-                serverURL: this.getServerAPIURL(),
-                api: this.config.apis.entries,
-                isActive: true
-            },
-            {
-                stateName: this.config.stateNames.scores,
-                serverURL: this.getServerAPIURL(),
-                api: this.config.apis.comments,
-                isActive: true
-            }
-        ]);
 
         let graphSM = new GraphQLApiStateManager();
         graphSM.initialise([
             {
-                stateName: this.config.stateNames.users,
-                apiURL: this.getServerAPIURL() + this.config.apis.graphQL,
+                stateName: STATE_NAMES.users,
+                apiURL: this.getServerAPIURL() + API_Config.graphQL,
                 apis: {
                     find: '',
                     create: '',
                     destroy: '',
                     update: '',
-                    findAll: this.config.apis.findUsers.queryString,
+                    findAll: API_Config.findUsers.queryString,
                 },
                 data: {
                     find: '',
                     create: '',
                     destroy: '',
                     update: '',
-                    findAll: this.config.apis.findUsers.resultName,
+                    findAll: API_Config.findUsers.resultName,
                 },
                 isActive: true
 
@@ -82,13 +75,11 @@ class Controller implements StateChangeListener {
         let aggregateSM = AggregateStateManager.getInstance();
         let memorySM = MemoryBufferStateManager.getInstance();
 
-        let asyncDBSM = new AsyncStateManagerWrapper(aggregateSM, apiStateManager);
-        let asyncQLSM = new AsyncStateManagerWrapper(aggregateSM, graphSM);
+        let asyncSM = new AsyncStateManagerWrapper(aggregateSM, graphSM);
 
 
         aggregateSM.addStateManager(memorySM, [], false);
-        aggregateSM.addStateManager(asyncQLSM, [this.config.stateNames.selectedEntry, this.config.stateNames.recentUserSearches, this.config.stateNames.boardGames, this.config.stateNames.scores], false);
-        aggregateSM.addStateManager(asyncDBSM, [this.config.stateNames.users, this.config.stateNames.boardGames, this.config.stateNames.scores, this.config.stateNames.selectedEntry, this.config.stateNames.recentUserSearches], false);
+        aggregateSM.addStateManager(asyncSM, [STATE_NAMES.recentUserSearches, STATE_NAMES.boardGames, STATE_NAMES.scores], false);
 
         this.stateManager = aggregateSM;
 
@@ -121,8 +112,8 @@ class Controller implements StateChangeListener {
     public initialise(): void {
         cLogger('Initialising data state');
         // listen for socket events
-        let socketListerDelegate = new SocketListenerDelegate(this.config);
-        socketManager.setListener(socketListerDelegate);
+        let socketListerDelegate = new SocketListenerDelegate();
+        SocketManager.getInstance().setListener(socketListerDelegate);
 
         // now that we have all the user we can setup the chat system but only if we are logged in
         cLogger(`Setting up chat system for user ${this.getLoggedInUserId()}: ${this.getLoggedInUsername()}`);
@@ -139,12 +130,10 @@ class Controller implements StateChangeListener {
             chatManager.setUnreadCountListener(this.applicationView);
 
             chatManager.login();
-
-
             // load the users
-            this.getStateManager().getStateByName(this.config.stateNames.users);
+            this.getStateManager().getStateByName(STATE_NAMES.users);
         }
-        let currentGameList: any[] = this.displayedBoardGamesStateManager.getStateByName(this.config.stateNames.boardGames);
+        let currentGameList: any[] = this.displayedBoardGamesStateManager.getStateByName(STATE_NAMES.boardGames);
         currentGameList = this.cleanupBoardGameState(currentGameList);
 
 
@@ -207,89 +196,10 @@ class Controller implements StateChangeListener {
         return this.getLoggedInUserId();
     }
 
-    //  State Management listening
-    stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {
-        cLogger(`State changed ${name} from ${managerName} - item Added`);
-        cLogger(itemAdded);
-        switch (managerName) {
-            case 'aggregate':
-            case 'memory': {
-                cLogger(`received state from ${managerName} for state ${name} - updating application view`);
-                switch (name) {
-                    case this.config.stateNames.entries: {
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-
-    /*
-    *  sockets -
-    *  Handling data changes by other users
-    *
-     */
-
-    stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {
-        cLogger(`State changed ${name} from ${managerName}  - item Removed`);
-        cLogger(itemRemoved);
-        switch (managerName) {
-            case 'aggregate':
-            case 'memory': {
-                cLogger(`received state from ${managerName} for state ${name} - updating application view`);
-                switch (name) {
-                    case this.config.stateNames.comments: {
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-    stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {
-        cLogger(`State changed ${name} from ${managerName} - item updated`);
-        cLogger(itemUpdated);
-        switch (managerName) {
-            case 'aggregate':
-            case 'memory': {
-                cLogger(`received state from ${managerName} for state ${name} - updating application view`);
-                switch (name) {
-                    case this.config.stateNames.entries: {
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-
-    }
-
-    stateChanged(managerName: string, name: string, values: any) {
-        cLogger(`State changed ${name} from ${managerName} `);
-        cLogger(values);
-        // what has changed and by whom?
-        switch (managerName) {
-            case 'aggregate':
-            case 'memory': {
-                cLogger(`received state from ${managerName} for state ${name} - sending to application view`);
-                switch (name) {
-                    case this.config.stateNames.entries: {
-                        break;
-                    }
-                    case this.config.stateNames.comments: {
-                        break;
-                    }
-                    case this.config.stateNames.users: {
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-    }
+    stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {}
+    stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {}
+    stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {}
+    stateChanged(managerName: string, name: string, values: any) {}
 
     // Data logic
     public addBoardGameToDisplay(boardGame: any): void {
@@ -311,18 +221,18 @@ class Controller implements StateChangeListener {
         cLogger(`Adding received board game to application`);
         cLogger(boardGame);
 
-        this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+        this.displayedBoardGamesStateManager.setStateByName(STATE_NAMES.boardGames, currentListOfGames, false);
         this.applicationView.setState({boardGames: currentListOfGames});
 
         // now we need an API call to fill in the details
-        downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.bggSearchCallById.queryString, {gameId: boardGame.gameId}, this.callbackBoardGameDetails, this.config.stateNames.boardGames, false);
+        Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.bggSearchCallById.queryString, {gameId: boardGame.gameId}, this.callbackBoardGameDetails, STATE_NAMES.boardGames, false);
     }
 
     public callbackBoardGameDetails(data: any, status: number, associatedStateName: string): void {
         cLogger(`callback for bgg search for single board game ${associatedStateName} with status ${status}`);
         if (status >= 200 && status <= 299) { // do we have any data?
             cLogger(data);
-            const boardGameDetails = data.data[this.config.apis.bggSearchCallById.resultName];
+            const boardGameDetails = data.data[API_Config.bggSearchCallById.resultName];
             cLogger(boardGameDetails);
             let regex = /&#10;/g;
             boardGameDetails.description = boardGameDetails.description.replace(regex, '\r\n');
@@ -336,7 +246,6 @@ class Controller implements StateChangeListener {
             boardGameDetails.description = boardGameDetails.description.replace(regex, '"');
 
 
-            //this.getStateManager().addNewItemToState(this.config.stateNames.boardGames,data.data[this.config.apis.bggSearchCallById.resultName],true);
             let currentListOfGames: any[] = this.applicationView.state.boardGames;
             let index = currentListOfGames.findIndex((value) => value.gameId === boardGameDetails.gameId);
             if (index >= 0) {
@@ -344,7 +253,7 @@ class Controller implements StateChangeListener {
                 currentListOfGames.splice(index, 1, boardGameDetails);
                 cLogger(currentListOfGames);
                 boardGameDetails.decorator = Decorator.PersistedLocally;
-                this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+                this.displayedBoardGamesStateManager.setStateByName(STATE_NAMES.boardGames, currentListOfGames, false);
                 this.applicationView.setState({boardGames: currentListOfGames});
             } else {
                 cLogger(`Board game ${boardGameDetails.id} not found in current state`);
@@ -358,7 +267,7 @@ class Controller implements StateChangeListener {
         cLogger(`callback for add single board game ${associatedStateName} to my collection with status ${status}`);
         if (status >= 200 && status <= 299) { // do we have any data?
             cLogger(data);
-            const id = data.data[this.config.apis.addToMyCollection.resultName];
+            const id = data.data[API_Config.addToMyCollection.resultName];
             cLogger(id);
 
             // Find and update the board game in the state
@@ -377,10 +286,10 @@ class Controller implements StateChangeListener {
                     // add the scoresheets to database
                     updatingBoardGame.scoresheets.forEach((scoreSheet: any) => {
                         this.convertScoreSheetToApiCallFormat(scoreSheet);
-                        downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.addScoreSheetToBoardGame.queryString,
+                        Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.addScoreSheetToBoardGame.queryString,
                             {userId: this.getCurrentUser(), boardGameId: updatingBoardGame.id, sheet: scoreSheet},
                             cb,
-                            this.config.stateNames.scoreSheet,
+                            STATE_NAMES.scoreSheet,
                             false);
                         this.convertScoreSheetToDatabaseFormat(scoreSheet);
                         scoreSheet.decorator = Decorator.Persisted;
@@ -390,7 +299,7 @@ class Controller implements StateChangeListener {
                 }
 
                 this.applicationView.setState({boardGames: currentGameList});
-                this.displayedBoardGamesStateManager.updateItemInState(this.config.stateNames.boardGames, updatingBoardGame, isSameGame, false);
+                this.displayedBoardGamesStateManager.updateItemInState(STATE_NAMES.boardGames, updatingBoardGame, isSameGame, false);
             }
         }
     }
@@ -399,7 +308,7 @@ class Controller implements StateChangeListener {
         cLogger(`callback for remove single board game ${associatedStateName} from my collection with status ${status}`);
         if (status >= 200 && status <= 299) { // do we have any data?
             cLogger(data);
-            const id = data.data[this.config.apis.removeFromMyCollection.resultName];
+            const id = data.data[API_Config.removeFromMyCollection.resultName];
             cLogger(id);
         }
     }
@@ -408,7 +317,7 @@ class Controller implements StateChangeListener {
         cLogger(`callback for getting my collection of board games ${associatedStateName} to my collection with status ${status}`);
         if (status >= 200 && status <= 299) { // do we have any data?
             cLogger(data);
-            const collectionData = data.data[this.config.apis.getMyBoardGameCollection.resultName];
+            const collectionData = data.data[API_Config.getMyBoardGameCollection.resultName];
 
             // loop through the collection data and see if it already exists in the state
             let currentGameList = this.applicationView.state.boardGames;
@@ -439,7 +348,7 @@ class Controller implements StateChangeListener {
             currentGameList = this.cleanupBoardGameState(currentGameList);
             cLoggerDetail(`Ending with local state of ${currentGameList.length}`);
             this.applicationView.setState({boardGames: currentGameList});
-            this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentGameList, false);
+            this.displayedBoardGamesStateManager.setStateByName(STATE_NAMES.boardGames, currentGameList, false);
         }
     }
 
@@ -449,10 +358,10 @@ class Controller implements StateChangeListener {
 
         if (this.isLoggedIn() && (boardGame.decorator && (boardGame.decorator === Decorator.Persisted))) {
             //mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}
-            downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.addScoreSheetToBoardGame.queryString,
+            Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.addScoreSheetToBoardGame.queryString,
                 {userId: this.getCurrentUser(), boardGameId: boardGame.id, sheet: scoreSheet},
                 cb,
-                this.config.stateNames.scoreSheet,
+                STATE_NAMES.scoreSheet,
                 false);
             scoreSheet.decorator = Decorator.Persisted;
         } else {
@@ -470,7 +379,7 @@ class Controller implements StateChangeListener {
             cLogger(`Updating application state`);
             currentListOfGames.splice(index, 1, boardGame);
             cLogger(currentListOfGames);
-            this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+            this.displayedBoardGamesStateManager.setStateByName(STATE_NAMES.boardGames, currentListOfGames, false);
             this.applicationView.setState({boardGames: currentListOfGames});
         } else {
             cLogger(`Board game ${boardGame.id} not found in current state`);
@@ -484,10 +393,10 @@ class Controller implements StateChangeListener {
 
         if (this.isLoggedIn() && (boardGame.decorator && (boardGame.decorator === Decorator.Persisted))) {
             //mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}
-            downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.removeScoreSheet.queryString,
+            Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.removeScoreSheet.queryString,
                 {sheetId: scoreSheetId},
                 cb,
-                this.config.stateNames.scoreSheet,
+                STATE_NAMES.scoreSheet,
                 false);
         }
 
@@ -500,7 +409,7 @@ class Controller implements StateChangeListener {
             cLogger(`Updating application state`);
             currentListOfGames.splice(index, 1, boardGame);
             cLogger(currentListOfGames);
-            this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+            this.displayedBoardGamesStateManager.setStateByName(STATE_NAMES.boardGames, currentListOfGames, false);
             this.applicationView.setState({boardGames: currentListOfGames});
         } else {
             cLogger(`Board game ${boardGame.id} not found in current state`);
@@ -525,7 +434,7 @@ class Controller implements StateChangeListener {
                     case (Decorator.PersistedLocally):
                     case (Decorator.Complete): {
                         // loaded and ready to save
-                        this.displayedBoardGamesStateManager.addNewItemToState(this.config.stateNames.boardGames, boardGame, true);
+                        this.displayedBoardGamesStateManager.addNewItemToState(STATE_NAMES.boardGames, boardGame, true);
                         // add the board game to my collection
                         // now we need an API call to fill in the details
                         delete boardGame.decorator;
@@ -534,10 +443,10 @@ class Controller implements StateChangeListener {
                             let scoreSheets = boardGame.scoresheets;
                             delete boardGame.scoresheets;
 
-                            downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.addToMyCollection.queryString,
+                            Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.addToMyCollection.queryString,
                                 {userId: this.getCurrentUser(), boardGame: boardGame},
                                 this.callbackAddToCollection,
-                                this.config.stateNames.boardGames,
+                                STATE_NAMES.boardGames,
                                 true);
                             boardGame.decorator = Decorator.Complete;
                             boardGame.scoresheets = scoreSheets;
@@ -563,10 +472,10 @@ class Controller implements StateChangeListener {
                         // already in collection,
                         this.removeBoardGameFromState(boardGame);
                         if (this.isLoggedIn()) {
-                            downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.removeFromMyCollection.queryString,
+                            Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.removeFromMyCollection.queryString,
                                 {userId: this.getCurrentUser(), boardGameId: boardGame.gameId},
                                 this.callbackRemoveFromCollection,
-                                this.config.stateNames.boardGames,
+                                STATE_NAMES.boardGames,
                                 false);
                         }
                         break;
@@ -637,7 +546,7 @@ class Controller implements StateChangeListener {
     private downloadAndSyncSavedBoardGameCollection() {
         if (this.isLoggedIn()) {
             // start the call to retrieve the saved collection of board games
-            downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.getMyBoardGameCollection.queryString, {userId: this.getLoggedInUserId()}, this.callbackGetCollection, this.config.stateNames.boardGames, false);
+            Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.getMyBoardGameCollection.queryString, {userId: this.getLoggedInUserId()}, this.callbackGetCollection, STATE_NAMES.boardGames, false);
         }
     }
 
@@ -664,14 +573,15 @@ class Controller implements StateChangeListener {
             this.applicationView.setState({boardGames: currentBoardGamesOnDisplay});
         }
         // save locally
-        this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentBoardGamesOnDisplay, false);
+        this.displayedBoardGamesStateManager.setStateByName(STATE_NAMES.boardGames, currentBoardGamesOnDisplay, false);
     }
 
     private findBoardGameInStateFromEvent(event: Event) {
         let boardGame: any | null = null;
         cLoggerDetail(`Finding board game id in event`);
         // @ts-ignore
-        let id = event.target.getAttribute(this.config.controller.events.boardGames.eventDataKeyId);
+
+        let id = event.target.getAttribute(Controller.eventDataKeyId);
         cLoggerDetail(id);
         if (id) {
             // find the entry from the state manager
@@ -722,7 +632,7 @@ class Controller implements StateChangeListener {
                     this.convertScoreSheetToApiCallFormat(sheetToSave);
 
 
-                    downloader.addQLApiRequest(this.config.apis.graphQL, this.config.apis.addScoreSheetToBoardGame.queryString,
+                    Downloader.getInstance().addQLApiRequest(API_Config.graphQL, API_Config.addScoreSheetToBoardGame.queryString,
                         {userId: this.getCurrentUser(), boardGameId: target.id, sheet: sheetToSave},
                         cb,
                         this.config.stateNames.scoreSheet,
@@ -787,9 +697,9 @@ class Controller implements StateChangeListener {
         delete scoreSheet.score7;
     }
 
-
+    handleShowChat(roomName:string|null) {
+        this.applicationView.handleShowChat(roomName);
+    }
 }
 
-const controller = new Controller();
-
-export default controller;
+export default Controller;

@@ -8,6 +8,14 @@ import debug from 'debug';
 const dlLogger = debug('api-ts');
 
 class DownloadManager {
+    private static _instance: DownloadManager;
+
+    public static getInstance(): DownloadManager {
+        if (!(DownloadManager._instance)) {
+            DownloadManager._instance = new DownloadManager();
+        }
+        return DownloadManager._instance;
+    }
     protected backgroundQueue: managerRequest[];
     protected priorityQueue: managerRequest[];
     protected inProgress: managerRequest[];
@@ -49,7 +57,7 @@ class DownloadManager {
             associatedStateName: state
         }
 
-        downloader.addApiRequest(request, isPriority);
+        this.addApiRequest(request, isPriority);
     }
 
     public addQLMutationRequest(url: string, mutation: string, variables: any, callback: RequestCallBackFunction, state: string, isPriority = false) {
@@ -61,7 +69,7 @@ class DownloadManager {
             associatedStateName: state
         }
 
-        downloader.addApiRequest(request, isPriority);
+        this.addApiRequest(request, isPriority);
     }
 
     public addApiRequest(jsonRequest: jsonRequest, isPriority = false) {
@@ -164,6 +172,4 @@ class DownloadManager {
     }
 }
 
-const downloader = new DownloadManager();
-
-export default downloader;
+export default DownloadManager;

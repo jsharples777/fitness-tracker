@@ -1,6 +1,7 @@
-import controller from "../Controller";
 import debug from 'debug';
-import browserUtil from "../util/BrowserUtil";
+import browserUtil from "../../util/BrowserUtil";
+import Controller from "../../Controller";
+import {ScoreSheetDetailView} from "../view/ScoreSheetDetailView";
 
 const callLogger = debug('call-manager');
 
@@ -27,26 +28,26 @@ export class CallManager {
     }
 
     private startPeerConnection() {
-        if (controller.isLoggedIn()) {
+        if (Controller.getInstance().isLoggedIn()) {
             // @ts-ignore  - is for the WebRTC peer via Nodejs
-            this.peer = new Peer(controller.getLoggedInUsername(), {path: '/peerjs', host: '/', debug: 2, secure:true});
-            //this.peer = new Peer(controller.getLoggedInUsername(), {path: '/peerjs', host: '/', port: '3000', debug:1, secure:false});
+            this.peer = new Peer(Controller.getInstance().getLoggedInUsername(), {path: '/peerjs', host: '/', debug: 2, secure:true});
+            //this.peer = new Peer(Controller.getInstance().getLoggedInUsername(), {path: '/peerjs', host: '/', port: '3000', debug:1, secure:false});
             this.peer.on('open', (id:any) => {
                 callLogger('My peer ID is: ' + id);
             });
         }
     }
     
-    public initialise(applicationView:any) {
+    public initialise() {
         this.startPeerConnection();
         // @ts-ignore
-        this.webrtcDiv = document.getElementById(applicationView.state.ui.scoreSheet.dom.webrtc);
+        this.webrtcDiv = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.webrtc);
         //this.reset();
     }
 
     public startScoreSheet() {
         try {
-            if (controller.isLoggedIn()) {
+            if (Controller.getInstance().isLoggedIn()) {
                 if (navigator.mediaDevices.getUserMedia) {
                     callLogger('Starting scoresheet stream');
                     navigator.mediaDevices.getUserMedia({
@@ -55,7 +56,7 @@ export class CallManager {
                     }).then((stream) => {
                         callLogger('Scoresheet stream started - adding video element');
                         this.myVideoStream = stream;
-                        this.addVideoStream(controller.getLoggedInUsername(), this.myVideoStream, true);
+                        this.addVideoStream(Controller.getInstance().getLoggedInUsername(), this.myVideoStream, true);
                     });
 
                 }
@@ -178,7 +179,7 @@ export class CallManager {
 
     public callUser(userId: string) {
         callLogger(`Asked to call user ${userId}`);
-        if (userId === controller.getLoggedInUsername()) return; // don't call ourself
+        if (userId === Controller.getInstance().getLoggedInUsername()) return; // don't call ourself
         let numberOfAttempts:number = 0;
 
         let index = this.currentUserList.findIndex((user) => user === userId); // don't call the same users
@@ -226,7 +227,7 @@ export class CallManager {
 
     prepareToAnswerCallFrom(userId: string) {
         try {
-            if (controller.isLoggedIn()) {
+            if (Controller.getInstance().isLoggedIn()) {
                 callLogger(`Preparing to answer call from ${userId}`);
                 if (navigator.mediaDevices.getUserMedia) {
                     navigator.mediaDevices.getUserMedia({
@@ -234,7 +235,7 @@ export class CallManager {
                         video: true,
                     }).then((stream) => {
                         this.myVideoStream = stream;
-                        this.addVideoStream(controller.getLoggedInUsername(), this.myVideoStream, true);
+                        this.addVideoStream(Controller.getInstance().getLoggedInUsername(), this.myVideoStream, true);
                         callLogger(`Awaiting call from ${userId}`);
                         this.peer.on('call', (call: any) => {
                             callLogger(`Answering call from ${userId}`);

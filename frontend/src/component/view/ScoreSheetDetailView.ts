@@ -1,20 +1,39 @@
-import StateChangeListener from "../state/StateChangeListener";
-import {ScoreSheetController} from "./ScoreSheetController";
+import StateChangeListener from "../../state/StateChangeListener";
+import {ScoreSheetController} from "../controller/ScoreSheetController";
 import Handsontable from "handsontable";
-import browserUtil from "../util/BrowserUtil";
+import browserUtil from "../../util/BrowserUtil";
 import debug from 'debug';
-import {ScoreSheet} from "../AppTypes";
-import {TemplateManager} from "../template/TemplateManager";
-import {StateManager} from "../state/StateManager";
-import controller from "../Controller";
+import {DRAGGABLE, ScoreSheet, STATE_NAMES} from "../../AppTypes";
+import {TemplateManager} from "../../template/TemplateManager";
+import {StateManager} from "../../state/StateManager";
+import Controller from "../../Controller";
+import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "../../ui-framework/ConfigurationTypes";
 
 const ssvLogger = debug('score-sheet-view');
 
-export class ScoreSheetView implements StateChangeListener {
-    private static _instance: ScoreSheetView;
+export class ScoreSheetDetailView implements StateChangeListener {
+    private static _instance: ScoreSheetDetailView;
+
+    public static ScoreSheetDom = {
+            dropZone: "scoreSheetZone",
+            boardGame: "selectedBoardGame",
+            startStopTimer: "startStopTimer",
+            timer: "timerDisplay",
+            end: "leaveScoreSheet",
+            scoreSheet: "scoreSheet",
+            iconStart: "<i class='fas fa-hourglass-start'></i>",
+            iconInProgress: "<i class='fas fa-hourglass-half'></i>",
+            iconEnd: "<i class='fas fa-hourglass-end'></i>",
+            iconLeave: "<i class='fas fa-sign-out-alt'></i>",
+            ssFastSearchUserNames: 'ssFastSearchUserNames',
+            webrtc: 'webrtc'
+        }
+
+
+
+
     // @ts-ignore
     protected ssFastSearchUserNames: HTMLElement;
-    private applicationView: any | null = null;
     private stateManager: StateManager;
 
     private thisEl: HTMLDivElement | null = null;
@@ -33,49 +52,44 @@ export class ScoreSheetView implements StateChangeListener {
 
     private constructor() {
         this.controller = ScoreSheetController.getInstance();
-        this.stateManager = controller.getStateManager();
+        this.stateManager = Controller.getInstance().getStateManager();
         this.eventUserSelected = this.eventUserSelected.bind(this);
+
+        this.stateManager.addChangeListenerForName(STATE_NAMES.users, this);
     }
 
-    public static getInstance(): ScoreSheetView {
-        if (!(ScoreSheetView._instance)) {
-            ScoreSheetView._instance = new ScoreSheetView();
+    public static getInstance(): ScoreSheetDetailView {
+        if (!(ScoreSheetDetailView._instance)) {
+            ScoreSheetDetailView._instance = new ScoreSheetDetailView();
         }
-        return ScoreSheetView._instance;
+        return ScoreSheetDetailView._instance;
     }
 
-    public setApplication(applicationView: any) {
-        this.config = applicationView.state;
-        this.stateManager.addChangeListenerForName(this.config.stateNames.users, this);
-    }
-
-    public onDocumentLoaded(applicationView: any) {
-        this.applicationView = applicationView;
+    public onDocumentLoaded() {
         this.resetDisplay();
 
         // @ts-ignore
-        this.ssFastSearchUserNames = document.getElementById(this.config.ui.scoreSheet.dom.ssFastSearchUserNames);
+        this.ssFastSearchUserNames = document.getElementById(ScoreSheetDetailView.ssFastSearchUserNames);
         // fast user search
         // @ts-ignore
-        const fastSearchEl = $(`#${this.config.ui.scoreSheet.dom.ssFastSearchUserNames}`);
+        const fastSearchEl = $(`#${ScoreSheetDetailView.ssFastSearchUserNames}`);
         fastSearchEl.on('autocompleteselect', this.eventUserSelected);
 
-
-        ScoreSheetController.getInstance().getStateManager().addChangeListenerForName(this.applicationView.state.stateNames.scoreSheet, this);
+        ScoreSheetController.getInstance().getStateManager().addChangeListenerForName(STATE_NAMES.scoreSheet, this);
 
         // load references to the key elements on the page
         // @ts-ignore
-        this.thisEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.dropZone);
+        this.thisEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.dropZone);
         // @ts-ignore
-        this.boardGameTitleEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.boardGame);
+        this.boardGameTitleEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.boardGame);
         // @ts-ignore
-        this.startStopTimer = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.startStopTimer);
+        this.startStopTimer = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.startStopTimer);
         // @ts-ignore
-        this.timerEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.timer);
+        this.timerEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.timer);
         // @ts-ignore
-        this.endOrLeaveEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.end);
+        this.endOrLeaveEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.end);
         // @ts-ignore
-        this.scoreSheetEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.scoreSheet);
+        this.scoreSheetEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.scoreSheet);
 
         // bind event handlers
         this.handleStartStopTimer = this.handleStartStopTimer.bind(this);
@@ -91,8 +105,6 @@ export class ScoreSheetView implements StateChangeListener {
             });
             this.thisEl.addEventListener('drop', this.handleUserDrop);
         }
-
-
     }
 
     eventUserSelected(event: Event, ui: any) {
@@ -152,11 +164,11 @@ export class ScoreSheetView implements StateChangeListener {
         ssvLogger('drop event on current score sheet');
         if (this.controller.hasActiveScoreSheet() && this.controller.isSheetOwner()) {
             // @ts-ignore
-            const draggedObjectJSON = event.dataTransfer.getData(this.applicationView.state.ui.draggable.draggableDataKeyId);
+            const draggedObjectJSON = event.dataTransfer.getData(DRAGGABLE_KEY_ID);
             const draggedObject = JSON.parse(draggedObjectJSON);
             ssvLogger(draggedObject);
 
-            if (draggedObject[this.applicationView.state.ui.draggable.draggedType] === this.applicationView.state.ui.draggable.draggedTypeUser) {
+            if (draggedObject[DRAGGABLE_TYPE] === DRAGGABLE.typeUser) {
                 //add the user to the current chat if not already there
                 this.controller.inviteUser(draggedObject.username);
             }
@@ -170,13 +182,13 @@ export class ScoreSheetView implements StateChangeListener {
         // reset the display
         if (this.boardGameTitleEl) this.boardGameTitleEl.innerText = '';
         if (this.startStopTimer) {
-            this.startStopTimer.innerHTML = 'Start ' + this.applicationView.state.ui.scoreSheet.dom.iconStart;
+            this.startStopTimer.innerHTML = 'Start ' + ScoreSheetDetailView.ScoreSheetDom.iconStart;
             this.startStopTimer.setAttribute("disabled", "true");
             browserUtil.addRemoveClasses(this.startStopTimer, 'btn-warning', false);
             browserUtil.addRemoveClasses(this.startStopTimer, 'btn-success', true);
         }
         if (this.timerEl) this.timerEl.innerText = this.createTimerDisplay(0);
-        if (this.endOrLeaveEl) this.endOrLeaveEl.innerHTML = this.applicationView.state.ui.scoreSheet.dom.iconLeave;
+        if (this.endOrLeaveEl) this.endOrLeaveEl.innerHTML = ScoreSheetDetailView.ScoreSheetDom.iconLeave;
         if (this.scoreSheetEl) browserUtil.removeAllChildren(this.scoreSheetEl);
 
 
@@ -187,11 +199,11 @@ export class ScoreSheetView implements StateChangeListener {
         ssvLogger(`Updating timer ${time} ${isPaused}`);
         if (this.startStopTimer) {
             if (isPaused) {
-                this.startStopTimer.innerHTML = 'Start   ' + this.applicationView.state.ui.scoreSheet.dom.iconStart;
+                this.startStopTimer.innerHTML = 'Start   ' + ScoreSheetDetailView.ScoreSheetDom.iconStart;
                 browserUtil.addRemoveClasses(this.startStopTimer, 'btn-warning', false);
                 browserUtil.addRemoveClasses(this.startStopTimer, 'btn-success', true);
             } else {
-                this.startStopTimer.innerHTML = 'Pause   ' + this.applicationView.state.ui.scoreSheet.dom.iconInProgress;
+                this.startStopTimer.innerHTML = 'Pause   ' + ScoreSheetDetailView.ScoreSheetDom.iconInProgress;
                 browserUtil.addRemoveClasses(this.startStopTimer, 'btn-warning', true);
                 browserUtil.addRemoveClasses(this.startStopTimer, 'btn-success', false);
             }
@@ -203,9 +215,9 @@ export class ScoreSheetView implements StateChangeListener {
     stateChanged(managerName: string, name: string, newValue: any): void {
         if (name === this.config.stateNames.users) {
             // @ts-ignore
-            const fastSearchEl = $(`#${this.config.ui.scoreSheet.dom.ssFastSearchUserNames}`);
+            const fastSearchEl = $(`#${ScoreSheetDetailView.ScoreSheetDom.ssFastSearchUserNames}`);
             // what is my username?
-            let myUsername = controller.getLoggedInUsername();
+            let myUsername = Controller.getInstance().getLoggedInUsername();
             // for each name, construct the patient details to display and the id referenced
             const fastSearchValues: any = [];
             newValue.forEach((item: any) => {
@@ -279,11 +291,6 @@ export class ScoreSheetView implements StateChangeListener {
         this.stateChanged(managerName, name, this.stateManager.getStateByName(name));
     }
 
-    stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {
-    }
-
-    stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {
-    }
 
     private createTimerDisplay(timer: number): string {
         let result = '';
@@ -331,5 +338,7 @@ export class ScoreSheetView implements StateChangeListener {
         return result;
     }
 
+    stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {}
+    stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {}
 
 }

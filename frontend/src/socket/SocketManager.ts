@@ -6,6 +6,15 @@ import {InviteType, Message, Priority} from "./Types";
 const sDebug = debug('socket-ts');
 
 class SocketManager {
+    private static _instance: SocketManager;
+
+    public static getInstance(): SocketManager {
+        if (!(SocketManager._instance)) {
+            SocketManager._instance = new SocketManager();
+        }
+        return SocketManager._instance;
+    }
+
     protected listener: SocketListener | null;
     protected socket: any | null;
     protected chatReceivers: ChatReceiver[] = [];
@@ -235,5 +244,4 @@ class SocketManager {
     }
 }
 
-let socketManager = new SocketManager();
-export default socketManager;
+export default SocketManager;

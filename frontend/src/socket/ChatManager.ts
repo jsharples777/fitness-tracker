@@ -1,6 +1,6 @@
 import debug from 'debug';
 import moment from "moment";
-import socketManager from "./SocketManager";
+import SocketManager from "./SocketManager";
 
 import {ChatLog, Invitation, InviteType, JoinLeft, Message, Priority} from "./Types";
 import {ChatEmitter} from "./ChatEmitter";
@@ -46,7 +46,7 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
         this.localStorage = new BrowserStorageStateManager(true);
 
         // connect to the socket manager
-        socketManager.addChatReceiver(this);
+        SocketManager.getInstance().addChatReceiver(this);
 
         // bind the receiver methods
         this.receiveLogin = this.receiveLogin.bind(this);
@@ -258,7 +258,7 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
 
                 this.saveLogs();
                 cmLogger(`Joining chat ${invite.room}`);
-                socketManager.joinChat(this.getCurrentUser(), invite.room, InviteType.ChatRoom);
+                SocketManager.getInstance().joinChat(this.getCurrentUser(), invite.room, InviteType.ChatRoom);
                 this.chatListeners.forEach((listener) => listener.handleChatLogUpdated(chatLog, false));
             }
 
@@ -369,36 +369,36 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
     joinChat(room: string): void {
         if (this.getCurrentUser().trim().length === 0) return;  // we are not logged in
         this.ensureChatLogExists(room);
-        socketManager.joinChat(this.getCurrentUser(), room, InviteType.ChatRoom);
+        SocketManager.getInstance().joinChat(this.getCurrentUser(), room, InviteType.ChatRoom);
     }
 
     leaveChat(room: string): void {
         if (this.getCurrentUser().trim().length === 0) return;  // we are not logged in
         this.removeChatLog(room);
-        socketManager.leaveChat(this.getCurrentUser(), room, InviteType.ChatRoom);
+        SocketManager.getInstance().leaveChat(this.getCurrentUser(), room, InviteType.ChatRoom);
     }
 
     login(): void {
         if (this.getCurrentUser().trim().length === 0) return;  // we are not logged in
-        socketManager.login(this.getCurrentUser());
+        SocketManager.getInstance().login(this.getCurrentUser());
         // get the current user list
-        socketManager.getUserList();
+        SocketManager.getInstance().getUserList();
         // connect to the chat rooms already in logs
         this.chatLogs.forEach((log) => {
             if (log.type === InviteType.ChatRoom) {
-                socketManager.joinChat(this.currentUsername, log.roomName, InviteType.ChatRoom);
+                SocketManager.getInstance().joinChat(this.currentUsername, log.roomName, InviteType.ChatRoom);
             }
         });
     }
 
     logout(): void {
         if (this.getCurrentUser().trim().length === 0) return;  // we are not logged in
-        socketManager.logout(this.getCurrentUser());
+        SocketManager.getInstance().logout(this.getCurrentUser());
     }
 
     declineInvite(room: string) {
         if (this.getCurrentUser().trim().length === 0) return;  // we are not logged in
-        socketManager.sendDeclineInvite(room, this.getCurrentUser(), InviteType.ChatRoom);
+        SocketManager.getInstance().sendDeclineInvite(room, this.getCurrentUser(), InviteType.ChatRoom);
 
     }
 
@@ -409,7 +409,7 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
         // only send an invite if the user isn't already in the room
         const log: ChatLog = this.ensureChatLogExists(room);
         if (log.users.findIndex((user) => user === to) < 0) {
-            socketManager.sendInvite(this.getCurrentUser(), to, room, type, requiresAcceptDecline, subject);
+            SocketManager.getInstance().sendInvite(this.getCurrentUser(), to, room, type, requiresAcceptDecline, subject);
         }
     }
 
@@ -418,7 +418,7 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
         let log = this.ensureChatLogExists(room);
         // send the message
         let created = parseInt(moment().format('YYYYMMDDHHmmss'));
-        socketManager.sendMessage(this.getCurrentUser(), room, content, created, InviteType.ChatRoom, Priority.Normal, {});
+        SocketManager.getInstance().sendMessage(this.getCurrentUser(), room, content, created, InviteType.ChatRoom, Priority.Normal, {});
 
         // add the message to the chat log
         if (!attachment) attachment = {};
@@ -449,9 +449,9 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
 
 
             // invite the other user
-            socketManager.sendInvite(this.getCurrentUser(), username, chatLog.roomName, InviteType.ChatRoom, false, '');
+            SocketManager.getInstance().sendInvite(this.getCurrentUser(), username, chatLog.roomName, InviteType.ChatRoom, false, '');
             // ok, lets connect to the server
-            socketManager.joinChat(this.getCurrentUser(), chatLog.roomName, InviteType.ChatRoom);
+            SocketManager.getInstance().joinChat(this.getCurrentUser(), chatLog.roomName, InviteType.ChatRoom);
             roomName = chatLog.roomName;
         }
         return roomName;

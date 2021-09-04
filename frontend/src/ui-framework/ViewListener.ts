@@ -1,10 +1,14 @@
-import AbstractView from "./AbstractView";
+import {View} from "./View";
 
 export interface ViewListener {
-    itemSelected(view:AbstractView,selectedItem:any):void;
-    itemDeleteStarted(view:AbstractView,selectedItem:any):boolean; // listener should return false to cancel delete
-    itemDeleted(view:AbstractView,selectedItem:any):void;
-    itemDragStarted(view:AbstractView,selectedItem:any):void;
-    itemAction(view:AbstractView,actionName:string, selectedItem:any):void;
-    documentLoaded(view:AbstractView):void;
+    itemSelected(view:View,selectedItem:any):void;
+    itemDeselected(view:View,selectedItem:any):void;
+    itemDeleteStarted(view:View,selectedItem:any):boolean; // listener should return false to cancel delete
+    itemDeleted(view:View,selectedItem:any):void;
+    itemDragStarted(view:View,selectedItem:any):void;
+    itemAction(view:View,actionName:string, selectedItem:any):void;
+    documentLoaded(view:View):void;
+    hideRequested(view:View):void;
+    showRequested(view:View):void;
+    itemDropped(view:View,droppedItem:any):void;
 }

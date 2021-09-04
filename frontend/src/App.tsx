@@ -4,17 +4,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import debug from 'debug';
 
-import controller from './Controller';
-import UserSearchSidebarView from "./component/UserSearchSidebarView";
-import ChatSidebarView from "./component/ChatSidebarView";
-import BoardGameSearchSidebarView from "./component/BoardGameSearchSidebarView";
-import BoardGameView from "./component/BoardGameView";
-import {Decorator} from "./AppTypes";
+import Controller from './Controller';
+import UserSearchView from "./component/view/UserSearchView";
+import ChatLogsView from "./component/view/ChatLogsView";
+import BoardGameView from "./component/view/BoardGameView";
+import {ALERT, API_Config, Decorator, DRAGGABLE, NAVIGATION} from "./AppTypes";
 import browserUtil from "./util/BrowserUtil";
-import {ScoreSheetController} from "./component/ScoreSheetController";
-import {ScoreSheetView} from "./component/ScoreSheetView";
-import ScoreSheetSidebarView from "./component/ScoreSheetSidebarView";
+import {ScoreSheetController} from "./component/controller/ScoreSheetController";
+import {ScoreSheetDetailView} from "./component/view/ScoreSheetDetailView";
+import ScoreSheetsView from "./component/view/ScoreSheetsView";
 import {UnreadMessageCountListener} from "./socket/UnreadMessageCountListener";
+import UserSearchSidebar from "./component/sidebar/UserSearchSidebar";
+import ChatRoomsSidebar from "./component/sidebar/ChatRoomsSidebar";
+import ScoreSheetsSidebar from "./component/sidebar/ScoreSheetsSidebar";
+import ChatLogDetailView from "./component/view/ChatLogDetailView";
+import FavouriteUserView from "./component/view/FavouriteUserView";
+import BlockedUserView from "./component/view/BlockedUserView";
+import BoardGameSearchSidebar from "./component/sidebar/BoardGameSearchSidebar";
+import BGGSearchView from "./component/view/BGGSearchView";
+import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "./ui-framework/ConfigurationTypes";
 
 
 const logger = debug('app');
@@ -23,21 +31,19 @@ class Root extends React.Component implements UnreadMessageCountListener {
     private titleEl: any;
     private contentEl: any;
     private modalEl: any;
-    // @ts-ignore
-    private commentView: CommentSidebarView;
-    // @ts-ignore
-    private detailsView: DetailsSidebarView;
 
     // @ts-ignore
-    private userSearchView: UserSearchSidebarView;
+    private userSearchSidebar: UserSearchSidebar;
     // @ts-ignore
-    private bggSearchView: BoardGameSearchSidebarView;
+    private bggSearchSidebar: BoardGameSearchSidebar;
     // @ts-ignore
-    private chatView: ChatSidebarView;
+    private chatSidebar: ChatRoomsSidebar;
     // @ts-ignore
-    private scoreSheetView: ScoreSheetView;
+    private scoreSheetSidebar: ScoreSheetsSidebar;
     // @ts-ignore
-    private scoresView: ScoreSheetSidebarView;
+    private scoresView: ScoreSheetsView;
+    // @ts-ignore
+    private chatView: ChatLogsView;
 
     // @ts-ignore
     private cancelBtnEl: HTMLElement | null;
@@ -57,299 +63,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
         // @ts-ignore
         super();
         this.state = {
-            isLoggedIn: false,
-            loggedInUserId: -1,
             boardGames: [],
-            scoreSheet: {
-                room: '',
-                boardGameName: '',
-                sheetLayoutOptions: {},
-                timer: 0,
-                sheetData: {}
-            },
-            stateNames: {
-                users: 'users',
-                boardGames: 'boardGames',
-                scores: 'scores',
-                selectedEntry: 'selectedEntry',
-                recentUserSearches: 'recentUserSearches',
-                bggSearchResults: 'bggSearchResults',
-                scoreSheet: 'scoreSheet'
-            },
-            apis: {
-                login: '/login',
-                graphQL: '/graphql',
-                bggSearchCall: 'query search($queryString: String!) {findBoardGames(query: $queryString) {gameId, name, year}}',
-                bggSearchCallById: {
-                    queryString: 'query getDetails($gameId:Int!) {getBoardGameDetails(gameId:$gameId) {gameId,thumb,image,name,description,year, minPlayers, maxPlayers, minPlayTime, maxPlayTime, minAge, designers, artists, publisher, numOfRaters, averageScore, rank, categories}}',
-                    resultName: 'getBoardGameDetails',
-                },
-                findUsers: {
-                    queryString: 'query {findUsers {id, username}}',
-                    resultName: 'findUsers',
-                },
-                addToMyCollection: {
-                    queryString: 'mutation addBoardGame($userId: Int!, $boardGame: BoardGameDetailInput!){addToMyCollection(userId: $userId, boardGame: $boardGame) {id,gameId}}',
-                    resultName: 'addToMyCollection',
-                },
-                removeFromMyCollection: {
-                    queryString: 'mutation removeBoardGame($userId: Int!, $boardGameId: Int!) {removeFromMyCollection(userId: $userId, boardGameId: $boardGameId) {result}}',
-                    resultName: 'removeFromMyCollection'
-                },
-                getMyBoardGameCollection: {
-                    queryString: 'query myCollection($userId: Int!) {getMyBoardGameCollection(userId: $userId) {id,gameId,thumb,image,name,description,year, minPlayers, maxPlayers, minPlayTime, maxPlayTime, minAge, designers, artists, publisher, numOfRaters, averageScore, rank, categories,scoresheets {id, player1, score1, player2, score2, player3, score3, player4, score4, player5, score5, player6, score6, player7, score7, createdOn}}}',
-                    resultName: 'getMyBoardGameCollection',
-                },
-                addScoreSheetToBoardGame: {
-                    queryString: 'mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}}',
-                    resultName: 'addScoreSheetToBoardGame'
-                },
-                removeScoreSheet: {
-                    queryString: 'mutation removeSheet($sheetId: String!) {removeScoreSheet(sheetId: $sheetId) {result}}',
-                    resultName: 'removeFromMyCollection'
-                },
-
-
-            },
-            ui: {
-                draggable: {
-                    draggableDataKeyId: 'text/plain',
-                    draggedType: 'draggedType',
-                    draggedFrom: 'draggedFrom',
-                    draggedTypeUser: 'user',
-                    draggedTypeBoardGame: 'boardGame',
-                    draggedFromUserSearch: 'userSearch',
-                    draggedFromBoardGameSearch: 'boardGameSearch',
-                },
-                alert: {
-                    modalId: "alert",
-                    titleId: "alert-title",
-                    contentId: "alert-content",
-                    cancelButtonId: "alert-cancel",
-                    confirmButtonId: "alert-confirm",
-                    closeButtonId: "alert-close",
-                    hideClass: "d-none",
-                    showClass: "d-block",
-                },
-                navigation: {
-                    showMyCollection: 'navigationItemMyCollection',
-                    boardGameSearchId: 'navigationItemBoardGameSearch',
-                    userSearchId: 'navigationItemUserSearch',
-                    chatId: 'navigationItemChat',
-                    showScoreSheet: 'navigationItemScoreSheet',
-
-                },
-                chatSideBar: {
-                    dom: {
-                        sideBarId: 'chatSideBar',
-                        resultsId: 'chatLogs',
-                        resultsElementType: 'a',
-                        resultsElementAttributes: [
-                            ['href', '#'],
-                        ],
-                        resultsClasses: 'list-group-item my-list-item truncate-comment list-group-item-action',
-                        resultDataKeyId: 'room',
-                        resultLegacyDataKeyId: 'room',
-                        resultDataSourceId: 'chatLogs',
-                        modifierClassNormal: '',
-                        modifierClassInactive: 'list-group-item-dark',
-                        modifierClassActive: 'list-group-item-primary',
-                        modifierClassWarning: '',
-                        iconNormal: '',
-                        iconInactive: '',
-                        iconActive: '',
-                        iconWarning: '',
-                        isDraggable: false,
-                        isClickable: true,
-                        isDeleteable: true,
-                        deleteButtonClasses: 'btn btn-circle bg-warning btn-sm',
-                        deleteButtonText: '',
-                        deleteButtonIconClasses: 'text-black fas fa-sign-out-alt',
-                        hasBadge: true,
-                        resultContentDivClasses: 'd-flex w-100 justify-content-between',
-                        resultContentTextElementType: 'span',
-                        resultContentTextClasses: 'mb-1',
-                        badgeElementType: 'span',
-                        badgeElementAttributes: [
-                            ['style', 'font-size:12pt'],
-                        ],
-                        badgeClasses: 'badge badge-pill badge-primary mr-1',
-                        newFormId: "newMessage",
-                        commentId: "message",
-                        submitCommentId: "submitMessage",
-                        chatLogId: 'chatLog',
-                        chatLogRoomId: 'chatLogRoom',
-                        leaveChatId: 'leaveChat',
-                        chatFastSearchUserNames: 'chatFastSearchUserNames'
-                    },
-                },
-                userSearchSideBar: {
-                    dom: {
-                        sideBarId: 'userSearchSideBar',
-                        resultsId: 'recentUserSearches',
-                        favouriteUsersId: 'favouriteUsers',
-                        blockedUsersId: 'blockedUsers',
-                        favouriteUsersDropZone: 'favouriteUsersDropZone',
-                        blockedUsersDropZone: 'blockedUsersDropZone',
-                        resultsElementType: 'a',
-                        resultsElementAttributes: [
-                            ['href', '#'],
-                        ],
-                        resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-                        resultDataKeyId: 'user-id',
-                        resultLegacyDataKeyId: 'legacy-user-id',
-                        resultDataSourceId: 'data-source',
-                        resultDataSourceValue: 'recentUserSearches',
-                        resultDataSourceFavUsers: 'favouriteUsers',
-                        resultDataSourceBlockedUsers: 'blockedUsers',
-                        modifierClassNormal: 'list-group-item-primary',
-                        modifierClassInactive: 'list-group-item-light',
-                        modifierClassActive: 'list-group-item-info',
-                        modifierClassWarning: 'list-group-item-danger',
-                        iconNormal: '   <i class="fas fa-comment"></i>',
-                        iconInactive: '   <i class="fas fa-comment"></i>',
-                        iconActive: '   <i class="fas fa-heart"></i>',
-                        iconWarning: '  <i class="fas fa-exclamation-circle"></i>',
-                        resultContentDivClasses: 'd-flex w-100 justify-content-between',
-                        resultContentTextElementType: 'span',
-                        resultContentTextClasses: 'mb-1',
-                        isDraggable: true,
-                        isClickable: true,
-                        isDeleteable: true,
-                        deleteButtonClasses: 'btn bg-danger text-white btn-circle btn-sm',
-                        deleteButtonText: '',
-                        deleteButtonIconClasses: 'fas fa-trash-alt',
-                        extra: {
-                            fastSearchInputId: 'fastSearchUserNames',
-                        },
-                        extraAction1Classes: 'btn bg-info text-white btn-circle btn-sm mr-1',
-                        extraAction1Text: '',
-                        extraAction1IconClasses: 'fas fa-user-plus',
-                        extraAction2Classes: 'btn bg-warning text-white btn-circle btn-sm mr-1',
-                        extraAction2Text: '',
-                        extraAction2IconClasses: 'fas fa-user-slash'
-                    },
-                },
-                boardGameSearchSideBar: {
-                    dom: {
-                        sideBarId: 'boardGameSearchSidebar',
-                        resultsId: 'bggSearchResults',
-                        resultsElementType: 'a',
-                        resultsElementAttributes: [
-                            ['href', '#'],
-                        ],
-                        resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-                        resultDataKeyId: 'bgg-id',
-                        resultLegacyDataKeyId: 'bgg-id',
-                        resultDataSourceId: 'data-source',
-                        resultDataSourceValue: 'bggSearch',
-                        modifierClassNormal: 'list-group-item-primary',
-                        modifierClassInactive: 'list-group-item-light',
-                        modifierClassActive: 'list-group-item-info',
-                        modifierClassWarning: 'list-group-item-danger',
-                        iconNormal: '   <i class="fas fa-dice"></i>',
-                        iconInactive: '   <i class="fas fa-dice"></i>',
-                        iconActive: '   <i class="fas fa-dice"></i>',
-                        iconWarning: '  <i class="fas fa-dice"></i>',
-                        resultContentDivClasses: 'd-flex w-100 justify-content-between',
-                        resultContentTextElementType: 'span',
-                        resultContentTextClasses: 'mb-1',
-                        isDraggable: true,
-                        isClickable: true,
-                        formId: 'bggSearch',
-                        queryId: 'queryText',
-                        buttonId: 'bggSearchButton'
-                    },
-                },
-                scoreSheetSideBar: {
-                    dom: {
-                        sideBarId: 'scoreSheetSidebar',
-                        resultsId: 'scoreSheets',
-                        resultsElementType: 'div',
-                        resultsElementAttributes: [],
-                        resultsClasses: 'text-white bg-info col-sm-6 col-md-3 col-lg-2 score-card',
-                        resultDataKeyId: 'bgg-id',
-                        resultLegacyDataKeyId: 'bgg-id',
-                        resultDataSourceId: 'data-source',
-                        resultDataSourceValue: 'scoreSheet',
-                        modifierClassNormal: '',
-                        modifierClassInactive: '',
-                        modifierClassActive: '',
-                        modifierClassWarning: '',
-                        iconNormal: ' ',
-                        iconInactive: ' ',
-                        iconActive: ' ',
-                        iconWarning: ' ',
-                        isDraggable: false,
-                        isClickable: false,
-                        isDeleteable: true,
-                        deleteButtonClasses: 'btn btn-rounded btn-warning ml-6 mt-4',
-                        deleteButtonText: 'Delete&nbsp;',
-                        deleteButtonIconClasses: 'fas fa-trash-alt',
-                        resultContentDivClasses: 'card-img-overlay',
-                        resultContentTextElementType: 'div',
-                        resultContentTextClasses: 'ml-2',
-                        hasBackgroundImage: true,
-                        imgElementType: 'img',
-                        imgClasses: 'score-card-img',
-                    },
-                },
-                scoreSheet: {
-                    dom: {
-                        dropZone: "scoreSheetZone",
-                        boardGame: "selectedBoardGame",
-                        startStopTimer: "startStopTimer",
-                        timer: "timerDisplay",
-                        end: "leaveScoreSheet",
-                        scoreSheet: "scoreSheet",
-                        iconStart: "<i class='fas fa-hourglass-start'></i>",
-                        iconInProgress: "<i class='fas fa-hourglass-half'></i>",
-                        iconEnd: "<i class='fas fa-hourglass-end'></i>",
-                        iconLeave: "<i class='fas fa-sign-out-alt'></i>",
-                        ssFastSearchUserNames: 'ssFastSearchUserNames',
-                        webrtc: 'webrtc'
-
-                    }
-                }
-            },
-            uiPrefs: {
-                navigation: {},
-                blogEntry: {},
-                userSearchSideBar: {
-                    view: {
-                        location: 'left',
-                        expandedSize: '35%',
-                    },
-                },
-                boardGameSearchSideBar: {
-                    view: {
-                        location: 'left',
-                        expandedSize: '35%',
-                    },
-                },
-                chatSideBar: {
-                    view: {
-                        location: 'right',
-                        expandedSize: '50%',
-                    },
-                },
-                scoreSheetSideBar: {
-                    view: {
-                        location: 'bottom',
-                        expandedSize: '30%',
-                    },
-                },
-            },
-            controller: {
-                events: {
-                    boardGames: {
-                        eventDataKeyId: 'board-game-id',
-                    },
-                },
-                dataLimit: {
-                    recentUserSearches: 10,
-                },
-            },
         };
         // event handlers
         this.cancelDelete = this.cancelDelete.bind(this);
@@ -368,25 +82,25 @@ class Root extends React.Component implements UnreadMessageCountListener {
         this.handleStartScoreSheet = this.handleStartScoreSheet.bind(this);
         this.handleShowScores = this.handleShowScores.bind(this);
 
-        controller.connectToApplication(this, window.localStorage);
+        Controller.getInstance().connectToApplication(this, window.localStorage);
     }
 
     public addBoardGameToDisplay(draggedObject: any) {
         // ok, we are just the dumb view, pass this onto the controller to work out the logic for us
-        controller.addBoardGameToDisplay(draggedObject);
+        Controller.getInstance().addBoardGameToDisplay(draggedObject);
     }
 
     getCurrentUser() {
-        return controller.getLoggedInUserId();
+        return Controller.getInstance().getLoggedInUserId();
     }
 
     alert(title: string, content: string) {
         this.titleEl.textContent = title;
         this.contentEl.textContent = content;
         // @ts-ignore
-        this.modalEl.classList.remove(this.state.ui.alert.hideClass);
+        this.modalEl.classList.remove(ALERT.hideClass);
         // @ts-ignore
-        this.modalEl.classList.add(this.state.ui.alert.showClass);
+        this.modalEl.classList.add(ALERT.showClass);
     }
 
     render() {
@@ -400,7 +114,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
                 key={index}
                 boardGame={entry}
                 showScoresHandler={this.handleShowScores}
-                addToCollectionHandler={controller.addBoardGameToCollection}
+                addToCollectionHandler={Controller.getInstance().addBoardGameToCollection}
                 removeFromCollectionHandler={this.handleDeleteBoardGame}
                 startScoreSheetHandler={this.handleStartScoreSheet}
             />
@@ -417,20 +131,19 @@ class Root extends React.Component implements UnreadMessageCountListener {
 
     cancelDelete(event: MouseEvent) {
         // @ts-ignore
-        this.modalEl.classList.remove(this.state.ui.alert.showClass);
+        this.modalEl.classList.remove(ALERT.showClass);
         // @ts-ignore
-        this.modalEl.classList.add(this.state.ui.alert.hideClass);
+        this.modalEl.classList.add(ALERT.hideClass);
         event.preventDefault();
     }
 
     confirmDelete(event: MouseEvent) {
         // @ts-ignore
-        this.modalEl.classList.remove(this.state.ui.alert.showClass);
+        this.modalEl.classList.remove(ALERT.showClass);
         // @ts-ignore
-        this.modalEl.classList.add(this.state.ui.alert.hideClass);
+        this.modalEl.classList.add(ALERT.hideClass);
         event.preventDefault();
-        // @ts-ignore
-        let id = this.modalEl.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
+        let id = this.modalEl.getAttribute(Controller.eventDataKeyId);
         id = parseInt(id);
         logger(`Handling Delete with id ${id}`);
         // @ts-ignore
@@ -438,7 +151,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
         let index = currentBoardGamesOnDisplay.findIndex((game: any) => game.gameId === id);
         if (index >= 0) {
             const boardGame = currentBoardGamesOnDisplay[index];
-            controller.removeBoardGameFromCollection(boardGame);
+            Controller.getInstance().removeBoardGameFromCollection(boardGame);
         }
     }
 
@@ -477,7 +190,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
         event.preventDefault();
         //this.hideAllSideBars();
         // @ts-ignore
-        let id = event.target.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
+        let id = event.target.getAttribute(Controller.eventDataKeyId);
         logger(`Handling Delete Board Game ${id}`);
         if (id) {
             // find the entry from the state manager
@@ -489,20 +202,20 @@ class Root extends React.Component implements UnreadMessageCountListener {
                 const boardGame = currentBoardGamesOnDisplay[index];
                 if (boardGame.decorator && (boardGame.decorator === Decorator.Persisted)) {
                     logger(`Handling Delete Board Game ${id} - persisted, confirming with user, but only if logged in`);
-                    if (controller.isLoggedIn()) {
+                    if (Controller.getInstance().isLoggedIn()) {
                         // @ts-ignore
-                        this.modalEl.setAttribute(this.state.controller.events.boardGames.eventDataKeyId, id);
+                        this.modalEl.setAttribute(Controller.eventDataKeyId, id);
                         this.alert(`${boardGame.name} (${boardGame.year})`, "Are you sure you want to delete this board game from your collection?");
                     } else {
                         logger(`Handling Delete Board Game ${id} - IS persisted but not logged in, just deleting from local storage  asking controller to remove`);
                         // not persisted yet, let the controller manage this one
-                        controller.removeBoardGameFromDisplay(boardGame);
+                        Controller.getInstance().removeBoardGameFromDisplay(boardGame);
 
                     }
                 } else {
                     logger(`Handling Delete Board Game ${id} - NOT persisted, asking controller to remove`);
                     // not persisted yet, let the controller manage this one
-                    controller.removeBoardGameFromDisplay(boardGame);
+                    Controller.getInstance().removeBoardGameFromDisplay(boardGame);
                 }
             }
         }
@@ -512,54 +225,71 @@ class Root extends React.Component implements UnreadMessageCountListener {
         logger('component Did Mount');
 
 
-        this.chatView = new ChatSidebarView(this, document, controller.getStateManager());
-        this.chatView.onDocumentLoaded();
+        this.chatSidebar = new ChatRoomsSidebar();
+        // add the views to the chat side bar
+        this.chatView = new ChatLogsView();
+        this.chatSidebar.addView(this.chatView,{containerId: ChatRoomsSidebar.SidebarContainers.chatLogs});
 
-        this.userSearchView = new UserSearchSidebarView(this, document, controller.getStateManager());
-        this.userSearchView.onDocumentLoaded();
+        const chatLogView = new ChatLogDetailView(Controller.getInstance().getStateManager());
+        this.chatSidebar.addView(chatLogView,{containerId: ChatRoomsSidebar.SidebarContainers.chatLog});
+        this.chatView.addEventListener(chatLogView);
 
-
-        this.bggSearchView = new BoardGameSearchSidebarView(this, document, controller.getStateManager());
-        this.bggSearchView.onDocumentLoaded();
-
-        this.scoresView = new ScoreSheetSidebarView(this, document, controller.getStateManager());
-        this.scoresView.onDocumentLoaded();
+        this.chatSidebar.onDocumentLoaded();
 
 
-        this.scoreSheetView = ScoreSheetView.getInstance();
-        this.scoreSheetView.setApplication(this);
-        this.scoreSheetView.onDocumentLoaded(this);
+        this.userSearchSidebar = new UserSearchSidebar();
+        // add the subviews for the user search
+        const recentSearches = new UserSearchView(Controller.getInstance().getStateManager());
+        this.userSearchSidebar.addView(recentSearches,{containerId: UserSearchSidebar.SidebarContainers.recentSearches});
+        const favouriteUsers = new FavouriteUserView(Controller.getInstance().getStateManager());
+        this.userSearchSidebar.addView(favouriteUsers,{containerId: UserSearchSidebar.SidebarContainers.favourites});
+        const blockedUsers = new BlockedUserView(Controller.getInstance().getStateManager());
+        this.userSearchSidebar.addView(blockedUsers,{containerId: UserSearchSidebar.SidebarContainers.blocked});
+        this.userSearchSidebar.onDocumentLoaded();
 
+
+        this.bggSearchSidebar = new BoardGameSearchSidebar();
+        const bggSearch = new BGGSearchView();
+        this.bggSearchSidebar.addView(bggSearch,{containerId:BoardGameSearchSidebar.bggSearchResults})
+        this.bggSearchSidebar.onDocumentLoaded();
+
+        this.scoreSheetSidebar = new ScoreSheetsSidebar();
+        this.scoresView = new ScoreSheetsView();
+        this.scoreSheetSidebar.addView(this.scoresView,{containerId:ScoreSheetsSidebar.scoreSheets});
+        this.scoreSheetSidebar.onDocumentLoaded();
+
+
+        ScoreSheetDetailView.getInstance().onDocumentLoaded();
         // navigation item handlers
         if (document) {
             // @ts-ignore
-            document.getElementById(this.state.ui.navigation.boardGameSearchId).addEventListener('click', this.handleShowBGGSearch);
+            document.getElementById(NAVIGATION.boardGameSearchId).addEventListener('click', this.handleShowBGGSearch);
             // @ts-ignore
-            document.getElementById(this.state.ui.navigation.userSearchId).addEventListener('click', this.handleShowUserSearch);
+            document.getElementById(NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch);
             // @ts-ignore
-            this.chatNavigationItem = document.getElementById(this.state.ui.navigation.chatId);
+            this.chatNavigationItem = document.getElementById(NAVIGATION.chatId);
 
             // @ts-ignore
             this.chatNavigationItem.addEventListener('click', this.handleShowChat);
             // @ts-ignore
-            document.getElementById(this.state.ui.navigation.showMyCollection).addEventListener('click', this.handleShowCollection);
+            document.getElementById(NAVIGATION.showMyCollection).addEventListener('click', this.handleShowCollection);
             // @ts-ignore
-            document.getElementById(this.state.ui.navigation.showScoreSheet).addEventListener('click', this.handleShowScoreSheet);
+            document.getElementById(NAVIGATION.showScoreSheet).addEventListener('click', this.handleShowScoreSheet);
         }
 
         // alert modal dialog setup
         // @ts-ignore
-        this.modalEl = document.getElementById(this.state.ui.alert.modalId);
+        this.modalEl = document.getElementById(ALERT.modalId);
         // @ts-ignore
-        this.titleEl = document.getElementById(this.state.ui.alert.titleId);
+        this.titleEl = document.getElementById(ALERT.titleId);
         // @ts-ignore
-        this.contentEl = document.getElementById(this.state.ui.alert.contentId);
+        this.contentEl = document.getElementById(ALERT.contentId);
         // @ts-ignore
-        this.cancelBtnEl = document.getElementById(this.state.ui.alert.cancelButtonId);
+        this.cancelBtnEl = document.getElementById(ALERT.cancelButtonId);
         // @ts-ignore
-        this.confirmBtnEl = document.getElementById(this.state.ui.alert.confirmButtonId);
+        this.confirmBtnEl = document.getElementById(ALERT.confirmButtonId);
         // @ts-ignore
-        this.closeBtnEl = document.getElementById(this.state.ui.alert.closeButtonId);
+        this.closeBtnEl = document.getElementById(ALERT.closeButtonId);
 
         // event listeners for the confirm delete of entry
         if (this.cancelBtnEl) this.cancelBtnEl.addEventListener('click', this.cancelDelete);
@@ -578,13 +308,13 @@ class Root extends React.Component implements UnreadMessageCountListener {
 
         // ok lets try get things done
         ScoreSheetController.getInstance().initialise(this);
-        controller.initialise();
+        Controller.getInstance().initialise();
     }
 
     hideAllSideBars() {
-        this.chatView.eventHide(null);
-        this.userSearchView.eventHide(null);
-        this.bggSearchView.eventHide(null);
+        this.chatSidebar.eventHide(null);
+        this.userSearchSidebar.eventHide(null);
+        this.bggSearchSidebar.eventHide(null);
     }
 
     handleShowCollection(event: MouseEvent) {
@@ -600,12 +330,12 @@ class Root extends React.Component implements UnreadMessageCountListener {
         event.preventDefault();
         //this.hideAllSideBars();
         // prevent anything from happening if we are not logged in
-        if (!controller.isLoggedIn()) {
+        if (!Controller.getInstance().isLoggedIn()) {
             // @ts-ignore
-            window.location.href = this.state.apis.login;
+            window.location.href = API_Config.login;
             return;
         }
-        this.userSearchView.eventShow(event);
+        this.userSearchSidebar.eventShow(event);
     }
 
     handleShowScores(event: Event) {
@@ -623,22 +353,22 @@ class Root extends React.Component implements UnreadMessageCountListener {
             if (index >= 0) {
                 const boardGame = currentBoardGamesOnDisplay[index];
                 this.scoresView.setSelectedBoardGame(boardGame);
-                this.scoresView.eventShow(null);
+                this.scoreSheetSidebar.eventShow(null);
             }
         }
     }
 
-    handleShowChat(event: Event, roomName: string | null) {
+    handleShowChat(roomName: string | null) {
         logger('Handling Show Chat');
-        event.preventDefault();
+        //event.preventDefault();
         //this.hideAllSideBars();
         // prevent anything from happening if we are not logged in
-        if (!controller.isLoggedIn()) {
+        if (!Controller.getInstance().isLoggedIn()) {
             // @ts-ignore
-            window.location.href = this.state.apis.login;
+            window.location.href = API_Config.login;
             return;
         }
-        this.chatView.eventShow(event);
+        this.chatSidebar.eventShow(null);
         if (roomName) {
             this.chatView.selectChatRoom(roomName);
         }
@@ -648,11 +378,11 @@ class Root extends React.Component implements UnreadMessageCountListener {
         logger('Handling Show BGG Search View');
         event.preventDefault();
         // prevent anything from happening if we are not logged in
-        if (!controller.isLoggedIn()) {
+        if (!Controller.getInstance().isLoggedIn()) {
             this.hideAllSideBars();
             // @ts-ignore
         }
-        this.bggSearchView.eventShow(event);
+        this.bggSearchSidebar.eventShow(event);
     }
 
     countChanged(newCount: number): void {
@@ -670,12 +400,12 @@ class Root extends React.Component implements UnreadMessageCountListener {
 
     private handleDrop(event: Event) {
         // @ts-ignore
-        const draggedObjectJSON = event.dataTransfer.getData(this.state.ui.draggable.draggableDataKeyId);
+        const draggedObjectJSON = event.dataTransfer.getData(DRAGGABLE_KEY_ID);
         logger(draggedObjectJSON);
         const draggedObject = JSON.parse(draggedObjectJSON);
         logger(draggedObject);
         // @ts-ignore
-        if (draggedObject[this.state.ui.draggable.draggedType] === this.state.ui.draggable.draggedTypeBoardGame) {
+        if (draggedObject[DRAGGABLE_TYPE] === DRAGGABLE.typeBoardGame) {
             this.addBoardGameToDisplay(draggedObject);
         }
 
@@ -703,7 +433,8 @@ class Root extends React.Component implements UnreadMessageCountListener {
 //localStorage.debug = 'app controller-ts socket-ts api-ts local-storage-ts state-manager-ts indexeddb-ts user-search-sidebar user-search-sidebar:detail state-manager-ms state-manager-api state-manager-aggregate state-manager-async';
 //localStorage.debug = 'app controller-ts  chat-sidebar chat-sidebar:detail board-game-search-sidebar board-game-search-sidebar:detail ';
 //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts template-manager' ;
-localStorage.debug = 'score-sheet-controller call-manager peer';
+//localStorage.debug = 'score-sheet-controller call-manager peer';
+localStorage.debug = '*';
 debug.log = console.info.bind(console);
 
 // @ts-ignore

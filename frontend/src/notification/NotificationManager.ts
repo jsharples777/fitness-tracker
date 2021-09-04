@@ -1,6 +1,15 @@
 import notificationFactory from "./NotificationFactory";
 
 export class NotificationManager {
+    private static _instance: NotificationManager;
+
+    public static getInstance(): NotificationManager {
+        if (!(NotificationManager._instance)) {
+            NotificationManager._instance = new NotificationManager();
+        }
+        return NotificationManager._instance;
+    }
+
     protected notifications: Node[];
     protected currentCount: number;
     protected offsetPerNotification: number;
@@ -43,6 +52,4 @@ export class NotificationManager {
     }
 }
 
-const notifier = new NotificationManager();
-
-export default notifier;
+export default NotificationManager;

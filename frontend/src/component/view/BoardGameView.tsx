@@ -1,8 +1,8 @@
 import React from "react";
 import debug from 'debug';
 
-import controller from "../Controller";
-import {Decorator} from "../AppTypes";
+import Controller from "../../Controller";
+import {Decorator} from "../../AppTypes";
 
 const beLogger = debug('view-ts:boardgameview');
 
@@ -16,7 +16,7 @@ export default function BoardGameView({boardGame, showScoresHandler, addToCollec
             <button type="button"
                     className="btn-primary btn-sm rounded p-1 mt-1 w-100"
                     board-game-id={boardGame.gameId} onClick={addToCollectionHandler}>
-                &nbsp;&nbsp;Add to {!controller.isLoggedIn() ? 'Browser' : ''} Collection &nbsp;
+                &nbsp;&nbsp;Add to {!Controller.getInstance().isLoggedIn() ? 'Browser' : ''} Collection &nbsp;
                 <i className="fas fa-star"></i>&nbsp;&nbsp;
             </button>
             <button type="button"
@@ -30,7 +30,7 @@ export default function BoardGameView({boardGame, showScoresHandler, addToCollec
             <button type="button"
                     className="btn-warning btn-sm rounded p-1 mt-1 w-100"
                     board-game-id={boardGame.gameId} onClick={removeFromCollectionHandler}>
-                &nbsp;&nbsp;Remove from {!controller.isLoggedIn() ? 'Browser' : ''} Collection &nbsp;
+                &nbsp;&nbsp;Remove from {!Controller.getInstance().isLoggedIn() ? 'Browser' : ''} Collection &nbsp;
                 <i className="far fa-star"></i>&nbsp;&nbsp;
             </button>
 
@@ -63,7 +63,7 @@ export default function BoardGameView({boardGame, showScoresHandler, addToCollec
                         <a href={bggURL} target="_blank"><img className="card-img-top" src={boardGame.image}
                                                               alt="Card image cap"></img></a>
                         <div className="card-body scroll">
-                            <h5 className="card-title">{boardGame.name} ({boardGame.year}) {((boardGame.decorator === Decorator.Persisted) || (boardGame.decorator === Decorator.PersistedLocally)) ? favouriteIcon : ''} {((boardGame.decorator === Decorator.Persisted) || (boardGame.decorator === Decorator.PersistedLocally)) ? scoreBadge : ''}<br/> {(controller.isLoggedIn()) ? ((boardGame.decorator === Decorator.Persisted) ? deleteButton : addButton) : deleteButton}
+                            <h5 className="card-title">{boardGame.name} ({boardGame.year}) {((boardGame.decorator === Decorator.Persisted) || (boardGame.decorator === Decorator.PersistedLocally)) ? favouriteIcon : ''} {((boardGame.decorator === Decorator.Persisted) || (boardGame.decorator === Decorator.PersistedLocally)) ? scoreBadge : ''}<br/> {(Controller.getInstance().isLoggedIn()) ? ((boardGame.decorator === Decorator.Persisted) ? deleteButton : addButton) : deleteButton}
                             </h5>
                             <p className="card-text">{boardGame.description}</p>
 
