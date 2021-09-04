@@ -5,6 +5,7 @@ import notifier from "./notification/NotificationManager";
 import Controller from "./Controller";
 import {isSame} from "./util/EqualityFunctions";
 import {STATE_NAMES} from "./AppTypes";
+import NotificationManager from "./notification/NotificationManager";
 
 const slLogger = debug('socket-listener');
 
@@ -30,7 +31,7 @@ export default class SocketListenerDelegate implements SocketListener {
                     switch (message.stateName) {
                         case STATE_NAMES.users: {
                             Controller.getInstance().getStateManager().addNewItemToState(STATE_NAMES.users, stateObj, true);
-                            notifier.show(stateObj.username, `${stateObj.username} has just registered.`, 'message');
+                            NotificationManager.getInstance().show(stateObj.username, `${stateObj.username} has just registered.`, 'message');
                             break;
                         }
                     }

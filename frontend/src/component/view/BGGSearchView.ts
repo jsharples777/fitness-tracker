@@ -76,11 +76,11 @@ class BGGSearchView extends AbstractView implements ViewListener{
     onDocumentLoaded() {
         // get a link to the search button and search field and form
         // @ts-ignore
-        this.formEl = this.document.getElementById(this.uiConfig.dom.formId);
+        this.formEl = document.getElementById(BGGSearchView.BGGSEARCH_Form);
         // @ts-ignore
-        this.buttonEl = this.document.getElementById(this.uiConfig.dom.buttonId);
+        this.buttonEl = document.getElementById(BGGSearchView.BGGSEARCH_Search);
         // @ts-ignore
-        this.queryEl = this.document.getElementById(this.uiConfig.dom.queryId);
+        this.queryEl = document.getElementById(BGGSearchView.BGGSEARCH_Query);
 
         this.formEl.addEventListener('submit', this.handleSearch);
 

@@ -1,7 +1,7 @@
 import {stateEventType, stateValue} from "./StateManager";
 import {equalityFunction} from "../util/EqualityFunctions";
 import {jsonRequest, RequestType} from "../network/Types";
-import downloader from "../network/DownloadManager";
+import DownloadManager from "../network/DownloadManager";
 import debug from 'debug';
 import AsynchronousStateManager from "./AsynchronousStateManager";
 import StateChangedDelegate from "./StateChangedDelegate";
@@ -114,7 +114,7 @@ export class GraphQLApiStateManager implements AsynchronousStateManager {
                     associatedStateName: name
                 };
                 graphSMLogger(`Getting All ${name} with query "${query}"`);
-                downloader.addApiRequest(jsonRequest, true);
+                DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
             } else {
                 graphSMLogger(`No configuration for state ${name}`);
@@ -149,7 +149,7 @@ export class GraphQLApiStateManager implements AsynchronousStateManager {
                 callback: this.callbackForAddItem,
                 associatedStateName: name
             };
-            downloader.addApiRequest(jsonRequest, true);
+            DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
         } else {
             graphSMLogger(`No configuration for state ${name}`);
@@ -172,7 +172,7 @@ export class GraphQLApiStateManager implements AsynchronousStateManager {
                 callback: this.callbackForRemoveItem,
                 associatedStateName: name
             };
-            downloader.addApiRequest(jsonRequest, true);
+            DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
         } else {
             graphSMLogger(`No configuration for state ${name}`);
@@ -195,7 +195,7 @@ export class GraphQLApiStateManager implements AsynchronousStateManager {
                 callback: this.callbackForUpdateItem,
                 associatedStateName: name
             };
-            downloader.addApiRequest(jsonRequest, true);
+            DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
         } else {
             graphSMLogger(`No configuration for state ${name}`);

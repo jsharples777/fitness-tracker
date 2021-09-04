@@ -28,7 +28,7 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
         keyId: 'user-id',
-        dataSourceId: 'blockedUsers',
+        dataSourceId: 'recentUserSearches',
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',
@@ -62,9 +62,9 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
                 iconClasses: 'fas fa-user-plus',
             },
             {
-                name: 'favourite',
-                buttonClasses: 'btn bg-info text-white btn-circle btn-sm mr-1',
-                iconClasses: 'fas fa-user-plus',
+                name: 'blocked',
+                buttonClasses: 'btn bg-warning text-white btn-circle btn-sm mr-1',
+                iconClasses: 'fas fa-user-slash',
 
             }
         ]

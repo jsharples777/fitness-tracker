@@ -44,6 +44,7 @@ class ScoreSheetsView extends AbstractView implements ViewListener{
 
     onDocumentLoaded() {
         super.onDocumentLoaded();
+        this.addEventListener(this);
         this.updateView('', {});
     }
 
@@ -128,13 +129,14 @@ class ScoreSheetsView extends AbstractView implements ViewListener{
     }
 
     itemDeleted(view: View, selectedItem: any): void {
+        csLogger(`Handling delete ${selectedItem}`);
         // remove the sheet from the selected board game
         if (this.selectedBoardGame.scoresheets) {
-            let index = this.selectedBoardGame.scoresheets.findIndex((sheet: any) => sheet.id === selectedItem.id);
+            let index = this.selectedBoardGame.scoresheets.findIndex((sheet: any) => sheet.id === selectedItem);
             if (index >= 0) {
                 this.selectedBoardGame.scoresheets.splice(index, 1);
                 // let the controller know to remove from the database if the user is logged in
-                Controller.getInstance().scoreSheetRemovedFromBoardGame(this.selectedBoardGame, selectedItem.id);
+                Controller.getInstance().scoreSheetRemovedFromBoardGame(this.selectedBoardGame, selectedItem);
             }
         }
         this.updateView('', this.selectedBoardGame);

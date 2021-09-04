@@ -1,7 +1,7 @@
 import {stateEventType, stateValue} from "./StateManager";
 import {equalityFunction} from "../util/EqualityFunctions";
 import {jsonRequest, RequestType} from "../network/Types";
-import downloader from "../network/DownloadManager";
+import DownloadManager from "../network/DownloadManager";
 import debug from 'debug';
 import AsynchronousStateManager from "./AsynchronousStateManager";
 import StateChangedDelegate from "./StateChangedDelegate";
@@ -100,7 +100,7 @@ export class RESTApiStateManager implements AsynchronousStateManager {
                     callback: this.callbackForGetItems,
                     associatedStateName: name
                 };
-                downloader.addApiRequest(jsonRequest, true);
+                DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
             } else {
                 apiSMLogger(`No configuration for state ${name}`);
@@ -132,7 +132,7 @@ export class RESTApiStateManager implements AsynchronousStateManager {
                 callback: this.callbackForAddItem,
                 associatedStateName: name
             };
-            downloader.addApiRequest(jsonRequest, true);
+            DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
         } else {
             apiSMLogger(`No configuration for state ${name}`);
@@ -154,7 +154,7 @@ export class RESTApiStateManager implements AsynchronousStateManager {
                 callback: this.callbackForRemoveItem,
                 associatedStateName: name
             };
-            downloader.addApiRequest(jsonRequest, true);
+            DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
         } else {
             apiSMLogger(`No configuration for state ${name}`);
@@ -174,7 +174,7 @@ export class RESTApiStateManager implements AsynchronousStateManager {
                 callback: this.callbackForUpdateItem,
                 associatedStateName: name
             };
-            downloader.addApiRequest(jsonRequest, true);
+            DownloadManager.getInstance().addApiRequest(jsonRequest, true);
 
         } else {
             apiSMLogger(`No configuration for state ${name}`);

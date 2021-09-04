@@ -213,7 +213,7 @@ export class ScoreSheetDetailView implements StateChangeListener {
     }
 
     stateChanged(managerName: string, name: string, newValue: any): void {
-        if (name === this.config.stateNames.users) {
+        if (name === STATE_NAMES.users) {
             // @ts-ignore
             const fastSearchEl = $(`#${ScoreSheetDetailView.ScoreSheetDom.ssFastSearchUserNames}`);
             // what is my username?

@@ -1,1503 +1,22 @@
-/******/ (function(modules) { // webpackBootstrap
-/******/ 	// install a JSONP callback for chunk loading
-/******/ 	function webpackJsonpCallback(data) {
-/******/ 		var chunkIds = data[0];
-/******/ 		var moreModules = data[1];
-/******/ 		var executeModules = data[2];
-/******/
-/******/ 		// add "moreModules" to the modules object,
-/******/ 		// then flag all "chunkIds" as loaded and fire callback
-/******/ 		var moduleId, chunkId, i = 0, resolves = [];
-/******/ 		for(;i < chunkIds.length; i++) {
-/******/ 			chunkId = chunkIds[i];
-/******/ 			if(Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) {
-/******/ 				resolves.push(installedChunks[chunkId][0]);
-/******/ 			}
-/******/ 			installedChunks[chunkId] = 0;
-/******/ 		}
-/******/ 		for(moduleId in moreModules) {
-/******/ 			if(Object.prototype.hasOwnProperty.call(moreModules, moduleId)) {
-/******/ 				modules[moduleId] = moreModules[moduleId];
-/******/ 			}
-/******/ 		}
-/******/ 		if(parentJsonpFunction) parentJsonpFunction(data);
-/******/
-/******/ 		while(resolves.length) {
-/******/ 			resolves.shift()();
-/******/ 		}
-/******/
-/******/ 		// add entry modules from loaded chunk to deferred list
-/******/ 		deferredModules.push.apply(deferredModules, executeModules || []);
-/******/
-/******/ 		// run deferred modules when all chunks ready
-/******/ 		return checkDeferredModules();
-/******/ 	};
-/******/ 	function checkDeferredModules() {
-/******/ 		var result;
-/******/ 		for(var i = 0; i < deferredModules.length; i++) {
-/******/ 			var deferredModule = deferredModules[i];
-/******/ 			var fulfilled = true;
-/******/ 			for(var j = 1; j < deferredModule.length; j++) {
-/******/ 				var depId = deferredModule[j];
-/******/ 				if(installedChunks[depId] !== 0) fulfilled = false;
-/******/ 			}
-/******/ 			if(fulfilled) {
-/******/ 				deferredModules.splice(i--, 1);
-/******/ 				result = __webpack_require__(__webpack_require__.s = deferredModule[0]);
-/******/ 			}
-/******/ 		}
-/******/
-/******/ 		return result;
-/******/ 	}
-/******/
-/******/ 	// The module cache
-/******/ 	var installedModules = {};
-/******/
-/******/ 	// object to store loaded and loading chunks
-/******/ 	// undefined = chunk not loaded, null = chunk preloaded/prefetched
-/******/ 	// Promise = chunk loading, 0 = chunk loaded
-/******/ 	var installedChunks = {
-/******/ 		"app": 0
-/******/ 	};
-/******/
-/******/ 	var deferredModules = [];
-/******/
-/******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
-/******/
-/******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId]) {
-/******/ 			return installedModules[moduleId].exports;
-/******/ 		}
-/******/ 		// Create a new module (and put it into the cache)
-/******/ 		var module = installedModules[moduleId] = {
-/******/ 			i: moduleId,
-/******/ 			l: false,
-/******/ 			exports: {}
-/******/ 		};
-/******/
-/******/ 		// Execute the module function
-/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-/******/
-/******/ 		// Flag the module as loaded
-/******/ 		module.l = true;
-/******/
-/******/ 		// Return the exports of the module
-/******/ 		return module.exports;
-/******/ 	}
-/******/
-/******/
-/******/ 	// expose the modules object (__webpack_modules__)
-/******/ 	__webpack_require__.m = modules;
-/******/
-/******/ 	// expose the module cache
-/******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// define getter function for harmony exports
-/******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 		}
-/******/ 	};
-/******/
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = function(exports) {
-/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/
-/******/ 	// create a fake namespace object
-/******/ 	// mode & 1: value is a module id, require it
-/******/ 	// mode & 2: merge all properties of value into the ns
-/******/ 	// mode & 4: return value when already ns object
-/******/ 	// mode & 8|1: behave like require
-/******/ 	__webpack_require__.t = function(value, mode) {
-/******/ 		if(mode & 1) value = __webpack_require__(value);
-/******/ 		if(mode & 8) return value;
-/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
-/******/ 		var ns = Object.create(null);
-/******/ 		__webpack_require__.r(ns);
-/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
-/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
-/******/ 		return ns;
-/******/ 	};
-/******/
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = function(module) {
-/******/ 		var getter = module && module.__esModule ?
-/******/ 			function getDefault() { return module['default']; } :
-/******/ 			function getModuleExports() { return module; };
-/******/ 		__webpack_require__.d(getter, 'a', getter);
-/******/ 		return getter;
-/******/ 	};
-/******/
-/******/ 	// Object.prototype.hasOwnProperty.call
-/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-/******/
-/******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "";
-/******/
-/******/ 	var jsonpArray = window["webpackJsonp"] = window["webpackJsonp"] || [];
-/******/ 	var oldJsonpFunction = jsonpArray.push.bind(jsonpArray);
-/******/ 	jsonpArray.push = webpackJsonpCallback;
-/******/ 	jsonpArray = jsonpArray.slice();
-/******/ 	for(var i = 0; i < jsonpArray.length; i++) webpackJsonpCallback(jsonpArray[i]);
-/******/ 	var parentJsonpFunction = oldJsonpFunction;
-/******/
-/******/
-/******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push([0,"vendor"]);
-/******/ 	// run deferred modules when ready
-/******/ 	return checkDeferredModules();
-/******/ })
-/************************************************************************/
-/******/ ({
-
-/***/ "./node_modules/handsontable/node_modules/moment/locale sync recursive ^\\.\\/.*$":
-/*!****************************************************************************!*\
-  !*** ./node_modules/handsontable/node_modules/moment/locale sync ^\.\/.*$ ***!
-  \****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./af": "./node_modules/handsontable/node_modules/moment/locale/af.js",
-	"./af.js": "./node_modules/handsontable/node_modules/moment/locale/af.js",
-	"./ar": "./node_modules/handsontable/node_modules/moment/locale/ar.js",
-	"./ar-dz": "./node_modules/handsontable/node_modules/moment/locale/ar-dz.js",
-	"./ar-dz.js": "./node_modules/handsontable/node_modules/moment/locale/ar-dz.js",
-	"./ar-kw": "./node_modules/handsontable/node_modules/moment/locale/ar-kw.js",
-	"./ar-kw.js": "./node_modules/handsontable/node_modules/moment/locale/ar-kw.js",
-	"./ar-ly": "./node_modules/handsontable/node_modules/moment/locale/ar-ly.js",
-	"./ar-ly.js": "./node_modules/handsontable/node_modules/moment/locale/ar-ly.js",
-	"./ar-ma": "./node_modules/handsontable/node_modules/moment/locale/ar-ma.js",
-	"./ar-ma.js": "./node_modules/handsontable/node_modules/moment/locale/ar-ma.js",
-	"./ar-sa": "./node_modules/handsontable/node_modules/moment/locale/ar-sa.js",
-	"./ar-sa.js": "./node_modules/handsontable/node_modules/moment/locale/ar-sa.js",
-	"./ar-tn": "./node_modules/handsontable/node_modules/moment/locale/ar-tn.js",
-	"./ar-tn.js": "./node_modules/handsontable/node_modules/moment/locale/ar-tn.js",
-	"./ar.js": "./node_modules/handsontable/node_modules/moment/locale/ar.js",
-	"./az": "./node_modules/handsontable/node_modules/moment/locale/az.js",
-	"./az.js": "./node_modules/handsontable/node_modules/moment/locale/az.js",
-	"./be": "./node_modules/handsontable/node_modules/moment/locale/be.js",
-	"./be.js": "./node_modules/handsontable/node_modules/moment/locale/be.js",
-	"./bg": "./node_modules/handsontable/node_modules/moment/locale/bg.js",
-	"./bg.js": "./node_modules/handsontable/node_modules/moment/locale/bg.js",
-	"./bm": "./node_modules/handsontable/node_modules/moment/locale/bm.js",
-	"./bm.js": "./node_modules/handsontable/node_modules/moment/locale/bm.js",
-	"./bn": "./node_modules/handsontable/node_modules/moment/locale/bn.js",
-	"./bn.js": "./node_modules/handsontable/node_modules/moment/locale/bn.js",
-	"./bo": "./node_modules/handsontable/node_modules/moment/locale/bo.js",
-	"./bo.js": "./node_modules/handsontable/node_modules/moment/locale/bo.js",
-	"./br": "./node_modules/handsontable/node_modules/moment/locale/br.js",
-	"./br.js": "./node_modules/handsontable/node_modules/moment/locale/br.js",
-	"./bs": "./node_modules/handsontable/node_modules/moment/locale/bs.js",
-	"./bs.js": "./node_modules/handsontable/node_modules/moment/locale/bs.js",
-	"./ca": "./node_modules/handsontable/node_modules/moment/locale/ca.js",
-	"./ca.js": "./node_modules/handsontable/node_modules/moment/locale/ca.js",
-	"./cs": "./node_modules/handsontable/node_modules/moment/locale/cs.js",
-	"./cs.js": "./node_modules/handsontable/node_modules/moment/locale/cs.js",
-	"./cv": "./node_modules/handsontable/node_modules/moment/locale/cv.js",
-	"./cv.js": "./node_modules/handsontable/node_modules/moment/locale/cv.js",
-	"./cy": "./node_modules/handsontable/node_modules/moment/locale/cy.js",
-	"./cy.js": "./node_modules/handsontable/node_modules/moment/locale/cy.js",
-	"./da": "./node_modules/handsontable/node_modules/moment/locale/da.js",
-	"./da.js": "./node_modules/handsontable/node_modules/moment/locale/da.js",
-	"./de": "./node_modules/handsontable/node_modules/moment/locale/de.js",
-	"./de-at": "./node_modules/handsontable/node_modules/moment/locale/de-at.js",
-	"./de-at.js": "./node_modules/handsontable/node_modules/moment/locale/de-at.js",
-	"./de-ch": "./node_modules/handsontable/node_modules/moment/locale/de-ch.js",
-	"./de-ch.js": "./node_modules/handsontable/node_modules/moment/locale/de-ch.js",
-	"./de.js": "./node_modules/handsontable/node_modules/moment/locale/de.js",
-	"./dv": "./node_modules/handsontable/node_modules/moment/locale/dv.js",
-	"./dv.js": "./node_modules/handsontable/node_modules/moment/locale/dv.js",
-	"./el": "./node_modules/handsontable/node_modules/moment/locale/el.js",
-	"./el.js": "./node_modules/handsontable/node_modules/moment/locale/el.js",
-	"./en-SG": "./node_modules/handsontable/node_modules/moment/locale/en-SG.js",
-	"./en-SG.js": "./node_modules/handsontable/node_modules/moment/locale/en-SG.js",
-	"./en-au": "./node_modules/handsontable/node_modules/moment/locale/en-au.js",
-	"./en-au.js": "./node_modules/handsontable/node_modules/moment/locale/en-au.js",
-	"./en-ca": "./node_modules/handsontable/node_modules/moment/locale/en-ca.js",
-	"./en-ca.js": "./node_modules/handsontable/node_modules/moment/locale/en-ca.js",
-	"./en-gb": "./node_modules/handsontable/node_modules/moment/locale/en-gb.js",
-	"./en-gb.js": "./node_modules/handsontable/node_modules/moment/locale/en-gb.js",
-	"./en-ie": "./node_modules/handsontable/node_modules/moment/locale/en-ie.js",
-	"./en-ie.js": "./node_modules/handsontable/node_modules/moment/locale/en-ie.js",
-	"./en-il": "./node_modules/handsontable/node_modules/moment/locale/en-il.js",
-	"./en-il.js": "./node_modules/handsontable/node_modules/moment/locale/en-il.js",
-	"./en-nz": "./node_modules/handsontable/node_modules/moment/locale/en-nz.js",
-	"./en-nz.js": "./node_modules/handsontable/node_modules/moment/locale/en-nz.js",
-	"./eo": "./node_modules/handsontable/node_modules/moment/locale/eo.js",
-	"./eo.js": "./node_modules/handsontable/node_modules/moment/locale/eo.js",
-	"./es": "./node_modules/handsontable/node_modules/moment/locale/es.js",
-	"./es-do": "./node_modules/handsontable/node_modules/moment/locale/es-do.js",
-	"./es-do.js": "./node_modules/handsontable/node_modules/moment/locale/es-do.js",
-	"./es-us": "./node_modules/handsontable/node_modules/moment/locale/es-us.js",
-	"./es-us.js": "./node_modules/handsontable/node_modules/moment/locale/es-us.js",
-	"./es.js": "./node_modules/handsontable/node_modules/moment/locale/es.js",
-	"./et": "./node_modules/handsontable/node_modules/moment/locale/et.js",
-	"./et.js": "./node_modules/handsontable/node_modules/moment/locale/et.js",
-	"./eu": "./node_modules/handsontable/node_modules/moment/locale/eu.js",
-	"./eu.js": "./node_modules/handsontable/node_modules/moment/locale/eu.js",
-	"./fa": "./node_modules/handsontable/node_modules/moment/locale/fa.js",
-	"./fa.js": "./node_modules/handsontable/node_modules/moment/locale/fa.js",
-	"./fi": "./node_modules/handsontable/node_modules/moment/locale/fi.js",
-	"./fi.js": "./node_modules/handsontable/node_modules/moment/locale/fi.js",
-	"./fo": "./node_modules/handsontable/node_modules/moment/locale/fo.js",
-	"./fo.js": "./node_modules/handsontable/node_modules/moment/locale/fo.js",
-	"./fr": "./node_modules/handsontable/node_modules/moment/locale/fr.js",
-	"./fr-ca": "./node_modules/handsontable/node_modules/moment/locale/fr-ca.js",
-	"./fr-ca.js": "./node_modules/handsontable/node_modules/moment/locale/fr-ca.js",
-	"./fr-ch": "./node_modules/handsontable/node_modules/moment/locale/fr-ch.js",
-	"./fr-ch.js": "./node_modules/handsontable/node_modules/moment/locale/fr-ch.js",
-	"./fr.js": "./node_modules/handsontable/node_modules/moment/locale/fr.js",
-	"./fy": "./node_modules/handsontable/node_modules/moment/locale/fy.js",
-	"./fy.js": "./node_modules/handsontable/node_modules/moment/locale/fy.js",
-	"./ga": "./node_modules/handsontable/node_modules/moment/locale/ga.js",
-	"./ga.js": "./node_modules/handsontable/node_modules/moment/locale/ga.js",
-	"./gd": "./node_modules/handsontable/node_modules/moment/locale/gd.js",
-	"./gd.js": "./node_modules/handsontable/node_modules/moment/locale/gd.js",
-	"./gl": "./node_modules/handsontable/node_modules/moment/locale/gl.js",
-	"./gl.js": "./node_modules/handsontable/node_modules/moment/locale/gl.js",
-	"./gom-latn": "./node_modules/handsontable/node_modules/moment/locale/gom-latn.js",
-	"./gom-latn.js": "./node_modules/handsontable/node_modules/moment/locale/gom-latn.js",
-	"./gu": "./node_modules/handsontable/node_modules/moment/locale/gu.js",
-	"./gu.js": "./node_modules/handsontable/node_modules/moment/locale/gu.js",
-	"./he": "./node_modules/handsontable/node_modules/moment/locale/he.js",
-	"./he.js": "./node_modules/handsontable/node_modules/moment/locale/he.js",
-	"./hi": "./node_modules/handsontable/node_modules/moment/locale/hi.js",
-	"./hi.js": "./node_modules/handsontable/node_modules/moment/locale/hi.js",
-	"./hr": "./node_modules/handsontable/node_modules/moment/locale/hr.js",
-	"./hr.js": "./node_modules/handsontable/node_modules/moment/locale/hr.js",
-	"./hu": "./node_modules/handsontable/node_modules/moment/locale/hu.js",
-	"./hu.js": "./node_modules/handsontable/node_modules/moment/locale/hu.js",
-	"./hy-am": "./node_modules/handsontable/node_modules/moment/locale/hy-am.js",
-	"./hy-am.js": "./node_modules/handsontable/node_modules/moment/locale/hy-am.js",
-	"./id": "./node_modules/handsontable/node_modules/moment/locale/id.js",
-	"./id.js": "./node_modules/handsontable/node_modules/moment/locale/id.js",
-	"./is": "./node_modules/handsontable/node_modules/moment/locale/is.js",
-	"./is.js": "./node_modules/handsontable/node_modules/moment/locale/is.js",
-	"./it": "./node_modules/handsontable/node_modules/moment/locale/it.js",
-	"./it-ch": "./node_modules/handsontable/node_modules/moment/locale/it-ch.js",
-	"./it-ch.js": "./node_modules/handsontable/node_modules/moment/locale/it-ch.js",
-	"./it.js": "./node_modules/handsontable/node_modules/moment/locale/it.js",
-	"./ja": "./node_modules/handsontable/node_modules/moment/locale/ja.js",
-	"./ja.js": "./node_modules/handsontable/node_modules/moment/locale/ja.js",
-	"./jv": "./node_modules/handsontable/node_modules/moment/locale/jv.js",
-	"./jv.js": "./node_modules/handsontable/node_modules/moment/locale/jv.js",
-	"./ka": "./node_modules/handsontable/node_modules/moment/locale/ka.js",
-	"./ka.js": "./node_modules/handsontable/node_modules/moment/locale/ka.js",
-	"./kk": "./node_modules/handsontable/node_modules/moment/locale/kk.js",
-	"./kk.js": "./node_modules/handsontable/node_modules/moment/locale/kk.js",
-	"./km": "./node_modules/handsontable/node_modules/moment/locale/km.js",
-	"./km.js": "./node_modules/handsontable/node_modules/moment/locale/km.js",
-	"./kn": "./node_modules/handsontable/node_modules/moment/locale/kn.js",
-	"./kn.js": "./node_modules/handsontable/node_modules/moment/locale/kn.js",
-	"./ko": "./node_modules/handsontable/node_modules/moment/locale/ko.js",
-	"./ko.js": "./node_modules/handsontable/node_modules/moment/locale/ko.js",
-	"./ku": "./node_modules/handsontable/node_modules/moment/locale/ku.js",
-	"./ku.js": "./node_modules/handsontable/node_modules/moment/locale/ku.js",
-	"./ky": "./node_modules/handsontable/node_modules/moment/locale/ky.js",
-	"./ky.js": "./node_modules/handsontable/node_modules/moment/locale/ky.js",
-	"./lb": "./node_modules/handsontable/node_modules/moment/locale/lb.js",
-	"./lb.js": "./node_modules/handsontable/node_modules/moment/locale/lb.js",
-	"./lo": "./node_modules/handsontable/node_modules/moment/locale/lo.js",
-	"./lo.js": "./node_modules/handsontable/node_modules/moment/locale/lo.js",
-	"./lt": "./node_modules/handsontable/node_modules/moment/locale/lt.js",
-	"./lt.js": "./node_modules/handsontable/node_modules/moment/locale/lt.js",
-	"./lv": "./node_modules/handsontable/node_modules/moment/locale/lv.js",
-	"./lv.js": "./node_modules/handsontable/node_modules/moment/locale/lv.js",
-	"./me": "./node_modules/handsontable/node_modules/moment/locale/me.js",
-	"./me.js": "./node_modules/handsontable/node_modules/moment/locale/me.js",
-	"./mi": "./node_modules/handsontable/node_modules/moment/locale/mi.js",
-	"./mi.js": "./node_modules/handsontable/node_modules/moment/locale/mi.js",
-	"./mk": "./node_modules/handsontable/node_modules/moment/locale/mk.js",
-	"./mk.js": "./node_modules/handsontable/node_modules/moment/locale/mk.js",
-	"./ml": "./node_modules/handsontable/node_modules/moment/locale/ml.js",
-	"./ml.js": "./node_modules/handsontable/node_modules/moment/locale/ml.js",
-	"./mn": "./node_modules/handsontable/node_modules/moment/locale/mn.js",
-	"./mn.js": "./node_modules/handsontable/node_modules/moment/locale/mn.js",
-	"./mr": "./node_modules/handsontable/node_modules/moment/locale/mr.js",
-	"./mr.js": "./node_modules/handsontable/node_modules/moment/locale/mr.js",
-	"./ms": "./node_modules/handsontable/node_modules/moment/locale/ms.js",
-	"./ms-my": "./node_modules/handsontable/node_modules/moment/locale/ms-my.js",
-	"./ms-my.js": "./node_modules/handsontable/node_modules/moment/locale/ms-my.js",
-	"./ms.js": "./node_modules/handsontable/node_modules/moment/locale/ms.js",
-	"./mt": "./node_modules/handsontable/node_modules/moment/locale/mt.js",
-	"./mt.js": "./node_modules/handsontable/node_modules/moment/locale/mt.js",
-	"./my": "./node_modules/handsontable/node_modules/moment/locale/my.js",
-	"./my.js": "./node_modules/handsontable/node_modules/moment/locale/my.js",
-	"./nb": "./node_modules/handsontable/node_modules/moment/locale/nb.js",
-	"./nb.js": "./node_modules/handsontable/node_modules/moment/locale/nb.js",
-	"./ne": "./node_modules/handsontable/node_modules/moment/locale/ne.js",
-	"./ne.js": "./node_modules/handsontable/node_modules/moment/locale/ne.js",
-	"./nl": "./node_modules/handsontable/node_modules/moment/locale/nl.js",
-	"./nl-be": "./node_modules/handsontable/node_modules/moment/locale/nl-be.js",
-	"./nl-be.js": "./node_modules/handsontable/node_modules/moment/locale/nl-be.js",
-	"./nl.js": "./node_modules/handsontable/node_modules/moment/locale/nl.js",
-	"./nn": "./node_modules/handsontable/node_modules/moment/locale/nn.js",
-	"./nn.js": "./node_modules/handsontable/node_modules/moment/locale/nn.js",
-	"./pa-in": "./node_modules/handsontable/node_modules/moment/locale/pa-in.js",
-	"./pa-in.js": "./node_modules/handsontable/node_modules/moment/locale/pa-in.js",
-	"./pl": "./node_modules/handsontable/node_modules/moment/locale/pl.js",
-	"./pl.js": "./node_modules/handsontable/node_modules/moment/locale/pl.js",
-	"./pt": "./node_modules/handsontable/node_modules/moment/locale/pt.js",
-	"./pt-br": "./node_modules/handsontable/node_modules/moment/locale/pt-br.js",
-	"./pt-br.js": "./node_modules/handsontable/node_modules/moment/locale/pt-br.js",
-	"./pt.js": "./node_modules/handsontable/node_modules/moment/locale/pt.js",
-	"./ro": "./node_modules/handsontable/node_modules/moment/locale/ro.js",
-	"./ro.js": "./node_modules/handsontable/node_modules/moment/locale/ro.js",
-	"./ru": "./node_modules/handsontable/node_modules/moment/locale/ru.js",
-	"./ru.js": "./node_modules/handsontable/node_modules/moment/locale/ru.js",
-	"./sd": "./node_modules/handsontable/node_modules/moment/locale/sd.js",
-	"./sd.js": "./node_modules/handsontable/node_modules/moment/locale/sd.js",
-	"./se": "./node_modules/handsontable/node_modules/moment/locale/se.js",
-	"./se.js": "./node_modules/handsontable/node_modules/moment/locale/se.js",
-	"./si": "./node_modules/handsontable/node_modules/moment/locale/si.js",
-	"./si.js": "./node_modules/handsontable/node_modules/moment/locale/si.js",
-	"./sk": "./node_modules/handsontable/node_modules/moment/locale/sk.js",
-	"./sk.js": "./node_modules/handsontable/node_modules/moment/locale/sk.js",
-	"./sl": "./node_modules/handsontable/node_modules/moment/locale/sl.js",
-	"./sl.js": "./node_modules/handsontable/node_modules/moment/locale/sl.js",
-	"./sq": "./node_modules/handsontable/node_modules/moment/locale/sq.js",
-	"./sq.js": "./node_modules/handsontable/node_modules/moment/locale/sq.js",
-	"./sr": "./node_modules/handsontable/node_modules/moment/locale/sr.js",
-	"./sr-cyrl": "./node_modules/handsontable/node_modules/moment/locale/sr-cyrl.js",
-	"./sr-cyrl.js": "./node_modules/handsontable/node_modules/moment/locale/sr-cyrl.js",
-	"./sr.js": "./node_modules/handsontable/node_modules/moment/locale/sr.js",
-	"./ss": "./node_modules/handsontable/node_modules/moment/locale/ss.js",
-	"./ss.js": "./node_modules/handsontable/node_modules/moment/locale/ss.js",
-	"./sv": "./node_modules/handsontable/node_modules/moment/locale/sv.js",
-	"./sv.js": "./node_modules/handsontable/node_modules/moment/locale/sv.js",
-	"./sw": "./node_modules/handsontable/node_modules/moment/locale/sw.js",
-	"./sw.js": "./node_modules/handsontable/node_modules/moment/locale/sw.js",
-	"./ta": "./node_modules/handsontable/node_modules/moment/locale/ta.js",
-	"./ta.js": "./node_modules/handsontable/node_modules/moment/locale/ta.js",
-	"./te": "./node_modules/handsontable/node_modules/moment/locale/te.js",
-	"./te.js": "./node_modules/handsontable/node_modules/moment/locale/te.js",
-	"./tet": "./node_modules/handsontable/node_modules/moment/locale/tet.js",
-	"./tet.js": "./node_modules/handsontable/node_modules/moment/locale/tet.js",
-	"./tg": "./node_modules/handsontable/node_modules/moment/locale/tg.js",
-	"./tg.js": "./node_modules/handsontable/node_modules/moment/locale/tg.js",
-	"./th": "./node_modules/handsontable/node_modules/moment/locale/th.js",
-	"./th.js": "./node_modules/handsontable/node_modules/moment/locale/th.js",
-	"./tl-ph": "./node_modules/handsontable/node_modules/moment/locale/tl-ph.js",
-	"./tl-ph.js": "./node_modules/handsontable/node_modules/moment/locale/tl-ph.js",
-	"./tlh": "./node_modules/handsontable/node_modules/moment/locale/tlh.js",
-	"./tlh.js": "./node_modules/handsontable/node_modules/moment/locale/tlh.js",
-	"./tr": "./node_modules/handsontable/node_modules/moment/locale/tr.js",
-	"./tr.js": "./node_modules/handsontable/node_modules/moment/locale/tr.js",
-	"./tzl": "./node_modules/handsontable/node_modules/moment/locale/tzl.js",
-	"./tzl.js": "./node_modules/handsontable/node_modules/moment/locale/tzl.js",
-	"./tzm": "./node_modules/handsontable/node_modules/moment/locale/tzm.js",
-	"./tzm-latn": "./node_modules/handsontable/node_modules/moment/locale/tzm-latn.js",
-	"./tzm-latn.js": "./node_modules/handsontable/node_modules/moment/locale/tzm-latn.js",
-	"./tzm.js": "./node_modules/handsontable/node_modules/moment/locale/tzm.js",
-	"./ug-cn": "./node_modules/handsontable/node_modules/moment/locale/ug-cn.js",
-	"./ug-cn.js": "./node_modules/handsontable/node_modules/moment/locale/ug-cn.js",
-	"./uk": "./node_modules/handsontable/node_modules/moment/locale/uk.js",
-	"./uk.js": "./node_modules/handsontable/node_modules/moment/locale/uk.js",
-	"./ur": "./node_modules/handsontable/node_modules/moment/locale/ur.js",
-	"./ur.js": "./node_modules/handsontable/node_modules/moment/locale/ur.js",
-	"./uz": "./node_modules/handsontable/node_modules/moment/locale/uz.js",
-	"./uz-latn": "./node_modules/handsontable/node_modules/moment/locale/uz-latn.js",
-	"./uz-latn.js": "./node_modules/handsontable/node_modules/moment/locale/uz-latn.js",
-	"./uz.js": "./node_modules/handsontable/node_modules/moment/locale/uz.js",
-	"./vi": "./node_modules/handsontable/node_modules/moment/locale/vi.js",
-	"./vi.js": "./node_modules/handsontable/node_modules/moment/locale/vi.js",
-	"./x-pseudo": "./node_modules/handsontable/node_modules/moment/locale/x-pseudo.js",
-	"./x-pseudo.js": "./node_modules/handsontable/node_modules/moment/locale/x-pseudo.js",
-	"./yo": "./node_modules/handsontable/node_modules/moment/locale/yo.js",
-	"./yo.js": "./node_modules/handsontable/node_modules/moment/locale/yo.js",
-	"./zh-cn": "./node_modules/handsontable/node_modules/moment/locale/zh-cn.js",
-	"./zh-cn.js": "./node_modules/handsontable/node_modules/moment/locale/zh-cn.js",
-	"./zh-hk": "./node_modules/handsontable/node_modules/moment/locale/zh-hk.js",
-	"./zh-hk.js": "./node_modules/handsontable/node_modules/moment/locale/zh-hk.js",
-	"./zh-tw": "./node_modules/handsontable/node_modules/moment/locale/zh-tw.js",
-	"./zh-tw.js": "./node_modules/handsontable/node_modules/moment/locale/zh-tw.js"
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	if(!__webpack_require__.o(map, req)) {
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return map[req];
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = "./node_modules/handsontable/node_modules/moment/locale sync recursive ^\\.\\/.*$";
-
-/***/ }),
-
-/***/ "./node_modules/moment/locale sync recursive ^\\.\\/.*$":
-/*!**************************************************!*\
-  !*** ./node_modules/moment/locale sync ^\.\/.*$ ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"./af": "./node_modules/moment/locale/af.js",
-	"./af.js": "./node_modules/moment/locale/af.js",
-	"./ar": "./node_modules/moment/locale/ar.js",
-	"./ar-dz": "./node_modules/moment/locale/ar-dz.js",
-	"./ar-dz.js": "./node_modules/moment/locale/ar-dz.js",
-	"./ar-kw": "./node_modules/moment/locale/ar-kw.js",
-	"./ar-kw.js": "./node_modules/moment/locale/ar-kw.js",
-	"./ar-ly": "./node_modules/moment/locale/ar-ly.js",
-	"./ar-ly.js": "./node_modules/moment/locale/ar-ly.js",
-	"./ar-ma": "./node_modules/moment/locale/ar-ma.js",
-	"./ar-ma.js": "./node_modules/moment/locale/ar-ma.js",
-	"./ar-sa": "./node_modules/moment/locale/ar-sa.js",
-	"./ar-sa.js": "./node_modules/moment/locale/ar-sa.js",
-	"./ar-tn": "./node_modules/moment/locale/ar-tn.js",
-	"./ar-tn.js": "./node_modules/moment/locale/ar-tn.js",
-	"./ar.js": "./node_modules/moment/locale/ar.js",
-	"./az": "./node_modules/moment/locale/az.js",
-	"./az.js": "./node_modules/moment/locale/az.js",
-	"./be": "./node_modules/moment/locale/be.js",
-	"./be.js": "./node_modules/moment/locale/be.js",
-	"./bg": "./node_modules/moment/locale/bg.js",
-	"./bg.js": "./node_modules/moment/locale/bg.js",
-	"./bm": "./node_modules/moment/locale/bm.js",
-	"./bm.js": "./node_modules/moment/locale/bm.js",
-	"./bn": "./node_modules/moment/locale/bn.js",
-	"./bn-bd": "./node_modules/moment/locale/bn-bd.js",
-	"./bn-bd.js": "./node_modules/moment/locale/bn-bd.js",
-	"./bn.js": "./node_modules/moment/locale/bn.js",
-	"./bo": "./node_modules/moment/locale/bo.js",
-	"./bo.js": "./node_modules/moment/locale/bo.js",
-	"./br": "./node_modules/moment/locale/br.js",
-	"./br.js": "./node_modules/moment/locale/br.js",
-	"./bs": "./node_modules/moment/locale/bs.js",
-	"./bs.js": "./node_modules/moment/locale/bs.js",
-	"./ca": "./node_modules/moment/locale/ca.js",
-	"./ca.js": "./node_modules/moment/locale/ca.js",
-	"./cs": "./node_modules/moment/locale/cs.js",
-	"./cs.js": "./node_modules/moment/locale/cs.js",
-	"./cv": "./node_modules/moment/locale/cv.js",
-	"./cv.js": "./node_modules/moment/locale/cv.js",
-	"./cy": "./node_modules/moment/locale/cy.js",
-	"./cy.js": "./node_modules/moment/locale/cy.js",
-	"./da": "./node_modules/moment/locale/da.js",
-	"./da.js": "./node_modules/moment/locale/da.js",
-	"./de": "./node_modules/moment/locale/de.js",
-	"./de-at": "./node_modules/moment/locale/de-at.js",
-	"./de-at.js": "./node_modules/moment/locale/de-at.js",
-	"./de-ch": "./node_modules/moment/locale/de-ch.js",
-	"./de-ch.js": "./node_modules/moment/locale/de-ch.js",
-	"./de.js": "./node_modules/moment/locale/de.js",
-	"./dv": "./node_modules/moment/locale/dv.js",
-	"./dv.js": "./node_modules/moment/locale/dv.js",
-	"./el": "./node_modules/moment/locale/el.js",
-	"./el.js": "./node_modules/moment/locale/el.js",
-	"./en-au": "./node_modules/moment/locale/en-au.js",
-	"./en-au.js": "./node_modules/moment/locale/en-au.js",
-	"./en-ca": "./node_modules/moment/locale/en-ca.js",
-	"./en-ca.js": "./node_modules/moment/locale/en-ca.js",
-	"./en-gb": "./node_modules/moment/locale/en-gb.js",
-	"./en-gb.js": "./node_modules/moment/locale/en-gb.js",
-	"./en-ie": "./node_modules/moment/locale/en-ie.js",
-	"./en-ie.js": "./node_modules/moment/locale/en-ie.js",
-	"./en-il": "./node_modules/moment/locale/en-il.js",
-	"./en-il.js": "./node_modules/moment/locale/en-il.js",
-	"./en-in": "./node_modules/moment/locale/en-in.js",
-	"./en-in.js": "./node_modules/moment/locale/en-in.js",
-	"./en-nz": "./node_modules/moment/locale/en-nz.js",
-	"./en-nz.js": "./node_modules/moment/locale/en-nz.js",
-	"./en-sg": "./node_modules/moment/locale/en-sg.js",
-	"./en-sg.js": "./node_modules/moment/locale/en-sg.js",
-	"./eo": "./node_modules/moment/locale/eo.js",
-	"./eo.js": "./node_modules/moment/locale/eo.js",
-	"./es": "./node_modules/moment/locale/es.js",
-	"./es-do": "./node_modules/moment/locale/es-do.js",
-	"./es-do.js": "./node_modules/moment/locale/es-do.js",
-	"./es-mx": "./node_modules/moment/locale/es-mx.js",
-	"./es-mx.js": "./node_modules/moment/locale/es-mx.js",
-	"./es-us": "./node_modules/moment/locale/es-us.js",
-	"./es-us.js": "./node_modules/moment/locale/es-us.js",
-	"./es.js": "./node_modules/moment/locale/es.js",
-	"./et": "./node_modules/moment/locale/et.js",
-	"./et.js": "./node_modules/moment/locale/et.js",
-	"./eu": "./node_modules/moment/locale/eu.js",
-	"./eu.js": "./node_modules/moment/locale/eu.js",
-	"./fa": "./node_modules/moment/locale/fa.js",
-	"./fa.js": "./node_modules/moment/locale/fa.js",
-	"./fi": "./node_modules/moment/locale/fi.js",
-	"./fi.js": "./node_modules/moment/locale/fi.js",
-	"./fil": "./node_modules/moment/locale/fil.js",
-	"./fil.js": "./node_modules/moment/locale/fil.js",
-	"./fo": "./node_modules/moment/locale/fo.js",
-	"./fo.js": "./node_modules/moment/locale/fo.js",
-	"./fr": "./node_modules/moment/locale/fr.js",
-	"./fr-ca": "./node_modules/moment/locale/fr-ca.js",
-	"./fr-ca.js": "./node_modules/moment/locale/fr-ca.js",
-	"./fr-ch": "./node_modules/moment/locale/fr-ch.js",
-	"./fr-ch.js": "./node_modules/moment/locale/fr-ch.js",
-	"./fr.js": "./node_modules/moment/locale/fr.js",
-	"./fy": "./node_modules/moment/locale/fy.js",
-	"./fy.js": "./node_modules/moment/locale/fy.js",
-	"./ga": "./node_modules/moment/locale/ga.js",
-	"./ga.js": "./node_modules/moment/locale/ga.js",
-	"./gd": "./node_modules/moment/locale/gd.js",
-	"./gd.js": "./node_modules/moment/locale/gd.js",
-	"./gl": "./node_modules/moment/locale/gl.js",
-	"./gl.js": "./node_modules/moment/locale/gl.js",
-	"./gom-deva": "./node_modules/moment/locale/gom-deva.js",
-	"./gom-deva.js": "./node_modules/moment/locale/gom-deva.js",
-	"./gom-latn": "./node_modules/moment/locale/gom-latn.js",
-	"./gom-latn.js": "./node_modules/moment/locale/gom-latn.js",
-	"./gu": "./node_modules/moment/locale/gu.js",
-	"./gu.js": "./node_modules/moment/locale/gu.js",
-	"./he": "./node_modules/moment/locale/he.js",
-	"./he.js": "./node_modules/moment/locale/he.js",
-	"./hi": "./node_modules/moment/locale/hi.js",
-	"./hi.js": "./node_modules/moment/locale/hi.js",
-	"./hr": "./node_modules/moment/locale/hr.js",
-	"./hr.js": "./node_modules/moment/locale/hr.js",
-	"./hu": "./node_modules/moment/locale/hu.js",
-	"./hu.js": "./node_modules/moment/locale/hu.js",
-	"./hy-am": "./node_modules/moment/locale/hy-am.js",
-	"./hy-am.js": "./node_modules/moment/locale/hy-am.js",
-	"./id": "./node_modules/moment/locale/id.js",
-	"./id.js": "./node_modules/moment/locale/id.js",
-	"./is": "./node_modules/moment/locale/is.js",
-	"./is.js": "./node_modules/moment/locale/is.js",
-	"./it": "./node_modules/moment/locale/it.js",
-	"./it-ch": "./node_modules/moment/locale/it-ch.js",
-	"./it-ch.js": "./node_modules/moment/locale/it-ch.js",
-	"./it.js": "./node_modules/moment/locale/it.js",
-	"./ja": "./node_modules/moment/locale/ja.js",
-	"./ja.js": "./node_modules/moment/locale/ja.js",
-	"./jv": "./node_modules/moment/locale/jv.js",
-	"./jv.js": "./node_modules/moment/locale/jv.js",
-	"./ka": "./node_modules/moment/locale/ka.js",
-	"./ka.js": "./node_modules/moment/locale/ka.js",
-	"./kk": "./node_modules/moment/locale/kk.js",
-	"./kk.js": "./node_modules/moment/locale/kk.js",
-	"./km": "./node_modules/moment/locale/km.js",
-	"./km.js": "./node_modules/moment/locale/km.js",
-	"./kn": "./node_modules/moment/locale/kn.js",
-	"./kn.js": "./node_modules/moment/locale/kn.js",
-	"./ko": "./node_modules/moment/locale/ko.js",
-	"./ko.js": "./node_modules/moment/locale/ko.js",
-	"./ku": "./node_modules/moment/locale/ku.js",
-	"./ku.js": "./node_modules/moment/locale/ku.js",
-	"./ky": "./node_modules/moment/locale/ky.js",
-	"./ky.js": "./node_modules/moment/locale/ky.js",
-	"./lb": "./node_modules/moment/locale/lb.js",
-	"./lb.js": "./node_modules/moment/locale/lb.js",
-	"./lo": "./node_modules/moment/locale/lo.js",
-	"./lo.js": "./node_modules/moment/locale/lo.js",
-	"./lt": "./node_modules/moment/locale/lt.js",
-	"./lt.js": "./node_modules/moment/locale/lt.js",
-	"./lv": "./node_modules/moment/locale/lv.js",
-	"./lv.js": "./node_modules/moment/locale/lv.js",
-	"./me": "./node_modules/moment/locale/me.js",
-	"./me.js": "./node_modules/moment/locale/me.js",
-	"./mi": "./node_modules/moment/locale/mi.js",
-	"./mi.js": "./node_modules/moment/locale/mi.js",
-	"./mk": "./node_modules/moment/locale/mk.js",
-	"./mk.js": "./node_modules/moment/locale/mk.js",
-	"./ml": "./node_modules/moment/locale/ml.js",
-	"./ml.js": "./node_modules/moment/locale/ml.js",
-	"./mn": "./node_modules/moment/locale/mn.js",
-	"./mn.js": "./node_modules/moment/locale/mn.js",
-	"./mr": "./node_modules/moment/locale/mr.js",
-	"./mr.js": "./node_modules/moment/locale/mr.js",
-	"./ms": "./node_modules/moment/locale/ms.js",
-	"./ms-my": "./node_modules/moment/locale/ms-my.js",
-	"./ms-my.js": "./node_modules/moment/locale/ms-my.js",
-	"./ms.js": "./node_modules/moment/locale/ms.js",
-	"./mt": "./node_modules/moment/locale/mt.js",
-	"./mt.js": "./node_modules/moment/locale/mt.js",
-	"./my": "./node_modules/moment/locale/my.js",
-	"./my.js": "./node_modules/moment/locale/my.js",
-	"./nb": "./node_modules/moment/locale/nb.js",
-	"./nb.js": "./node_modules/moment/locale/nb.js",
-	"./ne": "./node_modules/moment/locale/ne.js",
-	"./ne.js": "./node_modules/moment/locale/ne.js",
-	"./nl": "./node_modules/moment/locale/nl.js",
-	"./nl-be": "./node_modules/moment/locale/nl-be.js",
-	"./nl-be.js": "./node_modules/moment/locale/nl-be.js",
-	"./nl.js": "./node_modules/moment/locale/nl.js",
-	"./nn": "./node_modules/moment/locale/nn.js",
-	"./nn.js": "./node_modules/moment/locale/nn.js",
-	"./oc-lnc": "./node_modules/moment/locale/oc-lnc.js",
-	"./oc-lnc.js": "./node_modules/moment/locale/oc-lnc.js",
-	"./pa-in": "./node_modules/moment/locale/pa-in.js",
-	"./pa-in.js": "./node_modules/moment/locale/pa-in.js",
-	"./pl": "./node_modules/moment/locale/pl.js",
-	"./pl.js": "./node_modules/moment/locale/pl.js",
-	"./pt": "./node_modules/moment/locale/pt.js",
-	"./pt-br": "./node_modules/moment/locale/pt-br.js",
-	"./pt-br.js": "./node_modules/moment/locale/pt-br.js",
-	"./pt.js": "./node_modules/moment/locale/pt.js",
-	"./ro": "./node_modules/moment/locale/ro.js",
-	"./ro.js": "./node_modules/moment/locale/ro.js",
-	"./ru": "./node_modules/moment/locale/ru.js",
-	"./ru.js": "./node_modules/moment/locale/ru.js",
-	"./sd": "./node_modules/moment/locale/sd.js",
-	"./sd.js": "./node_modules/moment/locale/sd.js",
-	"./se": "./node_modules/moment/locale/se.js",
-	"./se.js": "./node_modules/moment/locale/se.js",
-	"./si": "./node_modules/moment/locale/si.js",
-	"./si.js": "./node_modules/moment/locale/si.js",
-	"./sk": "./node_modules/moment/locale/sk.js",
-	"./sk.js": "./node_modules/moment/locale/sk.js",
-	"./sl": "./node_modules/moment/locale/sl.js",
-	"./sl.js": "./node_modules/moment/locale/sl.js",
-	"./sq": "./node_modules/moment/locale/sq.js",
-	"./sq.js": "./node_modules/moment/locale/sq.js",
-	"./sr": "./node_modules/moment/locale/sr.js",
-	"./sr-cyrl": "./node_modules/moment/locale/sr-cyrl.js",
-	"./sr-cyrl.js": "./node_modules/moment/locale/sr-cyrl.js",
-	"./sr.js": "./node_modules/moment/locale/sr.js",
-	"./ss": "./node_modules/moment/locale/ss.js",
-	"./ss.js": "./node_modules/moment/locale/ss.js",
-	"./sv": "./node_modules/moment/locale/sv.js",
-	"./sv.js": "./node_modules/moment/locale/sv.js",
-	"./sw": "./node_modules/moment/locale/sw.js",
-	"./sw.js": "./node_modules/moment/locale/sw.js",
-	"./ta": "./node_modules/moment/locale/ta.js",
-	"./ta.js": "./node_modules/moment/locale/ta.js",
-	"./te": "./node_modules/moment/locale/te.js",
-	"./te.js": "./node_modules/moment/locale/te.js",
-	"./tet": "./node_modules/moment/locale/tet.js",
-	"./tet.js": "./node_modules/moment/locale/tet.js",
-	"./tg": "./node_modules/moment/locale/tg.js",
-	"./tg.js": "./node_modules/moment/locale/tg.js",
-	"./th": "./node_modules/moment/locale/th.js",
-	"./th.js": "./node_modules/moment/locale/th.js",
-	"./tk": "./node_modules/moment/locale/tk.js",
-	"./tk.js": "./node_modules/moment/locale/tk.js",
-	"./tl-ph": "./node_modules/moment/locale/tl-ph.js",
-	"./tl-ph.js": "./node_modules/moment/locale/tl-ph.js",
-	"./tlh": "./node_modules/moment/locale/tlh.js",
-	"./tlh.js": "./node_modules/moment/locale/tlh.js",
-	"./tr": "./node_modules/moment/locale/tr.js",
-	"./tr.js": "./node_modules/moment/locale/tr.js",
-	"./tzl": "./node_modules/moment/locale/tzl.js",
-	"./tzl.js": "./node_modules/moment/locale/tzl.js",
-	"./tzm": "./node_modules/moment/locale/tzm.js",
-	"./tzm-latn": "./node_modules/moment/locale/tzm-latn.js",
-	"./tzm-latn.js": "./node_modules/moment/locale/tzm-latn.js",
-	"./tzm.js": "./node_modules/moment/locale/tzm.js",
-	"./ug-cn": "./node_modules/moment/locale/ug-cn.js",
-	"./ug-cn.js": "./node_modules/moment/locale/ug-cn.js",
-	"./uk": "./node_modules/moment/locale/uk.js",
-	"./uk.js": "./node_modules/moment/locale/uk.js",
-	"./ur": "./node_modules/moment/locale/ur.js",
-	"./ur.js": "./node_modules/moment/locale/ur.js",
-	"./uz": "./node_modules/moment/locale/uz.js",
-	"./uz-latn": "./node_modules/moment/locale/uz-latn.js",
-	"./uz-latn.js": "./node_modules/moment/locale/uz-latn.js",
-	"./uz.js": "./node_modules/moment/locale/uz.js",
-	"./vi": "./node_modules/moment/locale/vi.js",
-	"./vi.js": "./node_modules/moment/locale/vi.js",
-	"./x-pseudo": "./node_modules/moment/locale/x-pseudo.js",
-	"./x-pseudo.js": "./node_modules/moment/locale/x-pseudo.js",
-	"./yo": "./node_modules/moment/locale/yo.js",
-	"./yo.js": "./node_modules/moment/locale/yo.js",
-	"./zh-cn": "./node_modules/moment/locale/zh-cn.js",
-	"./zh-cn.js": "./node_modules/moment/locale/zh-cn.js",
-	"./zh-hk": "./node_modules/moment/locale/zh-hk.js",
-	"./zh-hk.js": "./node_modules/moment/locale/zh-hk.js",
-	"./zh-mo": "./node_modules/moment/locale/zh-mo.js",
-	"./zh-mo.js": "./node_modules/moment/locale/zh-mo.js",
-	"./zh-tw": "./node_modules/moment/locale/zh-tw.js",
-	"./zh-tw.js": "./node_modules/moment/locale/zh-tw.js"
-};
-
-
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	if(!__webpack_require__.o(map, req)) {
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return map[req];
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
-
-/***/ }),
-
-/***/ "./src/App.tsx":
-/*!*********************!*\
-  !*** ./src/App.tsx ***!
-  \*********************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
-/* harmony import */ var _component_UserSearchSidebarView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component/UserSearchView */ "./src/component/UserSearchSidebarView.ts");
-/* harmony import */ var _component_ChatSidebarView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component/ChatLogsView */ "./src/component/ChatSidebarView.ts");
-/* harmony import */ var _component_BoardGameSearchSidebarView__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component/BoardGameSearchSidebarView */ "./src/component/BoardGameSearchSidebarView.ts");
-/* harmony import */ var _component_BoardGameView__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component/BoardGameView */ "./src/component/BoardGameView.tsx");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/ScoreSheetController */ "./src/component/ScoreSheetController.ts");
-/* harmony import */ var _component_ScoreSheetView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/ScoreSheetDetailView */ "./src/component/ScoreSheetView.ts");
-/* harmony import */ var _component_ScoreSheetSidebarView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/ScoreSheetsView */ "./src/component/ScoreSheetSidebarView.ts");
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-/* eslint "react/react-in-jsx-scope":"off" */
-
-/* eslint "react/jsx-no-undef":"off" */
-
-
-
-
-
-
-
-
-
-
-
-
-
-var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('app');
-
-var Root = /*#__PURE__*/function (_React$Component) {
-  _inheritsLoose(Root, _React$Component);
-
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  function Root() {
-    var _this;
-
-    // @ts-ignore
-    _this = _React$Component.call(this) || this;
-    _this.state = {
-      isLoggedIn: false,
-      loggedInUserId: -1,
-      boardGames: [],
-      scoreSheet: {
-        room: '',
-        boardGameName: '',
-        sheetLayoutOptions: {},
-        timer: 0,
-        sheetData: {}
-      },
-      stateNames: {
-        users: 'users',
-        boardGames: 'boardGames',
-        scores: 'scores',
-        selectedEntry: 'selectedEntry',
-        recentUserSearches: 'recentUserSearches',
-        bggSearchResults: 'bggSearchResults',
-        scoreSheet: 'scoreSheet'
-      },
-      apis: {
-        login: '/login',
-        graphQL: '/graphql',
-        bggSearchCall: 'query search($queryString: String!) {findBoardGames(query: $queryString) {gameId, name, year}}',
-        bggSearchCallById: {
-          queryString: 'query getDetails($gameId:Int!) {getBoardGameDetails(gameId:$gameId) {gameId,thumb,image,name,description,year, minPlayers, maxPlayers, minPlayTime, maxPlayTime, minAge, designers, artists, publisher, numOfRaters, averageScore, rank, categories}}',
-          resultName: 'getBoardGameDetails'
-        },
-        findUsers: {
-          queryString: 'query {findUsers {id, username}}',
-          resultName: 'findUsers'
-        },
-        addToMyCollection: {
-          queryString: 'mutation addBoardGame($userId: Int!, $boardGame: BoardGameDetailInput!){addToMyCollection(userId: $userId, boardGame: $boardGame) {id,gameId}}',
-          resultName: 'addToMyCollection'
-        },
-        removeFromMyCollection: {
-          queryString: 'mutation removeBoardGame($userId: Int!, $boardGameId: Int!) {removeFromMyCollection(userId: $userId, boardGameId: $boardGameId) {result}}',
-          resultName: 'removeFromMyCollection'
-        },
-        getMyBoardGameCollection: {
-          queryString: 'query myCollection($userId: Int!) {getMyBoardGameCollection(userId: $userId) {id,gameId,thumb,image,name,description,year, minPlayers, maxPlayers, minPlayTime, maxPlayTime, minAge, designers, artists, publisher, numOfRaters, averageScore, rank, categories,scoresheets {id, player1, score1, player2, score2, player3, score3, player4, score4, player5, score5, player6, score6, player7, score7, createdOn}}}',
-          resultName: 'getMyBoardGameCollection'
-        },
-        addScoreSheetToBoardGame: {
-          queryString: 'mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}}',
-          resultName: 'addScoreSheetToBoardGame'
-        },
-        removeScoreSheet: {
-          queryString: 'mutation removeSheet($sheetId: String!) {removeScoreSheet(sheetId: $sheetId) {result}}',
-          resultName: 'removeFromMyCollection'
-        }
-      },
-      ui: {
-        draggable: {
-          draggableDataKeyId: 'text/plain',
-          draggedType: 'draggedType',
-          draggedFrom: 'draggedFrom',
-          draggedTypeUser: 'user',
-          draggedTypeBoardGame: 'boardGame',
-          draggedFromUserSearch: 'userSearch',
-          draggedFromBoardGameSearch: 'boardGameSearch'
-        },
-        alert: {
-          modalId: "alert",
-          titleId: "alert-title",
-          contentId: "alert-content",
-          cancelButtonId: "alert-cancel",
-          confirmButtonId: "alert-confirm",
-          closeButtonId: "alert-close",
-          hideClass: "d-none",
-          showClass: "d-block"
-        },
-        navigation: {
-          showMyCollection: 'navigationItemMyCollection',
-          boardGameSearchId: 'navigationItemBoardGameSearch',
-          userSearchId: 'navigationItemUserSearch',
-          chatId: 'navigationItemChat',
-          showScoreSheet: 'navigationItemScoreSheet'
-        },
-        chatSideBar: {
-          dom: {
-            sideBarId: 'chatSideBar',
-            resultsId: 'chatLogs',
-            resultsElementType: 'a',
-            resultsElementAttributes: [['href', '#']],
-            resultsClasses: 'list-group-item my-list-item truncate-comment list-group-item-action',
-            resultDataKeyId: 'room',
-            resultLegacyDataKeyId: 'room',
-            resultDataSourceId: 'chatLogs',
-            modifierClassNormal: '',
-            modifierClassInactive: 'list-group-item-dark',
-            modifierClassActive: 'list-group-item-primary',
-            modifierClassWarning: '',
-            iconNormal: '',
-            iconInactive: '',
-            iconActive: '',
-            iconWarning: '',
-            isDraggable: false,
-            isClickable: true,
-            isDeleteable: true,
-            deleteButtonClasses: 'btn btn-circle bg-warning btn-sm',
-            deleteButtonText: '',
-            deleteButtonIconClasses: 'text-black fas fa-sign-out-alt',
-            hasBadge: true,
-            resultContentDivClasses: 'd-flex w-100 justify-content-between',
-            resultContentTextElementType: 'span',
-            resultContentTextClasses: 'mb-1',
-            badgeElementType: 'span',
-            badgeElementAttributes: [['style', 'font-size:12pt']],
-            badgeClasses: 'badge badge-pill badge-primary mr-1',
-            newFormId: "newMessage",
-            commentId: "message",
-            submitCommentId: "submitMessage",
-            chatLogId: 'chatLog',
-            chatLogRoomId: 'chatLogRoom',
-            leaveChatId: 'leaveChat',
-            chatFastSearchUserNames: 'chatFastSearchUserNames'
-          }
-        },
-        userSearchSideBar: {
-          dom: {
-            sideBarId: 'userSearchSideBar',
-            resultsId: 'recentUserSearches',
-            favouriteUsersId: 'favouriteUsers',
-            blockedUsersId: 'blockedUsers',
-            favouriteUsersDropZone: 'favouriteUsersDropZone',
-            blockedUsersDropZone: 'blockedUsersDropZone',
-            resultsElementType: 'a',
-            resultsElementAttributes: [['href', '#']],
-            resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-            resultDataKeyId: 'user-id',
-            resultLegacyDataKeyId: 'legacy-user-id',
-            resultDataSourceId: 'data-source',
-            resultDataSourceValue: 'recentUserSearches',
-            resultDataSourceFavUsers: 'favouriteUsers',
-            resultDataSourceBlockedUsers: 'blockedUsers',
-            modifierClassNormal: 'list-group-item-primary',
-            modifierClassInactive: 'list-group-item-light',
-            modifierClassActive: 'list-group-item-info',
-            modifierClassWarning: 'list-group-item-danger',
-            iconNormal: '   <i class="fas fa-comment"></i>',
-            iconInactive: '   <i class="fas fa-comment"></i>',
-            iconActive: '   <i class="fas fa-heart"></i>',
-            iconWarning: '  <i class="fas fa-exclamation-circle"></i>',
-            resultContentDivClasses: 'd-flex w-100 justify-content-between',
-            resultContentTextElementType: 'span',
-            resultContentTextClasses: 'mb-1',
-            isDraggable: true,
-            isClickable: true,
-            isDeleteable: true,
-            deleteButtonClasses: 'btn bg-danger text-white btn-circle btn-sm',
-            deleteButtonText: '',
-            deleteButtonIconClasses: 'fas fa-trash-alt',
-            extra: {
-              fastSearchInputId: 'fastSearchUserNames'
-            },
-            extraAction1Classes: 'btn bg-info text-white btn-circle btn-sm mr-1',
-            extraAction1Text: '',
-            extraAction1IconClasses: 'fas fa-user-plus',
-            extraAction2Classes: 'btn bg-warning text-white btn-circle btn-sm mr-1',
-            extraAction2Text: '',
-            extraAction2IconClasses: 'fas fa-user-slash'
-          }
-        },
-        boardGameSearchSideBar: {
-          dom: {
-            sideBarId: 'boardGameSearchSidebar',
-            resultsId: 'bggSearchResults',
-            resultsElementType: 'a',
-            resultsElementAttributes: [['href', '#']],
-            resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-            resultDataKeyId: 'bgg-id',
-            resultLegacyDataKeyId: 'bgg-id',
-            resultDataSourceId: 'data-source',
-            resultDataSourceValue: 'bggSearch',
-            modifierClassNormal: 'list-group-item-primary',
-            modifierClassInactive: 'list-group-item-light',
-            modifierClassActive: 'list-group-item-info',
-            modifierClassWarning: 'list-group-item-danger',
-            iconNormal: '   <i class="fas fa-dice"></i>',
-            iconInactive: '   <i class="fas fa-dice"></i>',
-            iconActive: '   <i class="fas fa-dice"></i>',
-            iconWarning: '  <i class="fas fa-dice"></i>',
-            resultContentDivClasses: 'd-flex w-100 justify-content-between',
-            resultContentTextElementType: 'span',
-            resultContentTextClasses: 'mb-1',
-            isDraggable: true,
-            isClickable: true,
-            formId: 'bggSearch',
-            queryId: 'queryText',
-            buttonId: 'bggSearchButton'
-          }
-        },
-        scoreSheetSideBar: {
-          dom: {
-            sideBarId: 'scoreSheetSidebar',
-            resultsId: 'scoreSheets',
-            resultsElementType: 'div',
-            resultsElementAttributes: [],
-            resultsClasses: 'text-white bg-info col-sm-6 col-md-3 col-lg-2 score-card',
-            resultDataKeyId: 'bgg-id',
-            resultLegacyDataKeyId: 'bgg-id',
-            resultDataSourceId: 'data-source',
-            resultDataSourceValue: 'scoreSheet',
-            modifierClassNormal: '',
-            modifierClassInactive: '',
-            modifierClassActive: '',
-            modifierClassWarning: '',
-            iconNormal: ' ',
-            iconInactive: ' ',
-            iconActive: ' ',
-            iconWarning: ' ',
-            isDraggable: false,
-            isClickable: false,
-            isDeleteable: true,
-            deleteButtonClasses: 'btn btn-rounded btn-warning ml-6 mt-4',
-            deleteButtonText: 'Delete&nbsp;',
-            deleteButtonIconClasses: 'fas fa-trash-alt',
-            resultContentDivClasses: 'card-img-overlay',
-            resultContentTextElementType: 'div',
-            resultContentTextClasses: 'ml-2',
-            hasBackgroundImage: true,
-            imgElementType: 'img',
-            imgClasses: 'score-card-img'
-          }
-        },
-        scoreSheet: {
-          dom: {
-            dropZone: "scoreSheetZone",
-            boardGame: "selectedBoardGame",
-            startStopTimer: "startStopTimer",
-            timer: "timerDisplay",
-            end: "leaveScoreSheet",
-            scoreSheet: "scoreSheet",
-            iconStart: "<i class='fas fa-hourglass-start'></i>",
-            iconInProgress: "<i class='fas fa-hourglass-half'></i>",
-            iconEnd: "<i class='fas fa-hourglass-end'></i>",
-            iconLeave: "<i class='fas fa-sign-out-alt'></i>",
-            ssFastSearchUserNames: 'ssFastSearchUserNames',
-            webrtc: 'webrtc'
-          }
-        }
-      },
-      uiPrefs: {
-        navigation: {},
-        blogEntry: {},
-        userSearchSideBar: {
-          view: {
-            location: 'left',
-            expandedSize: '35%'
-          }
-        },
-        boardGameSearchSideBar: {
-          view: {
-            location: 'left',
-            expandedSize: '35%'
-          }
-        },
-        chatSideBar: {
-          view: {
-            location: 'right',
-            expandedSize: '50%'
-          }
-        },
-        scoreSheetSideBar: {
-          view: {
-            location: 'bottom',
-            expandedSize: '30%'
-          }
-        }
-      },
-      controller: {
-        events: {
-          boardGames: {
-            eventDataKeyId: 'board-game-id'
-          }
-        },
-        dataLimit: {
-          recentUserSearches: 10
-        }
-      }
-    }; // event handlers
-
-    _this.cancelDelete = _this.cancelDelete.bind(_assertThisInitialized(_this));
-    _this.confirmDelete = _this.confirmDelete.bind(_assertThisInitialized(_this));
-    _this.handleDeleteBoardGame = _this.handleDeleteBoardGame.bind(_assertThisInitialized(_this));
-    _this.handleShowUserSearch = _this.handleShowUserSearch.bind(_assertThisInitialized(_this));
-    _this.handleShowChat = _this.handleShowChat.bind(_assertThisInitialized(_this));
-    _this.handleShowBGGSearch = _this.handleShowBGGSearch.bind(_assertThisInitialized(_this));
-    _this.handleDragOver = _this.handleDragOver.bind(_assertThisInitialized(_this));
-    _this.handleDrop = _this.handleDrop.bind(_assertThisInitialized(_this));
-    _this.handleShowCollection = _this.handleShowCollection.bind(_assertThisInitialized(_this));
-    _this.handleShowScoreSheet = _this.handleShowScoreSheet.bind(_assertThisInitialized(_this));
-    _this.handleStartScoreSheet = _this.handleStartScoreSheet.bind(_assertThisInitialized(_this));
-    _this.handleShowScores = _this.handleShowScores.bind(_assertThisInitialized(_this));
-    _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].connectToApplication(_assertThisInitialized(_this), window.localStorage);
-    return _this;
-  }
-
-  var _proto = Root.prototype;
-
-  _proto.addBoardGameToDisplay = function addBoardGameToDisplay(draggedObject) {
-    // ok, we are just the dumb view, pass this onto the controller to work out the logic for us
-    _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].addBoardGameToDisplay(draggedObject);
-  };
-
-  _proto.getCurrentUser = function getCurrentUser() {
-    return _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getLoggedInUserId();
-  };
-
-  _proto.alert = function alert(title, content) {
-    this.titleEl.textContent = title;
-    this.contentEl.textContent = content; // @ts-ignore
-
-    this.modalEl.classList.remove(this.state.ui.alert.hideClass); // @ts-ignore
-
-    this.modalEl.classList.add(this.state.ui.alert.showClass);
-  };
-
-  _proto.render = function render() {
-    var _this2 = this;
-
-    logger("Rendering App"); // @ts-ignore
-
-    var boardGames = this.state.boardGames;
-    logger(boardGames);
-    var games = boardGames.map(function (entry, index) {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_component_BoardGameView__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        key: index,
-        boardGame: entry,
-        showScoresHandler: _this2.handleShowScores,
-        addToCollectionHandler: _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].addBoardGameToCollection,
-        removeFromCollectionHandler: _this2.handleDeleteBoardGame,
-        startScoreSheetHandler: _this2.handleStartScoreSheet
-      });
-    });
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-      className: "root container-fluid"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-      className: "card-group"
-    }, games));
-  };
-
-  _proto.cancelDelete = function cancelDelete(event) {
-    // @ts-ignore
-    this.modalEl.classList.remove(this.state.ui.alert.showClass); // @ts-ignore
-
-    this.modalEl.classList.add(this.state.ui.alert.hideClass);
-    event.preventDefault();
-  };
-
-  _proto.confirmDelete = function confirmDelete(event) {
-    // @ts-ignore
-    this.modalEl.classList.remove(this.state.ui.alert.showClass); // @ts-ignore
-
-    this.modalEl.classList.add(this.state.ui.alert.hideClass);
-    event.preventDefault(); // @ts-ignore
-
-    var id = this.modalEl.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
-    id = parseInt(id);
-    logger("Handling Delete with id " + id); // @ts-ignore
-
-    var currentBoardGamesOnDisplay = this.state.boardGames;
-    var index = currentBoardGamesOnDisplay.findIndex(function (game) {
-      return game.gameId === id;
-    });
-
-    if (index >= 0) {
-      var boardGame = currentBoardGamesOnDisplay[index];
-      _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].removeBoardGameFromCollection(boardGame);
-    }
-  };
-
-  _proto.handleStartScoreSheet = function handleStartScoreSheet(event) {
-    event.preventDefault(); // do we already have an active score sheet?
-
-    if (_component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_10__["ScoreSheetController"].getInstance().hasActiveScoreSheet()) {
-      if (confirm("You already have an active score sheet, do you want to finish that one and start a new one?")) {
-        _component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_10__["ScoreSheetController"].getInstance().endScoreSheet();
-      } else {
-        // user cancelled, finish
-        return;
-      }
-    }
-
-    this.hideAllSideBars(); // @ts-ignore
-
-    var id = event.target.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
-    logger("Handling starting score sheet for " + id);
-
-    if (id) {
-      // find the entry from the state manager
-      id = parseInt(id); // @ts-ignore
-
-      var currentBoardGamesOnDisplay = this.state.boardGames;
-      var index = currentBoardGamesOnDisplay.findIndex(function (game) {
-        return game.gameId === id;
-      });
-
-      if (index >= 0) {
-        var boardGame = currentBoardGamesOnDisplay[index];
-        logger(boardGame);
-        _component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_10__["ScoreSheetController"].getInstance().startScoreSheet(boardGame);
-        this.switchBetweenCollectionAndScoreSheet(false);
-      }
-    }
-  };
-
-  _proto.handleDeleteBoardGame = function handleDeleteBoardGame(event) {
-    event.preventDefault(); //this.hideAllSideBars();
-    // @ts-ignore
-
-    var id = event.target.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
-    logger("Handling Delete Board Game " + id);
-
-    if (id) {
-      // find the entry from the state manager
-      id = parseInt(id); // @ts-ignore
-
-      var currentBoardGamesOnDisplay = this.state.boardGames;
-      var index = currentBoardGamesOnDisplay.findIndex(function (game) {
-        return game.gameId === id;
-      });
-
-      if (index >= 0) {
-        var boardGame = currentBoardGamesOnDisplay[index];
-
-        if (boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_8__["Decorator"].Persisted) {
-          logger("Handling Delete Board Game " + id + " - persisted, confirming with user, but only if logged in");
-
-          if (_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].isLoggedIn()) {
-            // @ts-ignore
-            this.modalEl.setAttribute(this.state.controller.events.boardGames.eventDataKeyId, id);
-            this.alert(boardGame.name + " (" + boardGame.year + ")", "Are you sure you want to delete this board game from your collection?");
-          } else {
-            logger("Handling Delete Board Game " + id + " - IS persisted but not logged in, just deleting from local storage  asking controller to remove"); // not persisted yet, let the controller manage this one
-
-            _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].removeBoardGameFromDisplay(boardGame);
-          }
-        } else {
-          logger("Handling Delete Board Game " + id + " - NOT persisted, asking controller to remove"); // not persisted yet, let the controller manage this one
-
-          _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].removeBoardGameFromDisplay(boardGame);
-        }
-      }
-    }
-  };
-
-  _proto.componentDidMount = /*#__PURE__*/function () {
-    var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              logger('component Did Mount');
-              this.chatView = new _component_ChatSidebarView__WEBPACK_IMPORTED_MODULE_5__["default"](this, document, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getStateManager());
-              this.chatView.onDocumentLoaded();
-              this.userSearchView = new _component_UserSearchSidebarView__WEBPACK_IMPORTED_MODULE_4__["default"](this, document, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getStateManager());
-              this.userSearchView.onDocumentLoaded();
-              this.bggSearchView = new _component_BoardGameSearchSidebarView__WEBPACK_IMPORTED_MODULE_6__["default"](this, document, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getStateManager());
-              this.bggSearchView.onDocumentLoaded();
-              this.scoresView = new _component_ScoreSheetSidebarView__WEBPACK_IMPORTED_MODULE_12__["default"](this, document, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getStateManager());
-              this.scoresView.onDocumentLoaded();
-              this.scoreSheetView = _component_ScoreSheetView__WEBPACK_IMPORTED_MODULE_11__["ScoreSheetView"].getInstance();
-              this.scoreSheetView.setApplication(this);
-              this.scoreSheetView.onDocumentLoaded(this); // navigation item handlers
-
-              if (document) {
-                // @ts-ignore
-                document.getElementById(this.state.ui.navigation.boardGameSearchId).addEventListener('click', this.handleShowBGGSearch); // @ts-ignore
-
-                document.getElementById(this.state.ui.navigation.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
-
-                this.chatNavigationItem = document.getElementById(this.state.ui.navigation.chatId); // @ts-ignore
-
-                this.chatNavigationItem.addEventListener('click', this.handleShowChat); // @ts-ignore
-
-                document.getElementById(this.state.ui.navigation.showMyCollection).addEventListener('click', this.handleShowCollection); // @ts-ignore
-
-                document.getElementById(this.state.ui.navigation.showScoreSheet).addEventListener('click', this.handleShowScoreSheet);
-              } // alert modal dialog setup
-              // @ts-ignore
-
-
-              this.modalEl = document.getElementById(this.state.ui.alert.modalId); // @ts-ignore
-
-              this.titleEl = document.getElementById(this.state.ui.alert.titleId); // @ts-ignore
-
-              this.contentEl = document.getElementById(this.state.ui.alert.contentId); // @ts-ignore
-
-              this.cancelBtnEl = document.getElementById(this.state.ui.alert.cancelButtonId); // @ts-ignore
-
-              this.confirmBtnEl = document.getElementById(this.state.ui.alert.confirmButtonId); // @ts-ignore
-
-              this.closeBtnEl = document.getElementById(this.state.ui.alert.closeButtonId); // event listeners for the confirm delete of entry
-
-              if (this.cancelBtnEl) this.cancelBtnEl.addEventListener('click', this.cancelDelete);
-              if (this.confirmBtnEl) this.confirmBtnEl.addEventListener('click', this.confirmDelete);
-              if (this.closeBtnEl) this.closeBtnEl.addEventListener('click', this.cancelDelete); // a reference to the div containing ourselves
-              // @ts-ignore
-
-              this.thisEl = document.getElementById('root'); // @ts-ignore
-
-              this.scoreSheetEl = document.getElementById('scoreSheetZone');
-
-              if (this.thisEl) {
-                this.thisEl.addEventListener('dragover', this.handleDragOver);
-                this.thisEl.addEventListener('drop', this.handleDrop);
-              } // ok lets try get things done
-
-
-              _component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_10__["ScoreSheetController"].getInstance().initialise(this);
-              _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].initialise();
-
-            case 27:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee, this);
-    }));
-
-    function componentDidMount() {
-      return _componentDidMount.apply(this, arguments);
-    }
-
-    return componentDidMount;
-  }();
-
-  _proto.hideAllSideBars = function hideAllSideBars() {
-    this.chatView.eventHide(null);
-    this.userSearchView.eventHide(null);
-    this.bggSearchView.eventHide(null);
-  };
-
-  _proto.handleShowCollection = function handleShowCollection(event) {
-    this.switchBetweenCollectionAndScoreSheet(true);
-  };
-
-  _proto.handleShowScoreSheet = function handleShowScoreSheet(event) {
-    this.switchBetweenCollectionAndScoreSheet(false);
-  };
-
-  _proto.handleShowUserSearch = function handleShowUserSearch(event) {
-    logger('Handling Show User Search');
-    event.preventDefault(); //this.hideAllSideBars();
-    // prevent anything from happening if we are not logged in
-
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].isLoggedIn()) {
-      // @ts-ignore
-      window.location.href = this.state.apis.login;
-      return;
-    }
-
-    this.userSearchView.eventShow(event);
-  };
-
-  _proto.handleShowScores = function handleShowScores(event) {
-    logger("Handling show board game scores");
-    event.preventDefault(); // @ts-ignore
-
-    var id = event.target.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
-    logger("Handling Show board game scores " + id);
-
-    if (id) {
-      // find the entry from the state manager
-      id = parseInt(id); // @ts-ignore
-
-      var currentBoardGamesOnDisplay = this.state.boardGames;
-      var index = currentBoardGamesOnDisplay.findIndex(function (game) {
-        return game.gameId === id;
-      });
-
-      if (index >= 0) {
-        var boardGame = currentBoardGamesOnDisplay[index];
-        this.scoresView.setSelectedBoardGame(boardGame);
-        this.scoresView.eventShow(null);
-      }
-    }
-  };
-
-  _proto.handleShowChat = function handleShowChat(event, roomName) {
-    logger('Handling Show Chat');
-    event.preventDefault(); //this.hideAllSideBars();
-    // prevent anything from happening if we are not logged in
-
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].isLoggedIn()) {
-      // @ts-ignore
-      window.location.href = this.state.apis.login;
-      return;
-    }
-
-    this.chatView.eventShow(event);
-
-    if (roomName) {
-      this.chatView.selectChatRoom(roomName);
-    }
-  };
-
-  _proto.handleShowBGGSearch = function handleShowBGGSearch(event) {
-    logger('Handling Show BGG Search View');
-    event.preventDefault(); // prevent anything from happening if we are not logged in
-
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].isLoggedIn()) {
-      this.hideAllSideBars(); // @ts-ignore
-    }
-
-    this.bggSearchView.eventShow(event);
-  };
-
-  _proto.countChanged = function countChanged(newCount) {
-    //
-    var buffer = 'Chat <i class="fas fa-inbox"></i>';
-
-    if (newCount > 0) {
-      buffer += " <span class=\"badge badge-pill badge-primary\">&nbsp;" + newCount + "&nbsp;</span>";
-    }
-
-    if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = "" + buffer;
-  };
-
-  _proto.handleDragOver = function handleDragOver(event) {
-    event.preventDefault();
-  };
-
-  _proto.handleDrop = function handleDrop(event) {
-    // @ts-ignore
-    var draggedObjectJSON = event.dataTransfer.getData(this.state.ui.draggable.draggableDataKeyId);
-    logger(draggedObjectJSON);
-    var draggedObject = JSON.parse(draggedObjectJSON);
-    logger(draggedObject); // @ts-ignore
-
-    if (draggedObject[this.state.ui.draggable.draggedType] === this.state.ui.draggable.draggedTypeBoardGame) {
-      this.addBoardGameToDisplay(draggedObject);
-    }
-  };
-
-  _proto.switchBetweenCollectionAndScoreSheet = function switchBetweenCollectionAndScoreSheet(showCollection) {
-    if (showCollection) {
-      if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.thisEl, 'd-none', false);
-      if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.thisEl, 'd-block', true);
-      if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.scoreSheetEl, 'd-none', true);
-      if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.scoreSheetEl, 'd-block', false);
-    } else {
-      if (_component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_10__["ScoreSheetController"].getInstance().hasActiveScoreSheet()) {
-        if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.thisEl, 'd-none', true);
-        if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.thisEl, 'd-block', false);
-        if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.scoreSheetEl, 'd-none', false);
-        if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].addRemoveClasses(this.scoreSheetEl, 'd-block', true);
-      }
-    }
-  };
-
-  return Root;
-}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component); //localStorage.debug = 'app view-ts controller-ts socket-ts api-ts local-storage-ts state-manager-ts view-ts:blogentry view-ts:comments view-ts:details';
-//localStorage.debug = 'app controller-ts socket-ts api-ts local-storage-ts state-manager-ts indexeddb-ts user-search-sidebar user-search-sidebar:detail state-manager-ms state-manager-api state-manager-aggregate state-manager-async';
-//localStorage.debug = 'app controller-ts  chat-sidebar chat-sidebar:detail board-game-search-sidebar board-game-search-sidebar:detail ';
-//localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts template-manager' ;
-
-
-localStorage.debug = 'score-sheet-controller call-manager peer';
-debug__WEBPACK_IMPORTED_MODULE_2___default.a.log = console.info.bind(console); // @ts-ignore
-
-var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Root, {
-  className: "container-fluid justify-content-around"
-});
-react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(element, document.getElementById('root'));
-
-/***/ }),
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/AppTypes.ts":
 /*!*************************!*\
   !*** ./src/AppTypes.ts ***!
   \*************************/
-/*! exports provided: Decorator */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Decorator", function() { return Decorator; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Decorator": () => (/* binding */ Decorator),
+/* harmony export */   "STATE_NAMES": () => (/* binding */ STATE_NAMES),
+/* harmony export */   "API_Config": () => (/* binding */ API_Config),
+/* harmony export */   "NAVIGATION": () => (/* binding */ NAVIGATION),
+/* harmony export */   "ALERT": () => (/* binding */ ALERT),
+/* harmony export */   "DRAGGABLE": () => (/* binding */ DRAGGABLE)
+/* harmony export */ });
 var Decorator;
 
 (function (Decorator) {
@@ -1507,34 +26,100 @@ var Decorator;
   Decorator[Decorator["PersistedLocally"] = 3] = "PersistedLocally";
 })(Decorator || (Decorator = {}));
 
+var STATE_NAMES = {
+  users: 'users',
+  boardGames: 'boardGames',
+  scores: 'scores',
+  selectedEntry: 'selectedEntry',
+  recentUserSearches: 'recentUserSearches',
+  bggSearchResults: 'bggSearchResults',
+  scoreSheet: 'scoreSheet'
+};
+var API_Config = {
+  login: '/login',
+  graphQL: '/graphql',
+  bggSearchCall: 'query search($queryString: String!) {findBoardGames(query: $queryString) {gameId, name, year}}',
+  bggSearchCallById: {
+    queryString: 'query getDetails($gameId:Int!) {getBoardGameDetails(gameId:$gameId) {gameId,thumb,image,name,description,year, minPlayers, maxPlayers, minPlayTime, maxPlayTime, minAge, designers, artists, publisher, numOfRaters, averageScore, rank, categories}}',
+    resultName: 'getBoardGameDetails'
+  },
+  findUsers: {
+    queryString: 'query {findUsers {id, username}}',
+    resultName: 'findUsers'
+  },
+  addToMyCollection: {
+    queryString: 'mutation addBoardGame($userId: Int!, $boardGame: BoardGameDetailInput!){addToMyCollection(userId: $userId, boardGame: $boardGame) {id,gameId}}',
+    resultName: 'addToMyCollection'
+  },
+  removeFromMyCollection: {
+    queryString: 'mutation removeBoardGame($userId: Int!, $boardGameId: Int!) {removeFromMyCollection(userId: $userId, boardGameId: $boardGameId) {result}}',
+    resultName: 'removeFromMyCollection'
+  },
+  getMyBoardGameCollection: {
+    queryString: 'query myCollection($userId: Int!) {getMyBoardGameCollection(userId: $userId) {id,gameId,thumb,image,name,description,year, minPlayers, maxPlayers, minPlayTime, maxPlayTime, minAge, designers, artists, publisher, numOfRaters, averageScore, rank, categories,scoresheets {id, player1, score1, player2, score2, player3, score3, player4, score4, player5, score5, player6, score6, player7, score7, createdOn}}}',
+    resultName: 'getMyBoardGameCollection'
+  },
+  addScoreSheetToBoardGame: {
+    queryString: 'mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}}',
+    resultName: 'addScoreSheetToBoardGame'
+  },
+  removeScoreSheet: {
+    queryString: 'mutation removeSheet($sheetId: String!) {removeScoreSheet(sheetId: $sheetId) {result}}',
+    resultName: 'removeFromMyCollection'
+  }
+};
+var NAVIGATION = {
+  showMyCollection: 'navigationItemMyCollection',
+  boardGameSearchId: 'navigationItemBoardGameSearch',
+  userSearchId: 'navigationItemUserSearch',
+  chatId: 'navigationItemChat',
+  showScoreSheet: 'navigationItemScoreSheet'
+};
+var ALERT = {
+  modalId: "alert",
+  titleId: "alert-title",
+  contentId: "alert-content",
+  cancelButtonId: "alert-cancel",
+  confirmButtonId: "alert-confirm",
+  closeButtonId: "alert-close",
+  hideClass: "d-none",
+  showClass: "d-block"
+};
+var DRAGGABLE = {
+  typeBoardGame: 'boardGame',
+  typeUser: 'user',
+  fromUserSearch: 'userSearch',
+  fromFavourites: 'favourites'
+};
+
 /***/ }),
 
 /***/ "./src/Controller.ts":
 /*!***************************!*\
   !*** ./src/Controller.ts ***!
   \***************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
-/* harmony import */ var _state_RESTApiStateManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./state/RESTApiStateManager */ "./src/state/RESTApiStateManager.ts");
-/* harmony import */ var _socket_SocketManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./socket/SocketManager */ "./src/socket/SocketManager.ts");
-/* harmony import */ var _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./state/AsyncStateManagerWrapper */ "./src/state/AsyncStateManagerWrapper.ts");
-/* harmony import */ var _state_AggregateStateManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./state/AggregateStateManager */ "./src/state/AggregateStateManager.ts");
-/* harmony import */ var _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./SocketListenerDelegate */ "./src/SocketListenerDelegate.ts");
-/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./socket/ChatManager */ "./src/socket/ChatManager.ts");
-/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./socket/NotificationController */ "./src/socket/NotificationController.ts");
-/* harmony import */ var _state_GraphQLApiStateManager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./state/GraphQLApiStateManager */ "./src/state/GraphQLApiStateManager.ts");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./network/DownloadManager */ "./src/network/DownloadManager.ts");
-/* harmony import */ var _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./state/BrowserStorageStateManager */ "./src/state/BrowserStorageStateManager.ts");
-/* harmony import */ var _component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/ScoreSheetController */ "./src/component/ScoreSheetController.ts");
-/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
-
+/* harmony import */ var _socket_SocketManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./socket/SocketManager */ "./src/socket/SocketManager.ts");
+/* harmony import */ var _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./state/AsyncStateManagerWrapper */ "./src/state/AsyncStateManagerWrapper.ts");
+/* harmony import */ var _state_AggregateStateManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./state/AggregateStateManager */ "./src/state/AggregateStateManager.ts");
+/* harmony import */ var _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./SocketListenerDelegate */ "./src/SocketListenerDelegate.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./socket/NotificationController */ "./src/socket/NotificationController.ts");
+/* harmony import */ var _state_GraphQLApiStateManager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./state/GraphQLApiStateManager */ "./src/state/GraphQLApiStateManager.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./network/DownloadManager */ "./src/network/DownloadManager.ts");
+/* harmony import */ var _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./state/BrowserStorageStateManager */ "./src/state/BrowserStorageStateManager.ts");
+/* harmony import */ var _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/controller/ScoreSheetController */ "./src/component/controller/ScoreSheetController.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
 
 
 
@@ -1553,56 +138,47 @@ var cLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('controller-ts');
 var cLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('controller-ts-detail');
 
 var Controller = /*#__PURE__*/function () {
-  // @ts-ignore
-  // @ts-ignore
+  Controller.getInstance = function getInstance() {
+    if (!Controller._instance) {
+      Controller._instance = new Controller();
+    }
+
+    return Controller._instance;
+  };
+
   function Controller() {}
 
   var _proto = Controller.prototype;
 
   _proto.connectToApplication = function connectToApplication(applicationView, clientSideStorage) {
     this.applicationView = applicationView;
-    this.clientSideStorage = clientSideStorage;
-    this.config = this.applicationView.state; // setup the API calls
+    this.clientSideStorage = clientSideStorage; // setup the API calls
 
-    var apiStateManager = _state_RESTApiStateManager__WEBPACK_IMPORTED_MODULE_2__["RESTApiStateManager"].getInstance();
-    apiStateManager.initialise([{
-      stateName: this.config.stateNames.boardGames,
-      serverURL: this.getServerAPIURL(),
-      api: this.config.apis.entries,
-      isActive: true
-    }, {
-      stateName: this.config.stateNames.scores,
-      serverURL: this.getServerAPIURL(),
-      api: this.config.apis.comments,
-      isActive: true
-    }]);
-    var graphSM = new _state_GraphQLApiStateManager__WEBPACK_IMPORTED_MODULE_9__["GraphQLApiStateManager"]();
+    var graphSM = new _state_GraphQLApiStateManager__WEBPACK_IMPORTED_MODULE_8__.GraphQLApiStateManager();
     graphSM.initialise([{
-      stateName: this.config.stateNames.users,
-      apiURL: this.getServerAPIURL() + this.config.apis.graphQL,
+      stateName: _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.users,
+      apiURL: this.getServerAPIURL() + _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL,
       apis: {
         find: '',
         create: '',
         destroy: '',
         update: '',
-        findAll: this.config.apis.findUsers.queryString
+        findAll: _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.findUsers.queryString
       },
       data: {
         find: '',
         create: '',
         destroy: '',
         update: '',
-        findAll: this.config.apis.findUsers.resultName
+        findAll: _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.findUsers.resultName
       },
       isActive: true
     }]);
-    var aggregateSM = _state_AggregateStateManager__WEBPACK_IMPORTED_MODULE_5__["AggregateStateManager"].getInstance();
+    var aggregateSM = _state_AggregateStateManager__WEBPACK_IMPORTED_MODULE_4__.AggregateStateManager.getInstance();
     var memorySM = _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance();
-    var asyncDBSM = new _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_4__["default"](aggregateSM, apiStateManager);
-    var asyncQLSM = new _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_4__["default"](aggregateSM, graphSM);
+    var asyncSM = new _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_3__["default"](aggregateSM, graphSM);
     aggregateSM.addStateManager(memorySM, [], false);
-    aggregateSM.addStateManager(asyncQLSM, [this.config.stateNames.selectedEntry, this.config.stateNames.recentUserSearches, this.config.stateNames.boardGames, this.config.stateNames.scores], false);
-    aggregateSM.addStateManager(asyncDBSM, [this.config.stateNames.users, this.config.stateNames.boardGames, this.config.stateNames.scores, this.config.stateNames.selectedEntry, this.config.stateNames.recentUserSearches], false);
+    aggregateSM.addStateManager(asyncSM, [_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.recentUserSearches, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scores], false);
     this.stateManager = aggregateSM; // state listener
 
     this.stateChanged = this.stateChanged.bind(this);
@@ -1619,7 +195,7 @@ var Controller = /*#__PURE__*/function () {
     this.removeBoardGameFromCollection = this.removeBoardGameFromCollection.bind(this);
     this.removeBoardGameFromDisplay = this.removeBoardGameFromDisplay.bind(this); // further state management
 
-    this.displayedBoardGamesStateManager = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_12__["default"](true);
+    this.displayedBoardGamesStateManager = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_11__["default"](true);
     return this;
   }
   /*
@@ -1630,27 +206,27 @@ var Controller = /*#__PURE__*/function () {
   _proto.initialise = function initialise() {
     cLogger('Initialising data state'); // listen for socket events
 
-    var socketListerDelegate = new _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_6__["default"](this.config);
-    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_3__["default"].setListener(socketListerDelegate); // now that we have all the user we can setup the chat system but only if we are logged in
+    var socketListerDelegate = new _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_5__["default"]();
+    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().setListener(socketListerDelegate); // now that we have all the user we can setup the chat system but only if we are logged in
 
     cLogger("Setting up chat system for user " + this.getLoggedInUserId() + ": " + this.getLoggedInUsername());
 
     if (this.getLoggedInUserId() > 0) {
       // setup the chat system
-      var chatManager = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_7__["ChatManager"].getInstance(); // this connects the manager to the socket system
+      var chatManager = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__.ChatManager.getInstance(); // this connects the manager to the socket system
       // setup the chat notification system
 
-      _socket_NotificationController__WEBPACK_IMPORTED_MODULE_8__["NotificationController"].getInstance();
+      _socket_NotificationController__WEBPACK_IMPORTED_MODULE_7__.NotificationController.getInstance();
       chatManager.setCurrentUser(this.getLoggedInUsername());
-      _component_ScoreSheetController__WEBPACK_IMPORTED_MODULE_13__["ScoreSheetController"].getInstance().setCurrentUser(this.getLoggedInUsername()); // let the application view know about message counts
+      _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_12__.ScoreSheetController.getInstance().setCurrentUser(this.getLoggedInUsername()); // let the application view know about message counts
 
       chatManager.setUnreadCountListener(this.applicationView);
       chatManager.login(); // load the users
 
-      this.getStateManager().getStateByName(this.config.stateNames.users);
+      this.getStateManager().getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.users);
     }
 
-    var currentGameList = this.displayedBoardGamesStateManager.getStateByName(this.config.stateNames.boardGames);
+    var currentGameList = this.displayedBoardGamesStateManager.getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames);
     currentGameList = this.cleanupBoardGameState(currentGameList); // load board games from local storage if any
 
     this.applicationView.setState({
@@ -1713,112 +289,15 @@ var Controller = /*#__PURE__*/function () {
 
   _proto.getCurrentUser = function getCurrentUser() {
     return this.getLoggedInUserId();
-  } //  State Management listening
-  ;
-
-  _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {
-    cLogger("State changed " + name + " from " + managerName + " - item Added");
-    cLogger(itemAdded);
-
-    switch (managerName) {
-      case 'aggregate':
-      case 'memory':
-        {
-          cLogger("received state from " + managerName + " for state " + name + " - updating application view");
-
-          switch (name) {
-            case this.config.stateNames.entries:
-              {
-                break;
-              }
-          }
-
-          break;
-        }
-    }
-  }
-  /*
-  *  sockets -
-  *  Handling data changes by other users
-  *
-   */
-  ;
-
-  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {
-    cLogger("State changed " + name + " from " + managerName + "  - item Removed");
-    cLogger(itemRemoved);
-
-    switch (managerName) {
-      case 'aggregate':
-      case 'memory':
-        {
-          cLogger("received state from " + managerName + " for state " + name + " - updating application view");
-
-          switch (name) {
-            case this.config.stateNames.comments:
-              {
-                break;
-              }
-          }
-
-          break;
-        }
-    }
   };
 
-  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {
-    cLogger("State changed " + name + " from " + managerName + " - item updated");
-    cLogger(itemUpdated);
+  _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {};
 
-    switch (managerName) {
-      case 'aggregate':
-      case 'memory':
-        {
-          cLogger("received state from " + managerName + " for state " + name + " - updating application view");
+  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {};
 
-          switch (name) {
-            case this.config.stateNames.entries:
-              {
-                break;
-              }
-          }
+  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {};
 
-          break;
-        }
-    }
-  };
-
-  _proto.stateChanged = function stateChanged(managerName, name, values) {
-    cLogger("State changed " + name + " from " + managerName + " ");
-    cLogger(values); // what has changed and by whom?
-
-    switch (managerName) {
-      case 'aggregate':
-      case 'memory':
-        {
-          cLogger("received state from " + managerName + " for state " + name + " - sending to application view");
-
-          switch (name) {
-            case this.config.stateNames.entries:
-              {
-                break;
-              }
-
-            case this.config.stateNames.comments:
-              {
-                break;
-              }
-
-            case this.config.stateNames.users:
-              {
-                break;
-              }
-          }
-
-          break;
-        }
-    }
-  } // Data logic
+  _proto.stateChanged = function stateChanged(managerName, name, values) {} // Data logic
   ;
 
   _proto.addBoardGameToDisplay = function addBoardGameToDisplay(boardGame) {
@@ -1837,18 +316,18 @@ var Controller = /*#__PURE__*/function () {
     } // start with what we have and let the main view know, but mark it incomplete for partial rendering with user information
 
 
-    boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Incomplete;
+    boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete;
     currentListOfGames.push(boardGame);
     cLogger("Adding received board game to application");
     cLogger(boardGame);
-    this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+    this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
     this.applicationView.setState({
       boardGames: currentListOfGames
     }); // now we need an API call to fill in the details
 
-    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(this.config.apis.graphQL, this.config.apis.bggSearchCallById.queryString, {
+    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.bggSearchCallById.queryString, {
       gameId: boardGame.gameId
-    }, this.callbackBoardGameDetails, this.config.stateNames.boardGames, false);
+    }, this.callbackBoardGameDetails, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, false);
   };
 
   _proto.callbackBoardGameDetails = function callbackBoardGameDetails(data, status, associatedStateName) {
@@ -1857,7 +336,7 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var boardGameDetails = data.data[this.config.apis.bggSearchCallById.resultName];
+      var boardGameDetails = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.bggSearchCallById.resultName];
       cLogger(boardGameDetails);
       var regex = /&#10;/g;
       boardGameDetails.description = boardGameDetails.description.replace(regex, '\r\n');
@@ -1868,8 +347,7 @@ var Controller = /*#__PURE__*/function () {
       regex = /&quot;/g;
       boardGameDetails.description = boardGameDetails.description.replace(regex, '"');
       regex = /&mdash;/g;
-      boardGameDetails.description = boardGameDetails.description.replace(regex, '"'); //this.getStateManager().addNewItemToState(this.config.stateNames.boardGames,data.data[this.config.apis.bggSearchCallById.resultName],true);
-
+      boardGameDetails.description = boardGameDetails.description.replace(regex, '"');
       var currentListOfGames = this.applicationView.state.boardGames;
       var index = currentListOfGames.findIndex(function (value) {
         return value.gameId === boardGameDetails.gameId;
@@ -1879,8 +357,8 @@ var Controller = /*#__PURE__*/function () {
         cLogger("Updating application state");
         currentListOfGames.splice(index, 1, boardGameDetails);
         cLogger(currentListOfGames);
-        boardGameDetails.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].PersistedLocally;
-        this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+        boardGameDetails.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
+        this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
         this.applicationView.setState({
           boardGames: currentListOfGames
         });
@@ -1898,7 +376,7 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var id = data.data[this.config.apis.addToMyCollection.resultName];
+      var id = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addToMyCollection.resultName];
       cLogger(id); // Find and update the board game in the state
 
       var currentGameList = this.applicationView.state.boardGames;
@@ -1909,7 +387,7 @@ var Controller = /*#__PURE__*/function () {
       if (index >= 0) {
         var updatingBoardGame = currentGameList[index];
         cLogger("Updating board game " + updatingBoardGame.gameId + " with database id " + id.id + " and new Persisted state");
-        updatingBoardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted;
+        updatingBoardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
         updatingBoardGame.id = id.id;
 
         if (updatingBoardGame.scoresheets) {
@@ -1919,22 +397,22 @@ var Controller = /*#__PURE__*/function () {
           updatingBoardGame.scoresheets.forEach(function (scoreSheet) {
             _this.convertScoreSheetToApiCallFormat(scoreSheet);
 
-            _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(_this.config.apis.graphQL, _this.config.apis.addScoreSheetToBoardGame.queryString, {
+            _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addScoreSheetToBoardGame.queryString, {
               userId: _this.getCurrentUser(),
               boardGameId: updatingBoardGame.id,
               sheet: scoreSheet
-            }, cb, _this.config.stateNames.scoreSheet, false);
+            }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scoreSheet, false);
 
             _this.convertScoreSheetToDatabaseFormat(scoreSheet);
 
-            scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted;
+            scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
           });
         }
 
         this.applicationView.setState({
           boardGames: currentGameList
         });
-        this.displayedBoardGamesStateManager.updateItemInState(this.config.stateNames.boardGames, updatingBoardGame, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_14__["isSameGame"], false);
+        this.displayedBoardGamesStateManager.updateItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, updatingBoardGame, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_13__.isSameGame, false);
       }
     }
   };
@@ -1945,7 +423,7 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var id = data.data[this.config.apis.removeFromMyCollection.resultName];
+      var id = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.removeFromMyCollection.resultName];
       cLogger(id);
     }
   };
@@ -1958,12 +436,12 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var collectionData = data.data[this.config.apis.getMyBoardGameCollection.resultName]; // loop through the collection data and see if it already exists in the state
+      var collectionData = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.getMyBoardGameCollection.resultName]; // loop through the collection data and see if it already exists in the state
 
       var currentGameList = this.applicationView.state.boardGames;
       cLoggerDetail("Starting with local state of " + currentGameList.length);
       collectionData.forEach(function (boardGame) {
-        boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted;
+        boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
         cLoggerDetail("Loading board game from collection ");
         cLoggerDetail(boardGame);
 
@@ -1992,23 +470,23 @@ var Controller = /*#__PURE__*/function () {
       this.applicationView.setState({
         boardGames: currentGameList
       });
-      this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentGameList, false);
+      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentGameList, false);
     }
   };
 
   _proto.scoreSheetAddedToBoardGame = function scoreSheetAddedToBoardGame(boardGame, scoreSheet) {
     var cb = function cb(data, status, associatedStateName) {};
 
-    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted) {
+    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {
       //mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(this.config.apis.graphQL, this.config.apis.addScoreSheetToBoardGame.queryString, {
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addScoreSheetToBoardGame.queryString, {
         userId: this.getCurrentUser(),
         boardGameId: boardGame.id,
         sheet: scoreSheet
-      }, cb, this.config.stateNames.scoreSheet, false);
-      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted;
+      }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scoreSheet, false);
+      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
     } else {
-      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].PersistedLocally;
+      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
     } // convert the scoresheet into the usual received format from the database
 
 
@@ -2024,7 +502,7 @@ var Controller = /*#__PURE__*/function () {
       cLogger("Updating application state");
       currentListOfGames.splice(index, 1, boardGame);
       cLogger(currentListOfGames);
-      this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
       this.applicationView.setState({
         boardGames: currentListOfGames
       });
@@ -2036,11 +514,11 @@ var Controller = /*#__PURE__*/function () {
   _proto.scoreSheetRemovedFromBoardGame = function scoreSheetRemovedFromBoardGame(boardGame, scoreSheetId) {
     var cb = function cb(data, status, associatedStateName) {};
 
-    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted) {
+    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {
       //mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(this.config.apis.graphQL, this.config.apis.removeScoreSheet.queryString, {
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.removeScoreSheet.queryString, {
         sheetId: scoreSheetId
-      }, cb, this.config.stateNames.scoreSheet, false);
+      }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scoreSheet, false);
     }
 
     var currentListOfGames = this.applicationView.state.boardGames;
@@ -2054,7 +532,7 @@ var Controller = /*#__PURE__*/function () {
       cLogger("Updating application state");
       currentListOfGames.splice(index, 1, boardGame);
       cLogger(currentListOfGames);
-      this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentListOfGames, false);
+      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
       this.applicationView.setState({
         boardGames: currentListOfGames
       });
@@ -2070,23 +548,23 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.decorator) {
         switch (boardGame.decorator) {
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted:
             {
               // already in collection, nothing to do
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Incomplete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete:
             {
               // not ready to add to collection yet, do nothing
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].PersistedLocally:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Complete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete:
             {
               // loaded and ready to save
-              this.displayedBoardGamesStateManager.addNewItemToState(this.config.stateNames.boardGames, boardGame, true); // add the board game to my collection
+              this.displayedBoardGamesStateManager.addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, boardGame, true); // add the board game to my collection
               // now we need an API call to fill in the details
 
               delete boardGame.decorator;
@@ -2095,14 +573,14 @@ var Controller = /*#__PURE__*/function () {
               if (this.isLoggedIn()) {
                 var scoreSheets = boardGame.scoresheets;
                 delete boardGame.scoresheets;
-                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(this.config.apis.graphQL, this.config.apis.addToMyCollection.queryString, {
+                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addToMyCollection.queryString, {
                   userId: this.getCurrentUser(),
                   boardGame: boardGame
-                }, this.callbackAddToCollection, this.config.stateNames.boardGames, true);
-                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Complete;
+                }, this.callbackAddToCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, true);
+                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete;
                 boardGame.scoresheets = scoreSheets;
               } else {
-                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].PersistedLocally;
+                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
               }
 
               break;
@@ -2119,29 +597,29 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.decorator) {
         switch (boardGame.decorator) {
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].PersistedLocally:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted:
             {
               // already in collection,
               this.removeBoardGameFromState(boardGame);
 
               if (this.isLoggedIn()) {
-                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(this.config.apis.graphQL, this.config.apis.removeFromMyCollection.queryString, {
+                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.removeFromMyCollection.queryString, {
                   userId: this.getCurrentUser(),
                   boardGameId: boardGame.gameId
-                }, this.callbackRemoveFromCollection, this.config.stateNames.boardGames, false);
+                }, this.callbackRemoveFromCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, false);
               }
 
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Incomplete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete:
             {
               // not ready to add to collection yet, do nothing
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Complete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete:
             {
               // loaded and ready to save, but not yet saved, nothing to delete
               break;
@@ -2158,15 +636,15 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.decorator) {
         switch (boardGame.decorator) {
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Incomplete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete:
             {
               // not ready to add to collection yet, do nothing
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].PersistedLocally:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Complete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete:
             {
               // loaded and ready to save
               this.removeBoardGameFromState(boardGame);
@@ -2191,10 +669,10 @@ var Controller = /*#__PURE__*/function () {
         // is this a persisted board game?
         var existingListGame = cleanedUpList[index];
 
-        if (existingListGame.decorator && existingListGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted) {// leave the persisted version in the cleaned up list
+        if (existingListGame.decorator && existingListGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {// leave the persisted version in the cleaned up list
         } else {
           // do we have persisted game to replace the one in the list
-          if (boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted) {
+          if (boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {
             // replace the existing one with this one
             cleanedUpList.splice(index, 1, boardGame);
           } else {// just leave the one there, neither are persisted to a database
@@ -2211,9 +689,9 @@ var Controller = /*#__PURE__*/function () {
   _proto.downloadAndSyncSavedBoardGameCollection = function downloadAndSyncSavedBoardGameCollection() {
     if (this.isLoggedIn()) {
       // start the call to retrieve the saved collection of board games
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(this.config.apis.graphQL, this.config.apis.getMyBoardGameCollection.queryString, {
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.getMyBoardGameCollection.queryString, {
         userId: this.getLoggedInUserId()
-      }, this.callbackGetCollection, this.config.stateNames.boardGames, false);
+      }, this.callbackGetCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, false);
     }
   }
   /*
@@ -2248,14 +726,14 @@ var Controller = /*#__PURE__*/function () {
     } // save locally
 
 
-    this.displayedBoardGamesStateManager.setStateByName(this.config.stateNames.boardGames, currentBoardGamesOnDisplay, false);
+    this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentBoardGamesOnDisplay, false);
   };
 
   _proto.findBoardGameInStateFromEvent = function findBoardGameInStateFromEvent(event) {
     var boardGame = null;
     cLoggerDetail("Finding board game id in event"); // @ts-ignore
 
-    var id = event.target.getAttribute(this.config.controller.events.boardGames.eventDataKeyId);
+    var id = event.target.getAttribute(Controller.eventDataKeyId);
     cLoggerDetail(id);
 
     if (id) {
@@ -2281,7 +759,7 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.scoresheets) {
         boardGame.scoresheets.forEach(function (sheet) {
-          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted;
+          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
         });
       } else {
         boardGame.scoresheets = [];
@@ -2301,7 +779,7 @@ var Controller = /*#__PURE__*/function () {
         });
 
         if (index < 0) {
-          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].PersistedLocally;
+          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
           target.scoresheets.push(sheet);
           toSave.push(sheet);
         }
@@ -2313,7 +791,7 @@ var Controller = /*#__PURE__*/function () {
         toSave.forEach(function (sheetToSave) {
           _this3.convertScoreSheetToApiCallFormat(sheetToSave);
 
-          _network_DownloadManager__WEBPACK_IMPORTED_MODULE_11__["default"].addQLApiRequest(_this3.config.apis.graphQL, _this3.config.apis.addScoreSheetToBoardGame.queryString, {
+          _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addScoreSheetToBoardGame.queryString, {
             userId: _this3.getCurrentUser(),
             boardGameId: target.id,
             sheet: sheetToSave
@@ -2321,7 +799,7 @@ var Controller = /*#__PURE__*/function () {
 
           _this3.convertScoreSheetToDatabaseFormat(sheetToSave);
 
-          sheetToSave.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_10__["Decorator"].Persisted;
+          sheetToSave.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
         });
       }
     }
@@ -2384,11 +862,15 @@ var Controller = /*#__PURE__*/function () {
     delete scoreSheet.score7;
   };
 
+  _proto.handleShowChat = function handleShowChat(roomName) {
+    this.applicationView.handleShowChat(roomName);
+  };
+
   return Controller;
 }();
 
-var controller = new Controller();
-/* harmony default export */ __webpack_exports__["default"] = (controller);
+Controller.eventDataKeyId = 'board-game-id';
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Controller);
 
 /***/ }),
 
@@ -2396,17 +878,20 @@ var controller = new Controller();
 /*!***************************************!*\
   !*** ./src/SocketListenerDelegate.ts ***!
   \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SocketListenerDelegate; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ SocketListenerDelegate)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./notification/NotificationManager */ "./src/notification/NotificationManager.ts");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
-/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./notification/NotificationManager */ "./src/notification/NotificationManager.ts");
+
 
 
 
@@ -2414,17 +899,15 @@ __webpack_require__.r(__webpack_exports__);
 var slLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('socket-listener');
 
 var SocketListenerDelegate = /*#__PURE__*/function () {
-  function SocketListenerDelegate(config) {
-    this.config = config;
-  }
+  function SocketListenerDelegate() {}
 
   var _proto = SocketListenerDelegate.prototype;
 
   _proto.handleDataChangedByAnotherUser = function handleDataChangedByAnotherUser(message) {
     slLogger("Handling data change " + message.type + " on object type " + message.stateName + " made by user " + message.user);
-    var changeUser = _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().findItemInState(this.config.stateNames.users, {
+    var changeUser = _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().findItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.users, {
       id: message.user
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_3__["isSame"]);
+    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__.isSame);
     var username = "unknown";
 
     if (changeUser) {
@@ -2440,67 +923,10 @@ var SocketListenerDelegate = /*#__PURE__*/function () {
         case "create":
           {
             switch (message.stateName) {
-              case this.config.stateNames.comments:
+              case _AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.users:
                 {
-                  _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().addNewItemToState(this.config.stateNames.comments, stateObj, true); // find the entry in question
-
-                  var changedEntry = _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().findItemInState(this.config.stateNames.entries, {
-                    id: stateObj.commentOn
-                  }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_3__["isSame"]);
-
-                  if (changedEntry) {
-                    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show(changedEntry.title, username + " added comment " + stateObj.content);
-                  }
-
-                  break;
-                }
-
-              case this.config.stateNames.entries:
-                {
-                  _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().addNewItemToState(this.config.stateNames.entries, stateObj, true);
-                  _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show(stateObj.title, username + " added new entry");
-                  break;
-                }
-
-              case this.config.stateNames.users:
-                {
-                  _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().addNewItemToState(this.config.stateNames.users, stateObj, true);
-                  _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show(stateObj.username, stateObj.username + " has just registered.", 'message');
-                  break;
-                }
-            }
-
-            break;
-          }
-
-        case "update":
-          {
-            switch (message.stateName) {
-              case this.config.stateNames.entries:
-                {
-                  _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().updateItemInState(this.config.stateNames.entries, stateObj, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_3__["isSame"], true); // the entry could be selected by this (different user) but that would only be for comments, which is not what changed, so we are done
-
-                  break;
-                }
-            }
-
-            break;
-          }
-
-        case "delete":
-          {
-            switch (message.stateName) {
-              case this.config.stateNames.comments:
-                {
-                  _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().removeItemFromState(this.config.stateNames.comments, stateObj, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_3__["isSame"], true);
-                  break;
-                }
-
-              case this.config.stateNames.entries:
-                {
-                  var deletedEntry = _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().findItemInState(this.config.stateNames.entries, stateObj, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_3__["isSame"]);
-                  _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getStateManager().removeItemFromState(this.config.stateNames.entries, stateObj, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_3__["isSame"], true);
-                  _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show(deletedEntry.title, username + " has deleted this entry.", 'priority');
+                  _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.users, stateObj, true);
+                  _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().show(stateObj.username, stateObj.username + " has just registered.", 'message');
                   break;
                 }
             }
@@ -2518,7 +944,7 @@ var SocketListenerDelegate = /*#__PURE__*/function () {
   };
 
   _proto.getCurrentUser = function getCurrentUser() {
-    return _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getLoggedInUserId();
+    return _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getLoggedInUserId();
   };
 
   return SocketListenerDelegate;
@@ -2528,806 +954,27 @@ var SocketListenerDelegate = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/component/AbstractView.ts":
-/*!***************************************!*\
-  !*** ./src/component/AbstractView.ts ***!
-  \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/component/controller/CallManager.ts":
+/*!*************************************************!*\
+  !*** ./src/component/controller/CallManager.ts ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return AbstractView; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CallManager": () => (/* binding */ CallManager)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../view/ScoreSheetDetailView */ "./src/component/view/ScoreSheetDetailView.ts");
 
 
-var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('view-ts');
 
-var AbstractView = /*#__PURE__*/function () {
-  function AbstractView(applicationView, htmlDocument, uiConfig, uiPrefs, stateManager) {
-    this.applicationView = applicationView;
-    this.document = document;
-    this.uiConfig = uiConfig;
-    this.uiPrefs = uiPrefs;
-    this.config = applicationView.state;
-    this.stateManager = stateManager; // state change listening
 
-    this.stateChanged = this.stateChanged.bind(this); // event handlers
-
-    this.eventStartDrag = this.eventStartDrag.bind(this);
-    this.eventClickItem = this.eventClickItem.bind(this);
-    this.eventDeleteClickItem = this.eventDeleteClickItem.bind(this);
-    this.eventAction2Clicked = this.eventAction2Clicked.bind(this);
-    this.eventAction1Clicked = this.eventAction1Clicked.bind(this);
-  }
-
-  var _proto = AbstractView.prototype;
-
-  _proto.stateChanged = function stateChanged(managerName, name, newValue) {
-    this.updateView(name, newValue);
-  };
-
-  _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {
-    this.updateView(name, this.stateManager.getStateByName(name));
-  };
-
-  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {
-    this.updateView(name, this.stateManager.getStateByName(name));
-  };
-
-  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {
-    this.updateView(name, this.stateManager.getStateByName(name));
-  }
-  /* abstract */
-  ;
-
-  _proto.eventAction1Clicked = function eventAction1Clicked(event) {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-
-  _proto.eventAction2Clicked = function eventAction2Clicked(event) {
-    event.preventDefault();
-    event.stopPropagation();
-  };
-
-  _proto.eventStartDrag = function eventStartDrag(event) {
-    avLogger('Abstract View : drag start', 10);
-    var data = JSON.stringify(this.getDragData(event));
-    avLogger(data, 10); // @ts-ignore
-
-    event.dataTransfer.setData(this.applicationView.state.ui.draggable.draggableDataKeyId, data);
-  };
-
-  _proto.createResultForItem = function createResultForItem(name, item, dataSource) {
-    var _this = this;
-
-    if (dataSource === void 0) {
-      dataSource = null;
-    }
-
-    avLogger('Abstract View : creating Result');
-    avLogger(item);
-    var domConfig = this.uiConfig.dom;
-    var resultDataKeyId = this.getIdForStateItem(name, item);
-    var legacyDataKeyId = this.getLegacyIdForStateItem(name, item);
-
-    if (!dataSource) {
-      dataSource = domConfig.resultDataSourceValue;
-    }
-
-    var childEl = this.document.createElement(domConfig.resultsElementType);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.resultsClasses);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(childEl, domConfig.resultsElementAttributes); // the content may be structured
-
-    var textEl = childEl;
-
-    if (domConfig.resultContentDivClasses) {
-      var contentEl = this.document.createElement('div');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(contentEl, domConfig.resultContentDivClasses);
-      contentEl.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-      contentEl.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-      contentEl.setAttribute(domConfig.resultDataSourceId, dataSource);
-      textEl = this.document.createElement(domConfig.resultContentTextElementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(textEl, domConfig.resultContentTextClasses);
-      textEl.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-      textEl.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-      textEl.setAttribute(domConfig.resultDataSourceId, dataSource);
-      contentEl.appendChild(textEl);
-
-      if (domConfig.hasBackgroundImage) {
-        var imgEl = this.document.createElement(domConfig.imgElementType);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(imgEl, domConfig.imgClasses);
-        imgEl.setAttribute('src', this.getBackgroundImage(name, item));
-        childEl.appendChild(imgEl);
-      }
-
-      var buttonBadgeEl = this.document.createElement('div');
-      contentEl.appendChild(buttonBadgeEl);
-
-      if (domConfig.hasBadge) {
-        var badgeValue = this.getBadgeValue(name, item);
-
-        if (badgeValue > 0) {
-          var badgeEl = this.document.createElement(domConfig.badgeElementType);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(badgeEl, domConfig.badgeClasses);
-          badgeEl.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-          badgeEl.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-          badgeEl.setAttribute(domConfig.resultDataSourceId, dataSource);
-          buttonBadgeEl.appendChild(badgeEl);
-          badgeEl.innerHTML = "&nbsp;&nbsp;&nbsp;" + badgeValue + "&nbsp;&nbsp;&nbsp;";
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(badgeEl, domConfig.badgeElementAttributes);
-        }
-      }
-
-      if (domConfig.extraAction1Classes) {
-        var action = this.document.createElement('button');
-        action.setAttribute('type', 'button');
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(action, domConfig.extraAction1Classes);
-
-        if (domConfig.extraAction1Text) {
-          if (domConfig.extraAction1Text.trim().length > 0) {
-            action.innerHTML = domConfig.extraAction1Text;
-          }
-        }
-
-        if (domConfig.extraAction1IconClasses) {
-          var iconEl = document.createElement('i');
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, domConfig.extraAction1IconClasses);
-          iconEl.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-          iconEl.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-          iconEl.setAttribute(domConfig.resultDataSourceId, dataSource);
-          action.appendChild(iconEl);
-        }
-
-        action.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-        action.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-        action.setAttribute(domConfig.resultDataSourceId, dataSource);
-        action.addEventListener('click', function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          _this.eventAction1Clicked(event);
-        });
-        buttonBadgeEl.appendChild(action);
-      }
-
-      if (domConfig.extraAction2Classes) {
-        var _action = this.document.createElement('button');
-
-        _action.setAttribute('type', 'button');
-
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_action, domConfig.extraAction2Classes);
-
-        if (domConfig.extraAction2Text) {
-          if (domConfig.extraAction2Text.trim().length > 0) {
-            _action.innerHTML = domConfig.extraAction1Text;
-          }
-        }
-
-        if (domConfig.extraAction2IconClasses) {
-          var _iconEl = document.createElement('i');
-
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl, domConfig.extraAction2IconClasses);
-
-          _iconEl.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-
-          _iconEl.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-
-          _iconEl.setAttribute(domConfig.resultDataSourceId, dataSource);
-
-          _action.appendChild(_iconEl);
-        }
-
-        _action.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-
-        _action.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-
-        _action.setAttribute(domConfig.resultDataSourceId, dataSource);
-
-        _action.addEventListener('click', function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          _this.eventAction2Clicked(event);
-        });
-
-        buttonBadgeEl.appendChild(_action);
-      }
-
-      if (domConfig.isDeleteable) {
-        var deleteButtonEl = this.document.createElement('button');
-        deleteButtonEl.setAttribute('type', 'button');
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(deleteButtonEl, domConfig.deleteButtonClasses);
-
-        if (domConfig.deleteButtonText) {
-          if (domConfig.deleteButtonText.trim().length > 0) {
-            deleteButtonEl.innerHTML = domConfig.deleteButtonText;
-          }
-        }
-
-        if (domConfig.deleteButtonIconClasses) {
-          var _iconEl2 = document.createElement('i');
-
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl2, domConfig.deleteButtonIconClasses);
-
-          _iconEl2.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-
-          _iconEl2.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-
-          _iconEl2.setAttribute(domConfig.resultDataSourceId, dataSource);
-
-          deleteButtonEl.appendChild(_iconEl2);
-        }
-
-        deleteButtonEl.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-        deleteButtonEl.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-        deleteButtonEl.setAttribute(domConfig.resultDataSourceId, dataSource);
-        deleteButtonEl.addEventListener('click', function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          _this.eventDeleteClickItem(event);
-        });
-        buttonBadgeEl.appendChild(deleteButtonEl);
-      }
-
-      childEl.appendChild(contentEl);
-    } // add the key ids for selection
-
-
-    childEl.setAttribute(domConfig.resultDataKeyId, resultDataKeyId);
-    childEl.setAttribute(domConfig.resultLegacyDataKeyId, legacyDataKeyId);
-    childEl.setAttribute(domConfig.resultDataSourceId, dataSource);
-    var displayText = this.getDisplayValueForStateItem(name, item); // add modifiers for patient state
-
-    var modifier = this.getModifierForStateItem(name, item);
-    var secondModifier = this.getSecondaryModifierForStateItem(name, item);
-
-    switch (modifier) {
-      case 'normal':
-        {
-          avLogger('Abstract View: normal item');
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassNormal);
-
-          if (domConfig.iconNormal !== '') {
-            textEl.innerHTML = displayText + '  ' + domConfig.iconNormal;
-          } else {
-            textEl.innerText = displayText;
-          }
-
-          switch (secondModifier) {
-            case 'warning':
-              {
-                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassNormal, false);
-                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassWarning, true);
-
-                if (domConfig.iconWarning !== '') {
-                  textEl.innerHTML += '  ' + domConfig.iconWarning;
-                }
-
-                break;
-              }
-
-            case 'normal':
-              {
-                break;
-              }
-
-            case 'active':
-              {
-                if (domConfig.iconActive !== '') {
-                  textEl.innerHTML += '  ' + domConfig.iconActive;
-                }
-              }
-          }
-
-          break;
-        }
-
-      case 'active':
-        {
-          avLogger('Abstract View: active item', 10);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassActive);
-
-          if (domConfig.iconActive !== '') {
-            textEl.innerHTML = displayText + '  ' + domConfig.iconActive;
-          } else {
-            textEl.innerText = displayText;
-          }
-
-          switch (secondModifier) {
-            case 'warning':
-              {
-                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassActive, false);
-                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassWarning, true);
-
-                if (domConfig.iconWarning !== '') {
-                  textEl.innerHTML += '  ' + domConfig.iconWarning;
-                }
-
-                break;
-              }
-
-            case 'normal':
-              {
-                break;
-              }
-          }
-
-          break;
-        }
-
-      case 'inactive':
-        {
-          avLogger('Abstract View: inactive item', 10);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassInactive);
-
-          if (domConfig.iconInactive !== '') {
-            textEl.innerHTML = displayText + '  ' + domConfig.iconInactive;
-          } else {
-            textEl.innerText = displayText;
-          }
-
-          switch (secondModifier) {
-            case 'warning':
-              {
-                if (domConfig.iconWarning !== '') {
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassInactive, false);
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, domConfig.modifierClassWarning, true);
-                  textEl.innerHTML += '  ' + domConfig.iconWarning;
-                }
-
-                break;
-              }
-
-            case 'normal':
-              {
-                break;
-              }
-
-            case 'active':
-              {
-                if (domConfig.iconActive !== '') {
-                  textEl.innerHTML += '  ' + domConfig.iconActive;
-                }
-
-                break;
-              }
-          }
-
-          break;
-        }
-    }
-
-    return childEl;
-  };
-
-  _proto.createResultsForState = function createResultsForState(name, newState) {
-    var _this2 = this;
-
-    avLogger('Abstract View : creating Results', 10);
-    avLogger(newState);
-    var domConfig = this.uiConfig.dom; // remove the previous items from list
-
-    var viewEl = document.getElementById(domConfig.resultsId);
-    if (viewEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(viewEl); // add the new children
-
-    newState.map(function (item, index) {
-      var childEl = _this2.createResultForItem(name, item); // add draggable actions
-
-
-      if (domConfig.isDraggable) {
-        childEl.setAttribute('draggable', 'true');
-        childEl.addEventListener('dragstart', _this2.eventStartDrag);
-      } // add selection actions
-
-
-      if (domConfig.isClickable) {
-        childEl.addEventListener('click', _this2.eventClickItem);
-      }
-
-      avLogger("Abstract View: Adding child " + item.id);
-      if (viewEl) viewEl.appendChild(childEl);
-    });
-  };
-
-  return AbstractView;
-}();
-
-
-
-/***/ }),
-
-/***/ "./src/component/BoardGameSearchSidebarView.ts":
-/*!*****************************************************!*\
-  !*** ./src/component/BoardGameSearchSidebar.ts ***!
-  \*****************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
-/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../network/DownloadManager */ "./src/network/DownloadManager.ts");
-/* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _inheritsLoose(subClass, superClass) {
-  subClass.prototype = Object.create(superClass.prototype);
-  subClass.prototype.constructor = subClass;
-
-  _setPrototypeOf(subClass, superClass);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-
-
-
-
-
-
-var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('board-game-search-sidebar');
-var vLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('board-game-search-sidebar:detail');
-
-var BoardGameSearchSidebarView = /*#__PURE__*/function (_SidebarView) {
-  _inheritsLoose(BoardGameSearchSidebarView, _SidebarView); // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-
-
-  function BoardGameSearchSidebarView(applicationView, htmlDocument, stateManager) {
-    var _this;
-
-    _this = _SidebarView.call(this, applicationView, htmlDocument, applicationView.state.ui.boardGameSearchSideBar, applicationView.state.uiPrefs.boardGameSearchSideBar, stateManager) || this;
-    _this.config = applicationView.state; // handler binding
-
-    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
-    _this.eventClickItem = _this.eventClickItem.bind(_assertThisInitialized(_this));
-    _this.handleSearch = _this.handleSearch.bind(_assertThisInitialized(_this));
-    _this.handleSearchResultsCB = _this.handleSearchResultsCB.bind(_assertThisInitialized(_this)); // register state change listening
-
-    _this.localisedSM = new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__["default"]();
-
-    _this.localisedSM.addChangeListenerForName(_this.config.stateNames.bggSearchResults, _assertThisInitialized(_this));
-
-    vLogger(_this.localisedSM.getStateByName(_this.config.stateNames.bggSearchResults));
-    return _this;
-  }
-
-  var _proto = BoardGameSearchSidebarView.prototype;
-
-  _proto.handleSearchResultsCB = function handleSearchResultsCB(data, status, associatedStateName) {
-    this.changeSearchButton(true);
-    vLogger("callback for bgg search " + associatedStateName + " with status " + status + " - ");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      vLoggerDetail(data);
-      vLoggerDetail(data.data.findBoardGames);
-      this.localisedSM.setStateByName(this.config.stateNames.bggSearchResults, data.data.findBoardGames, true);
-    }
-  };
-
-  _proto.onDocumentLoaded = function onDocumentLoaded() {
-    _SidebarView.prototype.onDocumentLoaded.call(this); // get a link to the search button and search field and form
-    // @ts-ignore
-
-
-    this.formEl = this.document.getElementById(this.uiConfig.dom.formId); // @ts-ignore
-
-    this.buttonEl = this.document.getElementById(this.uiConfig.dom.buttonId); // @ts-ignore
-
-    this.queryEl = this.document.getElementById(this.uiConfig.dom.queryId);
-    this.formEl.addEventListener('submit', this.handleSearch);
-  };
-
-  _proto.getIdForStateItem = function getIdForStateItem(name, item) {
-    return item.gameId;
-  };
-
-  _proto.getLegacyIdForStateItem = function getLegacyIdForStateItem(name, item) {
-    return item.gameId;
-  };
-
-  _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
-    return item.name + " (" + item.year + ")     ";
-  };
-
-  _proto.getModifierForStateItem = function getModifierForStateItem(name, item) {
-    return 'normal';
-  };
-
-  _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
-    return 'normal';
-  };
-
-  _proto.eventClickItem = function eventClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log(event.target); // @ts-ignore
-
-    var boardGameId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(this.uiConfig.dom.resultDataSourceId); // @ts-ignore
-
-    vLoggerDetail("Board Game " + event.target + " with id " + boardGameId + " clicked from " + dataSource);
-    var boardGame = this.localisedSM.findItemInState(this.config.stateNames.bggSearchResults, {
-      gameId: parseInt(boardGameId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSameGame"]);
-
-    if (boardGame) {
-      this.applicationView.addBoardGameToDisplay(boardGame);
-    }
-
-    this.eventHide(null);
-  };
-
-  _proto.updateView = function updateView(name, newState) {
-    if (name === this.config.stateNames.bggSearchResults) {
-      vLogger("Updating for recent searches");
-      newState = this.localisedSM.getStateByName(this.config.stateNames.bggSearchResults);
-      vLogger(newState);
-      this.createResultsForState(name, newState);
-    }
-  };
-
-  _proto.getDragData = function getDragData(event) {
-    // use the actual id to pass the user to the droppable target
-    // @ts-ignore
-    var boardGameId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    vLoggerDetail("Board Game " + event.target.innerText + " with id " + boardGameId + " dragging");
-    var boardGame = this.localisedSM.findItemInState(this.config.stateNames.bggSearchResults, {
-      gameId: parseInt(boardGameId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSameGame"]);
-    vLoggerDetail(boardGame);
-    boardGame[this.config.ui.draggable.draggedType] = this.config.ui.draggable.draggedTypeBoardGame;
-    boardGame[this.config.ui.draggable.draggedFrom] = this.config.ui.draggable.draggedFromBoardGameSearch;
-    return boardGame;
-  };
-
-  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
-    // @ts-ignore
-    var boardGameId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(this.uiConfig.dom.resultDataSourceId); // @ts-ignore
-
-    vLoggerDetail("Board Game " + event.target + " with id " + boardGameId + " delete clicked from " + dataSource);
-    var boardGame = this.localisedSM.findItemInState(this.config.stateNames.bggSearchResults, {
-      id: parseInt(boardGameId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSameGame"]);
-    vLogger(boardGameId);
-
-    if (boardGame) {
-      this.localisedSM.removeItemFromState(this.config.stateNames.bggSearchResults, boardGame, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSameGame"], true);
-    }
-  };
-
-  _proto.getBadgeValue = function getBadgeValue(name, item) {
-    return 0;
-  };
-
-  _proto.getBackgroundImage = function getBackgroundImage(name, item) {
-    return "";
-  };
-
-  _proto.changeSearchButton = function changeSearchButton(enable) {
-    if (enable === void 0) {
-      enable = false;
-    }
-
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].removeAllChildren(this.buttonEl);
-
-    if (enable) {
-      if (this.buttonEl) this.buttonEl.removeAttribute("disabled");
-      if (this.buttonEl) this.buttonEl.innerHTML = 'Search';
-    } else {
-      if (this.buttonEl) this.buttonEl.setAttribute("disabled", "true");
-      if (this.buttonEl) this.buttonEl.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Loading...';
-    }
-  };
-
-  _proto.handleSearch = function handleSearch(event) {
-    vLogger("Handling search");
-    event.preventDefault();
-    event.stopPropagation(); // do we have anything to search for?
-
-    var queryText = this.queryEl.value.trim();
-    if (queryText.length == 0) return; // ok, have a search term, lets start a search
-
-    this.changeSearchButton(false); // get the query string from state obj
-
-    var query = this.config.apis.bggSearchCall;
-    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_4__["default"].addQLApiRequest(this.config.apis.graphQL, query, {
-      queryString: queryText
-    }, this.handleSearchResultsCB, this.config.stateNames.bggSearchResults);
-  };
-
-  return BoardGameSearchSidebarView;
-}(_SidebarView__WEBPACK_IMPORTED_MODULE_1__["default"]);
-
-/* harmony default export */ __webpack_exports__["default"] = (BoardGameSearchSidebarView);
-
-/***/ }),
-
-/***/ "./src/component/BoardGameView.tsx":
-/*!*****************************************!*\
-  !*** ./src/component/BoardGameView.tsx ***!
-  \*****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BoardGameView; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../AppTypes */ "./src/AppTypes.ts");
-
-
-
-
-var beLogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('view-ts:boardgameview'); // @ts-ignore
-
-function BoardGameView(_ref) {
-  var boardGame = _ref.boardGame,
-      showScoresHandler = _ref.showScoresHandler,
-      addToCollectionHandler = _ref.addToCollectionHandler,
-      removeFromCollectionHandler = _ref.removeFromCollectionHandler,
-      startScoreSheetHandler = _ref.startScoreSheetHandler;
-
-  if (boardGame) {
-    beLogger("Board Game " + boardGame.gameId);
-    var addButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-      type: "button",
-      className: "btn-primary btn-sm rounded p-1 mt-1 w-100",
-      "board-game-id": boardGame.gameId,
-      onClick: addToCollectionHandler
-    }, "\xA0\xA0Add to ", !_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].isLoggedIn() ? 'Browser' : '', " Collection \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-      className: "fas fa-star"
-    }), "\xA0\xA0"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-      type: "button",
-      className: "btn-primary btn-sm rounded p-1 mt-1 w-100",
-      "board-game-id": boardGame.gameId,
-      onClick: removeFromCollectionHandler
-    }, "\xA0\xA0Remove from Display\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-      className: "fas fa-trash-alt"
-    })));
-    var deleteButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-      type: "button",
-      className: "btn-warning btn-sm rounded p-1 mt-1 w-100",
-      "board-game-id": boardGame.gameId,
-      onClick: removeFromCollectionHandler
-    }, "\xA0\xA0Remove from ", !_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].isLoggedIn() ? 'Browser' : '', " Collection \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-      className: "far fa-star"
-    }), "\xA0\xA0");
-    var startScoreSheetButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-      type: "button",
-      className: "btn-secondary btn-sm rounded p-1 mr-2 mt-2 w-100",
-      "board-game-id": boardGame.gameId,
-      onClick: startScoreSheetHandler
-    }, "\xA0\xA0Start Score Sheet \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-      className: "fas fa-list-alt"
-    }), "\xA0\xA0"); // do we have any scores?
-
-    var scoreCount = 0;
-
-    if (boardGame.scoresheets) {
-      scoreCount = boardGame.scoresheets.length;
-    } //        let overlay = <div className="card-img-overlay">
-
-
-    var favouriteIcon = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-      className: "fas fa-star text-black"
-    });
-    var scoreBadge = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-      "board-game-id": boardGame.gameId,
-      className: "badge badge-pill badge-info ml-1",
-      onClick: showScoresHandler
-    }, "Scores: ", scoreCount);
-
-    if (boardGame.decorator && boardGame.decorator !== _AppTypes__WEBPACK_IMPORTED_MODULE_3__["Decorator"].Incomplete) {
-      var bggURL = "https://boardgamegeek.com/boardgame/" + boardGame.gameId;
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        href: bggURL,
-        target: "_blank"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        className: "card-img-top",
-        src: boardGame.image,
-        alt: "Card image cap"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-body scroll"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", {
-        className: "card-title"
-      }, boardGame.name, " (", boardGame.year, ") ", boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__["Decorator"].Persisted || boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__["Decorator"].PersistedLocally ? favouriteIcon : '', " ", boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__["Decorator"].Persisted || boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__["Decorator"].PersistedLocally ? scoreBadge : '', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), " ", _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].isLoggedIn() ? boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__["Decorator"].Persisted ? deleteButton : addButton : deleteButton), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-        className: "card-text"
-      }, boardGame.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-        className: "card-text"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
-        className: "text-muted"
-      }, "Play Time: ", boardGame.minPlayTime, " - ", boardGame.maxPlayTime, " min", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Players: ", boardGame.minPlayers, " - ", boardGame.maxPlayers, " Min Age:", boardGame.minAge, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "Categories: ", boardGame.categories))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-footer text-right text-muted"
-      }, "Rank: ", boardGame.rank, " Score: ", boardGame.averageScore, " from ", boardGame.numOfRaters, " raters", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), startScoreSheetButton)));
-    } else {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        className: "card-img-top",
-        src: "/img/spinner.gif",
-        alt: "Card image cap"
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-body"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", {
-        className: "card-title"
-      }, boardGame.name, " (", boardGame.year, ") "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-        className: "card-text"
-      }, "Loading..."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
-        className: "card-text"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
-        className: "text-muted"
-      }, "Loading..."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "card-footer text-right text-muted"
-      }, "Loading...")));
-    }
-  } else {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-      className: "col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-      className: "card"
-    }));
-  }
-}
-
-/***/ }),
-
-/***/ "./src/component/CallManager.ts":
-/*!**************************************!*\
-  !*** ./src/component/CallManager.ts ***!
-  \**************************************/
-/*! exports provided: CallManager */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CallManager", function() { return CallManager; });
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-
-
-
-var callLogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('call-manager');
+var callLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('call-manager');
 var CallManager = /*#__PURE__*/function () {
   CallManager.getInstance = function getInstance() {
     if (!CallManager._instance) {
@@ -3349,14 +996,14 @@ var CallManager = /*#__PURE__*/function () {
   var _proto = CallManager.prototype;
 
   _proto.startPeerConnection = function startPeerConnection() {
-    if (_Controller__WEBPACK_IMPORTED_MODULE_0__["default"].isLoggedIn()) {
+    if (_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
       // @ts-ignore  - is for the WebRTC peer via Nodejs
-      this.peer = new Peer(_Controller__WEBPACK_IMPORTED_MODULE_0__["default"].getLoggedInUsername(), {
+      this.peer = new Peer(_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getLoggedInUsername(), {
         path: '/peerjs',
         host: '/',
         debug: 2,
         secure: true
-      }); //this.peer = new Peer(controller.getLoggedInUsername(), {path: '/peerjs', host: '/', port: '3000', debug:1, secure:false});
+      }); //this.peer = new Peer(Controller.getInstance().getLoggedInUsername(), {path: '/peerjs', host: '/', port: '3000', debug:1, secure:false});
 
       this.peer.on('open', function (id) {
         callLogger('My peer ID is: ' + id);
@@ -3364,17 +1011,17 @@ var CallManager = /*#__PURE__*/function () {
     }
   };
 
-  _proto.initialise = function initialise(applicationView) {
+  _proto.initialise = function initialise() {
     this.startPeerConnection(); // @ts-ignore
 
-    this.webrtcDiv = document.getElementById(applicationView.state.ui.scoreSheet.dom.webrtc); //this.reset();
+    this.webrtcDiv = document.getElementById(_view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.ScoreSheetDom.webrtc); //this.reset();
   };
 
   _proto.startScoreSheet = function startScoreSheet() {
     var _this = this;
 
     try {
-      if (_Controller__WEBPACK_IMPORTED_MODULE_0__["default"].isLoggedIn()) {
+      if (_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
         if (navigator.mediaDevices.getUserMedia) {
           callLogger('Starting scoresheet stream');
           navigator.mediaDevices.getUserMedia({
@@ -3384,7 +1031,7 @@ var CallManager = /*#__PURE__*/function () {
             callLogger('Scoresheet stream started - adding video element');
             _this.myVideoStream = stream;
 
-            _this.addVideoStream(_Controller__WEBPACK_IMPORTED_MODULE_0__["default"].getLoggedInUsername(), _this.myVideoStream, true);
+            _this.addVideoStream(_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getLoggedInUsername(), _this.myVideoStream, true);
           });
         }
       }
@@ -3408,7 +1055,7 @@ var CallManager = /*#__PURE__*/function () {
       });
     }
 
-    if (this.webrtcDiv) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].removeAllChildren(this.webrtcDiv);
+    if (this.webrtcDiv) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(this.webrtcDiv);
     this.currentUserList = [];
 
     if (this.peer) {
@@ -3440,32 +1087,32 @@ var CallManager = /*#__PURE__*/function () {
     this.currentUserList.push(username);
     var videoCardHolder = document.createElement('div');
     videoCardHolder.setAttribute("id", username);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(videoCardHolder, 'col-sm-12 col-md-4 col-lg-2');
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCardHolder, 'col-sm-12 col-md-4 col-lg-2');
     var videoCard = document.createElement('div');
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(videoCard, 'card');
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCard, 'card');
     var videoCardTitle = document.createElement('div');
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(videoCardTitle, 'card-header');
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCardTitle, 'card-header');
     videoCardTitle.innerHTML = "<h5 class=\"card-title\">" + username + "</h5>";
     var videoCardBody = document.createElement('div');
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(videoCardBody, 'card-body p-0 text-center');
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCardBody, 'card-body p-0 text-center');
     var video = document.createElement('video');
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(video, 'video ');
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(video, 'video ');
     videoCard.appendChild(videoCardTitle);
     videoCard.appendChild(videoCardBody);
     videoCardBody.appendChild(video);
 
     if (isCurrentUser) {
       var videoCardFooter = document.createElement('div');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(videoCardFooter, 'card-footer');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCardFooter, 'card-footer');
       var footerContent = document.createElement('div');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(footerContent, 'd-flex w-100 justify-content-between mt-2');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(footerContent, 'd-flex w-100 justify-content-between mt-2');
       var stopVideoButton = document.createElement('button');
       stopVideoButton.setAttribute('type', 'button');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(stopVideoButton, 'btn btn-circle btn-warning');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn btn-circle btn-warning');
       stopVideoButton.innerHTML = '<i class="fas fa-video-slash"></i>';
       var muteMicButton = document.createElement('button');
       muteMicButton.setAttribute('type', 'button');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(muteMicButton, 'btn btn-circle btn-warning');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(muteMicButton, 'btn btn-circle btn-warning');
       muteMicButton.innerHTML = '<i class="fa fa-microphone"></i>';
       footerContent.appendChild(stopVideoButton);
       footerContent.appendChild(muteMicButton);
@@ -3476,12 +1123,12 @@ var CallManager = /*#__PURE__*/function () {
 
         if (isPaused) {
           video.play();
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(stopVideoButton, 'btn-success', false);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(stopVideoButton, 'btn-warning', true);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-success', false);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-warning', true);
         } else {
           video.pause();
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(stopVideoButton, 'btn-success', true);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(stopVideoButton, 'btn-warning', false);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-success', true);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-warning', false);
         }
       });
       muteMicButton.addEventListener('click', function () {
@@ -3489,12 +1136,12 @@ var CallManager = /*#__PURE__*/function () {
 
         if (isMuted) {
           video.muted = false;
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(muteMicButton, 'btn-success', false);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(muteMicButton, 'btn-warning', true);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(muteMicButton, 'btn-success', false);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(muteMicButton, 'btn-warning', true);
         } else {
           video.muted = true;
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(muteMicButton, 'btn-success', true);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(muteMicButton, 'btn-warning', false);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(muteMicButton, 'btn-success', true);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(muteMicButton, 'btn-warning', false);
         }
       });
       this.myVideo = video;
@@ -3512,7 +1159,7 @@ var CallManager = /*#__PURE__*/function () {
     var _this4 = this;
 
     callLogger("Asked to call user " + userId);
-    if (userId === _Controller__WEBPACK_IMPORTED_MODULE_0__["default"].getLoggedInUsername()) return; // don't call ourself
+    if (userId === _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getLoggedInUsername()) return; // don't call ourself
 
     var numberOfAttempts = 0;
     var index = this.currentUserList.findIndex(function (user) {
@@ -3563,7 +1210,7 @@ var CallManager = /*#__PURE__*/function () {
         videoEl.srcObject = null;
       }
 
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].removeAllChildren(userVideoCard);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(userVideoCard);
       var parentNode = userVideoCard.parentNode;
       if (parentNode) parentNode.removeChild(userVideoCard);
     }
@@ -3573,7 +1220,7 @@ var CallManager = /*#__PURE__*/function () {
     var _this5 = this;
 
     try {
-      if (_Controller__WEBPACK_IMPORTED_MODULE_0__["default"].isLoggedIn()) {
+      if (_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
         callLogger("Preparing to answer call from " + userId);
 
         if (navigator.mediaDevices.getUserMedia) {
@@ -3583,7 +1230,7 @@ var CallManager = /*#__PURE__*/function () {
           }).then(function (stream) {
             _this5.myVideoStream = stream;
 
-            _this5.addVideoStream(_Controller__WEBPACK_IMPORTED_MODULE_0__["default"].getLoggedInUsername(), _this5.myVideoStream, true);
+            _this5.addVideoStream(_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getLoggedInUsername(), _this5.myVideoStream, true);
 
             callLogger("Awaiting call from " + userId);
 
@@ -3611,485 +1258,33 @@ var CallManager = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/component/ChatSidebarView.ts":
-/*!******************************************!*\
-  !*** ./src/component/ChatLogsView.ts ***!
-  \******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/component/controller/ScoreSheetController.ts":
+/*!**********************************************************!*\
+  !*** ./src/component/controller/ScoreSheetController.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ScoreSheetController": () => (/* binding */ ScoreSheetController)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
-/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../socket/NotificationController */ "./src/socket/NotificationController.ts");
-/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../socket/ChatManager */ "./src/socket/ChatManager.ts");
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _socket_Types__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../socket/Types */ "./src/socket/Types.ts");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
-/* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../notification/NotificationManager */ "./src/notification/NotificationManager.ts");
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _inheritsLoose(subClass, superClass) {
-  subClass.prototype = Object.create(superClass.prototype);
-  subClass.prototype.constructor = subClass;
-
-  _setPrototypeOf(subClass, superClass);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-
-
-
-
-
-
-
-
-
-var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar');
-var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar:detail');
-
-var ChatSidebarView = /*#__PURE__*/function (_SidebarView) {
-  _inheritsLoose(ChatSidebarView, _SidebarView); // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-
-
-  function ChatSidebarView(applicationView, htmlDocument, stateManager) {
-    var _this;
-
-    _this = _SidebarView.call(this, applicationView, htmlDocument, applicationView.state.ui.chatSideBar, applicationView.state.uiPrefs.chatSideBar, stateManager) || this;
-    _this.selectedChatLog = null;
-    _this.config = applicationView.state; // handler binding
-
-    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
-    _this.eventClickItem = _this.eventClickItem.bind(_assertThisInitialized(_this));
-    _this.handleAddMessage = _this.handleAddMessage.bind(_assertThisInitialized(_this));
-    _this.handleChatLogsUpdated = _this.handleChatLogsUpdated.bind(_assertThisInitialized(_this));
-    _this.handleChatLogUpdated = _this.handleChatLogUpdated.bind(_assertThisInitialized(_this));
-    _this.handleChatStarted = _this.handleChatStarted.bind(_assertThisInitialized(_this));
-    _this.handleUserDrop = _this.handleUserDrop.bind(_assertThisInitialized(_this));
-    _this.leaveChat = _this.leaveChat.bind(_assertThisInitialized(_this));
-    _this.eventUserSelected = _this.eventUserSelected.bind(_assertThisInitialized(_this));
-    _this.eventHide = _this.eventHide.bind(_assertThisInitialized(_this));
-    _socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__["NotificationController"].getInstance().addListener(_assertThisInitialized(_this));
-    stateManager.addChangeListenerForName(_this.config.stateNames.users, _assertThisInitialized(_this));
-    return _this;
-  }
-
-  var _proto = ChatSidebarView.prototype;
-
-  _proto.handleNewInviteReceived = function handleNewInviteReceived(invite) {
-    throw new Error('Method not implemented.');
-  };
-
-  _proto.handleUserDrop = function handleUserDrop(event) {
-    csLogger('drop event on current chat room');
-
-    if (this.selectedChatLog) {
-      // @ts-ignore
-      var draggedObjectJSON = event.dataTransfer.getData(this.config.ui.draggable.draggableDataKeyId);
-      var draggedObject = JSON.parse(draggedObjectJSON);
-      csLogger(draggedObject);
-
-      if (draggedObject[this.config.ui.draggable.draggedType] === this.config.ui.draggable.draggedTypeUser) {
-        //add the user to the current chat if not already there
-        _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().sendInvite(draggedObject.username, this.selectedChatLog.roomName);
-        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_8__["default"].show('Chat', "Invited " + draggedObject.username + " to the chat.");
-      }
-    }
-  };
-
-  _proto.handleChatLogUpdated = function handleChatLogUpdated(log) {
-    csLogger("Handling chat log updates");
-    this.checkCanComment();
-    this.renderChatLog(log);
-    this.updateView('', {});
-  };
-
-  _proto.handleAddMessage = function handleAddMessage(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    csLogger("Handling message event");
-
-    if (this.selectedChatLog) {
-      // @ts-ignore
-      if (this.commentEl && this.commentEl.value.trim().length === 0) return; // @ts-ignore
-
-      var messageContent = this.commentEl.value.trim(); // @ts-ignore
-
-      this.commentEl.value = '';
-      var sentMessage = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().sendMessage(this.selectedChatLog.roomName, messageContent, _socket_Types__WEBPACK_IMPORTED_MODULE_6__["Priority"].Normal, {});
-
-      if (sentMessage) {
-        // add the message to our display
-        var messageEl = this.addChatMessage(sentMessage); // scroll to bottom
-
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].scrollSmoothTo(messageEl);
-      }
-    }
-  };
-
-  _proto.onDocumentLoaded = function onDocumentLoaded() {
-    var _this2 = this;
-
-    _SidebarView.prototype.onDocumentLoaded.call(this); // @ts-ignore
-
-
-    this.chatLogDiv = document.getElementById(this.uiConfig.dom.chatLogId); // @ts-ignore
-
-    this.commentEl = document.getElementById(this.uiConfig.dom.commentId); // @ts-ignore
-
-    this.chatForm = document.getElementById(this.uiConfig.dom.newFormId); // @ts-ignore
-
-    this.sendMessageButton = document.getElementById(this.uiConfig.dom.submitCommentId); // @ts-ignore
-
-    this.leaveChatButton = document.getElementById(this.uiConfig.dom.leaveChatId); // @ts-ignore
-
-    this.chatRoomDiv = document.getElementById(this.uiConfig.dom.chatLogRoomId); // @ts-ignore
-
-    this.fastUserSearch = document.getElementById(this.uiConfig.dom.chatFastSearchUserNames);
-    this.chatRoomDiv.addEventListener('dragover', function (event) {
-      csLoggerDetail('Dragged over');
-      if (_this2.selectedChatLog) event.preventDefault();
-    });
-    this.chatRoomDiv.addEventListener('drop', this.handleUserDrop);
-    this.chatForm.addEventListener('submit', this.handleAddMessage);
-    this.leaveChatButton.addEventListener('click', this.leaveChat);
-    this.checkCanComment(); // fast user search
-    // @ts-ignore
-
-    var fastSearchEl = $("#" + this.uiConfig.dom.chatFastSearchUserNames);
-    fastSearchEl.on('autocompleteselect', this.eventUserSelected);
-    this.updateView('', {});
-  };
-
-  _proto.eventUserSelected = function eventUserSelected(event, ui) {
-    event.preventDefault();
-    event.stopPropagation();
-    csLogger("User " + ui.item.label + " with id " + ui.item.value + " selected"); // @ts-ignore
-
-    event.target.innerText = ''; // add to the chat, if one selected
-
-    if (this.selectedChatLog) _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().sendInvite(ui.item.label, this.selectedChatLog.roomName);
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_8__["default"].show('Chat', "Invited " + ui.item.label + " to the chat.");
-  };
-
-  _proto.getIdForStateItem = function getIdForStateItem(name, item) {
-    return item.roomName;
-  };
-
-  _proto.getLegacyIdForStateItem = function getLegacyIdForStateItem(name, item) {
-    return item.roomName;
-  };
-
-  _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
-    return item.users.join(',');
-  };
-
-  _proto.getModifierForStateItem = function getModifierForStateItem(name, item) {
-    var result = 'inactive';
-
-    if (this.selectedChatLog) {
-      if (this.selectedChatLog.roomName === item.roomName) {
-        result = 'active';
-      }
-    }
-
-    return result;
-  };
-
-  _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
-    return this.getModifierForStateItem(name, item);
-  };
-
-  _proto.addChatMessage = function addChatMessage(message) {
-    var chatMessageEl = document.createElement('div');
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addRemoveClasses(chatMessageEl, "message"); // are we dealing with an "join"/"exit" message?
-
-    if (message.from.trim().length === 0) {
-      var messageSenderEl = document.createElement('div');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addRemoveClasses(messageSenderEl, 'message-sender');
-      messageSenderEl.innerText = message.message;
-      chatMessageEl.appendChild(messageSenderEl);
-    } else {
-      if (message.from === _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().getCurrentUser()) {
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addRemoveClasses(chatMessageEl, "my-message");
-      } else {
-        var _messageSenderEl = document.createElement('div');
-
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addRemoveClasses(_messageSenderEl, 'message-sender');
-        _messageSenderEl.innerText = message.from + '   ' + moment__WEBPACK_IMPORTED_MODULE_5___default()(message.created, 'YYYYMMDDHHmmss').format('DD/MM/YYYY ');
-        chatMessageEl.appendChild(_messageSenderEl);
-      }
-
-      var contentEl = document.createElement('div');
-
-      if (message.from === _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().getCurrentUser()) {
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addRemoveClasses(contentEl, "my-message-content");
-      } else {
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addRemoveClasses(contentEl, 'message-content');
-      }
-
-      contentEl.innerText = message.message;
-      chatMessageEl.appendChild(contentEl);
-    }
-
-    this.chatLogDiv.appendChild(chatMessageEl);
-    return chatMessageEl;
-  };
-
-  _proto.reRenderChatMessages = function reRenderChatMessages(chatLog) {
-    var _this3 = this;
-
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].removeAllChildren(this.chatLogDiv);
-    var messageEl = null;
-    chatLog.messages.forEach(function (message) {
-      messageEl = _this3.addChatMessage(message);
-    }); // scroll to the last message (if any)
-
-    if (messageEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].scrollTo(messageEl);
-  };
-
-  _proto.renderChatLog = function renderChatLog(chatLog) {
-    csLoggerDetail("Chat Log " + chatLog.roomName + " rendering");
-
-    if (this.selectedChatLog) {
-      if (this.selectedChatLog.roomName === chatLog.roomName) {
-        this.selectedChatLog = chatLog;
-        _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().touchChatLog(chatLog.roomName); // render the chat conversation
-
-        this.reRenderChatMessages(chatLog);
-      }
-    }
-
-    this.updateView('', {});
-  };
-
-  _proto.eventClickItem = function eventClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log(event.target); // @ts-ignore
-
-    var room = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(this.uiConfig.dom.resultDataSourceId); // @ts-ignore
-
-    csLoggerDetail("Chat Log " + event.target + " with id " + room + " clicked from " + dataSource);
-    this.selectedChatLog = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().getChatLog(room);
-
-    if (this.selectedChatLog) {
-      this.checkCanComment();
-      this.renderChatLog(this.selectedChatLog);
-    }
-  };
-
-  _proto.selectChatRoom = function selectChatRoom(room) {
-    csLoggerDetail("Chat Log with id " + room + " selected");
-    this.selectedChatLog = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().getChatLog(room);
-
-    if (this.selectedChatLog) {
-      this.checkCanComment();
-      this.renderChatLog(this.selectedChatLog);
-    }
-  };
-
-  _proto.updateView = function updateView(name, newState) {
-    if (name === this.config.stateNames.users) {
-      // load the search names into the search field
-      // except for the users already in the chat
-      csLoggerDetail("Updating the fast user search");
-      csLoggerDetail(newState); // what is my username?
-
-      var myUsername = _Controller__WEBPACK_IMPORTED_MODULE_7__["default"].getLoggedInUsername(); // @ts-ignore
-
-      var fastSearchEl = $("#" + this.uiConfig.dom.chatFastSearchUserNames); // for each name, construct the patient details to display and the id referenced
-
-      var fastSearchValues = [];
-
-      if (newState) {
-        newState.forEach(function (item) {
-          var searchValue = {
-            label: item.username,
-            value: item.id
-          }; // @ts-ignore
-
-          if (myUsername !== item.username) fastSearchValues.push(searchValue); // don't search for ourselves
-        });
-        fastSearchEl.autocomplete({
-          source: fastSearchValues
-        });
-        fastSearchEl.autocomplete('option', {
-          disabled: false,
-          minLength: 1
-        });
-      }
-    } else {
-      csLoggerDetail("Updating state with chat manager");
-      newState = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().getChatLogs();
-      csLoggerDetail(newState);
-      this.createResultsForState(name, newState);
-      this.checkCanComment();
-    }
-  };
-
-  _proto.getDragData = function getDragData(event) {};
-
-  _proto.handleChatLogsUpdated = function handleChatLogsUpdated() {
-    if (this.selectedChatLog) {
-      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().touchChatLog(this.selectedChatLog.roomName); // render the chat conversation
-
-      this.reRenderChatMessages(this.selectedChatLog);
-    }
-
-    this.updateView('', {});
-    this.checkCanComment();
-  };
-
-  _proto.handleChatStarted = function handleChatStarted(log) {
-    this.selectedChatLog = log;
-    this.renderChatLog(log);
-    this.updateView('', {});
-  };
-
-  _proto.eventHide = function eventHide(event) {
-    _SidebarView.prototype.eventHide.call(this, event); // deselect the selected chat
-
-
-    if (this.selectedChatLog) {
-      this.selectedChatLog = null;
-      this.checkCanComment();
-      this.clearChatLog();
-    }
-  };
-
-  _proto.handleOfflineMessagesReceived = function handleOfflineMessagesReceived(messages) {};
-
-  _proto.handleInvitationDeclined = function handleInvitationDeclined(room, username) {};
-
-  _proto.getBadgeValue = function getBadgeValue(name, item) {
-    return item.numOfNewMessages;
-  };
-
-  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log(event.target); // @ts-ignore
-
-    var room = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(this.uiConfig.dom.resultDataSourceId); // @ts-ignore
-
-    csLoggerDetail("Chat Log " + event.target + " with id " + room + " deleted from " + dataSource);
-
-    if (room) {
-      var log = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().getChatLog(room);
-
-      if (log) {
-        _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().leaveChat(room);
-
-        if (this.selectedChatLog && this.selectedChatLog.roomName === room) {
-          this.selectedChatLog = null;
-          this.clearChatLog();
-          this.checkCanComment();
-        }
-
-        this.updateView('', {});
-      }
-    }
-  };
-
-  _proto.getBackgroundImage = function getBackgroundImage(name, item) {
-    return "";
-  };
-
-  _proto.leaveChat = function leaveChat(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (this.selectedChatLog) {
-      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__["ChatManager"].getInstance().leaveChat(this.selectedChatLog.roomName);
-      this.selectedChatLog = null;
-      this.clearChatLog();
-      this.checkCanComment();
-    }
-
-    this.updateView('', {});
-  };
-
-  _proto.checkCanComment = function checkCanComment() {
-    if (this.selectedChatLog) {
-      if (this.commentEl) this.commentEl.removeAttribute("readonly");
-      if (this.commentEl) this.commentEl.removeAttribute("disabled");
-      if (this.sendMessageButton) this.sendMessageButton.removeAttribute("disabled");
-      if (this.leaveChatButton) this.leaveChatButton.removeAttribute("disabled");
-      if (this.fastUserSearch) this.fastUserSearch.removeAttribute("disabled");
-    } else {
-      if (this.commentEl) this.commentEl.setAttribute("readonly", "true");
-      if (this.commentEl) this.commentEl.setAttribute("disabled", "true");
-      if (this.sendMessageButton) this.sendMessageButton.setAttribute("disabled", "true");
-      if (this.leaveChatButton) this.leaveChatButton.setAttribute("disabled", "true");
-      if (this.fastUserSearch) this.fastUserSearch.setAttribute("disabled", "true");
-    }
-  };
-
-  _proto.clearChatLog = function clearChatLog() {
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].removeAllChildren(this.chatLogDiv);
-  };
-
-  return ChatSidebarView;
-}(_SidebarView__WEBPACK_IMPORTED_MODULE_1__["default"]);
-
-/* harmony default export */ __webpack_exports__["default"] = (ChatSidebarView);
-
-/***/ }),
-
-/***/ "./src/component/ScoreSheetController.ts":
-/*!***********************************************!*\
-  !*** ./src/component/ScoreSheetController.ts ***!
-  \***********************************************/
-/*! exports provided: ScoreSheetController */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScoreSheetController", function() { return ScoreSheetController; });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _socket_Types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../socket/Types */ "./src/socket/Types.ts");
-/* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../notification/NotificationManager */ "./src/notification/NotificationManager.ts");
-/* harmony import */ var _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ScoreSheetDetailView */ "./src/component/ScoreSheetView.ts");
-/* harmony import */ var _util_UUID__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/UUID */ "./src/util/UUID.ts");
-/* harmony import */ var _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../socket/SocketManager */ "./src/socket/SocketManager.ts");
-/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _socket_Types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../socket/Types */ "./src/socket/Types.ts");
+/* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../notification/NotificationManager */ "./src/notification/NotificationManager.ts");
+/* harmony import */ var _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../view/ScoreSheetDetailView */ "./src/component/view/ScoreSheetDetailView.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _util_UUID__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../util/UUID */ "./src/util/UUID.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../socket/ChatManager */ "./src/socket/ChatManager.ts");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
-/* harmony import */ var _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../template/TemplateManager */ "./src/template/TemplateManager.ts");
-/* harmony import */ var _CallManager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./CallManager */ "./src/component/CallManager.ts");
-/* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../template/TemplateManager */ "./src/template/TemplateManager.ts");
+/* harmony import */ var _CallManager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./CallManager */ "./src/component/controller/CallManager.ts");
+/* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
+/* harmony import */ var _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../socket/SocketManager */ "./src/socket/SocketManager.ts");
+
 
 
 
@@ -4104,6 +1299,14 @@ __webpack_require__.r(__webpack_exports__);
 
 var sscLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('score-sheet-controller');
 var ScoreSheetController = /*#__PURE__*/function () {
+  ScoreSheetController.getInstance = function getInstance() {
+    if (!ScoreSheetController._instance) {
+      ScoreSheetController._instance = new ScoreSheetController();
+    }
+
+    return ScoreSheetController._instance;
+  };
+
   function ScoreSheetController() {
     this.applicationView = null;
     this.currentScoreRoom = null;
@@ -4114,7 +1317,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     this.currentUsersInScoreSheet = [];
     this.intervalTimer = -1;
     this.stateManager = new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_11__["default"]();
-    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].addChatReceiver(this); // bind events
+    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().addChatReceiver(this); // bind events
 
     this.receiveLogin = this.receiveLogin.bind(this);
     this.receiveLogout = this.receiveLogout.bind(this);
@@ -4138,14 +1341,6 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
     this.reset();
   }
-
-  ScoreSheetController.getInstance = function getInstance() {
-    if (!ScoreSheetController._instance) {
-      ScoreSheetController._instance = new ScoreSheetController();
-    }
-
-    return ScoreSheetController._instance;
-  };
 
   var _proto = ScoreSheetController.prototype;
 
@@ -4182,15 +1377,15 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
   _proto.initialise = function initialise(applicationView) {
     this.applicationView = applicationView;
-    _CallManager__WEBPACK_IMPORTED_MODULE_10__["CallManager"].getInstance().initialise(applicationView);
+    _CallManager__WEBPACK_IMPORTED_MODULE_10__.CallManager.getInstance().initialise();
   };
 
   _proto.receiveInvitation = function receiveInvitation(invite) {
     if (!this.isLoggedIn()) return; // we are not logged in
 
-    if (invite.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet) return; //ignore non-score sheets
+    if (invite.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet) return; //ignore non-score sheets
 
-    if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().isUserInBlockedList(invite.from)) {
+    if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__.ChatManager.getInstance().isUserInBlockedList(invite.from)) {
       sscLogger("Received invite from blocked user - ignoring");
       return;
     } // are we already in a scoresheet?
@@ -4202,7 +1397,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
       if (this.currentScoreSheet.room !== invite.room) {
         // decline the invite, only one score sheet at a time
         sscLogger("Received invite - already in score sheet - declining");
-        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].sendDeclineInvite(invite.room, this.getCurrentUser(), _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet); // user declines to join the scoresheet
+        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().sendDeclineInvite(invite.room, this.getCurrentUser(), _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet); // user declines to join the scoresheet
 
         return;
       }
@@ -4211,21 +1406,21 @@ var ScoreSheetController = /*#__PURE__*/function () {
     if (invite.requiresAcceptDecline) {
       // notify the user of the invitation
       if (!confirm("You have been invited by user " + invite.from + " to joint a chat room for the board game " + invite.subject + " score sheet")) {
-        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].sendDeclineInvite(invite.room, this.getCurrentUser(), _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet); // user declines to join the scoresheet
+        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().sendDeclineInvite(invite.room, this.getCurrentUser(), _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet); // user declines to join the scoresheet
 
         return;
       }
     } // prepare to receive a call
 
 
-    _CallManager__WEBPACK_IMPORTED_MODULE_10__["CallManager"].getInstance().prepareToAnswerCallFrom(invite.from); // notify the user of the new chat
+    _CallManager__WEBPACK_IMPORTED_MODULE_10__.CallManager.getInstance().prepareToAnswerCallFrom(invite.from); // notify the user of the new chat
 
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].show('Score Sheet', "Joining score sheet", 'info', 7000);
-    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].joinChat(this.getCurrentUser(), invite.room, _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet);
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().show('Score Sheet', "Joining score sheet", 'info', 7000);
+    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().joinChat(this.getCurrentUser(), invite.room, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet);
     this.currentScoreRoom = invite.room;
     this.currentlySelectedBoardGame = invite.attachment.boardGame;
     this.currentScoreSheet = invite.attachment.scoreSheet;
-    _Controller__WEBPACK_IMPORTED_MODULE_8__["default"].addBoardGameToDisplay(invite.attachment.boardGame); // check to see if the timer should be going
+    _Controller__WEBPACK_IMPORTED_MODULE_8__["default"].getInstance().addBoardGameToDisplay(invite.attachment.boardGame); // check to see if the timer should be going
 
     if (this.isTimerGoing()) {
       this.stopTimerStoppedByAnotherUser();
@@ -4233,7 +1428,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     } // ask the view to initialise with these values
 
 
-    _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__["ScoreSheetView"].getInstance().stateChanged("", "", this.currentScoreSheet); // change to the score sheet
+    _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.getInstance().stateChanged("", "", this.currentScoreSheet); // change to the score sheet
 
     this.applicationView.handleShowScoreSheet(null);
   };
@@ -4250,7 +1445,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     if (!this.currentScoreRoom) return; // we are not in a room
 
     messages.forEach(function (message) {
-      if (message.type === _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet) {
+      if (message.type === _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet) {
         // only process offline messages for scoresheet and our current room
         if (_this.currentScoreRoom === message.room) {
           _this.receiveMessage(message);
@@ -4265,7 +1460,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     if (!this.isLoggedIn()) return; // we are not logged in
 
     invites.forEach(function (invite) {
-      if (invite.type === _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet) {
+      if (invite.type === _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet) {
         // only process offline invites to scoresheet
         _this2.receiveInvitation(invite);
       }
@@ -4273,19 +1468,19 @@ var ScoreSheetController = /*#__PURE__*/function () {
   };
 
   _proto.receiveDecline = function receiveDecline(room, username, type) {
-    if (type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet) return; //ignore non-score sheets
+    if (type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet) return; //ignore non-score sheets
 
     sscLogger("Receive decline for room " + room + " from " + username);
 
     if (this.currentScoreRoom) {
       if (this.currentScoreRoom === room) {
-        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].show('Score Sheet', "User " + username + " declined the invitation.", 'warning');
+        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().show('Score Sheet', "User " + username + " declined the invitation.", 'warning');
       }
     }
   };
 
   _proto.receiveJoinedRoom = function receiveJoinedRoom(users) {
-    if (users.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet) return; //ignore non-score sheets
+    if (users.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet) return; //ignore non-score sheets
 
     if (!this.isLoggedIn()) return; // we are not logged in
 
@@ -4310,11 +1505,11 @@ var ScoreSheetController = /*#__PURE__*/function () {
       this.sendScoreSheetState(this.currentScoreSheet, false);
     }
 
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].show(this.currentlySelectedBoardGame.name, "User " + users.username + " joined the scoresheet.", 'message', 120000);
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().show(this.currentlySelectedBoardGame.name, "User " + users.username + " joined the scoresheet.", 'message', 120000);
   };
 
   _proto.receivedLeftRoom = function receivedLeftRoom(users) {
-    if (users.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet) return; //ignore non-score sheets
+    if (users.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet) return; //ignore non-score sheets
 
     if (!this.isLoggedIn()) return; // we are not logged in
 
@@ -4339,7 +1534,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
       this.sendScoreSheetState(this.currentScoreSheet, false);
     }
 
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].show(this.currentlySelectedBoardGame.name, "User " + users.username + " left the scoresheet.", 'warning', 100000);
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().show(this.currentlySelectedBoardGame.name, "User " + users.username + " left the scoresheet.", 'warning', 100000);
   };
 
   _proto.receiveUserList = function receiveUserList(users) {} // will be managed in the transfer of sheet data
@@ -4372,22 +1567,22 @@ var ScoreSheetController = /*#__PURE__*/function () {
       this.currentlySelectedBoardGame = boardGame;
       if (this.isLoggedIn()) this.currentUsersInScoreSheet = [this.getCurrentUser()];
       this.isRoomCreator = true;
-      this.currentScoreRoom = _util_UUID__WEBPACK_IMPORTED_MODULE_4__["default"].getUniqueId();
+      this.currentScoreRoom = _util_UUID__WEBPACK_IMPORTED_MODULE_5__["default"].getUniqueId();
       this.currentScoreSheet = {
         room: this.currentScoreRoom,
         boardGameName: boardGame.name,
-        sheetLayoutOptions: _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__["TemplateManager"].getInstance().getScoreSheetTemplate(boardGame),
+        sheetLayoutOptions: _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__.TemplateManager.getInstance().getScoreSheetTemplate(boardGame),
         timer: 0,
         timerGoing: false,
-        data: _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__["TemplateManager"].getInstance().getScoreSheetStartingData(boardGame),
+        data: _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__.TemplateManager.getInstance().getScoreSheetStartingData(boardGame),
         isFinished: false
       };
       sscLogger(this.currentScoreSheet);
-      _CallManager__WEBPACK_IMPORTED_MODULE_10__["CallManager"].getInstance().startScoreSheet(); // store the score sheet locally
+      _CallManager__WEBPACK_IMPORTED_MODULE_10__.CallManager.getInstance().startScoreSheet(); // store the score sheet locally
 
-      this.stateManager.setStateByName(this.applicationView.state.stateNames.scoreSheet, this.currentScoreSheet, true); // start a new chat room, will automatically manage if logged in or not
+      this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.scoreSheet, this.currentScoreSheet, true); // start a new chat room, will automatically manage if logged in or not
 
-      if (this.isLoggedIn()) _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].joinChat(this.getCurrentUser(), this.currentScoreRoom, _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet);
+      if (this.isLoggedIn()) _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().joinChat(this.getCurrentUser(), this.currentScoreRoom, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet);
     }
   };
 
@@ -4410,8 +1605,8 @@ var ScoreSheetController = /*#__PURE__*/function () {
       sscLogger("Inviting user " + username + " to score sheet");
 
       if (this.isRoomCreator) {
-        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].show(this.currentlySelectedBoardGame.name, "You have invited user " + username + " to the scoresheet", 'message');
-        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].sendInvite(this.getCurrentUser(), username, this.currentScoreRoom, _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet, true, this.currentlySelectedBoardGame.name, {
+        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().show(this.currentlySelectedBoardGame.name, "You have invited user " + username + " to the scoresheet", 'message');
+        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().sendInvite(this.getCurrentUser(), username, this.currentScoreRoom, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet, true, this.currentlySelectedBoardGame.name, {
           scoreSheet: this.currentScoreSheet,
           boardGame: this.currentlySelectedBoardGame
         });
@@ -4426,7 +1621,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     sscLogger(message);
     if (!this.isLoggedIn()) return; // we are not logged in
 
-    if (message.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet) return; //ignore non-score sheets
+    if (message.type !== _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet) return; //ignore non-score sheets
 
     if (message.from === this.getCurrentUser()) return; // my own messages can be ignored
 
@@ -4434,7 +1629,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
       // are we in a room?
       if (this.currentScoreRoom === message.room) {
         // are we listening to this score sheet room?
-        if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().isUserInBlockedList(message.from)) {
+        if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__.ChatManager.getInstance().isUserInBlockedList(message.from)) {
           sscLogger("Received message from blocked user - ignoring");
           return;
         } // are we scoring the right sheet?
@@ -4487,7 +1682,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
             this.leave(); // reset the view
 
-            _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__["ScoreSheetView"].getInstance().resetDisplay();
+            _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.getInstance().resetDisplay();
             this.applicationView.switchBetweenCollectionAndScoreSheet(true);
           }
         }
@@ -4501,7 +1696,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
   _proto.createScoreSheetFromTable = function createScoreSheetFromTable() {
     var scoreSheet = null;
-    var tableData = _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__["ScoreSheetView"].getInstance().getTableData();
+    var tableData = _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.getInstance().getTableData();
 
     if (this.currentScoreSheet && this.currentScoreRoom) {
       scoreSheet = {
@@ -4509,7 +1704,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
         data: tableData,
         boardGameName: this.currentlySelectedBoardGame.name,
         timer: this.currentScoreSheet.timer,
-        sheetLayoutOptions: this.currentlySelectedBoardGame ? _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__["TemplateManager"].getInstance().getScoreSheetTemplate(this.currentlySelectedBoardGame) : null,
+        sheetLayoutOptions: this.currentlySelectedBoardGame ? _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__.TemplateManager.getInstance().getScoreSheetTemplate(this.currentlySelectedBoardGame) : null,
         timerGoing: this.currentScoreSheet.timerGoing,
         isFinished: false
       };
@@ -4526,7 +1721,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     if (this.currentScoreRoom && this.isLoggedIn()) {
       var created = parseInt(moment__WEBPACK_IMPORTED_MODULE_7___default()().format('YYYYMMDDHHmmss')); // @ts-ignore
 
-      _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].sendMessage(this.getCurrentUser(), this.currentScoreRoom, 'data', created, _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet, _socket_Types__WEBPACK_IMPORTED_MODULE_1__["Priority"].Normal, scoreSheet);
+      socketManager.sendMessage(this.getCurrentUser(), this.currentScoreRoom, 'data', created, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.Priority.Normal, scoreSheet);
     }
   };
 
@@ -4535,15 +1730,16 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
     sscLogger("Handling pause timer");
     if (!this.currentScoreSheet) return;
-    this.currentScoreSheet.timerGoing = true;
+    this.currentScoreSheet.timerGoing = true; // @ts-ignore
+
     this.intervalTimer = setInterval(function () {
       if (_this3.currentScoreSheet && _this3.currentScoreSheet.timerGoing) {
         _this3.currentScoreSheet.timer++;
-        _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__["ScoreSheetView"].getInstance().updateTimer(_this3.currentScoreSheet.timer, !_this3.currentScoreSheet.timerGoing);
+        _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.getInstance().updateTimer(_this3.currentScoreSheet.timer, !_this3.currentScoreSheet.timerGoing);
       } else {
         if (_this3.currentScoreSheet) {
           _this3.currentScoreSheet.timerGoing = false;
-          _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__["ScoreSheetView"].getInstance().updateTimer(_this3.currentScoreSheet.timer, !_this3.currentScoreSheet.timerGoing);
+          _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.getInstance().updateTimer(_this3.currentScoreSheet.timer, !_this3.currentScoreSheet.timerGoing);
         }
       }
     }, 1000);
@@ -4569,7 +1765,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
       if (this.currentScoreSheet) {
         this.currentScoreSheet.timerGoing = false;
         this.saveCurrentScoreSheet(this.currentScoreSheet);
-        _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__["ScoreSheetView"].getInstance().updateTimer(this.currentScoreSheet.timer, !this.currentScoreSheet.timerGoing);
+        _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.getInstance().updateTimer(this.currentScoreSheet.timer, !this.currentScoreSheet.timerGoing);
       } // ask everyone to pause their timers
 
 
@@ -4592,7 +1788,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
     if (scoreSheet) {
       sscLogger("Letting the template manager change any values");
-      var changedByTM = _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__["TemplateManager"].getInstance().transformDataAfterUserChange(this.currentlySelectedBoardGame, scoreSheet);
+      var changedByTM = _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__.TemplateManager.getInstance().transformDataAfterUserChange(this.currentlySelectedBoardGame, scoreSheet);
 
       if (changedByTM) {
         sscLogger(scoreSheet);
@@ -4612,7 +1808,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
     if (this.currentScoreSheet && this.currentScoreRoom) {
       if (this.isLoggedIn()) {
-        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_5__["default"].leaveChat(this.getCurrentUser(), this.currentScoreRoom, _socket_Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ScoreSheet);
+        _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().leaveChat(this.getCurrentUser(), this.currentScoreRoom, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet);
       }
 
       this.reset();
@@ -4621,15 +1817,15 @@ var ScoreSheetController = /*#__PURE__*/function () {
   };
 
   _proto.addUserToScoreSheet = function addUserToScoreSheet(username) {
-    if (_Controller__WEBPACK_IMPORTED_MODULE_8__["default"].isLoggedIn()) {
+    if (_Controller__WEBPACK_IMPORTED_MODULE_8__["default"].getInstance().isLoggedIn()) {
       sscLogger("Calling user " + username);
-      _CallManager__WEBPACK_IMPORTED_MODULE_10__["CallManager"].getInstance().callUser(username);
+      _CallManager__WEBPACK_IMPORTED_MODULE_10__.CallManager.getInstance().callUser(username);
     }
   };
 
   _proto.removeUserFromScoreSheet = function removeUserFromScoreSheet(username) {
     sscLogger("Removing user " + username);
-    _CallManager__WEBPACK_IMPORTED_MODULE_10__["CallManager"].getInstance().removeUser(username);
+    _CallManager__WEBPACK_IMPORTED_MODULE_10__.CallManager.getInstance().removeUser(username);
   };
 
   _proto.reset = function reset() {
@@ -4639,7 +1835,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     this.isRoomCreator = false;
     this.currentUsersInScoreSheet = [];
     this.stopTimerStoppedByAnotherUser();
-    _CallManager__WEBPACK_IMPORTED_MODULE_10__["CallManager"].getInstance().reset();
+    _CallManager__WEBPACK_IMPORTED_MODULE_10__.CallManager.getInstance().reset();
   };
 
   _proto.isLoggedIn = function isLoggedIn() {
@@ -4650,7 +1846,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     sscLogger('Handling save'); // add the data to the selected board game
 
     if (this.currentlySelectedBoardGame) {
-      var saveData = _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__["TemplateManager"].getInstance().getSaveData(this.currentlySelectedBoardGame, scoreSheet);
+      var saveData = _template_TemplateManager__WEBPACK_IMPORTED_MODULE_9__.TemplateManager.getInstance().getSaveData(this.currentlySelectedBoardGame, scoreSheet);
       sscLogger(saveData);
 
       if (!this.currentlySelectedBoardGame.scoresheets) {
@@ -4658,7 +1854,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
       }
 
       this.currentlySelectedBoardGame.scoresheets.push(saveData);
-      _Controller__WEBPACK_IMPORTED_MODULE_8__["default"].scoreSheetAddedToBoardGame(this.currentlySelectedBoardGame, saveData);
+      _Controller__WEBPACK_IMPORTED_MODULE_8__["default"].getInstance().scoreSheetAddedToBoardGame(this.currentlySelectedBoardGame, saveData);
     }
   };
 
@@ -4668,7 +1864,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     }
 
     this.currentScoreSheet = scoreSheet;
-    this.stateManager.setStateByName(this.applicationView.state.stateNames.scoreSheet, this.currentScoreSheet, informListeners);
+    this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.scoreSheet, this.currentScoreSheet, informListeners);
   };
 
   _proto.stopTimerStoppedByAnotherUser = function stopTimerStoppedByAnotherUser() {
@@ -4676,7 +1872,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
 
     if (this.intervalTimer > 0) {
       clearInterval(this.intervalTimer);
-      if (this.currentScoreSheet) _ScoreSheetView__WEBPACK_IMPORTED_MODULE_3__["ScoreSheetView"].getInstance().updateTimer(this.currentScoreSheet.timer, true);
+      if (this.currentScoreSheet) _view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_3__.ScoreSheetDetailView.getInstance().updateTimer(this.currentScoreSheet.timer, true);
     }
 
     this.intervalTimer = -1;
@@ -4688,21 +1884,239 @@ ScoreSheetController.SOURCE_View = 'ssv';
 
 /***/ }),
 
-/***/ "./src/component/ScoreSheetSidebarView.ts":
-/*!************************************************!*\
-  !*** ./src/component/ScoreSheetsView.ts ***!
-  \************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/component/sidebar/BoardGameSearchSidebar.ts":
+/*!*********************************************************!*\
+  !*** ./src/component/sidebar/BoardGameSearchSidebar.ts ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/SidebarViewContainer */ "./src/ui-framework/SidebarViewContainer.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+var BoardGameSearchSidebar = /*#__PURE__*/function (_SidebarViewContainer) {
+  _inheritsLoose(BoardGameSearchSidebar, _SidebarViewContainer);
+
+  function BoardGameSearchSidebar() {
+    return _SidebarViewContainer.call(this, BoardGameSearchSidebar.BGGSEARCH_SidebarPrefs) || this;
+  }
+
+  return BoardGameSearchSidebar;
+}(_ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+BoardGameSearchSidebar.BGGSEARCH_SidebarPrefs = {
+  id: 'boardGameSearchSidebar',
+  expandedSize: '35%',
+  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.left
+};
+BoardGameSearchSidebar.bggSearchResults = 'bggSearchResults';
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BoardGameSearchSidebar);
+
+/***/ }),
+
+/***/ "./src/component/sidebar/ChatRoomsSidebar.ts":
+/*!***************************************************!*\
+  !*** ./src/component/sidebar/ChatRoomsSidebar.ts ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/SidebarViewContainer */ "./src/ui-framework/SidebarViewContainer.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+var ChatRoomsSidebar = /*#__PURE__*/function (_SidebarViewContainer) {
+  _inheritsLoose(ChatRoomsSidebar, _SidebarViewContainer);
+
+  function ChatRoomsSidebar() {
+    return _SidebarViewContainer.call(this, ChatRoomsSidebar.SidebarPrefs) || this;
+  }
+
+  return ChatRoomsSidebar;
+}(_ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+ChatRoomsSidebar.SidebarPrefs = {
+  id: 'userSearchSideBar',
+  expandedSize: '35%',
+  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.left
+};
+ChatRoomsSidebar.SidebarContainers = {
+  chatLogs: 'chatLogs',
+  chatLog: 'chatLogRoom'
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ChatRoomsSidebar);
+
+/***/ }),
+
+/***/ "./src/component/sidebar/ScoreSheetsSidebar.ts":
+/*!*****************************************************!*\
+  !*** ./src/component/sidebar/ScoreSheetsSidebar.ts ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/SidebarViewContainer */ "./src/ui-framework/SidebarViewContainer.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+var ScoreSheetsSidebar = /*#__PURE__*/function (_SidebarViewContainer) {
+  _inheritsLoose(ScoreSheetsSidebar, _SidebarViewContainer);
+
+  function ScoreSheetsSidebar() {
+    return _SidebarViewContainer.call(this, ScoreSheetsSidebar.SidebarPrefs) || this;
+  }
+
+  return ScoreSheetsSidebar;
+}(_ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+ScoreSheetsSidebar.SidebarPrefs = {
+  id: 'scoreSheetSidebar',
+  expandedSize: '40%',
+  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.bottom
+};
+ScoreSheetsSidebar.scoreSheets = 'scoreSheets';
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ScoreSheetsSidebar);
+
+/***/ }),
+
+/***/ "./src/component/sidebar/UserSearchSidebar.ts":
+/*!****************************************************!*\
+  !*** ./src/component/sidebar/UserSearchSidebar.ts ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/SidebarViewContainer */ "./src/ui-framework/SidebarViewContainer.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+var UserSearchSidebar = /*#__PURE__*/function (_SidebarViewContainer) {
+  _inheritsLoose(UserSearchSidebar, _SidebarViewContainer);
+
+  function UserSearchSidebar() {
+    return _SidebarViewContainer.call(this, UserSearchSidebar.SidebarPrefs) || this;
+  }
+
+  return UserSearchSidebar;
+}(_ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+UserSearchSidebar.SidebarPrefs = {
+  id: 'userSearchSideBar',
+  expandedSize: '35%',
+  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.left
+};
+UserSearchSidebar.SidebarContainers = {
+  recentSearches: 'userSearchZone',
+  favourites: 'favouriteUsersDropZone',
+  blocked: 'blockedUsersDropZone'
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserSearchSidebar);
+
+/***/ }),
+
+/***/ "./src/component/view/BGGSearchView.ts":
+/*!*********************************************!*\
+  !*** ./src/component/view/BGGSearchView.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../network/DownloadManager */ "./src/network/DownloadManager.ts");
+/* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
+/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -4731,213 +2145,1299 @@ function _setPrototypeOf(o, p) {
 
 
 
-var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('score-sheet-sidebar');
-var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('score-sheet-sidebar:detail');
 
-var ScoreSheetSidebarView = /*#__PURE__*/function (_SidebarView) {
-  _inheritsLoose(ScoreSheetSidebarView, _SidebarView);
 
-  function ScoreSheetSidebarView(applicationView, htmlDocument, stateManager) {
+var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('board-game-search-sidebar');
+var vLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('board-game-search-sidebar:detail');
+
+var BGGSearchView = /*#__PURE__*/function (_AbstractView) {
+  _inheritsLoose(BGGSearchView, _AbstractView); // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+
+
+  function BGGSearchView() {
     var _this;
 
-    _this = _SidebarView.call(this, applicationView, htmlDocument, applicationView.state.ui.scoreSheetSideBar, applicationView.state.uiPrefs.scoreSheetSideBar, stateManager) || this;
-    _this.selectedBoardGame = null;
-    _this.config = applicationView.state; // handler binding
+    _this = _AbstractView.call(this, BGGSearchView.BGGSEARCH_ViewConfig, new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_3__["default"](), _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.bggSearchResults) || this; // handler binding
 
-    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
-    _this.eventClickItem = _this.eventClickItem.bind(_assertThisInitialized(_this));
+    _this.handleSearch = _this.handleSearch.bind(_assertThisInitialized(_this));
+    _this.handleSearchResultsCB = _this.handleSearchResultsCB.bind(_assertThisInitialized(_this));
     return _this;
   }
 
-  var _proto = ScoreSheetSidebarView.prototype;
+  var _proto = BGGSearchView.prototype;
 
-  _proto.onDocumentLoaded = function onDocumentLoaded() {
-    _SidebarView.prototype.onDocumentLoaded.call(this);
+  _proto.handleSearchResultsCB = function handleSearchResultsCB(data, status, associatedStateName) {
+    this.changeSearchButton(true);
+    vLogger("callback for bgg search " + associatedStateName + " with status " + status + " - ");
 
-    this.updateView('', {});
+    if (status >= 200 && status <= 299) {
+      // do we have any data?
+      vLoggerDetail(data);
+      vLoggerDetail(data.data.findBoardGames);
+      if (this.stateManager && this.stateName) this.stateManager.setStateByName(this.stateName, data.data.findBoardGames, true);
+    }
   };
 
-  _proto.setSelectedBoardGame = function setSelectedBoardGame(boardGame) {
-    csLogger("setting selected board game to");
-    csLoggerDetail(boardGame);
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    // get a link to the search button and search field and form
+    // @ts-ignore
+    this.formEl = document.getElementById(BGGSearchView.BGGSEARCH_Form); // @ts-ignore
 
-    if (boardGame) {
-      this.selectedBoardGame = boardGame;
-      this.updateView('', boardGame);
-    }
+    this.buttonEl = document.getElementById(BGGSearchView.BGGSEARCH_Search); // @ts-ignore
+
+    this.queryEl = document.getElementById(BGGSearchView.BGGSEARCH_Query);
+    this.formEl.addEventListener('submit', this.handleSearch);
+    this.addEventListener(this);
+
+    _AbstractView.prototype.onDocumentLoaded.call(this);
   };
 
   _proto.getIdForStateItem = function getIdForStateItem(name, item) {
-    return item.id;
+    return item.gameId;
   };
 
-  _proto.getLegacyIdForStateItem = function getLegacyIdForStateItem(name, item) {
-    return item.id;
+  _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
+    return item.name + " (" + item.year + ")     ";
+  };
+
+  _proto.compareStateItemsForEquality = function compareStateItemsForEquality(item1, item2) {
+    var result = false;
+
+    if (item1.gameId && item2.gameId) {
+      var parsed1 = parseInt(item1.gameId);
+      var parsed2 = parseInt(item2.gameId);
+
+      if (!isNaN(parsed1) && !isNaN(parsed2)) {
+        item1.gameId = parsed1;
+        item2.gameId = parsed2;
+        result = item1.gameId === item2.gameId;
+      }
+    }
+
+    return result;
+  };
+
+  _proto.eventClickItem = function eventClickItem(event) {
+    _AbstractView.prototype.eventClickItem.call(this, event); //this.applicationView.addBoardGameToDisplay(boardGame);
+
+
+    this.eventForwarder.hideRequested(this);
+  };
+
+  _proto.changeSearchButton = function changeSearchButton(enable) {
+    if (enable === void 0) {
+      enable = false;
+    }
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(this.buttonEl);
+
+    if (enable) {
+      if (this.buttonEl) this.buttonEl.removeAttribute("disabled");
+      if (this.buttonEl) this.buttonEl.innerHTML = 'Search';
+    } else {
+      if (this.buttonEl) this.buttonEl.setAttribute("disabled", "true");
+      if (this.buttonEl) this.buttonEl.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>  Loading...';
+    }
+  };
+
+  _proto.handleSearch = function handleSearch(event) {
+    vLogger("Handling search");
+    event.preventDefault();
+    event.stopPropagation(); // do we have anything to search for?
+
+    var queryText = this.queryEl.value.trim();
+    if (queryText.length == 0) return; // ok, have a search term, lets start a search
+
+    this.changeSearchButton(false); // get the query string from state obj
+
+    var query = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.bggSearchCall;
+    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, query, {
+      queryString: queryText
+    }, this.handleSearchResultsCB, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.bggSearchResults);
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.hideRequested = function hideRequested(view) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return true;
+  };
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    var _this$stateManager;
+    /* listen for our own deletes as we are expected to implement them */
+
+
+    vLoggerDetail("Handling delete of board game search result for game " + selectedItem.gameId);
+    (_this$stateManager = this.stateManager) == null ? void 0 : _this$stateManager.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.bggSearchResults, selectedItem, this.compareStateItemsForEquality, true);
+  };
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  return BGGSearchView;
+}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_4__["default"]);
+
+BGGSearchView.BGGSEARCH_ViewConfig = {
+  resultsContainerId: 'bggSearchResults',
+  resultsElementType: 'a',
+  resultsElementAttributes: [{
+    name: 'href',
+    value: '#'
+  }],
+  resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
+  keyId: 'gameId',
+  dataSourceId: 'bggSearch',
+  modifiers: {
+    normal: 'list-group-item-primary',
+    inactive: 'list-group-item-light',
+    active: 'list-group-item-info',
+    warning: 'list-group-item-danger'
+  },
+  icons: {
+    normal: 'fas fa-dice',
+    inactive: 'fas fa-dice',
+    active: 'fas fa-dice',
+    warning: 'fas fa-dice'
+  },
+  detail: {
+    containerClasses: 'd-flex w-100 justify-content-between',
+    textElementType: 'span',
+    textElementClasses: 'mb-1',
+    select: true,
+    drag: {
+      type: _AppTypes__WEBPACK_IMPORTED_MODULE_5__.DRAGGABLE.typeBoardGame,
+      from: 'boardGameSearch'
+    }
   }
-  /*
-      <h5 class="card-title">Card title</h5>
-  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-  <p class="card-text">Last updated 3 mins ago</p>
-   */
-  ;
+};
+BGGSearchView.BGGSEARCH_Form = 'bggSearch';
+BGGSearchView.BGGSEARCH_Query = 'queryText';
+BGGSearchView.BGGSEARCH_Search = 'bggSearchButton';
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BGGSearchView);
+
+/***/ }),
+
+/***/ "./src/component/view/BlockedUserView.ts":
+/*!***********************************************!*\
+  !*** ./src/component/view/BlockedUserView.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../socket/NotificationController */ "./src/socket/NotificationController.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+
+
+
+var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-sidebar');
+
+var BlockedUserView = /*#__PURE__*/function (_AbstractView) {
+  _inheritsLoose(BlockedUserView, _AbstractView);
+
+  function BlockedUserView(stateManager) {
+    var _this;
+
+    _this = _AbstractView.call(this, BlockedUserView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.users) || this; // handler binding
+
+    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
+    _this.eventClickItem = _this.eventClickItem.bind(_assertThisInitialized(_this));
+    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
+    _this.handleFavouriteUserLoggedIn = _this.handleFavouriteUserLoggedIn.bind(_assertThisInitialized(_this));
+    _this.handleFavouriteUserLoggedOut = _this.handleFavouriteUserLoggedOut.bind(_assertThisInitialized(_this));
+    _this.handleFavouriteUsersChanged = _this.handleFavouriteUsersChanged.bind(_assertThisInitialized(_this));
+    _this.handleBlockedUsersChanged = _this.handleBlockedUsersChanged.bind(_assertThisInitialized(_this));
+    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
+    _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__.NotificationController.getInstance().addUserListener(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  var _proto = BlockedUserView.prototype;
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    _AbstractView.prototype.onDocumentLoaded.call(this);
+
+    this.addEventListener(this);
+  };
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return true;
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    // @ts-ignore
+    vLogger("Blocked user " + selectedItem.username + " with id " + selectedItem.id + " deleted - removing");
+    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().removeUserFromBlockedList(selectedItem.username);
+  };
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.hideRequested = function hideRequested(view) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.showRequested = function showRequested(view) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.handleLoggedInUsersUpdated = function handleLoggedInUsersUpdated(usernames) {};
+
+  _proto.handleFavouriteUserLoggedIn = function handleFavouriteUserLoggedIn(username) {};
+
+  _proto.handleFavouriteUserLoggedOut = function handleFavouriteUserLoggedOut(username) {};
+
+  _proto.handleFavouriteUsersChanged = function handleFavouriteUsersChanged(usernames) {};
+
+  _proto.handleBlockedUsersChanged = function handleBlockedUsersChanged(usernames) {
+    vLogger("Handle Blocked Users changed to " + usernames);
+    this.updateView('', {});
+  };
 
   _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
-    var buffer = '';
-    /*
-    type ScoreSheet {
-        id:Int!
-        players: [String],
-        scores: [Int],
-        jsonData: String,
-        createdOn: Int
-    }
-    */
+    return item.username;
+  };
 
-    buffer += "<h5 class=\"card-title\">" + this.selectedBoardGame.name + " (" + this.selectedBoardGame.year + ")</h5>";
-    buffer += "<p class=\"card-text\">Played On: " + moment__WEBPACK_IMPORTED_MODULE_2___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</p>";
-    buffer += "<p class=\"card-text\">Scores: ";
+  _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
+    return _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.Modifier.warning;
+  };
 
-    if (item.player1) {
-      if (item.score1 > 0) {
-        buffer += item.player1 + ":" + item.score1 + " ";
-      }
-    }
+  _proto.getIdForStateItem = function getIdForStateItem(name, item) {
+    return item.username;
+  };
 
-    if (item.player2) {
-      if (item.score2 > 0) {
-        buffer += item.player2 + ":" + item.score2 + " ";
-      }
-    }
+  _proto.updateView = function updateView(name, newState) {
+    var _this$stateManager; // find the blocked users in the user list
 
-    if (item.player3) {
-      if (item.score3 > 0) {
-        buffer += item.player3 + ":" + item.score3 + " ";
-      }
+
+    var blockedUsers = [];
+    var users = (_this$stateManager = this.stateManager) == null ? void 0 : _this$stateManager.getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.users);
+
+    if (users) {
+      users.forEach(function (user) {
+        if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().isUserInBlockedList(user.username)) {
+          blockedUsers.push(user);
+        }
+      });
     }
 
-    if (item.player4) {
-      if (item.score4 > 0) {
-        buffer += item.player4 + ":" + item.score4 + " ";
-      }
-    }
+    _AbstractView.prototype.updateView.call(this, name, blockedUsers);
+  };
 
-    if (item.player5) {
-      if (item.score5 > 0) {
-        buffer += item.player5 + ":" + item.score5 + " ";
-      }
-    }
+  _proto.itemDropped = function itemDropped(view, droppedItem) {
+    if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().isUserInBlockedList(droppedItem.username)) {
+      vLogger(droppedItem.username + " already in blocked list, ignoring");
+      return;
+    } // add the user to the Chat Manager and we should get an event about it
 
-    if (item.player6) {
-      if (item.score6 > 0) {
-        buffer += item.player6 + ":" + item.score6 + " ";
-      }
-    }
 
-    if (item.player7) {
-      if (item.score7 > 0) {
-        buffer += item.player7 + ":" + item.score7 + " ";
-      }
-    }
+    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().addUserToBlockedList(droppedItem.username);
+  };
 
-    if (item.players) {
-      for (var index = 0; index < item.players.length; index++) {}
-    }
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
 
-    buffer += "</p>";
-    return buffer;
+  return BlockedUserView;
+}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__["default"]);
+
+BlockedUserView.DOMConfig = {
+  resultsContainerId: 'blockedUsers',
+  resultsElementType: 'a',
+  resultsElementAttributes: [{
+    name: 'href',
+    value: '#'
+  }],
+  resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
+  keyId: 'user-id',
+  dataSourceId: 'blockedUsers',
+  modifiers: {
+    normal: 'list-group-item-primary',
+    inactive: 'list-group-item-light',
+    active: 'list-group-item-info',
+    warning: 'list-group-item-danger'
+  },
+  icons: {
+    normal: 'fas fa-comment',
+    inactive: 'fas fa-comment',
+    active: 'fas fa-heart',
+    warning: 'fas fa-exclamation-circle'
+  },
+  detail: {
+    containerClasses: 'd-flex w-100 justify-content-between',
+    textElementType: 'span',
+    textElementClasses: 'mb-1',
+    select: true,
+    delete: {
+      buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
+      iconClasses: 'fas fa-trash-alt'
+    },
+    drop: {
+      acceptFrom: [_AppTypes__WEBPACK_IMPORTED_MODULE_5__.DRAGGABLE.fromUserSearch, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.DRAGGABLE.fromFavourites],
+      acceptTypes: [_AppTypes__WEBPACK_IMPORTED_MODULE_5__.DRAGGABLE.typeUser]
+    }
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BlockedUserView);
+
+/***/ }),
+
+/***/ "./src/component/view/ChatLogDetailView.ts":
+/*!*************************************************!*\
+  !*** ./src/component/view/ChatLogDetailView.ts ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../socket/NotificationController */ "./src/socket/NotificationController.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _socket_Types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../socket/Types */ "./src/socket/Types.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../notification/NotificationManager */ "./src/notification/NotificationManager.ts");
+
+
+
+
+
+
+
+
+
+
+var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar');
+var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar:detail');
+
+var ChatLogDetailView = /*#__PURE__*/function () {
+  function ChatLogDetailView(stateManager) {
+    this.stateManager = stateManager;
+    this.selectedChatLog = null; // handler binding
+
+    this.handleAddMessage = this.handleAddMessage.bind(this);
+    this.handleChatLogsUpdated = this.handleChatLogsUpdated.bind(this);
+    this.handleChatLogUpdated = this.handleChatLogUpdated.bind(this);
+    this.handleChatStarted = this.handleChatStarted.bind(this);
+    this.handleUserDrop = this.handleUserDrop.bind(this);
+    this.leaveChat = this.leaveChat.bind(this);
+    this.eventUserSelected = this.eventUserSelected.bind(this);
+    _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__.NotificationController.getInstance().addListener(this);
+    stateManager.addChangeListenerForName(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.users, this);
+  }
+
+  var _proto = ChatLogDetailView.prototype;
+
+  _proto.setContainedBy = function setContainedBy(container) {};
+
+  _proto.addEventListener = function addEventListener(listener) {};
+
+  _proto.getIdForStateItem = function getIdForStateItem(name, item) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.compareStateItemsForEquality = function compareStateItemsForEquality(item1, item2) {
+    throw new Error('Method not implemented.');
   };
 
   _proto.getModifierForStateItem = function getModifierForStateItem(name, item) {
-    return 'normal';
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.getBadgeValue = function getBadgeValue(name, item) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.getBackgroundImage = function getBackgroundImage(name, item) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.updateView = function updateView(name, newState) {
+    throw new Error('Method not implemented.');
+  };
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {
+    csLoggerDetail("Chat Log with id " + selectedItem + " deselected");
+
+    if (this.selectedChatLog && selectedItem === this.selectedChatLog.roomName) {
+      this.selectedChatLog = null;
+      this.checkCanComment();
+      this.clearChatLog();
+    }
+  };
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {
+    csLoggerDetail("Chat Log with id " + selectedItem.roomName + " selected");
+    this.selectedChatLog = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLog(selectedItem.roomName);
+
+    if (this.selectedChatLog) {
+      this.checkCanComment();
+      this.renderChatLog(this.selectedChatLog);
+    }
+  };
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return true;
+  };
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    csLoggerDetail("Chat Log with id " + selectedItem + " selected");
+    this.selectedChatLog = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLog(selectedItem);
+
+    if (this.selectedChatLog && this.selectedChatLog.roomName === selectedItem) {
+      this.checkCanComment();
+      this.renderChatLog(this.selectedChatLog);
+    }
+  };
+
+  _proto.hideRequested = function hideRequested(view) {
+    if (this.selectedChatLog) {
+      this.selectedChatLog = null;
+      this.checkCanComment();
+      this.clearChatLog();
+    }
+  };
+
+  _proto.handleUserDrop = function handleUserDrop(event) {
+    csLogger('drop event on current chat room');
+
+    if (this.selectedChatLog) {
+      // @ts-ignore
+      var draggedObjectJSON = event.dataTransfer.getData(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_8__.DRAGGABLE_KEY_ID);
+      var draggedObject = JSON.parse(draggedObjectJSON);
+      csLogger(draggedObject);
+
+      if (draggedObject[_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_8__.DRAGGABLE_TYPE] === _AppTypes__WEBPACK_IMPORTED_MODULE_7__.DRAGGABLE.typeUser) {
+        //add the user to the current chat if not already there
+        _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().sendInvite(draggedObject.username, this.selectedChatLog.roomName);
+        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_9__["default"].getInstance().show('Chat', "Invited " + draggedObject.username + " to the chat.");
+      }
+    }
+  };
+
+  _proto.handleChatLogUpdated = function handleChatLogUpdated(log) {
+    csLogger("Handling chat log updates");
+    this.checkCanComment();
+    this.renderChatLog(log);
+  };
+
+  _proto.handleAddMessage = function handleAddMessage(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    csLogger("Handling message event");
+
+    if (this.selectedChatLog) {
+      // @ts-ignore
+      if (this.commentEl && this.commentEl.value.trim().length === 0) return; // @ts-ignore
+
+      var messageContent = this.commentEl.value.trim(); // @ts-ignore
+
+      this.commentEl.value = '';
+      var sentMessage = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().sendMessage(this.selectedChatLog.roomName, messageContent, _socket_Types__WEBPACK_IMPORTED_MODULE_5__.Priority.Normal, {});
+
+      if (sentMessage) {
+        // add the message to our display
+        var messageEl = this.addChatMessage(sentMessage); // scroll to bottom
+
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].scrollSmoothTo(messageEl);
+      }
+    }
+  };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    var _this = this; // @ts-ignore
+
+
+    this.chatLogDiv = document.getElementById(ChatLogDetailView.chatLogId); // @ts-ignore
+
+    this.commentEl = document.getElementById(ChatLogDetailView.commentId); // @ts-ignore
+
+    this.chatForm = document.getElementById(ChatLogDetailView.newFormId); // @ts-ignore
+
+    this.sendMessageButton = document.getElementById(ChatLogDetailView.submitCommentId); // @ts-ignore
+
+    this.leaveChatButton = document.getElementById(ChatLogDetailView.leaveChatId); // @ts-ignore
+
+    this.chatRoomDiv = document.getElementById(ChatLogDetailView.chatLogRoomId); // @ts-ignore
+
+    this.fastUserSearch = document.getElementById(ChatLogDetailView.chatFastSearchUserNames);
+    this.chatRoomDiv.addEventListener('dragover', function (event) {
+      csLoggerDetail('Dragged over');
+      if (_this.selectedChatLog) event.preventDefault();
+    });
+    this.chatRoomDiv.addEventListener('drop', this.handleUserDrop);
+    this.chatForm.addEventListener('submit', this.handleAddMessage);
+    this.leaveChatButton.addEventListener('click', this.leaveChat);
+    this.checkCanComment(); // fast user search
+    // @ts-ignore
+
+    var fastSearchEl = $("#" + ChatLogDetailView.chatFastSearchUserNames);
+    fastSearchEl.on('autocompleteselect', this.eventUserSelected);
+  };
+
+  _proto.eventUserSelected = function eventUserSelected(event, ui) {
+    event.preventDefault();
+    event.stopPropagation();
+    csLogger("User " + ui.item.label + " with id " + ui.item.value + " selected"); // @ts-ignore
+
+    event.target.innerText = ''; // add to the chat, if one selected
+
+    if (this.selectedChatLog) _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().sendInvite(ui.item.label, this.selectedChatLog.roomName);
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_9__["default"].getInstance().show('Chat', "Invited " + ui.item.label + " to the chat.");
+  };
+
+  _proto.addChatMessage = function addChatMessage(message) {
+    var chatMessageEl = document.createElement('div');
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].addRemoveClasses(chatMessageEl, "message"); // are we dealing with an "join"/"exit" message?
+
+    if (message.from.trim().length === 0) {
+      var messageSenderEl = document.createElement('div');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].addRemoveClasses(messageSenderEl, 'message-sender');
+      messageSenderEl.innerText = message.message;
+      chatMessageEl.appendChild(messageSenderEl);
+    } else {
+      if (message.from === _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getCurrentUser()) {
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].addRemoveClasses(chatMessageEl, "my-message");
+      } else {
+        var _messageSenderEl = document.createElement('div');
+
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].addRemoveClasses(_messageSenderEl, 'message-sender');
+        _messageSenderEl.innerText = message.from + '   ' + moment__WEBPACK_IMPORTED_MODULE_4___default()(message.created, 'YYYYMMDDHHmmss').format('DD/MM/YYYY ');
+        chatMessageEl.appendChild(_messageSenderEl);
+      }
+
+      var contentEl = document.createElement('div');
+
+      if (message.from === _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getCurrentUser()) {
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].addRemoveClasses(contentEl, "my-message-content");
+      } else {
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].addRemoveClasses(contentEl, 'message-content');
+      }
+
+      contentEl.innerText = message.message;
+      chatMessageEl.appendChild(contentEl);
+    }
+
+    this.chatLogDiv.appendChild(chatMessageEl);
+    return chatMessageEl;
+  };
+
+  _proto.reRenderChatMessages = function reRenderChatMessages(chatLog) {
+    var _this2 = this;
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].removeAllChildren(this.chatLogDiv);
+    var messageEl = null;
+    chatLog.messages.forEach(function (message) {
+      messageEl = _this2.addChatMessage(message);
+    }); // scroll to the last message (if any)
+
+    if (messageEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].scrollTo(messageEl);
+  };
+
+  _proto.renderChatLog = function renderChatLog(chatLog) {
+    csLoggerDetail("Chat Log " + chatLog.roomName + " rendering");
+
+    if (this.selectedChatLog) {
+      if (this.selectedChatLog.roomName === chatLog.roomName) {
+        this.selectedChatLog = chatLog;
+        _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().touchChatLog(chatLog.roomName); // render the chat conversation
+
+        this.reRenderChatMessages(chatLog);
+      }
+    }
+  };
+
+  _proto.handleChatLogsUpdated = function handleChatLogsUpdated() {
+    if (this.selectedChatLog) {
+      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().touchChatLog(this.selectedChatLog.roomName); // render the chat conversation
+
+      this.reRenderChatMessages(this.selectedChatLog);
+    }
+
+    this.checkCanComment();
+  };
+
+  _proto.handleChatStarted = function handleChatStarted(log) {
+    this.selectedChatLog = log;
+    this.renderChatLog(log);
+  };
+
+  _proto.leaveChat = function leaveChat(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (this.selectedChatLog) {
+      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().leaveChat(this.selectedChatLog.roomName);
+      this.selectedChatLog = null;
+      this.clearChatLog();
+      this.checkCanComment();
+    }
+  };
+
+  _proto.checkCanComment = function checkCanComment() {
+    if (this.selectedChatLog) {
+      if (this.commentEl) this.commentEl.removeAttribute("readonly");
+      if (this.commentEl) this.commentEl.removeAttribute("disabled");
+      if (this.sendMessageButton) this.sendMessageButton.removeAttribute("disabled");
+      if (this.leaveChatButton) this.leaveChatButton.removeAttribute("disabled");
+      if (this.fastUserSearch) this.fastUserSearch.removeAttribute("disabled");
+    } else {
+      if (this.commentEl) this.commentEl.setAttribute("readonly", "true");
+      if (this.commentEl) this.commentEl.setAttribute("disabled", "true");
+      if (this.sendMessageButton) this.sendMessageButton.setAttribute("disabled", "true");
+      if (this.leaveChatButton) this.leaveChatButton.setAttribute("disabled", "true");
+      if (this.fastUserSearch) this.fastUserSearch.setAttribute("disabled", "true");
+    }
+  };
+
+  _proto.clearChatLog = function clearChatLog() {
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].removeAllChildren(this.chatLogDiv);
+  };
+
+  _proto.stateChanged = function stateChanged(managerName, name, newValue) {
+    if (name === _AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.users) {
+      // @ts-ignore
+      var fastSearchEl = $("#" + ChatLogDetailView.ssFastSearchUserNames); // what is my username?
+
+      var myUsername = _Controller__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().getLoggedInUsername(); // for each name, construct the patient details to display and the id referenced
+
+      var fastSearchValues = [];
+      newValue.forEach(function (item) {
+        var searchValue = {
+          label: item.username,
+          value: item.id
+        }; // @ts-ignore
+
+        if (myUsername !== item.username) fastSearchValues.push(searchValue); // don't search for ourselves
+      });
+      fastSearchEl.autocomplete({
+        source: fastSearchValues
+      });
+      fastSearchEl.autocomplete('option', {
+        disabled: false,
+        minLength: 1
+      });
+    }
+  };
+
+  _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {
+    this.stateChanged(managerName, name, this.stateManager.getStateByName(name));
+  };
+
+  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {};
+
+  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {};
+
+  _proto.handleOfflineMessagesReceived = function handleOfflineMessagesReceived(messages) {};
+
+  _proto.handleInvitationDeclined = function handleInvitationDeclined(room, username) {};
+
+  _proto.handleNewInviteReceived = function handleNewInviteReceived(invite) {
+    return true;
+  };
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  return ChatLogDetailView;
+}();
+
+ChatLogDetailView.newFormId = "newMessage";
+ChatLogDetailView.commentId = "message";
+ChatLogDetailView.submitCommentId = "submitMessage";
+ChatLogDetailView.chatLogId = 'chatLog';
+ChatLogDetailView.chatLogRoomId = 'chatLogRoom';
+ChatLogDetailView.leaveChatId = 'leaveChat';
+ChatLogDetailView.chatFastSearchUserNames = 'chatFastSearchUserNames';
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ChatLogDetailView);
+
+/***/ }),
+
+/***/ "./src/component/view/ChatLogsView.ts":
+/*!********************************************!*\
+  !*** ./src/component/view/ChatLogsView.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../socket/NotificationController */ "./src/socket/NotificationController.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+
+
+var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar');
+var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar:detail');
+
+var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
+  _inheritsLoose(ChatLogsView, _AbstractView); // @ts-ignore
+
+
+  function ChatLogsView() {
+    var _this;
+
+    _this = _AbstractView.call(this, ChatLogsView.DOMConfig, null, null) || this; // handler binding
+
+    _this.selectedChatLog = null;
+    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
+    _this.handleChatLogsUpdated = _this.handleChatLogsUpdated.bind(_assertThisInitialized(_this));
+    _this.handleChatLogUpdated = _this.handleChatLogUpdated.bind(_assertThisInitialized(_this));
+    _this.handleChatStarted = _this.handleChatStarted.bind(_assertThisInitialized(_this));
+    _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__.NotificationController.getInstance().addListener(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  var _proto = ChatLogsView.prototype;
+
+  _proto.handleNewInviteReceived = function handleNewInviteReceived(invite) {
+    return true;
+  };
+
+  _proto.handleChatLogUpdated = function handleChatLogUpdated(log) {
+    csLogger("Handling chat log updates");
+    this.updateView('', {});
+  };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    _AbstractView.prototype.onDocumentLoaded.call(this);
+
+    this.addEventListener(this);
+    this.updateView('', {});
+  };
+
+  _proto.getIdForStateItem = function getIdForStateItem(name, item) {
+    return item.roomName;
+  };
+
+  _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
+    return item.users.join(',');
+  };
+
+  _proto.getModifierForStateItem = function getModifierForStateItem(name, item) {
+    var result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.Modifier.inactive;
+
+    if (this.selectedChatLog) {
+      if (this.selectedChatLog.roomName === item.roomName) {
+        result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.Modifier.active;
+      }
+    }
+
+    return result;
   };
 
   _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
     return this.getModifierForStateItem(name, item);
   };
 
-  _proto.eventClickItem = function eventClickItem(event) {};
-
   _proto.updateView = function updateView(name, newState) {
-    csLoggerDetail("Updating state with selected board game");
+    csLoggerDetail("Updating state with chat manager");
+    newState = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLogs();
+    csLoggerDetail(newState);
 
-    if (newState) {
-      if (newState.scoresheets) {
-        this.createResultsForState(name, newState.scoresheets);
-      }
-    }
+    _AbstractView.prototype.updateView.call(this, name, newState);
   };
 
-  _proto.getDragData = function getDragData(event) {};
+  _proto.selectChatRoom = function selectChatRoom(roomName) {
+    var room = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLog(roomName);
+    this.selectedChatLog = room;
+    this.eventForwarder.itemSelected(this, this.selectedChatLog);
+    this.updateView('', {});
+  };
+
+  _proto.handleChatLogsUpdated = function handleChatLogsUpdated() {
+    if (this.selectedChatLog) {
+      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().touchChatLog(this.selectedChatLog.roomName);
+    }
+
+    this.updateView('', {});
+  };
+
+  _proto.handleChatStarted = function handleChatStarted(log) {
+    this.selectedChatLog = log;
+    this.eventForwarder.itemSelected(this, this.selectedChatLog);
+    this.updateView('', {});
+  };
 
   _proto.getBadgeValue = function getBadgeValue(name, item) {
-    return 0;
+    return item.numOfNewMessages;
   };
 
-  _proto.getBackgroundImage = function getBackgroundImage(name, item) {
-    return './img/scorecard-vertical.jpg';
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return true;
   };
 
-  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
-    // @ts-ignore
-    var sheetId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().leaveChat(selectedItem);
 
-    var dataSource = event.target.getAttribute(this.uiConfig.dom.resultDataSourceId); // @ts-ignore
+    if (this.selectedChatLog && this.selectedChatLog.roomName === selectedItem) {
+      this.eventForwarder.itemDeselected(this, this.selectedChatLog);
+      this.selectedChatLog = null;
+    }
 
-    csLogger("Score Sheet " + event.target + " with id " + sheetId + " delete clicked from " + dataSource);
+    this.updateView('', {});
+  };
 
-    if (this.selectedBoardGame && confirm("Are you sure you want to delete this Score Sheet?")) {
-      // remove the sheet from the selected board game
-      if (this.selectedBoardGame.scoresheets) {
-        var index = this.selectedBoardGame.scoresheets.findIndex(function (sheet) {
-          return sheet.id === sheetId;
-        });
-
-        if (index >= 0) {
-          this.selectedBoardGame.scoresheets.splice(index, 1); // let the controller know to remove from the database if the user is logged in
-
-          _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].scoreSheetRemovedFromBoardGame(this.selectedBoardGame, sheetId);
-        }
-      }
-
-      this.updateView('', this.selectedBoardGame);
+  _proto.hideRequested = function hideRequested(view) {
+    if (this.selectedChatLog) {
+      this.eventForwarder.itemDeselected(this, this.selectedChatLog);
+      this.selectedChatLog = null;
     }
   };
 
-  return ScoreSheetSidebarView;
-}(_SidebarView__WEBPACK_IMPORTED_MODULE_1__["default"]);
+  _proto.documentLoaded = function documentLoaded(view) {};
 
-/* harmony default export */ __webpack_exports__["default"] = (ScoreSheetSidebarView);
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  _proto.handleOfflineMessagesReceived = function handleOfflineMessagesReceived(messages) {};
+
+  _proto.handleInvitationDeclined = function handleInvitationDeclined(room, username) {};
+
+  return ChatLogsView;
+}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__["default"]);
+
+ChatLogsView.chatFastSearchUserNames = 'chatFastSearchUserNames';
+ChatLogsView.DOMConfig = {
+  resultsContainerId: 'chatLogs',
+  resultsElementType: 'a',
+  resultsElementAttributes: [{
+    name: 'href',
+    value: '#'
+  }],
+  resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
+  keyId: 'room',
+  dataSourceId: 'chatLogs',
+  modifiers: {
+    normal: '',
+    inactive: 'list-group-item-dark',
+    active: 'list-group-item-primary',
+    warning: ''
+  },
+  detail: {
+    containerClasses: 'd-flex w-100 justify-content-between',
+    textElementType: 'span',
+    textElementClasses: 'mb-1',
+    select: true,
+    delete: {
+      buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
+      iconClasses: 'text-black fas fa-sign-out-alt'
+    }
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ChatLogsView);
 
 /***/ }),
 
-/***/ "./src/component/ScoreSheetView.ts":
-/*!*****************************************!*\
-  !*** ./src/component/ScoreSheetDetailView.ts ***!
-  \*****************************************/
-/*! exports provided: ScoreSheetDetailView */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/component/view/FavouriteUserView.ts":
+/*!*************************************************!*\
+  !*** ./src/component/view/FavouriteUserView.ts ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ScoreSheetView", function() { return ScoreSheetView; });
-/* harmony import */ var _ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ScoreSheetController */ "./src/component/ScoreSheetController.ts");
-/* harmony import */ var handsontable__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! handsontable */ "./node_modules/handsontable/index.mjs");
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _template_TemplateManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../template/TemplateManager */ "./src/template/TemplateManager.ts");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../socket/NotificationController */ "./src/socket/NotificationController.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
 
 
 
 
 
 
-var ssvLogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('score-sheet-view');
-var ScoreSheetView = /*#__PURE__*/function () {
-  // @ts-ignore
-  function ScoreSheetView() {
-    this.applicationView = null;
+
+
+var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-sidebar');
+var vLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-sidebar:detail');
+
+var FavouriteUserView = /*#__PURE__*/function (_AbstractView) {
+  _inheritsLoose(FavouriteUserView, _AbstractView);
+
+  function FavouriteUserView(stateManager) {
+    var _this;
+
+    _this = _AbstractView.call(this, FavouriteUserView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.users) || this; // handler binding
+
+    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
+    _this.eventClickItem = _this.eventClickItem.bind(_assertThisInitialized(_this));
+    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
+    _this.handleFavouriteUserLoggedIn = _this.handleFavouriteUserLoggedIn.bind(_assertThisInitialized(_this));
+    _this.handleFavouriteUserLoggedOut = _this.handleFavouriteUserLoggedOut.bind(_assertThisInitialized(_this));
+    _this.handleFavouriteUsersChanged = _this.handleFavouriteUsersChanged.bind(_assertThisInitialized(_this));
+    _this.handleBlockedUsersChanged = _this.handleBlockedUsersChanged.bind(_assertThisInitialized(_this));
+    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
+    _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__.NotificationController.getInstance().addUserListener(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  var _proto = FavouriteUserView.prototype;
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    _AbstractView.prototype.onDocumentLoaded.call(this);
+
+    this.addEventListener(this);
+  };
+
+  _proto.handleLoggedInUsersUpdated = function handleLoggedInUsersUpdated(usernames) {
+    vLogger("Received new list of users who are logged in ");
+    this.updateView('', {});
+  };
+
+  _proto.handleFavouriteUserLoggedIn = function handleFavouriteUserLoggedIn(username) {
+    vLogger("Handle Favourite User " + username + " logged in");
+    this.updateView('', {});
+  };
+
+  _proto.handleFavouriteUserLoggedOut = function handleFavouriteUserLoggedOut(username) {
+    vLogger("Handle Favourite User " + username + " logged in");
+    this.updateView('', {});
+  };
+
+  _proto.handleFavouriteUsersChanged = function handleFavouriteUsersChanged(usernames) {
+    vLogger("Handle Favourite Users changed to " + usernames);
+    this.updateView('', {});
+  };
+
+  _proto.getIdForStateItem = function getIdForStateItem(name, item) {
+    return item.id;
+  };
+
+  _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
+    return item.username;
+  };
+
+  _proto.getModifierForStateItem = function getModifierForStateItem(name, item) {
+    var result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__.Modifier.normal; // if the user is currently logged out make the item inactive
+
+    if (!_socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().isUserLoggedIn(item.username)) {
+      result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__.Modifier.inactive;
+    }
+
+    return result;
+  };
+
+  _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
+    var result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__.Modifier.normal;
+    vLoggerDetail("Checking for item secondary modifiers " + item.username); // if the user is in the black list then show warning and a favourite user is highlighted
+
+    if (_socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__.NotificationController.getInstance().isFavouriteUser(item.username)) {
+      vLoggerDetail("is favourite");
+      result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__.Modifier.active;
+    }
+
+    if (_socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__.NotificationController.getInstance().isBlockedUser(item.username)) {
+      vLoggerDetail("is blocked");
+      result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__.Modifier.warning;
+    }
+
+    return result;
+  };
+
+  _proto.updateView = function updateView(name, newState) {
+    var _this$stateManager; // find the blocked users in the user list
+
+
+    var favUsers = [];
+    var users = (_this$stateManager = this.stateManager) == null ? void 0 : _this$stateManager.getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.users);
+
+    if (users) {
+      users.forEach(function (user) {
+        if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().isUserInFavouriteList(user.username)) {
+          favUsers.push(user);
+        }
+      });
+    }
+
+    _AbstractView.prototype.updateView.call(this, name, favUsers);
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.handleBlockedUsersChanged = function handleBlockedUsersChanged(usernames) {
+    this.updateView('', {});
+  };
+
+  _proto.hideRequested = function hideRequested(view) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {
+    // @ts-ignore
+    if (actionName === this.uiConfig.extraActions[0].name) {
+      if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
+        vLogger(selectedItem.username + " already in fav list, ignoring");
+        return;
+      }
+
+      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().addUserToBlockedList(selectedItem.username);
+    }
+  };
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return true;
+  };
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    vLogger("Favourite user " + selectedItem.username + " with id " + selectedItem.id + " deleted - removing");
+    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().removeUserFromFavouriteList(selectedItem.username);
+  };
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {
+    if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().isUserInFavouriteList(droppedItem.username)) {
+      vLogger(droppedItem.username + " already in fav list, ignoring");
+      return;
+    } // add the user to the Chat Manager and we should get an event about it
+
+
+    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().addUserToFavouriteList(droppedItem.username);
+  };
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {
+    var roomName = _socket_NotificationController__WEBPACK_IMPORTED_MODULE_1__.NotificationController.getInstance().startChatWithUser(selectedItem.username);
+    _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().handleShowChat(roomName);
+  };
+
+  _proto.showRequested = function showRequested(view) {};
+
+  return FavouriteUserView;
+}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_4__["default"]);
+
+FavouriteUserView.DOMConfig = {
+  resultsContainerId: 'favouriteUsers',
+  resultsElementType: 'a',
+  resultsElementAttributes: [{
+    name: 'href',
+    value: '#'
+  }],
+  resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
+  keyId: 'user-id',
+  dataSourceId: 'blockedUsers',
+  modifiers: {
+    normal: 'list-group-item-primary',
+    inactive: 'list-group-item-light',
+    active: 'list-group-item-info',
+    warning: 'list-group-item-danger'
+  },
+  icons: {
+    normal: 'fas fa-comment',
+    inactive: 'fas fa-comment',
+    active: 'fas fa-heart',
+    warning: 'fas fa-exclamation-circle'
+  },
+  detail: {
+    containerClasses: 'd-flex w-100 justify-content-between',
+    textElementType: 'span',
+    textElementClasses: 'mb-1',
+    select: true,
+    delete: {
+      buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
+      iconClasses: 'fas fa-trash-alt'
+    },
+    drop: {
+      acceptFrom: [_AppTypes__WEBPACK_IMPORTED_MODULE_6__.DRAGGABLE.fromUserSearch],
+      acceptTypes: [_AppTypes__WEBPACK_IMPORTED_MODULE_6__.DRAGGABLE.typeUser]
+    },
+    drag: {
+      type: _AppTypes__WEBPACK_IMPORTED_MODULE_6__.DRAGGABLE.typeUser,
+      from: _AppTypes__WEBPACK_IMPORTED_MODULE_6__.DRAGGABLE.fromFavourites
+    }
+  },
+  extraActions: [{
+    name: 'block',
+    buttonClasses: 'btn bg-warning text-white btn-circle btn-sm mr-1',
+    iconClasses: 'fas fa-user-slash'
+  }]
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FavouriteUserView);
+
+/***/ }),
+
+/***/ "./src/component/view/ScoreSheetDetailView.ts":
+/*!****************************************************!*\
+  !*** ./src/component/view/ScoreSheetDetailView.ts ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ScoreSheetDetailView": () => (/* binding */ ScoreSheetDetailView)
+/* harmony export */ });
+/* harmony import */ var _controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../controller/ScoreSheetController */ "./src/component/controller/ScoreSheetController.ts");
+/* harmony import */ var handsontable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! handsontable */ "./node_modules/handsontable/index.mjs");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _template_TemplateManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../template/TemplateManager */ "./src/template/TemplateManager.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+
+
+
+
+
+
+
+
+var ssvLogger = debug__WEBPACK_IMPORTED_MODULE_2___default()('score-sheet-view');
+var ScoreSheetDetailView = /*#__PURE__*/function () {
+  function ScoreSheetDetailView() {
     this.thisEl = null;
     this.boardGameTitleEl = null;
     this.startStopTimer = null;
@@ -4945,49 +3445,44 @@ var ScoreSheetView = /*#__PURE__*/function () {
     this.endOrLeaveEl = null;
     this.scoreSheetEl = null;
     this.table = null;
-    this.controller = _ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__["ScoreSheetController"].getInstance();
-    this.stateManager = _Controller__WEBPACK_IMPORTED_MODULE_5__["default"].getStateManager();
+    this.controller = _controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__.ScoreSheetController.getInstance();
+    this.stateManager = _Controller__WEBPACK_IMPORTED_MODULE_5__["default"].getInstance().getStateManager();
     this.eventUserSelected = this.eventUserSelected.bind(this);
+    this.stateManager.addChangeListenerForName(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.users, this);
   }
 
-  ScoreSheetView.getInstance = function getInstance() {
-    if (!ScoreSheetView._instance) {
-      ScoreSheetView._instance = new ScoreSheetView();
+  ScoreSheetDetailView.getInstance = function getInstance() {
+    if (!ScoreSheetDetailView._instance) {
+      ScoreSheetDetailView._instance = new ScoreSheetDetailView();
     }
 
-    return ScoreSheetView._instance;
+    return ScoreSheetDetailView._instance;
   };
 
-  var _proto = ScoreSheetView.prototype;
+  var _proto = ScoreSheetDetailView.prototype;
 
-  _proto.setApplication = function setApplication(applicationView) {
-    this.config = applicationView.state;
-    this.stateManager.addChangeListenerForName(this.config.stateNames.users, this);
-  };
-
-  _proto.onDocumentLoaded = function onDocumentLoaded(applicationView) {
-    this.applicationView = applicationView;
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
     this.resetDisplay(); // @ts-ignore
 
-    this.ssFastSearchUserNames = document.getElementById(this.config.ui.scoreSheet.dom.ssFastSearchUserNames); // fast user search
+    this.ssFastSearchUserNames = document.getElementById(ScoreSheetDetailView.ssFastSearchUserNames); // fast user search
     // @ts-ignore
 
-    var fastSearchEl = $("#" + this.config.ui.scoreSheet.dom.ssFastSearchUserNames);
+    var fastSearchEl = $("#" + ScoreSheetDetailView.ssFastSearchUserNames);
     fastSearchEl.on('autocompleteselect', this.eventUserSelected);
-    _ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__["ScoreSheetController"].getInstance().getStateManager().addChangeListenerForName(this.applicationView.state.stateNames.scoreSheet, this); // load references to the key elements on the page
+    _controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__.ScoreSheetController.getInstance().getStateManager().addChangeListenerForName(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.scoreSheet, this); // load references to the key elements on the page
     // @ts-ignore
 
-    this.thisEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.dropZone); // @ts-ignore
+    this.thisEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.dropZone); // @ts-ignore
 
-    this.boardGameTitleEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.boardGame); // @ts-ignore
+    this.boardGameTitleEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.boardGame); // @ts-ignore
 
-    this.startStopTimer = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.startStopTimer); // @ts-ignore
+    this.startStopTimer = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.startStopTimer); // @ts-ignore
 
-    this.timerEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.timer); // @ts-ignore
+    this.timerEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.timer); // @ts-ignore
 
-    this.endOrLeaveEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.end); // @ts-ignore
+    this.endOrLeaveEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.end); // @ts-ignore
 
-    this.scoreSheetEl = document.getElementById(this.applicationView.state.ui.scoreSheet.dom.scoreSheet); // bind event handlers
+    this.scoreSheetEl = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.scoreSheet); // bind event handlers
 
     this.handleStartStopTimer = this.handleStartStopTimer.bind(this);
     this.handleEndOrLeave = this.handleEndOrLeave.bind(this);
@@ -5011,8 +3506,8 @@ var ScoreSheetView = /*#__PURE__*/function () {
 
     event.target.innerText = ''; // add to the chat, if one selected, and is scoresheet owner
 
-    if (_ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__["ScoreSheetController"].getInstance().isSheetOwner()) {
-      _ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__["ScoreSheetController"].getInstance().inviteUser(ui.item.label);
+    if (_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__.ScoreSheetController.getInstance().isSheetOwner()) {
+      _controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__.ScoreSheetController.getInstance().inviteUser(ui.item.label);
     } else {
       alert("Only the score sheet creator can invite users.");
     }
@@ -5055,11 +3550,11 @@ var ScoreSheetView = /*#__PURE__*/function () {
 
     if (this.controller.hasActiveScoreSheet() && this.controller.isSheetOwner()) {
       // @ts-ignore
-      var draggedObjectJSON = event.dataTransfer.getData(this.applicationView.state.ui.draggable.draggableDataKeyId);
+      var draggedObjectJSON = event.dataTransfer.getData(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.DRAGGABLE_KEY_ID);
       var draggedObject = JSON.parse(draggedObjectJSON);
       ssvLogger(draggedObject);
 
-      if (draggedObject[this.applicationView.state.ui.draggable.draggedType] === this.applicationView.state.ui.draggable.draggedTypeUser) {
+      if (draggedObject[_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.DRAGGABLE_TYPE] === _AppTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE.typeUser) {
         //add the user to the current chat if not already there
         this.controller.inviteUser(draggedObject.username);
       }
@@ -5072,15 +3567,15 @@ var ScoreSheetView = /*#__PURE__*/function () {
     if (this.boardGameTitleEl) this.boardGameTitleEl.innerText = '';
 
     if (this.startStopTimer) {
-      this.startStopTimer.innerHTML = 'Start ' + this.applicationView.state.ui.scoreSheet.dom.iconStart;
+      this.startStopTimer.innerHTML = 'Start ' + ScoreSheetDetailView.ScoreSheetDom.iconStart;
       this.startStopTimer.setAttribute("disabled", "true");
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(this.startStopTimer, 'btn-warning', false);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(this.startStopTimer, 'btn-success', true);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.startStopTimer, 'btn-warning', false);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.startStopTimer, 'btn-success', true);
     }
 
     if (this.timerEl) this.timerEl.innerText = this.createTimerDisplay(0);
-    if (this.endOrLeaveEl) this.endOrLeaveEl.innerHTML = this.applicationView.state.ui.scoreSheet.dom.iconLeave;
-    if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].removeAllChildren(this.scoreSheetEl);
+    if (this.endOrLeaveEl) this.endOrLeaveEl.innerHTML = ScoreSheetDetailView.ScoreSheetDom.iconLeave;
+    if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(this.scoreSheetEl);
   };
 
   _proto.updateTimer = function updateTimer(time, isPaused) {
@@ -5093,13 +3588,13 @@ var ScoreSheetView = /*#__PURE__*/function () {
 
     if (this.startStopTimer) {
       if (isPaused) {
-        this.startStopTimer.innerHTML = 'Start   ' + this.applicationView.state.ui.scoreSheet.dom.iconStart;
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(this.startStopTimer, 'btn-warning', false);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(this.startStopTimer, 'btn-success', true);
+        this.startStopTimer.innerHTML = 'Start   ' + ScoreSheetDetailView.ScoreSheetDom.iconStart;
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.startStopTimer, 'btn-warning', false);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.startStopTimer, 'btn-success', true);
       } else {
-        this.startStopTimer.innerHTML = 'Pause   ' + this.applicationView.state.ui.scoreSheet.dom.iconInProgress;
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(this.startStopTimer, 'btn-warning', true);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(this.startStopTimer, 'btn-success', false);
+        this.startStopTimer.innerHTML = 'Pause   ' + ScoreSheetDetailView.ScoreSheetDom.iconInProgress;
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.startStopTimer, 'btn-warning', true);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.startStopTimer, 'btn-success', false);
       }
 
       this.startStopTimer.removeAttribute("disabled");
@@ -5109,11 +3604,11 @@ var ScoreSheetView = /*#__PURE__*/function () {
   };
 
   _proto.stateChanged = function stateChanged(managerName, name, newValue) {
-    if (name === this.config.stateNames.users) {
+    if (name === _AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.users) {
       // @ts-ignore
-      var fastSearchEl = $("#" + this.config.ui.scoreSheet.dom.ssFastSearchUserNames); // what is my username?
+      var fastSearchEl = $("#" + ScoreSheetDetailView.ScoreSheetDom.ssFastSearchUserNames); // what is my username?
 
-      var myUsername = _Controller__WEBPACK_IMPORTED_MODULE_5__["default"].getLoggedInUsername(); // for each name, construct the patient details to display and the id referenced
+      var myUsername = _Controller__WEBPACK_IMPORTED_MODULE_5__["default"].getInstance().getLoggedInUsername(); // for each name, construct the patient details to display and the id referenced
 
       var fastSearchValues = [];
       newValue.forEach(function (item) {
@@ -5151,18 +3646,18 @@ var ScoreSheetView = /*#__PURE__*/function () {
         ssvLogger("Table data is ");
         ssvLogger(tableData); // @ts-ignore
 
-        this.table.setDataAtCell(tableData, _ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__["ScoreSheetController"].SOURCE_View);
+        this.table.setDataAtCell(tableData, _controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_0__.ScoreSheetController.SOURCE_View);
       } else {
         // create a new table
         if (this.scoreSheetEl) {
           var boardGame = this.controller.getSelectedBoardGame();
 
           if (boardGame) {
-            scoreSheet.sheetLayoutOptions = _template_TemplateManager__WEBPACK_IMPORTED_MODULE_4__["TemplateManager"].getInstance().getScoreSheetTemplate(boardGame);
+            scoreSheet.sheetLayoutOptions = _template_TemplateManager__WEBPACK_IMPORTED_MODULE_4__.TemplateManager.getInstance().getScoreSheetTemplate(boardGame);
           }
 
           scoreSheet.sheetLayoutOptions.data = scoreSheet.data;
-          this.table = new handsontable__WEBPACK_IMPORTED_MODULE_1__["default"](this.scoreSheetEl, scoreSheet.sheetLayoutOptions); // @ts-ignore
+          this.table = new handsontable__WEBPACK_IMPORTED_MODULE_7__["default"](this.scoreSheetEl, scoreSheet.sheetLayoutOptions); // @ts-ignore
 
           this.table.addHook('afterChange', this.controller.userChangedValue);
         }
@@ -5184,10 +3679,6 @@ var ScoreSheetView = /*#__PURE__*/function () {
   _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {
     this.stateChanged(managerName, name, this.stateManager.getStateByName(name));
   };
-
-  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {};
-
-  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {};
 
   _proto.createTimerDisplay = function createTimerDisplay(timer) {
     var result = '';
@@ -5241,21 +3732,46 @@ var ScoreSheetView = /*#__PURE__*/function () {
     return result;
   };
 
-  return ScoreSheetView;
+  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {};
+
+  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {};
+
+  return ScoreSheetDetailView;
 }();
+ScoreSheetDetailView.ScoreSheetDom = {
+  dropZone: "scoreSheetZone",
+  boardGame: "selectedBoardGame",
+  startStopTimer: "startStopTimer",
+  timer: "timerDisplay",
+  end: "leaveScoreSheet",
+  scoreSheet: "scoreSheet",
+  iconStart: "<i class='fas fa-hourglass-start'></i>",
+  iconInProgress: "<i class='fas fa-hourglass-half'></i>",
+  iconEnd: "<i class='fas fa-hourglass-end'></i>",
+  iconLeave: "<i class='fas fa-sign-out-alt'></i>",
+  ssFastSearchUserNames: 'ssFastSearchUserNames',
+  webrtc: 'webrtc'
+};
 
 /***/ }),
 
-/***/ "./src/component/SidebarView.ts":
-/*!**************************************!*\
-  !*** ./src/component/SidebarViewContainer.ts ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/component/view/ScoreSheetsView.ts":
+/*!***********************************************!*\
+  !*** ./src/component/view/ScoreSheetsView.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/component/AbstractView.ts");
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -5282,111 +3798,201 @@ function _setPrototypeOf(o, p) {
 
 
 
-var SidebarView = /*#__PURE__*/function (_AbstractView) {
-  _inheritsLoose(SidebarView, _AbstractView);
 
-  function SidebarView(applicationView, htmlDocument, uiConfig, uiPrefs, stateManager) {
+
+var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('score-sheet-sidebar');
+var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('score-sheet-sidebar:detail');
+
+var ScoreSheetsView = /*#__PURE__*/function (_AbstractView) {
+  _inheritsLoose(ScoreSheetsView, _AbstractView);
+
+  function ScoreSheetsView() {
     var _this;
 
-    _this = _AbstractView.call(this, applicationView, htmlDocument, uiConfig, uiPrefs, stateManager) || this; // event handlers
+    _this = _AbstractView.call(this, ScoreSheetsView.SCORESHEETS_ViewConfig, null, null) || this; // handler binding
 
-    _this.eventHide = _this.eventHide.bind(_assertThisInitialized(_this));
-    _this.eventShow = _this.eventShow.bind(_assertThisInitialized(_this));
+    _this.selectedBoardGame = null;
+    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
     return _this;
   }
 
-  var _proto = SidebarView.prototype;
+  var _proto = ScoreSheetsView.prototype;
 
   _proto.onDocumentLoaded = function onDocumentLoaded() {
-    // this should be called once at startup
-    // hide the side bar panel
-    this.eventHide(null); // add the event listener for the close button
+    _AbstractView.prototype.onDocumentLoaded.call(this);
 
-    var sidePanelEl = this.document.getElementById(this.uiConfig.dom.sideBarId);
-    if (sidePanelEl === null) return;
-    var closeButtonEl = sidePanelEl.querySelector('.close');
+    this.addEventListener(this);
+    this.updateView('', {});
+  };
 
-    if (closeButtonEl) {
-      closeButtonEl.addEventListener('click', this.eventHide);
+  _proto.setSelectedBoardGame = function setSelectedBoardGame(boardGame) {
+    csLogger("setting selected board game to");
+    csLoggerDetail(boardGame);
+
+    if (boardGame) {
+      this.selectedBoardGame = boardGame;
+      this.updateView('', boardGame);
     }
   };
 
-  _proto.eventHide = function eventHide(event) {
-    if (event) event.preventDefault();
-    this.showHide('0%');
-  };
+  _proto.getDisplayValueForStateItem = function getDisplayValueForStateItem(name, item) {
+    var buffer = '';
+    buffer += "<h5 class=\"card-title\">" + this.selectedBoardGame.name + " (" + this.selectedBoardGame.year + ")</h5>";
+    buffer += "<p class=\"card-text\">Played On: " + moment__WEBPACK_IMPORTED_MODULE_1___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</p>";
+    buffer += "<p class=\"card-text\">Scores: ";
 
-  _proto.eventShow = function eventShow(event) {
-    //414,768,1024
-    var size = this.uiPrefs.view.expandedSize;
-
-    if (window.innerWidth < 769) {
-      size = '50%';
+    if (item.player1) {
+      if (item.score1 > 0) {
+        buffer += item.player1 + ":" + item.score1 + " ";
+      }
     }
 
-    if (window.innerWidth < 415) {
-      size = '100%';
+    if (item.player2) {
+      if (item.score2 > 0) {
+        buffer += item.player2 + ":" + item.score2 + " ";
+      }
     }
 
-    this.showHide(size);
+    if (item.player3) {
+      if (item.score3 > 0) {
+        buffer += item.player3 + ":" + item.score3 + " ";
+      }
+    }
+
+    if (item.player4) {
+      if (item.score4 > 0) {
+        buffer += item.player4 + ":" + item.score4 + " ";
+      }
+    }
+
+    if (item.player5) {
+      if (item.score5 > 0) {
+        buffer += item.player5 + ":" + item.score5 + " ";
+      }
+    }
+
+    if (item.player6) {
+      if (item.score6 > 0) {
+        buffer += item.player6 + ":" + item.score6 + " ";
+      }
+    }
+
+    if (item.player7) {
+      if (item.score7 > 0) {
+        buffer += item.player7 + ":" + item.score7 + " ";
+      }
+    }
+
+    buffer += "</p>";
+    return buffer;
   };
 
-  _proto.showHide = function showHide(newStyleValue) {
-    var sidePanelEl = this.document.getElementById(this.uiConfig.dom.sideBarId);
-    if (sidePanelEl === null) return;
+  _proto.updateView = function updateView(name, newState) {
+    csLoggerDetail("Updating state with selected board game");
 
-    switch (this.uiPrefs.view.location) {
-      case 'left':
-        {
-          sidePanelEl.style.width = newStyleValue;
-          break;
-        }
-
-      case 'right':
-        {
-          sidePanelEl.style.width = newStyleValue;
-          break;
-        }
-
-      case 'bottom':
-        {
-          sidePanelEl.style.height = newStyleValue;
-          break;
-        }
-
-      case 'top':
-        {
-          sidePanelEl.style.height = newStyleValue;
-          break;
-        }
+    if (newState) {
+      if (newState.scoresheets) {
+        this.createResultsForState(name, newState.scoresheets);
+      }
     }
   };
 
-  return SidebarView;
-}(_AbstractView__WEBPACK_IMPORTED_MODULE_0__["default"]);
+  _proto.getBackgroundImage = function getBackgroundImage(name, item) {
+    return './img/scorecard-vertical.jpg';
+  };
 
-/* harmony default export */ __webpack_exports__["default"] = (SidebarView);
+  _proto.getIdForStateItem = function getIdForStateItem(name, item) {
+    return item.id;
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.hideRequested = function hideRequested(view) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return this.selectedBoardGame && confirm("Are you sure you want to delete this Score Sheet?");
+  };
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    csLogger("Handling delete " + selectedItem); // remove the sheet from the selected board game
+
+    if (this.selectedBoardGame.scoresheets) {
+      var index = this.selectedBoardGame.scoresheets.findIndex(function (sheet) {
+        return sheet.id === selectedItem;
+      });
+
+      if (index >= 0) {
+        this.selectedBoardGame.scoresheets.splice(index, 1); // let the controller know to remove from the database if the user is logged in
+
+        _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().scoreSheetRemovedFromBoardGame(this.selectedBoardGame, selectedItem);
+      }
+    }
+
+    this.updateView('', this.selectedBoardGame);
+  };
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  return ScoreSheetsView;
+}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__["default"]);
+
+ScoreSheetsView.SCORESHEETS_ViewConfig = {
+  resultsContainerId: 'scoreSheets',
+  resultsElementType: 'div',
+  resultsClasses: 'text-white bg-info col-sm-6 col-md-3 col-lg-2 score-card',
+  keyId: 'id',
+  dataSourceId: 'scoreSheet',
+  detail: {
+    containerClasses: 'card-img-overlay',
+    textElementType: 'div',
+    textElementClasses: 'ml-2',
+    select: true,
+    delete: {
+      buttonClasses: 'btn btn-rounded btn-warning ml-6 mt-4',
+      buttonText: 'Delete&nbsp;',
+      iconClasses: 'fas fa-trash-alt'
+    },
+    background: {
+      elementType: 'img',
+      elementClasses: 'score-card-img'
+    }
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ScoreSheetsView);
 
 /***/ }),
 
-/***/ "./src/component/UserSearchSidebarView.ts":
-/*!************************************************!*\
-  !*** ./src/component/UserSearchView.ts ***!
-  \************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/component/view/UserSearchView.ts":
+/*!**********************************************!*\
+  !*** ./src/component/view/UserSearchView.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _SidebarView__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SidebarViewContainer */ "./src/component/SidebarView.ts");
-/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
-/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../socket/NotificationController */ "./src/socket/NotificationController.ts");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Controller */ "./src/Controller.ts");
-/* harmony import */ var _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../state/BrowserStorageStateManager */ "./src/state/BrowserStorageStateManager.ts");
-/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../socket/ChatManager */ "./src/socket/ChatManager.ts");
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../socket/NotificationController */ "./src/socket/NotificationController.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../state/BrowserStorageStateManager */ "./src/state/BrowserStorageStateManager.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -5410,6 +4016,7 @@ function _setPrototypeOf(o, p) {
 
   return _setPrototypeOf(o, p);
 }
+
 
 
 
@@ -5422,18 +4029,13 @@ function _setPrototypeOf(o, p) {
 var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-sidebar');
 var vLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-sidebar:detail');
 
-var UserSearchSidebarView = /*#__PURE__*/function (_SidebarView) {
-  _inheritsLoose(UserSearchSidebarView, _SidebarView); // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
+var UserSearchView = /*#__PURE__*/function (_AbstractView) {
+  _inheritsLoose(UserSearchView, _AbstractView);
 
-
-  function UserSearchSidebarView(applicationView, htmlDocument, stateManager) {
+  function UserSearchView(stateManager) {
     var _this;
 
-    _this = _SidebarView.call(this, applicationView, htmlDocument, applicationView.state.ui.userSearchSideBar, applicationView.state.uiPrefs.userSearchSideBar, stateManager) || this;
-    _this.config = applicationView.state;
+    _this = _AbstractView.call(this, UserSearchView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.users) || this;
     _this.loggedInUsers = []; // handler binding
 
     _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
@@ -5444,138 +4046,56 @@ var UserSearchSidebarView = /*#__PURE__*/function (_SidebarView) {
     _this.handleFavouriteUserLoggedOut = _this.handleFavouriteUserLoggedOut.bind(_assertThisInitialized(_this));
     _this.handleFavouriteUsersChanged = _this.handleFavouriteUsersChanged.bind(_assertThisInitialized(_this));
     _this.handleBlockedUsersChanged = _this.handleBlockedUsersChanged.bind(_assertThisInitialized(_this));
-    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
-    _this.handleFavouriteUserDrop = _this.handleFavouriteUserDrop.bind(_assertThisInitialized(_this));
-    _this.handleBlockedUserDrop = _this.handleBlockedUserDrop.bind(_assertThisInitialized(_this)); // register state change listening
+    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this)); // register state change listening
 
-    stateManager.addChangeListenerForName(_this.config.stateNames.users, _assertThisInitialized(_this));
-    _this.localisedSM = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_5__["default"](true);
+    _this.localisedSM = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_4__["default"](true);
 
-    _this.localisedSM.addChangeListenerForName(_this.config.stateNames.recentUserSearches, _assertThisInitialized(_this));
+    _this.localisedSM.addChangeListenerForName(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, _assertThisInitialized(_this));
 
-    _socket_NotificationController__WEBPACK_IMPORTED_MODULE_3__["NotificationController"].getInstance().addUserListener(_assertThisInitialized(_this));
-    vLogger(_this.localisedSM.getStateByName(_this.config.stateNames.recentUserSearches));
+    _socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__.NotificationController.getInstance().addUserListener(_assertThisInitialized(_this));
+    vLogger(_this.localisedSM.getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches));
     return _this;
   }
 
-  var _proto = UserSearchSidebarView.prototype;
-
-  _proto.handleFavouriteUserDrop = function handleFavouriteUserDrop(event) {
-    vLogger('drop event on favourites'); // @ts-ignore
-
-    var draggedObjectJSON = event.dataTransfer.getData(this.config.ui.draggable.draggableDataKeyId);
-    var draggedObject = JSON.parse(draggedObjectJSON);
-    vLogger(draggedObject);
-
-    if (draggedObject[this.config.ui.draggable.draggedType] === this.config.ui.draggable.draggedTypeUser) {
-      switch (draggedObject[this.config.ui.draggable.draggedFrom]) {
-        case this.config.ui.draggable.draggedFromUserSearch:
-          {
-            // we know we have dragged a user from the user search to our favorites and dropped it
-            // is this user already in the favourites?
-            if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().isUserInFavouriteList(draggedObject.username)) {
-              vLogger(draggedObject.username + " already in favourite list, ignoring");
-              return;
-            } // ok, so we have a new user to add to the favourite list
-            // add the user to the Chat Manager and we should get an event about it
-
-
-            _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().addUserToFavouriteList(draggedObject.username);
-            break;
-          }
-      }
-    }
-  };
-
-  _proto.handleBlockedUserDrop = function handleBlockedUserDrop(event) {
-    vLogger('drop event on blocked users'); // @ts-ignore
-
-    var draggedObjectJSON = event.dataTransfer.getData(this.config.ui.draggable.draggableDataKeyId);
-    var draggedObject = JSON.parse(draggedObjectJSON);
-    vLogger(draggedObject);
-
-    if (draggedObject[this.config.ui.draggable.draggedType] === this.config.ui.draggable.draggedTypeUser) {
-      switch (draggedObject[this.config.ui.draggable.draggedFrom]) {
-        case this.config.ui.draggable.draggedFromUserSearch:
-          {
-            // we know we have dragged a user from the user search to our blocked users and dropped it
-            // is this user already in the favourites?
-            if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().isUserInBlockedList(draggedObject.username)) {
-              vLogger(draggedObject.username + " already in blocked list, ignoring");
-              return;
-            } // ok, so we have a new user to add to the favourite list
-            // add the user to the Chat Manager and we should get an event about it
-
-
-            _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().addUserToBlockedList(draggedObject.username);
-            break;
-          }
-      }
-    }
-  };
+  var _proto = UserSearchView.prototype;
 
   _proto.handleLoggedInUsersUpdated = function handleLoggedInUsersUpdated(usernames) {
     vLogger("Received new list of users who are logged in ");
     vLogger(usernames);
     this.loggedInUsers = usernames;
-    this.reRenderView();
+    this.updateView(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, {});
   };
 
   _proto.handleFavouriteUserLoggedIn = function handleFavouriteUserLoggedIn(username) {
     vLogger("Handle Favourite User " + username + " logged in");
-    this.reRenderView();
+    this.updateView(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, {});
   };
 
   _proto.handleFavouriteUserLoggedOut = function handleFavouriteUserLoggedOut(username) {
     vLogger("Handle Favourite User " + username + " logged in");
-    this.reRenderView();
+    this.updateView(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, {});
   };
 
   _proto.handleFavouriteUsersChanged = function handleFavouriteUsersChanged(usernames) {
     vLogger("Handle Favourite Users changed to " + usernames);
-    this.reRenderView();
+    this.updateView(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, {});
   };
 
   _proto.handleBlockedUsersChanged = function handleBlockedUsersChanged(usernames) {
     vLogger("Handle Blocked Users changed to " + usernames);
-    this.reRenderView();
+    this.updateView(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, {});
   };
 
   _proto.onDocumentLoaded = function onDocumentLoaded() {
-    _SidebarView.prototype.onDocumentLoaded.call(this); // @ts-ignore
+    _AbstractView.prototype.onDocumentLoaded.call(this); // @ts-ignore
 
 
-    var fastSearchEl = $("#" + this.uiConfig.dom.extra.fastSearchInputId);
-    fastSearchEl.on('autocompleteselect', this.eventUserSelected); // ok lets add the favourite users area and event handling for that now
-    // @ts-ignore
-
-    this.favUsersDropZone = document.getElementById(this.uiConfig.dom.favouriteUsersDropZone);
-    this.favUsersDropZone.addEventListener('dragover', function (event) {
-      vLogger('Dragged over');
-      event.preventDefault();
-    });
-    this.favUsersDropZone.addEventListener('drop', this.handleFavouriteUserDrop); // @ts-ignore
-
-    this.favUsersDiv = document.getElementById(this.uiConfig.dom.favouriteUsersId); // ok lets add the favourite users area and event handling for that now
-    // @ts-ignore
-
-    this.blockedUsersDropZone = document.getElementById(this.uiConfig.dom.blockedUsersDropZone);
-    this.blockedUsersDropZone.addEventListener('dragover', function (event) {
-      vLogger('Dragged over');
-      event.preventDefault();
-    });
-    this.blockedUsersDropZone.addEventListener('drop', this.handleBlockedUserDrop); // @ts-ignore
-
-    this.blockedUsersDiv = document.getElementById(this.uiConfig.dom.blockedUsersId);
-    this.renderFavouriteUsers();
-    this.renderBlockedUsers();
+    var fastSearchEl = $("#" + UserSearchView.fastSearchInputId);
+    fastSearchEl.on('autocompleteselect', this.eventUserSelected);
+    this.addEventListener(this);
   };
 
   _proto.getIdForStateItem = function getIdForStateItem(name, item) {
-    return item.id;
-  };
-
-  _proto.getLegacyIdForStateItem = function getLegacyIdForStateItem(name, item) {
     return item.id;
   };
 
@@ -5584,56 +4104,32 @@ var UserSearchSidebarView = /*#__PURE__*/function (_SidebarView) {
   };
 
   _proto.getModifierForStateItem = function getModifierForStateItem(name, item) {
-    var result = 'normal';
+    var result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.Modifier.normal;
     vLoggerDetail("Checking for item modifiers");
     vLoggerDetail(item); // if the user is currently logged out make the item inactive
 
-    if (!_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().isUserLoggedIn(item.username)) {
-      result = 'inactive';
+    if (!_socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().isUserLoggedIn(item.username)) {
+      result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.Modifier.inactive;
     }
 
     return result;
   };
 
   _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
-    var result = 'normal';
+    var result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.Modifier.normal;
     vLoggerDetail("Checking for item secondary modifiers " + item.username); // if the user is in the black list then show warning and a favourite user is highlighted
 
-    if (_socket_NotificationController__WEBPACK_IMPORTED_MODULE_3__["NotificationController"].getInstance().isFavouriteUser(item.username)) {
+    if (_socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__.NotificationController.getInstance().isFavouriteUser(item.username)) {
       vLoggerDetail("is favourite");
-      result = 'active';
+      result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.Modifier.active;
     }
 
-    if (_socket_NotificationController__WEBPACK_IMPORTED_MODULE_3__["NotificationController"].getInstance().isBlockedUser(item.username)) {
+    if (_socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__.NotificationController.getInstance().isBlockedUser(item.username)) {
       vLoggerDetail("is blocked");
-      result = 'warning';
+      result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.Modifier.warning;
     }
 
     return result;
-  };
-
-  _proto.eventClickItem = function eventClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log(event.target); // @ts-ignore
-
-    var userId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(this.uiConfig.dom.resultDataSourceId);
-
-    if (dataSource === this.uiConfig.dom.resultDataSourceBlockedUsers) {
-      vLoggerDetail("Blocked user clicked - not activating");
-      return;
-    } // @ts-ignore
-
-
-    vLoggerDetail("User " + event.target + " with id " + userId + " clicked from " + dataSource);
-    var user = this.stateManager.findItemInState(this.config.stateNames.users, {
-      id: parseInt(userId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"]);
-    vLogger(user);
-    var roomName = _socket_NotificationController__WEBPACK_IMPORTED_MODULE_3__["NotificationController"].getInstance().startChatWithUser(user.username);
-    this.applicationView.handleShowChat(event, roomName);
   };
 
   _proto.eventUserSelected = function eventUserSelected(event, ui) {
@@ -5643,46 +4139,40 @@ var UserSearchSidebarView = /*#__PURE__*/function (_SidebarView) {
 
     event.target.innerText = ''; // add the selected user to the recent user searches
 
-    if (this.localisedSM.isItemInState(this.config.stateNames.recentUserSearches, {
+    if (this.localisedSM.isItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, {
       id: ui.item.value
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"])) return;
-    var recentUserSearches = this.localisedSM.getStateByName(this.config.stateNames.recentUserSearches);
-    vLogger("saved searches too long? " + this.config.controller.dataLimit.recentUserSearches);
+    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_1__.isSame)) return;
+    var recentUserSearches = this.localisedSM.getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches);
+    vLogger("saved searches too long? " + _AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches);
 
-    if (recentUserSearches.length >= this.config.controller.dataLimit.recentUserSearches) {
+    if (recentUserSearches.length >= UserSearchView.dataLimit) {
       vLogger('saved searches too long - removing first'); // remove the first item from recent searches
 
       var item = recentUserSearches.shift();
-      this.localisedSM.removeItemFromState(this.config.stateNames.recentUserSearches, item, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"], true);
+      this.localisedSM.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, item, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_1__.isSame, true);
     } // save the searches
 
 
-    this.localisedSM.addNewItemToState(this.config.stateNames.recentUserSearches, {
+    this.localisedSM.addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, {
       id: ui.item.value,
       username: ui.item.label
     }, true);
   };
 
-  _proto.reRenderView = function reRenderView() {
-    this.updateView(this.config.stateNames.recentUserSearches, this.localisedSM.getStateByName(this.config.stateNames.recentUserSearches));
-    this.renderFavouriteUsers();
-    this.renderBlockedUsers();
-  };
-
   _proto.updateView = function updateView(name, newState) {
-    if (name === this.config.stateNames.recentUserSearches) {
+    if (name === _AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches) {
       vLogger("Updating for recent searches");
-      newState = this.localisedSM.getStateByName(this.config.stateNames.recentUserSearches);
+      newState = this.localisedSM.getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches);
       vLogger(newState);
       this.createResultsForState(name, newState);
     }
 
-    if (name === this.config.stateNames.users) {
+    if (name === _AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.users) {
       // load the search names into the search field
       // what is my username?
-      var myUsername = _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getLoggedInUsername(); // @ts-ignore
+      var myUsername = _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getLoggedInUsername(); // @ts-ignore
 
-      var fastSearchEl = $("#" + this.uiConfig.dom.extra.fastSearchInputId); // for each name, construct the patient details to display and the id referenced
+      var fastSearchEl = $("#" + UserSearchView.fastSearchInputId); // for each name, construct the patient details to display and the id referenced
 
       var fastSearchValues = [];
       newState.forEach(function (item) {
@@ -5702,179 +4192,106 @@ var UserSearchSidebarView = /*#__PURE__*/function (_SidebarView) {
     }
   };
 
-  _proto.getDragData = function getDragData(event) {
-    // use the actual id to pass the user to the droppable target
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {
     // @ts-ignore
-    var userId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    vLoggerDetail("User " + event.target.innerText + " with id " + userId + " dragging");
-    var user = this.stateManager.findItemInState(this.config.stateNames.users, {
-      id: parseInt(userId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"]);
-    vLoggerDetail(user);
-    user[this.config.ui.draggable.draggedType] = this.config.ui.draggable.draggedTypeUser;
-    user[this.config.ui.draggable.draggedFrom] = this.config.ui.draggable.draggedFromUserSearch;
-    return user;
-  };
-
-  _proto.deleteFavouriteUser = function deleteFavouriteUser(user) {
-    // @ts-ignore
-    vLogger("Favourite user " + user.username + " with id " + user.id + " deleted - removing");
-    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().removeUserFromFavouriteList(user.username);
-  };
-
-  _proto.deleteBlockedUser = function deleteBlockedUser(user) {
-    // @ts-ignore
-    vLogger("Blocked user " + user.username + " with id " + user.id + " deleted - removing");
-    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().removeUserFromBlockedList(user.username);
-  };
-
-  _proto.deleteRecentSearchUser = function deleteRecentSearchUser(user) {
-    // @ts-ignore
-    vLogger("Recent search user " + user.username + " with id " + user.id + " deleted - removing");
-    this.localisedSM.removeItemFromState(this.config.stateNames.recentUserSearches, user, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"], true);
-  };
-
-  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation(); // @ts-ignore
-
-    var userId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(this.uiConfig.dom.resultDataSourceId); // @ts-ignore
-
-    vLoggerDetail("User " + event.target + " with id " + userId + " delete clicked from " + dataSource);
-    var user = this.stateManager.findItemInState(this.config.stateNames.users, {
-      id: parseInt(userId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"]);
-    vLogger(user);
-
-    if (user) {
-      switch (dataSource) {
-        case this.uiConfig.dom.resultDataSourceFavUsers:
-          {
-            this.deleteFavouriteUser(user);
-            break;
-          }
-
-        case this.uiConfig.dom.resultDataSourceBlockedUsers:
-          {
-            this.deleteBlockedUser(user);
-            break;
-          }
-
-        case this.uiConfig.dom.resultDataSourceValue:
-          {
-            this.deleteRecentSearchUser(user);
-            break;
-          }
-      }
-    }
-  };
-
-  _proto.getBadgeValue = function getBadgeValue(name, item) {
-    return 0;
-  };
-
-  _proto.getBackgroundImage = function getBackgroundImage(name, item) {
-    return "";
-  };
-
-  _proto.eventAction1Clicked = function eventAction1Clicked(event) {
-    _SidebarView.prototype.eventAction1Clicked.call(this, event); // add this user to the favourites
-    // @ts-ignore
-
-
-    var userId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId);
-    var user = this.stateManager.findItemInState(this.config.stateNames.users, {
-      id: parseInt(userId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"]);
-
-    if (user) {
-      if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().isUserInFavouriteList(user.username)) {
-        vLogger(user.username + " already in favourite list, ignoring");
+    if (actionName === this.uiConfig.extraActions[0].name) {
+      if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().isUserInFavouriteList(selectedItem.username)) {
+        vLogger(selectedItem.username + " already in fav list, ignoring");
         return;
-      } // ok, so we have a new user to add to the favourite list
-      // add the user to the Chat Manager and we should get an event about it
+      }
+
+      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().addUserToFavouriteList(selectedItem.username);
+    } // @ts-ignore
 
 
-      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().addUserToFavouriteList(user.username);
-    }
-  };
-
-  _proto.eventAction2Clicked = function eventAction2Clicked(event) {
-    _SidebarView.prototype.eventAction2Clicked.call(this, event); // add this user to the blocked list
-    // @ts-ignore
-
-
-    var userId = event.target.getAttribute(this.uiConfig.dom.resultDataKeyId);
-    var user = this.stateManager.findItemInState(this.config.stateNames.users, {
-      id: parseInt(userId)
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSame"]);
-
-    if (user) {
-      if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().isUserInBlockedList(user.username)) {
-        vLogger(user.username + " already in blocked list, ignoring");
+    if (actionName === this.uiConfig.extraActions[1].name) {
+      if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
+        vLogger(selectedItem.username + " already in fav list, ignoring");
         return;
-      } // ok, so we have a new user to add to the blocked list
-      // add the user to the Chat Manager and we should get an event about it
+      }
 
-
-      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().addUserToBlockedList(user.username);
+      _socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().addUserToBlockedList(selectedItem.username);
     }
   };
 
-  _proto.renderFavouriteUsers = function renderFavouriteUsers() {
-    var _this2 = this;
-
-    var usernames = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().getFavouriteUserList();
-    if (this.favUsersDiv) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_7__["default"].removeAllChildren(this.favUsersDiv);
-    usernames.forEach(function (username) {
-      // find the user in the state manager
-      var user = _this2.stateManager.findItemInState(_this2.config.stateNames.users, {
-        username: username
-      }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSameUsername"]);
-
-      if (user) {
-        var childElement = _this2.createResultForItem(_this2.config.stateNames.users, user, _this2.uiConfig.dom.resultDataSourceFavUsers);
-
-        childElement.addEventListener('click', _this2.eventClickItem);
-        childElement.setAttribute('draggable', 'true');
-        childElement.addEventListener('dragstart', _this2.eventStartDrag);
-
-        _this2.favUsersDiv.appendChild(childElement);
-      }
-    });
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return true;
   };
 
-  _proto.renderBlockedUsers = function renderBlockedUsers() {
-    var _this3 = this;
-
-    var usernames = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__["ChatManager"].getInstance().getBlockedUserList();
-    if (this.blockedUsersDiv) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_7__["default"].removeAllChildren(this.blockedUsersDiv);
-    usernames.forEach(function (username) {
-      // find the user in the state manager
-      var user = _this3.stateManager.findItemInState(_this3.config.stateNames.users, {
-        username: username
-      }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__["isSameUsername"]);
-
-      if (user) {
-        var childElement = _this3.createResultForItem(_this3.config.stateNames.users, user, _this3.uiConfig.dom.resultDataSourceBlockedUsers);
-
-        childElement.setAttribute('draggable', 'false');
-        childElement.addEventListener('dragstart', function (event) {
-          event.preventDefault();
-        });
-
-        _this3.blockedUsersDiv.appendChild(childElement);
-      }
-    });
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    vLogger("Recent search user " + selectedItem.username + " with id " + selectedItem.id + " deleted - removing");
+    this.localisedSM.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, selectedItem, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_1__.isSame, true);
   };
 
-  return UserSearchSidebarView;
-}(_SidebarView__WEBPACK_IMPORTED_MODULE_1__["default"]);
+  _proto.itemSelected = function itemSelected(view, selectedItem) {
+    var roomName = _socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__.NotificationController.getInstance().startChatWithUser(selectedItem.username);
+    _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().handleShowChat(roomName);
+  };
 
-/* harmony default export */ __webpack_exports__["default"] = (UserSearchSidebarView);
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.hideRequested = function hideRequested(view) {};
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  return UserSearchView;
+}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_8__["default"]);
+
+UserSearchView.fastSearchInputId = 'fastSearchUserNames';
+UserSearchView.dataLimit = 10;
+UserSearchView.DOMConfig = {
+  resultsContainerId: 'recentUserSearches',
+  resultsElementType: 'a',
+  resultsElementAttributes: [{
+    name: 'href',
+    value: '#'
+  }],
+  resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
+  keyId: 'user-id',
+  dataSourceId: 'recentUserSearches',
+  modifiers: {
+    normal: 'list-group-item-primary',
+    inactive: 'list-group-item-light',
+    active: 'list-group-item-info',
+    warning: 'list-group-item-danger'
+  },
+  icons: {
+    normal: 'fas fa-comment',
+    inactive: 'fas fa-comment',
+    active: 'fas fa-heart',
+    warning: 'fas fa-exclamation-circle'
+  },
+  detail: {
+    containerClasses: 'd-flex w-100 justify-content-between',
+    textElementType: 'span',
+    textElementClasses: 'mb-1',
+    select: true,
+    delete: {
+      buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
+      iconClasses: 'fas fa-trash-alt'
+    },
+    drag: {
+      type: _AppTypes__WEBPACK_IMPORTED_MODULE_7__.DRAGGABLE.typeUser,
+      from: _AppTypes__WEBPACK_IMPORTED_MODULE_7__.DRAGGABLE.fromUserSearch
+    }
+  },
+  extraActions: [{
+    name: 'favourite',
+    buttonClasses: 'btn bg-info text-white btn-circle btn-sm mr-1',
+    iconClasses: 'fas fa-user-plus'
+  }, {
+    name: 'blocked',
+    buttonClasses: 'btn bg-warning text-white btn-circle btn-sm mr-1',
+    iconClasses: 'fas fa-user-slash'
+  }]
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserSearchView);
 
 /***/ }),
 
@@ -5882,11 +4299,13 @@ var UserSearchSidebarView = /*#__PURE__*/function (_SidebarView) {
 /*!********************************!*\
   !*** ./src/network/ApiUtil.ts ***!
   \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 function _extends() {
@@ -6084,7 +4503,7 @@ var ApiUtil = /*#__PURE__*/function () {
 }();
 
 var apiUtil = new ApiUtil();
-/* harmony default export */ __webpack_exports__["default"] = (apiUtil);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (apiUtil);
 
 /***/ }),
 
@@ -6092,11 +4511,13 @@ var apiUtil = new ApiUtil();
 /*!****************************************!*\
   !*** ./src/network/DownloadManager.ts ***!
   \****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var _ApiUtil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ApiUtil */ "./src/network/ApiUtil.ts");
 /* harmony import */ var _util_UUID__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/UUID */ "./src/util/UUID.ts");
 /* harmony import */ var _Types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Types */ "./src/network/Types.ts");
@@ -6145,6 +4566,14 @@ function _asyncToGenerator(fn) {
 var dlLogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('api-ts');
 
 var DownloadManager = /*#__PURE__*/function () {
+  DownloadManager.getInstance = function getInstance() {
+    if (!DownloadManager._instance) {
+      DownloadManager._instance = new DownloadManager();
+    }
+
+    return DownloadManager._instance;
+  };
+
   function DownloadManager() {
     this.backgroundQueue = [];
     this.priorityQueue = [];
@@ -6179,7 +4608,7 @@ var DownloadManager = /*#__PURE__*/function () {
 
     var request = {
       url: url,
-      type: _Types__WEBPACK_IMPORTED_MODULE_2__["RequestType"].POST,
+      type: _Types__WEBPACK_IMPORTED_MODULE_2__.RequestType.POST,
       params: {
         query: query,
         variables: variables
@@ -6187,7 +4616,7 @@ var DownloadManager = /*#__PURE__*/function () {
       callback: callback,
       associatedStateName: state
     };
-    downloader.addApiRequest(request, isPriority);
+    this.addApiRequest(request, isPriority);
   };
 
   _proto.addQLMutationRequest = function addQLMutationRequest(url, mutation, variables, callback, state, isPriority) {
@@ -6197,7 +4626,7 @@ var DownloadManager = /*#__PURE__*/function () {
 
     var request = {
       url: url,
-      type: _Types__WEBPACK_IMPORTED_MODULE_2__["RequestType"].POST,
+      type: _Types__WEBPACK_IMPORTED_MODULE_2__.RequestType.POST,
       params: {
         mutation: mutation,
         variables: variables
@@ -6205,7 +4634,7 @@ var DownloadManager = /*#__PURE__*/function () {
       callback: callback,
       associatedStateName: state
     };
-    downloader.addApiRequest(request, isPriority);
+    this.addApiRequest(request, isPriority);
   };
 
   _proto.addApiRequest = function addApiRequest(jsonRequest, isPriority) {
@@ -6222,7 +4651,7 @@ var DownloadManager = /*#__PURE__*/function () {
       var _managerRequest = {
         originalRequest: jsonRequest,
         requestId: requestId,
-        queueType: _Types__WEBPACK_IMPORTED_MODULE_2__["queueType"].PRIORITY,
+        queueType: _Types__WEBPACK_IMPORTED_MODULE_2__.queueType.PRIORITY,
         callback: this.callbackForQueueRequest
       };
       this.priorityQueue.push(_managerRequest);
@@ -6231,7 +4660,7 @@ var DownloadManager = /*#__PURE__*/function () {
       var _managerRequest2 = {
         originalRequest: jsonRequest,
         requestId: requestId,
-        queueType: _Types__WEBPACK_IMPORTED_MODULE_2__["queueType"].BACKGROUND,
+        queueType: _Types__WEBPACK_IMPORTED_MODULE_2__.queueType.BACKGROUND,
         callback: this.callbackForQueueRequest
       };
       this.backgroundQueue.push(_managerRequest2);
@@ -6353,7 +4782,7 @@ var DownloadManager = /*#__PURE__*/function () {
 
   _proto.callbackForQueueRequest = function callbackForQueueRequest(jsonData, httpStatus, queueId, requestId) {
     // let the listeners know about the completion
-    if (queueId === _Types__WEBPACK_IMPORTED_MODULE_2__["queueType"].PRIORITY) {
+    if (queueId === _Types__WEBPACK_IMPORTED_MODULE_2__.queueType.PRIORITY) {
       // priority
       if (this.priorityChangeListener) this.priorityChangeListener.handleEventRemoveFromQueue();
     } else if (this.backgroundChangeListener) this.backgroundChangeListener.handleEventRemoveFromQueue();
@@ -6381,25 +4810,25 @@ var DownloadManager = /*#__PURE__*/function () {
 
     if (item.originalRequest.url !== null && item.originalRequest.params != null && item.originalRequest.callback != null) {
       switch (item.originalRequest.type) {
-        case _Types__WEBPACK_IMPORTED_MODULE_2__["RequestType"].POST:
+        case _Types__WEBPACK_IMPORTED_MODULE_2__.RequestType.POST:
           {
             _ApiUtil__WEBPACK_IMPORTED_MODULE_0__["default"].apiFetchJSONWithPost(item);
             break;
           }
 
-        case _Types__WEBPACK_IMPORTED_MODULE_2__["RequestType"].GET:
+        case _Types__WEBPACK_IMPORTED_MODULE_2__.RequestType.GET:
           {
             _ApiUtil__WEBPACK_IMPORTED_MODULE_0__["default"].apiFetchJSONWithGet(item);
             break;
           }
 
-        case _Types__WEBPACK_IMPORTED_MODULE_2__["RequestType"].DELETE:
+        case _Types__WEBPACK_IMPORTED_MODULE_2__.RequestType.DELETE:
           {
             _ApiUtil__WEBPACK_IMPORTED_MODULE_0__["default"].apiFetchJSONWithDelete(item);
             break;
           }
 
-        case _Types__WEBPACK_IMPORTED_MODULE_2__["RequestType"].PUT:
+        case _Types__WEBPACK_IMPORTED_MODULE_2__.RequestType.PUT:
           {
             _ApiUtil__WEBPACK_IMPORTED_MODULE_0__["default"].apiFetchJSONWithPut(item);
             break;
@@ -6411,8 +4840,7 @@ var DownloadManager = /*#__PURE__*/function () {
   return DownloadManager;
 }();
 
-var downloader = new DownloadManager();
-/* harmony default export */ __webpack_exports__["default"] = (downloader);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DownloadManager);
 
 /***/ }),
 
@@ -6420,13 +4848,14 @@ var downloader = new DownloadManager();
 /*!******************************!*\
   !*** ./src/network/Types.ts ***!
   \******************************/
-/*! exports provided: RequestType, queueType */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RequestType", function() { return RequestType; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "queueType", function() { return queueType; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "RequestType": () => (/* binding */ RequestType),
+/* harmony export */   "queueType": () => (/* binding */ queueType)
+/* harmony export */ });
 var RequestType;
 
 (function (RequestType) {
@@ -6449,12 +4878,13 @@ var queueType;
 /*!***************************************************!*\
   !*** ./src/notification/BootstrapNotification.ts ***!
   \***************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BootstrapNotification; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BootstrapNotification)
+/* harmony export */ });
 /* harmony import */ var _Notification__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Notification */ "./src/notification/Notification.ts");
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
@@ -6591,12 +5021,13 @@ var BootstrapNotification = /*#__PURE__*/function (_Notification) {
 /*!******************************************!*\
   !*** ./src/notification/Notification.ts ***!
   \******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Notification; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Notification)
+/* harmony export */ });
 var Notification = function Notification(notificationManager) {
   this.show = this.show.bind(this);
   this.notificationManager = notificationManager; // Create DOM notification structure when instantiated
@@ -6613,11 +5044,13 @@ var Notification = function Notification(notificationManager) {
 /*!*************************************************!*\
   !*** ./src/notification/NotificationFactory.ts ***!
   \*************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var _BootstrapNotification__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BootstrapNotification */ "./src/notification/BootstrapNotification.ts");
 
 
@@ -6634,7 +5067,7 @@ var NotificationFactory = /*#__PURE__*/function () {
 }();
 
 var notificationFactory = new NotificationFactory();
-/* harmony default export */ __webpack_exports__["default"] = (notificationFactory);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (notificationFactory);
 
 /***/ }),
 
@@ -6642,15 +5075,25 @@ var notificationFactory = new NotificationFactory();
 /*!*************************************************!*\
   !*** ./src/notification/NotificationManager.ts ***!
   \*************************************************/
-/*! exports provided: NotificationManager, default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NotificationManager", function() { return NotificationManager; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "NotificationManager": () => (/* binding */ NotificationManager),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var _NotificationFactory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NotificationFactory */ "./src/notification/NotificationFactory.ts");
 
 var NotificationManager = /*#__PURE__*/function () {
+  NotificationManager.getInstance = function getInstance() {
+    if (!NotificationManager._instance) {
+      NotificationManager._instance = new NotificationManager();
+    }
+
+    return NotificationManager._instance;
+  };
+
   function NotificationManager() {
     this.notifications = [];
     this.currentCount = 0;
@@ -6704,8 +5147,7 @@ var NotificationManager = /*#__PURE__*/function () {
 
   return NotificationManager;
 }();
-var notifier = new NotificationManager();
-/* harmony default export */ __webpack_exports__["default"] = (notifier);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (NotificationManager);
 
 /***/ }),
 
@@ -6713,12 +5155,13 @@ var notifier = new NotificationManager();
 /*!***********************************!*\
   !*** ./src/socket/ChatManager.ts ***!
   \***********************************/
-/*! exports provided: ChatManager */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ChatManager", function() { return ChatManager; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ChatManager": () => (/* binding */ ChatManager)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
@@ -6754,7 +5197,7 @@ var ChatManager = /*#__PURE__*/function () {
     this.chatUserListeners = [];
     this.localStorage = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_4__["default"](true); // connect to the socket manager
 
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].addChatReceiver(this); // bind the receiver methods
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addChatReceiver(this); // bind the receiver methods
 
     this.receiveLogin = this.receiveLogin.bind(this);
     this.receiveLogout = this.receiveLogout.bind(this);
@@ -6920,7 +5363,7 @@ var ChatManager = /*#__PURE__*/function () {
   _proto.receiveJoinedRoom = function receiveJoinedRoom(users) {
     // we get this for all changes to a room, if the username is us can safely ignore
     //if (users.username === this.currentUsername) return;
-    if (users.type !== _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom) return;
+    if (users.type !== _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom) return;
     var log = this.ensureChatLogExists(users.room);
     cmLogger("User list for room " + users.room + " - " + users.userList.join(','));
     log.users = users.userList; // add a "message" for joined user
@@ -6932,7 +5375,7 @@ var ChatManager = /*#__PURE__*/function () {
       created: created,
       room: users.room,
       priority: 0,
-      type: _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom,
+      type: _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom,
       message: users.username + " joined the chat on " + joinDateTime
     };
     log.messages.push(message);
@@ -6944,7 +5387,7 @@ var ChatManager = /*#__PURE__*/function () {
 
   _proto.receivedLeftRoom = function receivedLeftRoom(users) {
     // we get this for all changes to a room, if the username is us can safely ignore
-    if (users.type !== _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom) return;
+    if (users.type !== _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom) return;
     if (users.username === this.currentUsername) return;
     var log = this.ensureChatLogExists(users.room);
     cmLogger("User list for room " + users.room + " - " + users.userList.join(','));
@@ -6957,7 +5400,7 @@ var ChatManager = /*#__PURE__*/function () {
       created: created,
       room: users.room,
       priority: 0,
-      type: _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom,
+      type: _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom,
       message: users.username + " left the chat on " + joinDateTime
     };
     log.messages.push(message);
@@ -6968,7 +5411,7 @@ var ChatManager = /*#__PURE__*/function () {
   };
 
   _proto.receiveInvitation = function receiveInvitation(invite) {
-    if (invite.type !== _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom) return; //  unless we are receiving an invite from someone in our blocked list, we automatically accept this invite
+    if (invite.type !== _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom) return; //  unless we are receiving an invite from someone in our blocked list, we automatically accept this invite
 
     if (!this.isUserInBlockedList(invite.from)) {
       cmLogger("Invited to chat " + invite.room);
@@ -7003,7 +5446,7 @@ var ChatManager = /*#__PURE__*/function () {
         }) < 0) chatLog.users.push(invite.from);
         this.saveLogs();
         cmLogger("Joining chat " + invite.room);
-        _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].joinChat(this.getCurrentUser(), invite.room, _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom);
+        _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().joinChat(this.getCurrentUser(), invite.room, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom);
         this.chatListeners.forEach(function (listener) {
           return listener.handleChatLogUpdated(chatLog, false);
         });
@@ -7055,7 +5498,7 @@ var ChatManager = /*#__PURE__*/function () {
   };
 
   _proto.receiveDecline = function receiveDecline(room, username, type) {
-    if (type !== _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom) return; // we get this for all changes to a room, if the username is us can safely ignore
+    if (type !== _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom) return; // we get this for all changes to a room, if the username is us can safely ignore
 
     if (username === this.currentUsername) return;
 
@@ -7093,7 +5536,7 @@ var ChatManager = /*#__PURE__*/function () {
       wasOffline = false;
     }
 
-    if (message.type !== _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom) return; // ignore messages that aren't for chat rooms
+    if (message.type !== _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom) return; // ignore messages that aren't for chat rooms
     // double check the message is not from us somehow
 
     if (message.from === this.getCurrentUser()) return; // don't receive messages from the blocked users
@@ -7138,14 +5581,14 @@ var ChatManager = /*#__PURE__*/function () {
     if (this.getCurrentUser().trim().length === 0) return; // we are not logged in
 
     this.ensureChatLogExists(room);
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].joinChat(this.getCurrentUser(), room, _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom);
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().joinChat(this.getCurrentUser(), room, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom);
   };
 
   _proto.leaveChat = function leaveChat(room) {
     if (this.getCurrentUser().trim().length === 0) return; // we are not logged in
 
     this.removeChatLog(room);
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].leaveChat(this.getCurrentUser(), room, _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom);
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().leaveChat(this.getCurrentUser(), room, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom);
   };
 
   _proto.login = function login() {
@@ -7153,13 +5596,13 @@ var ChatManager = /*#__PURE__*/function () {
 
     if (this.getCurrentUser().trim().length === 0) return; // we are not logged in
 
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].login(this.getCurrentUser()); // get the current user list
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().login(this.getCurrentUser()); // get the current user list
 
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getUserList(); // connect to the chat rooms already in logs
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getUserList(); // connect to the chat rooms already in logs
 
     this.chatLogs.forEach(function (log) {
-      if (log.type === _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom) {
-        _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].joinChat(_this9.currentUsername, log.roomName, _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom);
+      if (log.type === _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom) {
+        _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().joinChat(_this9.currentUsername, log.roomName, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom);
       }
     });
   };
@@ -7167,18 +5610,18 @@ var ChatManager = /*#__PURE__*/function () {
   _proto.logout = function logout() {
     if (this.getCurrentUser().trim().length === 0) return; // we are not logged in
 
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].logout(this.getCurrentUser());
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().logout(this.getCurrentUser());
   };
 
   _proto.declineInvite = function declineInvite(room) {
     if (this.getCurrentUser().trim().length === 0) return; // we are not logged in
 
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].sendDeclineInvite(room, this.getCurrentUser(), _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom);
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().sendDeclineInvite(room, this.getCurrentUser(), _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom);
   };
 
   _proto.sendInvite = function sendInvite(to, room, type, requiresAcceptDecline, subject) {
     if (type === void 0) {
-      type = _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom;
+      type = _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom;
     }
 
     if (requiresAcceptDecline === void 0) {
@@ -7199,13 +5642,13 @@ var ChatManager = /*#__PURE__*/function () {
     if (log.users.findIndex(function (user) {
       return user === to;
     }) < 0) {
-      _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].sendInvite(this.getCurrentUser(), to, room, type, requiresAcceptDecline, subject);
+      _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().sendInvite(this.getCurrentUser(), to, room, type, requiresAcceptDecline, subject);
     }
   };
 
   _proto.sendMessage = function sendMessage(room, content, priority, attachment) {
     if (priority === void 0) {
-      priority = _Types__WEBPACK_IMPORTED_MODULE_3__["Priority"].Normal;
+      priority = _Types__WEBPACK_IMPORTED_MODULE_3__.Priority.Normal;
     }
 
     if (this.getCurrentUser().trim().length === 0) return null; // we are not logged in
@@ -7213,7 +5656,7 @@ var ChatManager = /*#__PURE__*/function () {
     var log = this.ensureChatLogExists(room); // send the message
 
     var created = parseInt(moment__WEBPACK_IMPORTED_MODULE_1___default()().format('YYYYMMDDHHmmss'));
-    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].sendMessage(this.getCurrentUser(), room, content, created, _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom, _Types__WEBPACK_IMPORTED_MODULE_3__["Priority"].Normal, {}); // add the message to the chat log
+    _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().sendMessage(this.getCurrentUser(), room, content, created, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom, _Types__WEBPACK_IMPORTED_MODULE_3__.Priority.Normal, {}); // add the message to the chat log
 
     if (!attachment) attachment = {};
     var sent = {
@@ -7222,7 +5665,7 @@ var ChatManager = /*#__PURE__*/function () {
       message: content,
       created: created,
       priority: priority,
-      type: _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom,
+      type: _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom,
       attachment: attachment
     };
     this.addMessageToChatLog(log, sent);
@@ -7244,9 +5687,9 @@ var ChatManager = /*#__PURE__*/function () {
         return listener.handleChatLogUpdated(chatLog, false);
       }); // invite the other user
 
-      _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].sendInvite(this.getCurrentUser(), username, chatLog.roomName, _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom, false, ''); // ok, lets connect to the server
+      _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().sendInvite(this.getCurrentUser(), username, chatLog.roomName, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom, false, ''); // ok, lets connect to the server
 
-      _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].joinChat(this.getCurrentUser(), chatLog.roomName, _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom);
+      _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().joinChat(this.getCurrentUser(), chatLog.roomName, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom);
       roomName = chatLog.roomName;
     }
 
@@ -7278,7 +5721,7 @@ var ChatManager = /*#__PURE__*/function () {
         messages: [],
         lastViewed: parseInt(moment__WEBPACK_IMPORTED_MODULE_1___default()().format('YYYYMMDDHHmmss')),
         numOfNewMessages: 0,
-        type: _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom
+        type: _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom
       };
       this.chatLogs.push(log);
       this.saveLogs();
@@ -7316,7 +5759,7 @@ var ChatManager = /*#__PURE__*/function () {
         messages: [],
         lastViewed: parseInt(moment__WEBPACK_IMPORTED_MODULE_1___default()().format('YYYYMMDDHHmmss')),
         numOfNewMessages: 0,
-        type: _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ChatRoom
+        type: _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom
       };
       this.chatLogs.push(foundLog);
       this.saveLogs();
@@ -7389,12 +5832,13 @@ ChatManager.favouriteListKey = 'im-board-favourite-list';
 /*!**********************************************!*\
   !*** ./src/socket/NotificationController.ts ***!
   \**********************************************/
-/*! exports provided: NotificationController */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NotificationController", function() { return NotificationController; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "NotificationController": () => (/* binding */ NotificationController)
+/* harmony export */ });
 /* harmony import */ var _ChatManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ChatManager */ "./src/socket/ChatManager.ts");
 /* harmony import */ var _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../notification/NotificationManager */ "./src/notification/NotificationManager.ts");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
@@ -7408,7 +5852,7 @@ var notLogger = debug__WEBPACK_IMPORTED_MODULE_2___default()('notification-contr
 var NotificationController = /*#__PURE__*/function () {
   function NotificationController() {
     this.doNotDisturb = false;
-    this.chatManager = _ChatManager__WEBPACK_IMPORTED_MODULE_0__["ChatManager"].getInstance();
+    this.chatManager = _ChatManager__WEBPACK_IMPORTED_MODULE_0__.ChatManager.getInstance();
     this.doNotDisturb = false;
     this.chatListeners = [];
     this.chatUserListeners = []; //bind the methods
@@ -7434,20 +5878,20 @@ var NotificationController = /*#__PURE__*/function () {
   _proto.handleInvitationDeclined = function handleInvitationDeclined(room, username) {
     if (this.doNotDisturb) return; // notify the user of the new chat
 
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show('Room', "User " + username + " has declined the invitation to join you.", 'info', 7000);
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().show('Room', "User " + username + " has declined the invitation to join you.", 'info', 7000);
   };
 
   _proto.handleNewInviteReceived = function handleNewInviteReceived(invite) {
     var result = true; // is this a chat room or score sheet?
 
-    if (invite.type === _Types__WEBPACK_IMPORTED_MODULE_3__["InviteType"].ScoreSheet) return true;
+    if (invite.type === _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ScoreSheet) return true;
     if (this.doNotDisturb && !invite.requiresAcceptDecline) return result;
 
     if (invite.requiresAcceptDecline) {// notify the user of the invitation
       //result = controller.askUserAboutInvitation(invite); ///////TO FIX
     } else {
       // notify the user of the new chat
-      _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show('Chat Room', "User " + invite.from + " has invited you.", 'info', 7000);
+      _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().show('Chat Room', "User " + invite.from + " has invited you.", 'info', 7000);
     }
 
     return result;
@@ -7525,7 +5969,7 @@ var NotificationController = /*#__PURE__*/function () {
       // get the last message added, it won't be from ourselves (the chat manager takes care of that)
       if (log.messages.length > 0) {
         var displayMessage = log.messages[log.messages.length - 1];
-        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show(displayMessage.from, displayMessage.message, 'message', 3000);
+        _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().show(displayMessage.from, displayMessage.message, 'message', 3000);
       }
     }
   };
@@ -7547,7 +5991,7 @@ var NotificationController = /*#__PURE__*/function () {
     }); // provide visual notifications if do not disturb is not on
 
     if (this.doNotDisturb) return;
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show(username, "User " + username + " has logged in.", 'warning', 5000);
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().show(username, "User " + username + " has logged in.", 'warning', 5000);
   };
 
   _proto.handleFavouriteUserLoggedOut = function handleFavouriteUserLoggedOut(username) {
@@ -7558,7 +6002,7 @@ var NotificationController = /*#__PURE__*/function () {
     }); // provide visual notifications if do not disturb is not on
 
     if (this.doNotDisturb) return;
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show(username, "User " + username + " has logged out.", 'priority', 4000);
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().show(username, "User " + username + " has logged out.", 'priority', 4000);
   };
 
   _proto.handleBlockedUsersChanged = function handleBlockedUsersChanged(usernames) {
@@ -7576,7 +6020,7 @@ var NotificationController = /*#__PURE__*/function () {
   };
 
   _proto.startChatWithUser = function startChatWithUser(username) {
-    return _ChatManager__WEBPACK_IMPORTED_MODULE_0__["ChatManager"].getInstance().startChatWithUser(username);
+    return _ChatManager__WEBPACK_IMPORTED_MODULE_0__.ChatManager.getInstance().startChatWithUser(username);
   };
 
   _proto.handleChatStarted = function handleChatStarted(log) {
@@ -7589,7 +6033,7 @@ var NotificationController = /*#__PURE__*/function () {
     // provide visual notifications if do not disturb is not on
     if (this.doNotDisturb) return;
     if (messages.length === 0) return;
-    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].show("Offline messages received", "You have received " + messages.length + " messages since you last logged out.");
+    _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().show("Offline messages received", "You have received " + messages.length + " messages since you last logged out.");
   };
 
   return NotificationController;
@@ -7601,11 +6045,13 @@ var NotificationController = /*#__PURE__*/function () {
 /*!*************************************!*\
   !*** ./src/socket/SocketManager.ts ***!
   \*************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Types */ "./src/socket/Types.ts");
@@ -7614,6 +6060,14 @@ __webpack_require__.r(__webpack_exports__);
 var sDebug = debug__WEBPACK_IMPORTED_MODULE_0___default()('socket-ts');
 
 var SocketManager = /*#__PURE__*/function () {
+  SocketManager.getInstance = function getInstance() {
+    if (!SocketManager._instance) {
+      SocketManager._instance = new SocketManager();
+    }
+
+    return SocketManager._instance;
+  };
+
   function SocketManager() {
     this.chatReceivers = [];
     this.callbackForMessage = this.callbackForMessage.bind(this);
@@ -7689,7 +6143,7 @@ var SocketManager = /*#__PURE__*/function () {
 
   _proto.sendInvite = function sendInvite(from, to, room, type, requiresAcceptDecline, subject, attachment) {
     if (type === void 0) {
-      type = _Types__WEBPACK_IMPORTED_MODULE_1__["InviteType"].ChatRoom;
+      type = _Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ChatRoom;
     }
 
     if (requiresAcceptDecline === void 0) {
@@ -7720,7 +6174,7 @@ var SocketManager = /*#__PURE__*/function () {
 
   _proto.sendMessage = function sendMessage(from, room, message, created, type, priority, attachment) {
     if (priority === void 0) {
-      priority = _Types__WEBPACK_IMPORTED_MODULE_1__["Priority"].Normal;
+      priority = _Types__WEBPACK_IMPORTED_MODULE_1__.Priority.Normal;
     }
 
     if (attachment === void 0) {
@@ -7916,8 +6370,7 @@ var SocketManager = /*#__PURE__*/function () {
   return SocketManager;
 }();
 
-var socketManager = new SocketManager();
-/* harmony default export */ __webpack_exports__["default"] = (socketManager);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SocketManager);
 
 /***/ }),
 
@@ -7925,13 +6378,14 @@ var socketManager = new SocketManager();
 /*!*****************************!*\
   !*** ./src/socket/Types.ts ***!
   \*****************************/
-/*! exports provided: Priority, InviteType */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Priority", function() { return Priority; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "InviteType", function() { return InviteType; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Priority": () => (/* binding */ Priority),
+/* harmony export */   "InviteType": () => (/* binding */ InviteType)
+/* harmony export */ });
 var Priority;
 
 (function (Priority) {
@@ -7953,12 +6407,13 @@ var InviteType;
 /*!*******************************************!*\
   !*** ./src/state/AbstractStateManager.ts ***!
   \*******************************************/
-/*! exports provided: AbstractStateManager */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractStateManager", function() { return AbstractStateManager; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AbstractStateManager": () => (/* binding */ AbstractStateManager)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _StateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./StateManager */ "./src/state/StateManager.ts");
@@ -7997,7 +6452,7 @@ var AbstractStateManager = /*#__PURE__*/function () {
 
   _proto.informChangeListenersForStateWithName = function informChangeListenersForStateWithName(name, stateObjValue, eventType, previousObjValue) {
     if (eventType === void 0) {
-      eventType = _StateManager__WEBPACK_IMPORTED_MODULE_1__["stateEventType"].StateChanged;
+      eventType = _StateManager__WEBPACK_IMPORTED_MODULE_1__.stateEventType.StateChanged;
     }
 
     if (previousObjValue === void 0) {
@@ -8024,7 +6479,7 @@ var AbstractStateManager = /*#__PURE__*/function () {
 
     this._replaceNamedStateInStorage(state);
 
-    this.informChangeListenersForStateWithName(name, stateObjForName, _StateManager__WEBPACK_IMPORTED_MODULE_1__["stateEventType"].StateChanged);
+    this.informChangeListenersForStateWithName(name, stateObjForName, _StateManager__WEBPACK_IMPORTED_MODULE_1__.stateEventType.StateChanged);
     return stateObjForName;
   };
 
@@ -8074,7 +6529,7 @@ var AbstractStateManager = /*#__PURE__*/function () {
 
     this._addItemToState(name, item, isPersisted);
 
-    this.informChangeListenersForStateWithName(name, item, _StateManager__WEBPACK_IMPORTED_MODULE_1__["stateEventType"].ItemAdded);
+    this.informChangeListenersForStateWithName(name, item, _StateManager__WEBPACK_IMPORTED_MODULE_1__.stateEventType.ItemAdded);
   };
 
   _proto.findItemInState = function findItemInState(name, item, testForEqualityFunction) {
@@ -8124,7 +6579,7 @@ var AbstractStateManager = /*#__PURE__*/function () {
     this._removeItemFromState(name, item, testForEqualityFunction, isPersisted); //this.setStateByName(name, state, false);
 
 
-    this.informChangeListenersForStateWithName(name, oldItem, _StateManager__WEBPACK_IMPORTED_MODULE_1__["stateEventType"].ItemDeleted);
+    this.informChangeListenersForStateWithName(name, oldItem, _StateManager__WEBPACK_IMPORTED_MODULE_1__.stateEventType.ItemDeleted);
     return result;
   };
 
@@ -8138,7 +6593,7 @@ var AbstractStateManager = /*#__PURE__*/function () {
     this._updateItemInState(name, item, testForEqualityFunction, isPersisted); //this.setStateByName(name, this.getStateByName(name), false);
 
 
-    this.informChangeListenersForStateWithName(name, item, _StateManager__WEBPACK_IMPORTED_MODULE_1__["stateEventType"].ItemUpdated, oldItem);
+    this.informChangeListenersForStateWithName(name, item, _StateManager__WEBPACK_IMPORTED_MODULE_1__.stateEventType.ItemUpdated, oldItem);
     return result;
   };
 
@@ -8151,12 +6606,13 @@ var AbstractStateManager = /*#__PURE__*/function () {
 /*!********************************************!*\
   !*** ./src/state/AggregateStateManager.ts ***!
   \********************************************/
-/*! exports provided: AggregateStateManager */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AggregateStateManager", function() { return AggregateStateManager; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AggregateStateManager": () => (/* binding */ AggregateStateManager)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractStateManager */ "./src/state/AbstractStateManager.ts");
@@ -8338,7 +6794,7 @@ var AggregateStateManager = /*#__PURE__*/function (_AbstractStateManager) {
   };
 
   return AggregateStateManager;
-}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__["AbstractStateManager"]);
+}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__.AbstractStateManager);
 
 /***/ }),
 
@@ -8346,12 +6802,13 @@ var AggregateStateManager = /*#__PURE__*/function (_AbstractStateManager) {
 /*!***********************************************!*\
   !*** ./src/state/AsyncStateManagerWrapper.ts ***!
   \***********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return AsyncStateManagerWrapper; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AsyncStateManagerWrapper)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractStateManager */ "./src/state/AbstractStateManager.ts");
@@ -8472,7 +6929,7 @@ var AsyncStateManagerWrapper = /*#__PURE__*/function (_AbstractStateManager) {
   };
 
   return AsyncStateManagerWrapper;
-}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__["AbstractStateManager"]);
+}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__.AbstractStateManager);
 
 
 
@@ -8482,12 +6939,13 @@ var AsyncStateManagerWrapper = /*#__PURE__*/function (_AbstractStateManager) {
 /*!*************************************************!*\
   !*** ./src/state/BrowserStorageStateManager.ts ***!
   \*************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BrowserStorageStateManager; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BrowserStorageStateManager)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractStateManager */ "./src/state/AbstractStateManager.ts");
@@ -8651,7 +7109,7 @@ var BrowserStorageStateManager = /*#__PURE__*/function (_AbstractStateManager) {
   };
 
   return BrowserStorageStateManager;
-}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__["AbstractStateManager"]);
+}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__.AbstractStateManager);
 
 
 
@@ -8661,12 +7119,13 @@ var BrowserStorageStateManager = /*#__PURE__*/function (_AbstractStateManager) {
 /*!*********************************************!*\
   !*** ./src/state/GraphQLApiStateManager.ts ***!
   \*********************************************/
-/*! exports provided: GraphQLApiStateManager */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GraphQLApiStateManager", function() { return GraphQLApiStateManager; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "GraphQLApiStateManager": () => (/* binding */ GraphQLApiStateManager)
+/* harmony export */ });
 /* harmony import */ var _StateManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./StateManager */ "./src/state/StateManager.ts");
 /* harmony import */ var _network_Types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../network/Types */ "./src/network/Types.ts");
 /* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../network/DownloadManager */ "./src/network/DownloadManager.ts");
@@ -8765,7 +7224,7 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
         var query = config.apis.findAll;
         var jsonRequest = {
           url: config.apiURL,
-          type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].POST,
+          type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
           params: {
             query: query
           },
@@ -8773,7 +7232,7 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
           associatedStateName: name
         };
         graphSMLogger("Getting All " + name + " with query \"" + query + "\"");
-        _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
+        _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
       } else {
         graphSMLogger("No configuration for state " + name);
       }
@@ -8814,14 +7273,14 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
       mutation[config.apis.create] = {};
       var jsonRequest = {
         url: config.apiURL,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].POST,
+        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
         params: {
           mutation: mutation
         },
         callback: this.callbackForAddItem,
         associatedStateName: name
       };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
     } else {
       graphSMLogger("No configuration for state " + name);
     }
@@ -8839,14 +7298,14 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
       mutation[config.apis.destroy] = {};
       var jsonRequest = {
         url: config.apiURL,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].POST,
+        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
         params: {
           mutation: mutation
         },
         callback: this.callbackForRemoveItem,
         associatedStateName: name
       };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
     } else {
       graphSMLogger("No configuration for state " + name);
     }
@@ -8864,14 +7323,14 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
       mutation[config.apis.destroy] = {};
       var jsonRequest = {
         url: config.apiURL,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].POST,
+        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
         params: {
           mutation: mutation
         },
         callback: this.callbackForUpdateItem,
         associatedStateName: name
       };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
     } else {
       graphSMLogger("No configuration for state " + name);
     }
@@ -8981,7 +7440,7 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
       var config = this.getConfigurationForStateName(associatedStateName);
       var dataAttribute = config.data.findAll;
       this.setCompletedRun(associatedStateName);
-      this.delegate.informChangeListenersForStateWithName(associatedStateName, data.data[dataAttribute], _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].StateChanged, null);
+      this.delegate.informChangeListenersForStateWithName(associatedStateName, data.data[dataAttribute], _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.StateChanged, null);
     }
   };
 
@@ -8991,7 +7450,7 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       graphSMLogger(data);
-      this.delegate.informChangeListenersForStateWithName(associatedStateName, data, _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].ItemAdded, null);
+      this.delegate.informChangeListenersForStateWithName(associatedStateName, data, _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.ItemAdded, null);
     }
   };
 
@@ -9004,11 +7463,13 @@ var GraphQLApiStateManager = /*#__PURE__*/function () {
 /*!***********************************************!*\
   !*** ./src/state/MemoryBufferStateManager.ts ***!
   \***********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractStateManager */ "./src/state/AbstractStateManager.ts");
@@ -9170,325 +7631,9 @@ var MemoryBufferStateManager = /*#__PURE__*/function (_AbstractStateManager) {
   };
 
   return MemoryBufferStateManager;
-}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__["AbstractStateManager"]);
+}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__.AbstractStateManager);
 
-/* harmony default export */ __webpack_exports__["default"] = (MemoryBufferStateManager);
-
-/***/ }),
-
-/***/ "./src/state/RESTApiStateManager.ts":
-/*!******************************************!*\
-  !*** ./src/state/RESTApiStateManager.ts ***!
-  \******************************************/
-/*! exports provided: RESTApiStateManager */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RESTApiStateManager", function() { return RESTApiStateManager; });
-/* harmony import */ var _StateManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./StateManager */ "./src/state/StateManager.ts");
-/* harmony import */ var _network_Types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../network/Types */ "./src/network/Types.ts");
-/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../network/DownloadManager */ "./src/network/DownloadManager.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _StateChangedDelegate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./StateChangedDelegate */ "./src/state/StateChangedDelegate.ts");
-
-
-
-
-
-var apiSMLogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('state-manager-api');
-var RESTApiStateManager = /*#__PURE__*/function () {
-  function RESTApiStateManager() {
-    this.configuration = [];
-    this.delegate = new _StateChangedDelegate__WEBPACK_IMPORTED_MODULE_4__["default"]('restapi');
-    this.emitEvents();
-    this.bHasCompletedRun = [];
-    this.callbackForAddItem = this.callbackForAddItem.bind(this);
-    this.callbackForRemoveItem = this.callbackForRemoveItem.bind(this);
-    this.callbackForUpdateItem = this.callbackForUpdateItem.bind(this);
-    this.callbackForGetItems = this.callbackForGetItems.bind(this);
-  }
-
-  RESTApiStateManager.getInstance = function getInstance() {
-    if (!RESTApiStateManager._instance) {
-      RESTApiStateManager._instance = new RESTApiStateManager();
-    }
-
-    return RESTApiStateManager._instance;
-  };
-
-  var _proto = RESTApiStateManager.prototype;
-
-  _proto.getConfiguredStateNames = function getConfiguredStateNames() {
-    var results = [];
-    this.configuration.forEach(function (config) {
-      results.push(config.stateName);
-    });
-    return results;
-  };
-
-  _proto.hasCompletedRun = function hasCompletedRun(stateName) {
-    var result = false;
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === stateName;
-    });
-
-    if (foundIndex >= 0) {
-      result = this.bHasCompletedRun[foundIndex];
-    }
-
-    return result;
-  };
-
-  _proto.setCompletedRun = function setCompletedRun(stateName) {
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === stateName;
-    });
-
-    if (foundIndex >= 0) {
-      this.bHasCompletedRun[foundIndex] = true;
-    }
-  };
-
-  _proto.forceResetForGet = function forceResetForGet(stateName) {
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === stateName;
-    });
-
-    if (foundIndex >= 0) {
-      this.bHasCompletedRun[foundIndex] = false;
-    }
-  };
-
-  _proto.initialise = function initialise(config) {
-    this.configuration = config;
-    var runsComplete = [];
-    this.configuration.forEach(function (configItem) {
-      runsComplete.push(false);
-    });
-    this.bHasCompletedRun = runsComplete;
-  };
-
-  _proto._addNewNamedStateToStorage = function _addNewNamedStateToStorage(state) {
-    /* assume model on the other end exists */
-  };
-
-  _proto._getState = function _getState(name) {
-    apiSMLogger("Getting All " + name);
-
-    if (this.hasCompletedRun(name)) {
-      apiSMLogger("Getting All " + name + " - not done - previously retrieved");
-    } else {
-      var config = this.getConfigurationForStateName(name);
-
-      if (config.isActive) {
-        var jsonRequest = {
-          url: config.serverURL + config.api,
-          type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].GET,
-          params: {},
-          callback: this.callbackForGetItems,
-          associatedStateName: name
-        };
-        _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
-      } else {
-        apiSMLogger("No configuration for state " + name);
-      }
-    }
-
-    var state = {
-      name: name,
-      value: []
-    };
-    return state;
-  };
-
-  _proto._ensureStatePresent = function _ensureStatePresent(name) {
-    /* assume state exists */
-  };
-
-  _proto._replaceNamedStateInStorage = function _replaceNamedStateInStorage(state) {
-    /* not going to replace all state */
-  };
-
-  _proto._saveState = function _saveState(name, stateObj) {
-    /* not going to replace all state */
-  };
-
-  _proto._addItemToState = function _addItemToState(name, stateObj, isPersisted) {
-    if (isPersisted === void 0) {
-      isPersisted = false;
-    }
-
-    if (isPersisted) return; // dont add complete objects to the state - they are already processed
-
-    apiSMLogger("Adding item to " + name);
-    apiSMLogger(stateObj);
-    var config = this.getConfigurationForStateName(name);
-
-    if (config.isActive) {
-      var jsonRequest = {
-        url: config.serverURL + config.api,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].POST,
-        params: stateObj,
-        callback: this.callbackForAddItem,
-        associatedStateName: name
-      };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
-    } else {
-      apiSMLogger("No configuration for state " + name);
-    }
-  };
-
-  _proto._removeItemFromState = function _removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted) {
-    if (isPersisted) return; // dont remove complete objects to the state - they are already processed
-
-    apiSMLogger("Removing item to " + name);
-    apiSMLogger(stateObj);
-    var config = this.getConfigurationForStateName(name);
-
-    if (config.isActive) {
-      var jsonRequest = {
-        url: config.serverURL + config.api,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].DELETE,
-        params: {
-          id: stateObj.id
-        },
-        callback: this.callbackForRemoveItem,
-        associatedStateName: name
-      };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
-    } else {
-      apiSMLogger("No configuration for state " + name);
-    }
-  };
-
-  _proto._updateItemInState = function _updateItemInState(name, stateObj, testForEqualityFunction, isPersisted) {
-    if (isPersisted) return; // dont update complete objects to the state - they are already processed
-
-    apiSMLogger("Updating item in " + name);
-    apiSMLogger(stateObj);
-    var config = this.getConfigurationForStateName(name);
-
-    if (config.isActive) {
-      var jsonRequest = {
-        url: config.serverURL + config.api,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__["RequestType"].PUT,
-        params: stateObj,
-        callback: this.callbackForUpdateItem,
-        associatedStateName: name
-      };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].addApiRequest(jsonRequest, true);
-    } else {
-      apiSMLogger("No configuration for state " + name);
-    }
-  };
-
-  _proto.addChangeListenerForName = function addChangeListenerForName(name, listener) {
-    this.delegate.addChangeListenerForName(name, listener);
-  };
-
-  _proto.addNewItemToState = function addNewItemToState(name, item, isPersisted) {
-    this._addItemToState(name, item, isPersisted);
-  };
-
-  _proto.emitEvents = function emitEvents() {
-    this.delegate.emitEvents();
-  };
-
-  _proto.findItemInState = function findItemInState(name, item, testForEqualityFunction) {
-    throw Error("not implemented");
-  };
-
-  _proto.getStateByName = function getStateByName(name) {
-    this._getState(name);
-  };
-
-  _proto.informChangeListenersForStateWithName = function informChangeListenersForStateWithName(name, stateObjValue, eventType, previousObjValue) {
-    this.delegate.informChangeListenersForStateWithName(name, stateObjValue, eventType, previousObjValue);
-  };
-
-  _proto.isItemInState = function isItemInState(name, item, testForEqualityFunction) {
-    return true;
-  };
-
-  _proto.removeItemFromState = function removeItemFromState(name, item, testForEqualityFunction, isPersisted) {
-    this._removeItemFromState(name, item, testForEqualityFunction, isPersisted);
-
-    return true;
-  };
-
-  _proto.setStateByName = function setStateByName(name, stateObjectForName, informListeners) {};
-
-  _proto.suppressEvents = function suppressEvents() {
-    this.delegate.suppressEvents();
-  };
-
-  _proto.updateItemInState = function updateItemInState(name, item, testForEqualityFunction, isPersisted) {
-    this._updateItemInState(name, item, testForEqualityFunction, isPersisted);
-
-    return true;
-  };
-
-  _proto.getConfigurationForStateName = function getConfigurationForStateName(name) {
-    var config = {
-      stateName: name,
-      serverURL: '',
-      api: '',
-      isActive: false
-    };
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === name;
-    });
-
-    if (foundIndex >= 0) {
-      config = this.configuration[foundIndex];
-    }
-
-    return config;
-  };
-
-  _proto.callbackForRemoveItem = function callbackForRemoveItem(data, status, associatedStateName) {
-    apiSMLogger("callback for remove item for state " + associatedStateName + " with status " + status + " - not forwarded");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      apiSMLogger(data);
-    }
-  };
-
-  _proto.callbackForUpdateItem = function callbackForUpdateItem(data, status, associatedStateName) {
-    apiSMLogger("callback for update item for state " + associatedStateName + " with status " + status + " - not forwarded");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      apiSMLogger(data);
-    }
-  };
-
-  _proto.callbackForGetItems = function callbackForGetItems(data, status, associatedStateName) {
-    apiSMLogger("callback for get items for state " + associatedStateName + " with status " + status + " - FORWARDING");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      apiSMLogger(data);
-      this.setCompletedRun(associatedStateName);
-      this.delegate.informChangeListenersForStateWithName(associatedStateName, data, _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].StateChanged, null);
-    }
-  };
-
-  _proto.callbackForAddItem = function callbackForAddItem(data, status, associatedStateName) {
-    apiSMLogger("callback for add item for state " + associatedStateName + " with status " + status + " - FORWARDING");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      apiSMLogger(data);
-      this.delegate.informChangeListenersForStateWithName(associatedStateName, data, _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].ItemAdded, null);
-    }
-  };
-
-  return RESTApiStateManager;
-}();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MemoryBufferStateManager);
 
 /***/ }),
 
@@ -9496,11 +7641,13 @@ var RESTApiStateManager = /*#__PURE__*/function () {
 /*!*******************************************!*\
   !*** ./src/state/StateChangedDelegate.ts ***!
   \*******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 /* harmony import */ var _StateManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./StateManager */ "./src/state/StateManager.ts");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
@@ -9527,7 +7674,7 @@ var StateChangedDelegate = /*#__PURE__*/function () {
 
   _proto.informChangeListenersForStateWithName = function informChangeListenersForStateWithName(name, stateObjValue, eventType, previousObjValue) {
     if (eventType === void 0) {
-      eventType = _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].StateChanged;
+      eventType = _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.StateChanged;
     }
 
     if (previousObjValue === void 0) {
@@ -9556,25 +7703,25 @@ var StateChangedDelegate = /*#__PURE__*/function () {
         var listener = changeListenersForName.listeners[index];
 
         switch (eventType) {
-          case _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].StateChanged:
+          case _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.StateChanged:
             {
               listener.stateChanged(this.managerName, name, stateObjValue);
               break;
             }
 
-          case _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].ItemAdded:
+          case _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.ItemAdded:
             {
               listener.stateChangedItemAdded(this.managerName, name, stateObjValue);
               break;
             }
 
-          case _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].ItemUpdated:
+          case _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.ItemUpdated:
             {
               listener.stateChangedItemUpdated(this.managerName, name, previousObjValue, stateObjValue);
               break;
             }
 
-          case _StateManager__WEBPACK_IMPORTED_MODULE_0__["stateEventType"].ItemDeleted:
+          case _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.ItemDeleted:
             {
               listener.stateChangedItemRemoved(this.managerName, name, stateObjValue);
               break;
@@ -9621,7 +7768,7 @@ var StateChangedDelegate = /*#__PURE__*/function () {
   return StateChangedDelegate;
 }();
 
-/* harmony default export */ __webpack_exports__["default"] = (StateChangedDelegate);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (StateChangedDelegate);
 
 /***/ }),
 
@@ -9629,12 +7776,13 @@ var StateChangedDelegate = /*#__PURE__*/function () {
 /*!***********************************!*\
   !*** ./src/state/StateManager.ts ***!
   \***********************************/
-/*! exports provided: stateEventType */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stateEventType", function() { return stateEventType; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "stateEventType": () => (/* binding */ stateEventType)
+/* harmony export */ });
 var stateEventType;
 
 (function (stateEventType) {
@@ -9650,12 +7798,13 @@ var stateEventType;
 /*!*****************************************!*\
   !*** ./src/template/TemplateManager.ts ***!
   \*****************************************/
-/*! exports provided: TemplateManager */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TemplateManager", function() { return TemplateManager; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TemplateManager": () => (/* binding */ TemplateManager)
+/* harmony export */ });
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
@@ -10074,15 +8223,899 @@ var TemplateManager = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/ui-framework/AbstractView.ts":
+/*!******************************************!*\
+  !*** ./src/ui-framework/AbstractView.ts ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AbstractView)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ViewListenerForwarder */ "./src/ui-framework/ViewListenerForwarder.ts");
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+
+
+
+
+
+var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('view-ts');
+var avLoggerDetails = debug__WEBPACK_IMPORTED_MODULE_0___default()('view-ts-detail');
+
+var AbstractView = /*#__PURE__*/function () {
+  function AbstractView(uiConfig, stateManager, stateName) {
+    this.containerEl = null;
+    this.uiConfig = uiConfig;
+    this.stateManager = stateManager;
+    this.stateName = stateName;
+    this.eventForwarder = new _ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_2__["default"](); // state change listening
+
+    this.stateChanged = this.stateChanged.bind(this); // event handlers
+
+    this.eventStartDrag = this.eventStartDrag.bind(this);
+    this.eventClickItem = this.eventClickItem.bind(this);
+    this.eventDeleteClickItem = this.eventDeleteClickItem.bind(this);
+    this.eventActionClicked = this.eventActionClicked.bind(this);
+    this.handleDrop = this.handleDrop.bind(this); // setup state listener
+
+    if (this.stateManager && this.stateName) this.stateManager.addChangeListenerForName(this.stateName, this);
+  }
+
+  var _proto = AbstractView.prototype;
+
+  _proto.addEventListener = function addEventListener(listener) {
+    this.eventForwarder.addListener(listener);
+  };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    this.eventForwarder.documentLoaded(this);
+  };
+
+  _proto.stateChanged = function stateChanged(managerName, name, newValue) {
+    this.updateView(name, newValue);
+  };
+
+  _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {
+    if (this.stateManager && this.stateName) this.updateView(name, this.stateManager.getStateByName(name));
+  };
+
+  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {
+    if (this.stateManager && this.stateName) this.updateView(name, this.stateManager.getStateByName(name));
+  };
+
+  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {
+    if (this.stateManager && this.stateName) this.updateView(name, this.stateManager.getStateByName(name));
+  };
+
+  _proto.eventClickItem = function eventClickItem(event) {
+    event.preventDefault();
+    event.stopPropagation(); // @ts-ignore
+
+    var itemId = event.target.getAttribute(this.uiConfig.keyId); // @ts-ignore
+
+    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
+
+    avLoggerDetails("Item with id " + itemId + " clicked from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.uiConfig.keyId] = itemId;
+    avLoggerDetails(compareWith);
+
+    if (this.stateManager && this.stateName) {
+      var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+      if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
+    }
+  };
+
+  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
+    event.preventDefault();
+    event.stopPropagation(); // @ts-ignore
+
+    var itemId = event.target.getAttribute(this.uiConfig.keyId); // @ts-ignore
+
+    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
+
+    avLoggerDetails("Item with id " + itemId + " attempting delete from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.uiConfig.keyId] = itemId;
+    avLoggerDetails(compareWith);
+
+    if (this.stateManager && this.stateName) {
+      var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+
+      if (selectedItem) {
+        var shouldDelete = this.eventForwarder.itemDeleteStarted(this, selectedItem);
+
+        if (shouldDelete) {
+          this.eventForwarder.itemDeleted(this, selectedItem);
+        }
+      }
+    } else {
+      // no statemanager - send the id to the listener
+      var _shouldDelete = this.eventForwarder.itemDeleteStarted(this, itemId);
+
+      if (_shouldDelete) {
+        this.eventForwarder.itemDeleted(this, itemId);
+      }
+    }
+  };
+
+  _proto.eventActionClicked = function eventActionClicked(event) {
+    event.preventDefault();
+    event.stopPropagation(); // @ts-ignore
+
+    var itemId = event.target.getAttribute(this.uiConfig.keyId); // @ts-ignore
+
+    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
+
+    var actionName = event.target.getAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.EXTRA_ACTION_ATTRIBUTE_NAME); // @ts-ignore
+
+    avLoggerDetails("Item with id " + itemId + " attempting delete from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.uiConfig.keyId] = itemId;
+    avLoggerDetails(compareWith);
+
+    if (this.stateManager && this.stateName) {
+      var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+
+      if (selectedItem) {
+        this.eventForwarder.itemAction(this, actionName, selectedItem);
+      }
+    }
+  };
+
+  _proto.getDragData = function getDragData(event) {
+    // @ts-ignore
+    var itemId = event.target.getAttribute(this.uiConfig.keyId); // @ts-ignore
+
+    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
+
+    avLoggerDetails("Item with id " + itemId + " getting drag data from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.uiConfig.keyId] = itemId;
+    var selectedItem = {};
+
+    if (this.stateManager && this.stateName) {
+      selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+
+      if (selectedItem) {
+        var _this$uiConfig$detail, _this$uiConfig$detail2; // @ts-ignore
+
+
+        selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_TYPE] = (_this$uiConfig$detail = this.uiConfig.detail.drag) == null ? void 0 : _this$uiConfig$detail.type; // @ts-ignore
+
+        selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_FROM] = (_this$uiConfig$detail2 = this.uiConfig.detail.drag) == null ? void 0 : _this$uiConfig$detail2.from;
+      }
+    }
+
+    return selectedItem;
+  };
+
+  _proto.compareStateItemsForEquality = function compareStateItemsForEquality(item1, item2) {
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__.isSame)(item1, item2);
+  };
+
+  _proto.getModifierForStateItem = function getModifierForStateItem(name, item) {
+    return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.normal;
+  };
+
+  _proto.getSecondaryModifierForStateItem = function getSecondaryModifierForStateItem(name, item) {
+    return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.normal;
+  };
+
+  _proto.getBadgeValue = function getBadgeValue(name, item) {
+    return 0;
+  };
+
+  _proto.getBackgroundImage = function getBackgroundImage(name, item) {
+    return '';
+  };
+
+  _proto.updateView = function updateView(name, newState) {
+    this.createResultsForState(name, newState);
+  };
+
+  _proto.eventStartDrag = function eventStartDrag(event) {
+    avLogger('drag start');
+    avLoggerDetails(event.target);
+    var data = JSON.stringify(this.getDragData(event));
+    avLoggerDetails(data); // @ts-ignore
+
+    event.dataTransfer.setData(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_KEY_ID, data);
+  };
+
+  _proto.createResultForItem = function createResultForItem(name, item) {
+    var _this = this;
+
+    avLogger('Abstract View : creating Result');
+    avLogger(item);
+    var resultDataKeyId = this.getIdForStateItem(name, item);
+    var childEl = document.createElement(this.uiConfig.resultsElementType);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.resultsClasses);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(childEl, this.uiConfig.resultsElementAttributes);
+    childEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+    childEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId); // the content may be structured
+
+    var textEl = childEl;
+
+    if (this.uiConfig.detail.containerClasses) {
+      var contentEl = document.createElement('div');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(contentEl, this.uiConfig.detail.containerClasses);
+      contentEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+      contentEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+      textEl = document.createElement(this.uiConfig.detail.textElementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(textEl, this.uiConfig.detail.textElementClasses);
+      textEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+      textEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+      contentEl.appendChild(textEl);
+
+      if (this.uiConfig.detail.background) {
+        var imgEl = document.createElement(this.uiConfig.detail.background.elementType);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(imgEl, this.uiConfig.detail.background.elementClasses);
+        imgEl.setAttribute('src', this.getBackgroundImage(name, item));
+        childEl.appendChild(imgEl);
+      }
+
+      var buttonsEl = document.createElement('div');
+      contentEl.appendChild(buttonsEl);
+
+      if (this.uiConfig.detail.badge) {
+        var badgeValue = this.getBadgeValue(name, item);
+
+        if (badgeValue > 0) {
+          var badgeEl = document.createElement(this.uiConfig.detail.badge.elementType);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(badgeEl, this.uiConfig.detail.badge.elementClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(badgeEl, this.uiConfig.detail.badge.elementAttributes);
+          badgeEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+          badgeEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+          buttonsEl.appendChild(badgeEl);
+          badgeEl.innerHTML = "&nbsp;&nbsp;&nbsp;" + badgeValue + "&nbsp;&nbsp;&nbsp;";
+        }
+      }
+
+      if (this.uiConfig.extraActions) {
+        this.uiConfig.extraActions.forEach(function (extraAction) {
+          var action = document.createElement('button');
+          action.setAttribute('type', 'button');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+
+          if (extraAction.buttonText) {
+            action.innerHTML = extraAction.buttonText;
+          }
+
+          if (extraAction.iconClasses) {
+            var iconEl = document.createElement('i');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+            iconEl.setAttribute(_this.uiConfig.keyId, resultDataKeyId);
+            iconEl.setAttribute(AbstractView.DATA_SOURCE, _this.uiConfig.dataSourceId);
+            iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+            action.appendChild(iconEl);
+          }
+
+          action.setAttribute(_this.uiConfig.keyId, resultDataKeyId);
+          action.setAttribute(AbstractView.DATA_SOURCE, _this.uiConfig.dataSourceId);
+          action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+          action.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            _this.eventActionClicked(event);
+          });
+          buttonsEl.appendChild(action);
+        });
+      }
+
+      if (this.uiConfig.detail.delete) {
+        var deleteButtonEl = document.createElement('button');
+        deleteButtonEl.setAttribute('type', 'button');
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(deleteButtonEl, this.uiConfig.detail.delete.buttonClasses);
+
+        if (this.uiConfig.detail.delete.buttonText) {
+          deleteButtonEl.innerHTML = this.uiConfig.detail.delete.buttonText;
+        }
+
+        if (this.uiConfig.detail.delete.iconClasses) {
+          var iconEl = document.createElement('i');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, this.uiConfig.detail.delete.iconClasses);
+          iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+          iconEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+          deleteButtonEl.appendChild(iconEl);
+        }
+
+        deleteButtonEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+        deleteButtonEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+        deleteButtonEl.addEventListener('click', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          _this.eventDeleteClickItem(event);
+        });
+        buttonsEl.appendChild(deleteButtonEl);
+      }
+
+      childEl.appendChild(contentEl);
+
+      if (this.uiConfig.detail.drag) {
+        childEl.setAttribute('draggable', 'true');
+        childEl.addEventListener('dragstart', this.eventStartDrag);
+      } // add selection actions
+
+
+      if (this.uiConfig.detail.select) {
+        childEl.addEventListener('click', this.eventClickItem);
+      }
+    } // add the key ids for selection
+
+
+    textEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+    textEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+    var displayText = this.getDisplayValueForStateItem(name, item);
+    textEl.innerHTML = displayText; // add modifiers for patient state
+
+    if (this.uiConfig.modifiers) {
+      var modifier = this.getModifierForStateItem(name, item);
+      var secondModifier = this.getSecondaryModifierForStateItem(name, item);
+
+      switch (modifier) {
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.normal:
+          {
+            avLogger('Abstract View: normal item');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.normal);
+
+            if (this.uiConfig.icons && this.uiConfig.icons.normal) {
+              var _iconEl = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl, this.uiConfig.icons.normal);
+
+              _iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+              _iconEl.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.normal, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
+
+                  if (this.uiConfig.icons && this.uiConfig.icons.warning) {
+                    var _iconEl2 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl2, this.uiConfig.icons.warning);
+
+                    _iconEl2.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl2.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl2);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.active:
+                {
+                  if (this.uiConfig.icons && this.uiConfig.icons.active) {
+                    var _iconEl3 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl3, this.uiConfig.icons.active);
+
+                    _iconEl3.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl3.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl3);
+                  }
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.active:
+          {
+            avLogger('Abstract View: active item', 10);
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.active);
+
+            if (this.uiConfig.icons && this.uiConfig.icons.active) {
+              var _iconEl4 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl4, this.uiConfig.icons.active);
+
+              _iconEl4.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+              _iconEl4.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl4);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.active, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
+
+                  if (this.uiConfig.icons && this.uiConfig.icons.warning) {
+                    var _iconEl5 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl5, this.uiConfig.icons.warning);
+
+                    _iconEl5.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl5.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl5);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.inactive:
+          {
+            avLogger('Abstract View: inactive item', 10);
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.inactive);
+
+            if (this.uiConfig.icons && this.uiConfig.icons.inactive) {
+              var _iconEl6 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl6, this.uiConfig.icons.inactive);
+
+              _iconEl6.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+              _iconEl6.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl6);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.warning:
+                {
+                  if (this.uiConfig.icons && this.uiConfig.icons.warning) {
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.inactive, false);
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.warning, true);
+
+                    var _iconEl7 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl7, this.uiConfig.icons.warning);
+
+                    _iconEl7.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl7.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl7);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.active:
+                {
+                  if (this.uiConfig.icons && this.uiConfig.icons.active) {
+                    var _iconEl8 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl8, this.uiConfig.icons.active);
+
+                    _iconEl8.setAttribute(this.uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl8.setAttribute(AbstractView.DATA_SOURCE, this.uiConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl8);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+      }
+    }
+
+    return childEl;
+  };
+
+  _proto.createResultsForState = function createResultsForState(name, newState) {
+    var _this2 = this;
+
+    avLogger('Abstract View : creating Results', 10);
+    avLogger(newState); // remove the previous items from list
+
+    var viewEl = document.getElementById(this.uiConfig.resultsContainerId);
+    if (viewEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(viewEl); // add the new children
+
+    newState.map(function (item, index) {
+      var childEl = _this2.createResultForItem(name, item); // add draggable actions
+
+
+      avLogger("Abstract View: Adding child " + _this2.getIdForStateItem(name, item));
+      if (viewEl) viewEl.appendChild(childEl);
+    });
+  };
+
+  _proto.setContainedBy = function setContainedBy(container) {
+    this.containerEl = container;
+
+    if (this.uiConfig.detail.drop) {
+      container.addEventListener('dragover', function (event) {
+        event.preventDefault();
+      });
+      container.addEventListener('drop', this.handleDrop);
+    }
+  };
+
+  _proto.handleDrop = function handleDrop(event) {
+    avLogger('drop event'); // @ts-ignore
+
+    var draggedObjectJSON = event.dataTransfer.getData(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_KEY_ID);
+    var draggedObject = JSON.parse(draggedObjectJSON);
+    avLoggerDetails(draggedObject); // check to see if we accept the dropped type and source
+
+    var droppedObjectType = draggedObject[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_TYPE];
+    var droppedObjectFrom = draggedObject[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_FROM];
+    avLogger("drop event from " + droppedObjectFrom + " with type " + droppedObjectType);
+
+    if (this.uiConfig.detail.drop) {
+      var acceptType = this.uiConfig.detail.drop.acceptTypes.findIndex(function (objectType) {
+        return objectType === droppedObjectType;
+      }) >= 0;
+      var acceptFrom = true;
+
+      if (acceptType) {
+        if (this.uiConfig.detail.drop.acceptFrom) {
+          acceptFrom = this.uiConfig.detail.drop.acceptFrom.findIndex(function (from) {
+            return from === droppedObjectFrom;
+          }) >= 0;
+        }
+
+        avLoggerDetails("accepted type? " + acceptType + " and from? " + acceptFrom);
+
+        if (acceptType && acceptFrom) {
+          this.eventForwarder.itemDropped(this, draggedObject);
+        }
+      }
+    }
+  };
+
+  return AbstractView;
+}();
+
+AbstractView.DATA_SOURCE = 'data-source';
+
+
+/***/ }),
+
+/***/ "./src/ui-framework/ConfigurationTypes.ts":
+/*!************************************************!*\
+  !*** ./src/ui-framework/ConfigurationTypes.ts ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DRAGGABLE_KEY_ID": () => (/* binding */ DRAGGABLE_KEY_ID),
+/* harmony export */   "DRAGGABLE_TYPE": () => (/* binding */ DRAGGABLE_TYPE),
+/* harmony export */   "DRAGGABLE_FROM": () => (/* binding */ DRAGGABLE_FROM),
+/* harmony export */   "EXTRA_ACTION_ATTRIBUTE_NAME": () => (/* binding */ EXTRA_ACTION_ATTRIBUTE_NAME),
+/* harmony export */   "Modifier": () => (/* binding */ Modifier),
+/* harmony export */   "SidebarLocation": () => (/* binding */ SidebarLocation)
+/* harmony export */ });
+var DRAGGABLE_KEY_ID = 'text/plain';
+var DRAGGABLE_TYPE = 'draggedType';
+var DRAGGABLE_FROM = 'draggedFrom';
+var EXTRA_ACTION_ATTRIBUTE_NAME = 'view-extra-action';
+var Modifier;
+
+(function (Modifier) {
+  Modifier[Modifier["normal"] = 0] = "normal";
+  Modifier[Modifier["active"] = 1] = "active";
+  Modifier[Modifier["inactive"] = 2] = "inactive";
+  Modifier[Modifier["warning"] = 3] = "warning";
+})(Modifier || (Modifier = {}));
+
+var SidebarLocation;
+
+(function (SidebarLocation) {
+  SidebarLocation[SidebarLocation["top"] = 0] = "top";
+  SidebarLocation[SidebarLocation["right"] = 1] = "right";
+  SidebarLocation[SidebarLocation["left"] = 2] = "left";
+  SidebarLocation[SidebarLocation["bottom"] = 3] = "bottom";
+})(SidebarLocation || (SidebarLocation = {}));
+
+/***/ }),
+
+/***/ "./src/ui-framework/SidebarViewContainer.ts":
+/*!**************************************************!*\
+  !*** ./src/ui-framework/SidebarViewContainer.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+
+
+var SidebarViewContainer = /*#__PURE__*/function () {
+  function SidebarViewContainer(prefs) {
+    this.prefs = prefs;
+    this.views = []; // event handlers
+
+    this.eventHide = this.eventHide.bind(this);
+    this.eventShow = this.eventShow.bind(this);
+  }
+
+  var _proto = SidebarViewContainer.prototype;
+
+  _proto.addView = function addView(view, config) {
+    var viewContainer = document.getElementById(config.containerId);
+
+    if (viewContainer) {
+      view.setContainedBy(viewContainer);
+    }
+
+    this.views.push(view);
+    view.addEventListener(this);
+  };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    // this should be called once at startup
+    // hide the side bar panel
+    this.eventHide(null); // add the event listener for the close button
+
+    var sidePanelEl = document.getElementById(this.prefs.id);
+    if (sidePanelEl === null) return;
+    var closeButtonEl = sidePanelEl.querySelector('.close');
+
+    if (closeButtonEl) {
+      closeButtonEl.addEventListener('click', this.eventHide);
+    }
+
+    this.views.forEach(function (view) {
+      view.onDocumentLoaded();
+    });
+  };
+
+  _proto.eventHide = function eventHide(event) {
+    if (event) event.preventDefault();
+    this.showHide('0%');
+  };
+
+  _proto.eventShow = function eventShow(event) {
+    //414,768,1024
+    var size = this.prefs.expandedSize;
+
+    if (window.innerWidth < 769) {
+      size = '50%';
+    }
+
+    if (window.innerWidth < 415) {
+      size = '100%';
+    }
+
+    this.showHide(size);
+  };
+
+  _proto.showHide = function showHide(newStyleValue) {
+    var sidePanelEl = document.getElementById(this.prefs.id);
+    if (sidePanelEl === null) return;
+
+    switch (this.prefs.location) {
+      case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.SidebarLocation.left:
+        {
+          sidePanelEl.style.width = newStyleValue;
+          break;
+        }
+
+      case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.SidebarLocation.right:
+        {
+          sidePanelEl.style.width = newStyleValue;
+          break;
+        }
+
+      case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.SidebarLocation.bottom:
+        {
+          sidePanelEl.style.height = newStyleValue;
+          break;
+        }
+
+      case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.SidebarLocation.top:
+        {
+          sidePanelEl.style.height = newStyleValue;
+          break;
+        }
+    }
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return false;
+  };
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {};
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {}
+  /*
+    Contained views can request show and hide of the sidebar container
+   */
+  ;
+
+  _proto.showRequested = function showRequested(view) {
+    this.eventShow(null);
+  };
+
+  _proto.hideRequested = function hideRequested(view) {
+    this.eventHide(null);
+  };
+
+  return SidebarViewContainer;
+}();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SidebarViewContainer);
+
+/***/ }),
+
+/***/ "./src/ui-framework/ViewListenerForwarder.ts":
+/*!***************************************************!*\
+  !*** ./src/ui-framework/ViewListenerForwarder.ts ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var ViewListenerForwarder = /*#__PURE__*/function () {
+  function ViewListenerForwarder() {
+    this.suppressEventEmits = false;
+    this.viewListeners = [];
+  }
+
+  var _proto = ViewListenerForwarder.prototype;
+
+  _proto.addListener = function addListener(listener) {
+    this.viewListeners.push(listener);
+  };
+
+  _proto.suppressEvents = function suppressEvents() {
+    this.suppressEventEmits = true;
+  };
+
+  _proto.emitEvents = function emitEvents() {
+    this.suppressEventEmits = false;
+  };
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.itemDeleted(view, selectedItem);
+      });
+    }
+  };
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.itemDragStarted(view, selectedItem);
+      });
+    }
+  };
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.itemSelected(view, selectedItem);
+      });
+    }
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.documentLoaded(view);
+      });
+    }
+  };
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.itemAction(view, actionName, selectedItem);
+      });
+    }
+  };
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    var result = true; // return false if cancelling delete
+
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        if (!listener.itemDeleteStarted(view, selectedItem)) {
+          result = false;
+        }
+      });
+    }
+
+    return result;
+  };
+
+  _proto.hideRequested = function hideRequested(view) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.hideRequested(view);
+      });
+    }
+  };
+
+  _proto.showRequested = function showRequested(view) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.showRequested(view);
+      });
+    }
+  };
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.itemDropped(view, droppedItem);
+      });
+    }
+  };
+
+  _proto.itemDeselected = function itemDeselected(view, deselectedItem) {
+    if (!this.suppressEventEmits) {
+      this.viewListeners.forEach(function (listener) {
+        return listener.itemDeselected(view, deselectedItem);
+      });
+    }
+  };
+
+  return ViewListenerForwarder;
+}();
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ViewListenerForwarder);
+
+/***/ }),
+
 /***/ "./src/util/BrowserUtil.ts":
 /*!*********************************!*\
   !*** ./src/util/BrowserUtil.ts ***!
   \*********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 var BrowserUtil = /*#__PURE__*/function () {
   function BrowserUtil() {}
 
@@ -10156,7 +9189,7 @@ var BrowserUtil = /*#__PURE__*/function () {
   _proto.addAttributes = function addAttributes(element, attributes) {
     if (attributes) {
       attributes.forEach(function (attribute) {
-        element.setAttribute(attribute[0], attribute[1]);
+        element.setAttribute(attribute.name, attribute.value);
       });
     }
   };
@@ -10165,7 +9198,7 @@ var BrowserUtil = /*#__PURE__*/function () {
 }();
 
 var browserUtil = new BrowserUtil();
-/* harmony default export */ __webpack_exports__["default"] = (browserUtil);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (browserUtil);
 
 /***/ }),
 
@@ -10173,14 +9206,15 @@ var browserUtil = new BrowserUtil();
 /*!***************************************!*\
   !*** ./src/util/EqualityFunctions.ts ***!
   \***************************************/
-/*! exports provided: isSame, isSameUsername, isSameGame */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSame", function() { return isSame; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSameUsername", function() { return isSameUsername; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSameGame", function() { return isSameGame; });
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "isSame": () => (/* binding */ isSame),
+/* harmony export */   "isSameUsername": () => (/* binding */ isSameUsername),
+/* harmony export */   "isSameGame": () => (/* binding */ isSameGame)
+/* harmony export */ });
 function isSame(item1, item2) {
   return item1.id === item2.id;
 }
@@ -10197,11 +9231,13 @@ function isSameGame(item1, item2) {
 /*!**************************!*\
   !*** ./src/util/UUID.ts ***!
   \**************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
 var UUID = /*#__PURE__*/function () {
   function UUID() {}
 
@@ -10219,21 +9255,1454 @@ var UUID = /*#__PURE__*/function () {
 }();
 
 var uuid = new UUID();
-/* harmony default export */ __webpack_exports__["default"] = (uuid);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (uuid);
 
 /***/ }),
 
-/***/ 0:
-/*!***************************!*\
-  !*** multi ./src/App.tsx ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./src/App.tsx":
+/*!*********************!*\
+  !*** ./src/App.tsx ***!
+  \*********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-module.exports = __webpack_require__(/*! ./src/App.tsx */"./src/App.tsx");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
+/* harmony import */ var _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component/view/UserSearchView */ "./src/component/view/UserSearchView.ts");
+/* harmony import */ var _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component/view/ChatLogsView */ "./src/component/view/ChatLogsView.ts");
+/* harmony import */ var _component_view_BoardGameView__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component/view/BoardGameView */ "./src/component/view/BoardGameView.tsx");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/controller/ScoreSheetController */ "./src/component/controller/ScoreSheetController.ts");
+/* harmony import */ var _component_view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/ScoreSheetDetailView */ "./src/component/view/ScoreSheetDetailView.ts");
+/* harmony import */ var _component_view_ScoreSheetsView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/ScoreSheetsView */ "./src/component/view/ScoreSheetsView.ts");
+/* harmony import */ var _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/sidebar/UserSearchSidebar */ "./src/component/sidebar/UserSearchSidebar.ts");
+/* harmony import */ var _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/sidebar/ChatRoomsSidebar */ "./src/component/sidebar/ChatRoomsSidebar.ts");
+/* harmony import */ var _component_sidebar_ScoreSheetsSidebar__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/sidebar/ScoreSheetsSidebar */ "./src/component/sidebar/ScoreSheetsSidebar.ts");
+/* harmony import */ var _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./component/view/ChatLogDetailView */ "./src/component/view/ChatLogDetailView.ts");
+/* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
+/* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
+/* harmony import */ var _component_sidebar_BoardGameSearchSidebar__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./component/sidebar/BoardGameSearchSidebar */ "./src/component/sidebar/BoardGameSearchSidebar.ts");
+/* harmony import */ var _component_view_BGGSearchView__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./component/view/BGGSearchView */ "./src/component/view/BGGSearchView.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+/* eslint "react/react-in-jsx-scope":"off" */
+
+/* eslint "react/jsx-no-undef":"off" */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('app');
+
+var Root = /*#__PURE__*/function (_React$Component) {
+  _inheritsLoose(Root, _React$Component);
+
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  function Root() {
+    var _this;
+
+    // @ts-ignore
+    _this = _React$Component.call(this) || this;
+    _this.state = {
+      boardGames: []
+    }; // event handlers
+
+    _this.cancelDelete = _this.cancelDelete.bind(_assertThisInitialized(_this));
+    _this.confirmDelete = _this.confirmDelete.bind(_assertThisInitialized(_this));
+    _this.handleDeleteBoardGame = _this.handleDeleteBoardGame.bind(_assertThisInitialized(_this));
+    _this.handleShowUserSearch = _this.handleShowUserSearch.bind(_assertThisInitialized(_this));
+    _this.handleShowChat = _this.handleShowChat.bind(_assertThisInitialized(_this));
+    _this.handleShowBGGSearch = _this.handleShowBGGSearch.bind(_assertThisInitialized(_this));
+    _this.handleDrop = _this.handleDrop.bind(_assertThisInitialized(_this));
+    _this.handleShowCollection = _this.handleShowCollection.bind(_assertThisInitialized(_this));
+    _this.handleShowScoreSheet = _this.handleShowScoreSheet.bind(_assertThisInitialized(_this));
+    _this.handleStartScoreSheet = _this.handleStartScoreSheet.bind(_assertThisInitialized(_this));
+    _this.handleShowScores = _this.handleShowScores.bind(_assertThisInitialized(_this));
+    _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().connectToApplication(_assertThisInitialized(_this), window.localStorage);
+    return _this;
+  }
+
+  var _proto = Root.prototype;
+
+  _proto.addBoardGameToDisplay = function addBoardGameToDisplay(draggedObject) {
+    // ok, we are just the dumb view, pass this onto the controller to work out the logic for us
+    _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().addBoardGameToDisplay(draggedObject);
+  };
+
+  _proto.getCurrentUser = function getCurrentUser() {
+    return _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getLoggedInUserId();
+  };
+
+  _proto.alert = function alert(title, content) {
+    this.titleEl.textContent = title;
+    this.contentEl.textContent = content; // @ts-ignore
+
+    this.modalEl.classList.remove(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.hideClass); // @ts-ignore
+
+    this.modalEl.classList.add(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.showClass);
+  };
+
+  _proto.render = function render() {
+    var _this2 = this;
+
+    logger("Rendering App"); // @ts-ignore
+
+    var boardGames = this.state.boardGames;
+    logger(boardGames);
+    var games = boardGames.map(function (entry, index) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_component_view_BoardGameView__WEBPACK_IMPORTED_MODULE_6__["default"], {
+        key: index,
+        boardGame: entry,
+        showScoresHandler: _this2.handleShowScores,
+        addToCollectionHandler: _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().addBoardGameToCollection,
+        removeFromCollectionHandler: _this2.handleDeleteBoardGame,
+        startScoreSheetHandler: _this2.handleStartScoreSheet
+      });
+    });
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      className: "root container-fluid"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      className: "card-group"
+    }, games));
+  };
+
+  _proto.cancelDelete = function cancelDelete(event) {
+    // @ts-ignore
+    this.modalEl.classList.remove(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.showClass); // @ts-ignore
+
+    this.modalEl.classList.add(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.hideClass);
+    event.preventDefault();
+  };
+
+  _proto.confirmDelete = function confirmDelete(event) {
+    // @ts-ignore
+    this.modalEl.classList.remove(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.showClass); // @ts-ignore
+
+    this.modalEl.classList.add(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.hideClass);
+    event.preventDefault();
+    var id = this.modalEl.getAttribute(_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].eventDataKeyId);
+    id = parseInt(id);
+    logger("Handling Delete with id " + id); // @ts-ignore
+
+    var currentBoardGamesOnDisplay = this.state.boardGames;
+    var index = currentBoardGamesOnDisplay.findIndex(function (game) {
+      return game.gameId === id;
+    });
+
+    if (index >= 0) {
+      var boardGame = currentBoardGamesOnDisplay[index];
+      _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().removeBoardGameFromCollection(boardGame);
+    }
+  };
+
+  _proto.handleStartScoreSheet = function handleStartScoreSheet(event) {
+    event.preventDefault(); // do we already have an active score sheet?
+
+    if (_component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_9__.ScoreSheetController.getInstance().hasActiveScoreSheet()) {
+      if (confirm("You already have an active score sheet, do you want to finish that one and start a new one?")) {
+        _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_9__.ScoreSheetController.getInstance().endScoreSheet();
+      } else {
+        // user cancelled, finish
+        return;
+      }
+    }
+
+    this.hideAllSideBars(); // @ts-ignore
+
+    var id = event.target.getAttribute(_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].eventDataKeyId);
+    logger("Handling starting score sheet for " + id);
+
+    if (id) {
+      // find the entry from the state manager
+      id = parseInt(id); // @ts-ignore
+
+      var currentBoardGamesOnDisplay = this.state.boardGames;
+      var index = currentBoardGamesOnDisplay.findIndex(function (game) {
+        return game.gameId === id;
+      });
+
+      if (index >= 0) {
+        var boardGame = currentBoardGamesOnDisplay[index];
+        logger(boardGame);
+        _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_9__.ScoreSheetController.getInstance().startScoreSheet(boardGame);
+        this.switchBetweenCollectionAndScoreSheet(false);
+      }
+    }
+  };
+
+  _proto.handleDeleteBoardGame = function handleDeleteBoardGame(event) {
+    event.preventDefault(); //this.hideAllSideBars();
+    // @ts-ignore
+
+    var id = event.target.getAttribute(_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].eventDataKeyId);
+    logger("Handling Delete Board Game " + id);
+
+    if (id) {
+      // find the entry from the state manager
+      id = parseInt(id); // @ts-ignore
+
+      var currentBoardGamesOnDisplay = this.state.boardGames;
+      var index = currentBoardGamesOnDisplay.findIndex(function (game) {
+        return game.gameId === id;
+      });
+
+      if (index >= 0) {
+        var boardGame = currentBoardGamesOnDisplay[index];
+
+        if (boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_7__.Decorator.Persisted) {
+          logger("Handling Delete Board Game " + id + " - persisted, confirming with user, but only if logged in");
+
+          if (_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().isLoggedIn()) {
+            // @ts-ignore
+            this.modalEl.setAttribute(_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].eventDataKeyId, id);
+            this.alert(boardGame.name + " (" + boardGame.year + ")", "Are you sure you want to delete this board game from your collection?");
+          } else {
+            logger("Handling Delete Board Game " + id + " - IS persisted but not logged in, just deleting from local storage  asking controller to remove"); // not persisted yet, let the controller manage this one
+
+            _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().removeBoardGameFromDisplay(boardGame);
+          }
+        } else {
+          logger("Handling Delete Board Game " + id + " - NOT persisted, asking controller to remove"); // not persisted yet, let the controller manage this one
+
+          _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().removeBoardGameFromDisplay(boardGame);
+        }
+      }
+    }
+  };
+
+  _proto.componentDidMount = /*#__PURE__*/function () {
+    var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var chatLogView, recentSearches, favouriteUsers, blockedUsers, bggSearch;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              logger('component Did Mount');
+              this.chatSidebar = new _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_13__["default"](); // add the views to the chat side bar
+
+              this.chatView = new _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_5__["default"]();
+              this.chatSidebar.addView(this.chatView, {
+                containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_13__["default"].SidebarContainers.chatLogs
+              });
+              chatLogView = new _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_15__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
+              this.chatSidebar.addView(chatLogView, {
+                containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_13__["default"].SidebarContainers.chatLog
+              });
+              this.chatView.addEventListener(chatLogView);
+              this.chatSidebar.onDocumentLoaded();
+              this.userSearchSidebar = new _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_12__["default"](); // add the subviews for the user search
+
+              recentSearches = new _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_4__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
+              this.userSearchSidebar.addView(recentSearches, {
+                containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_12__["default"].SidebarContainers.recentSearches
+              });
+              favouriteUsers = new _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_16__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
+              this.userSearchSidebar.addView(favouriteUsers, {
+                containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_12__["default"].SidebarContainers.favourites
+              });
+              blockedUsers = new _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_17__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
+              this.userSearchSidebar.addView(blockedUsers, {
+                containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_12__["default"].SidebarContainers.blocked
+              });
+              this.userSearchSidebar.onDocumentLoaded();
+              this.bggSearchSidebar = new _component_sidebar_BoardGameSearchSidebar__WEBPACK_IMPORTED_MODULE_18__["default"]();
+              bggSearch = new _component_view_BGGSearchView__WEBPACK_IMPORTED_MODULE_19__["default"]();
+              this.bggSearchSidebar.addView(bggSearch, {
+                containerId: _component_sidebar_BoardGameSearchSidebar__WEBPACK_IMPORTED_MODULE_18__["default"].bggSearchResults
+              });
+              this.bggSearchSidebar.onDocumentLoaded();
+              bggSearch.addEventListener(this);
+              this.scoreSheetSidebar = new _component_sidebar_ScoreSheetsSidebar__WEBPACK_IMPORTED_MODULE_14__["default"]();
+              this.scoresView = new _component_view_ScoreSheetsView__WEBPACK_IMPORTED_MODULE_11__["default"]();
+              this.scoreSheetSidebar.addView(this.scoresView, {
+                containerId: _component_sidebar_ScoreSheetsSidebar__WEBPACK_IMPORTED_MODULE_14__["default"].scoreSheets
+              });
+              this.scoreSheetSidebar.onDocumentLoaded();
+              _component_view_ScoreSheetDetailView__WEBPACK_IMPORTED_MODULE_10__.ScoreSheetDetailView.getInstance().onDocumentLoaded(); // navigation item handlers
+
+              if (document) {
+                // @ts-ignore
+                document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.NAVIGATION.boardGameSearchId).addEventListener('click', this.handleShowBGGSearch); // @ts-ignore
+
+                document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
+
+                this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.NAVIGATION.chatId); // @ts-ignore
+
+                this.chatNavigationItem.addEventListener('click', this.handleShowChat); // @ts-ignore
+
+                document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.NAVIGATION.showMyCollection).addEventListener('click', this.handleShowCollection); // @ts-ignore
+
+                document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.NAVIGATION.showScoreSheet).addEventListener('click', this.handleShowScoreSheet);
+              } // alert modal dialog setup
+              // @ts-ignore
+
+
+              this.modalEl = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.modalId); // @ts-ignore
+
+              this.titleEl = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.titleId); // @ts-ignore
+
+              this.contentEl = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.contentId); // @ts-ignore
+
+              this.cancelBtnEl = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.cancelButtonId); // @ts-ignore
+
+              this.confirmBtnEl = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.confirmButtonId); // @ts-ignore
+
+              this.closeBtnEl = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.ALERT.closeButtonId); // event listeners for the confirm delete of entry
+
+              if (this.cancelBtnEl) this.cancelBtnEl.addEventListener('click', this.cancelDelete);
+              if (this.confirmBtnEl) this.confirmBtnEl.addEventListener('click', this.confirmDelete);
+              if (this.closeBtnEl) this.closeBtnEl.addEventListener('click', this.cancelDelete); // a reference to the div containing ourselves
+              // @ts-ignore
+
+              this.thisEl = document.getElementById('root'); // @ts-ignore
+
+              this.scoreSheetEl = document.getElementById('scoreSheetZone');
+
+              if (this.thisEl) {
+                this.thisEl.addEventListener('dragover', function (event) {
+                  event.preventDefault();
+                });
+                this.thisEl.addEventListener('drop', this.handleDrop);
+              } // ok lets try get things done
+
+
+              _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_9__.ScoreSheetController.getInstance().initialise(this);
+              _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().initialise();
+
+            case 41:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, this);
+    }));
+
+    function componentDidMount() {
+      return _componentDidMount.apply(this, arguments);
+    }
+
+    return componentDidMount;
+  }();
+
+  _proto.hideAllSideBars = function hideAllSideBars() {
+    this.chatSidebar.eventHide(null);
+    this.userSearchSidebar.eventHide(null);
+    this.bggSearchSidebar.eventHide(null);
+  };
+
+  _proto.handleShowCollection = function handleShowCollection(event) {
+    this.switchBetweenCollectionAndScoreSheet(true);
+  };
+
+  _proto.handleShowScoreSheet = function handleShowScoreSheet(event) {
+    this.switchBetweenCollectionAndScoreSheet(false);
+  };
+
+  _proto.handleShowUserSearch = function handleShowUserSearch(event) {
+    logger('Handling Show User Search');
+    event.preventDefault(); //this.hideAllSideBars();
+    // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().isLoggedIn()) {
+      // @ts-ignore
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_7__.API_Config.login;
+      return;
+    }
+
+    this.userSearchSidebar.eventShow(event);
+  };
+
+  _proto.handleShowScores = function handleShowScores(event) {
+    logger("Handling show board game scores");
+    event.preventDefault(); // @ts-ignore
+
+    var id = event.target.getAttribute(_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].eventDataKeyId);
+    logger("Handling Show board game scores " + id);
+
+    if (id) {
+      // find the entry from the state manager
+      id = parseInt(id); // @ts-ignore
+
+      var currentBoardGamesOnDisplay = this.state.boardGames;
+      var index = currentBoardGamesOnDisplay.findIndex(function (game) {
+        return game.gameId === id;
+      });
+
+      if (index >= 0) {
+        var boardGame = currentBoardGamesOnDisplay[index];
+        this.scoresView.setSelectedBoardGame(boardGame);
+        this.scoreSheetSidebar.eventShow(null);
+      }
+    }
+  };
+
+  _proto.handleShowChat = function handleShowChat(roomName) {
+    logger('Handling Show Chat'); //event.preventDefault();
+    //this.hideAllSideBars();
+    // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().isLoggedIn()) {
+      // @ts-ignore
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_7__.API_Config.login;
+      return;
+    }
+
+    this.chatSidebar.eventShow(null);
+
+    if (roomName) {
+      this.chatView.selectChatRoom(roomName);
+    }
+  };
+
+  _proto.handleShowBGGSearch = function handleShowBGGSearch(event) {
+    logger('Handling Show BGG Search View');
+    event.preventDefault(); // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().isLoggedIn()) {
+      this.hideAllSideBars(); // @ts-ignore
+    }
+
+    this.bggSearchSidebar.eventShow(event);
+  };
+
+  _proto.countChanged = function countChanged(newCount) {
+    //
+    var buffer = 'Chat <i class="fas fa-inbox"></i>';
+
+    if (newCount > 0) {
+      buffer += " <span class=\"badge badge-pill badge-primary\">&nbsp;" + newCount + "&nbsp;</span>";
+    }
+
+    if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = "" + buffer;
+  };
+
+  _proto.handleDrop = function handleDrop(event) {
+    // @ts-ignore
+    var draggedObjectJSON = event.dataTransfer.getData(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_20__.DRAGGABLE_KEY_ID);
+    logger(draggedObjectJSON);
+    var draggedObject = JSON.parse(draggedObjectJSON);
+    logger(draggedObject); // @ts-ignore
+
+    if (draggedObject[_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_20__.DRAGGABLE_TYPE] === _AppTypes__WEBPACK_IMPORTED_MODULE_7__.DRAGGABLE.typeBoardGame) {
+      draggedObject.gameId = parseInt(draggedObject.gameId);
+      this.addBoardGameToDisplay(draggedObject);
+    }
+  };
+
+  _proto.switchBetweenCollectionAndScoreSheet = function switchBetweenCollectionAndScoreSheet(showCollection) {
+    if (showCollection) {
+      if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.thisEl, 'd-none', false);
+      if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.thisEl, 'd-block', true);
+      if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.scoreSheetEl, 'd-none', true);
+      if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.scoreSheetEl, 'd-block', false);
+    } else {
+      if (_component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_9__.ScoreSheetController.getInstance().hasActiveScoreSheet()) {
+        if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.thisEl, 'd-none', true);
+        if (this.thisEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.thisEl, 'd-block', false);
+        if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.scoreSheetEl, 'd-none', false);
+        if (this.scoreSheetEl) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_8__["default"].addRemoveClasses(this.scoreSheetEl, 'd-block', true);
+      }
+    }
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.hideRequested = function hideRequested(view) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+    return true;
+  };
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {
+    // add a new board game to the display
+    selectedItem.gameId = parseInt(selectedItem.gameId);
+    this.addBoardGameToDisplay(selectedItem);
+  };
+
+  return Root;
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app view-ts controller-ts socket-ts api-ts local-storage-ts state-manager-ts view-ts:blogentry view-ts:comments view-ts:details';
+//localStorage.debug = 'app controller-ts socket-ts api-ts local-storage-ts state-manager-ts indexeddb-ts user-search-sidebar user-search-sidebar:detail state-manager-ms state-manager-api state-manager-aggregate state-manager-async';
+//localStorage.debug = 'app controller-ts  chat-sidebar chat-sidebar:detail board-game-search-sidebar board-game-search-sidebar:detail ';
+//localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts template-manager' ;
+//localStorage.debug = 'score-sheet-controller call-manager peer';
+
+
+localStorage.debug = '*';
+(debug__WEBPACK_IMPORTED_MODULE_2___default().log) = console.info.bind(console); // @ts-ignore
+
+var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Root, {
+  className: "container-fluid justify-content-around"
+});
+react_dom__WEBPACK_IMPORTED_MODULE_1__.render(element, document.getElementById('root'));
+
+/***/ }),
+
+/***/ "./src/component/view/BoardGameView.tsx":
+/*!**********************************************!*\
+  !*** ./src/component/view/BoardGameView.tsx ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ BoardGameView)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+
+
+
+
+var beLogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('view-ts:boardgameview'); // @ts-ignore
+
+function BoardGameView(_ref) {
+  var boardGame = _ref.boardGame,
+      showScoresHandler = _ref.showScoresHandler,
+      addToCollectionHandler = _ref.addToCollectionHandler,
+      removeFromCollectionHandler = _ref.removeFromCollectionHandler,
+      startScoreSheetHandler = _ref.startScoreSheetHandler;
+
+  if (boardGame) {
+    beLogger("Board Game " + boardGame.gameId);
+    var addButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+      type: "button",
+      className: "btn-primary btn-sm rounded p-1 mt-1 w-100",
+      "board-game-id": boardGame.gameId,
+      onClick: addToCollectionHandler
+    }, "\xA0\xA0Add to ", !_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn() ? 'Browser' : '', " Collection \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("i", {
+      className: "fas fa-star"
+    }), "\xA0\xA0"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+      type: "button",
+      className: "btn-primary btn-sm rounded p-1 mt-1 w-100",
+      "board-game-id": boardGame.gameId,
+      onClick: removeFromCollectionHandler
+    }, "\xA0\xA0Remove from Display\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("i", {
+      className: "fas fa-trash-alt"
+    })));
+    var deleteButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+      type: "button",
+      className: "btn-warning btn-sm rounded p-1 mt-1 w-100",
+      "board-game-id": boardGame.gameId,
+      onClick: removeFromCollectionHandler
+    }, "\xA0\xA0Remove from ", !_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn() ? 'Browser' : '', " Collection \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("i", {
+      className: "far fa-star"
+    }), "\xA0\xA0");
+    var startScoreSheetButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("button", {
+      type: "button",
+      className: "btn-secondary btn-sm rounded p-1 mr-2 mt-2 w-100",
+      "board-game-id": boardGame.gameId,
+      onClick: startScoreSheetHandler
+    }, "\xA0\xA0Start Score Sheet \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("i", {
+      className: "fas fa-list-alt"
+    }), "\xA0\xA0"); // do we have any scores?
+
+    var scoreCount = 0;
+
+    if (boardGame.scoresheets) {
+      scoreCount = boardGame.scoresheets.length;
+    } //        let overlay = <div className="card-img-overlay">
+
+
+    var favouriteIcon = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("i", {
+      className: "fas fa-star text-black"
+    });
+    var scoreBadge = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("span", {
+      "board-game-id": boardGame.gameId,
+      className: "badge badge-pill badge-info ml-1",
+      onClick: showScoresHandler
+    }, "Scores: ", scoreCount);
+
+    if (boardGame.decorator && boardGame.decorator !== _AppTypes__WEBPACK_IMPORTED_MODULE_3__.Decorator.Incomplete) {
+      var bggURL = "https://boardgamegeek.com/boardgame/" + boardGame.gameId;
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "card"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("a", {
+        href: bggURL,
+        target: "_blank"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("img", {
+        className: "card-img-top",
+        src: boardGame.image,
+        alt: "Card image cap"
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "card-body scroll"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h5", {
+        className: "card-title"
+      }, boardGame.name, " (", boardGame.year, ") ", boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__.Decorator.Persisted || boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__.Decorator.PersistedLocally ? favouriteIcon : '', " ", boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__.Decorator.Persisted || boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__.Decorator.PersistedLocally ? scoreBadge : '', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("br", null), " ", _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn() ? boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_3__.Decorator.Persisted ? deleteButton : addButton : deleteButton), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
+        className: "card-text"
+      }, boardGame.description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
+        className: "card-text"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("small", {
+        className: "text-muted"
+      }, "Play Time: ", boardGame.minPlayTime, " - ", boardGame.maxPlayTime, " min", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("br", null), "Players: ", boardGame.minPlayers, " - ", boardGame.maxPlayers, " Min Age:", boardGame.minAge, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("br", null), "Categories: ", boardGame.categories))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "card-footer text-right text-muted"
+      }, "Rank: ", boardGame.rank, " Score: ", boardGame.averageScore, " from ", boardGame.numOfRaters, " raters", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("br", null), startScoreSheetButton)));
+    } else {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "card"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("img", {
+        className: "card-img-top",
+        src: "/img/spinner.gif",
+        alt: "Card image cap"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "card-body"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("h5", {
+        className: "card-title"
+      }, boardGame.name, " (", boardGame.year, ") "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
+        className: "card-text"
+      }, "Loading..."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("p", {
+        className: "card-text"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("small", {
+        className: "text-muted"
+      }, "Loading..."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "card-footer text-right text-muted"
+      }, "Loading...")));
+    }
+  } else {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      className: "col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      className: "card"
+    }));
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/handsontable/node_modules/moment/locale sync recursive ^\\.\\/.*$":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/handsontable/node_modules/moment/locale/ sync ^\.\/.*$ ***!
+  \*****************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var map = {
+	"./af": "./node_modules/handsontable/node_modules/moment/locale/af.js",
+	"./af.js": "./node_modules/handsontable/node_modules/moment/locale/af.js",
+	"./ar": "./node_modules/handsontable/node_modules/moment/locale/ar.js",
+	"./ar-dz": "./node_modules/handsontable/node_modules/moment/locale/ar-dz.js",
+	"./ar-dz.js": "./node_modules/handsontable/node_modules/moment/locale/ar-dz.js",
+	"./ar-kw": "./node_modules/handsontable/node_modules/moment/locale/ar-kw.js",
+	"./ar-kw.js": "./node_modules/handsontable/node_modules/moment/locale/ar-kw.js",
+	"./ar-ly": "./node_modules/handsontable/node_modules/moment/locale/ar-ly.js",
+	"./ar-ly.js": "./node_modules/handsontable/node_modules/moment/locale/ar-ly.js",
+	"./ar-ma": "./node_modules/handsontable/node_modules/moment/locale/ar-ma.js",
+	"./ar-ma.js": "./node_modules/handsontable/node_modules/moment/locale/ar-ma.js",
+	"./ar-sa": "./node_modules/handsontable/node_modules/moment/locale/ar-sa.js",
+	"./ar-sa.js": "./node_modules/handsontable/node_modules/moment/locale/ar-sa.js",
+	"./ar-tn": "./node_modules/handsontable/node_modules/moment/locale/ar-tn.js",
+	"./ar-tn.js": "./node_modules/handsontable/node_modules/moment/locale/ar-tn.js",
+	"./ar.js": "./node_modules/handsontable/node_modules/moment/locale/ar.js",
+	"./az": "./node_modules/handsontable/node_modules/moment/locale/az.js",
+	"./az.js": "./node_modules/handsontable/node_modules/moment/locale/az.js",
+	"./be": "./node_modules/handsontable/node_modules/moment/locale/be.js",
+	"./be.js": "./node_modules/handsontable/node_modules/moment/locale/be.js",
+	"./bg": "./node_modules/handsontable/node_modules/moment/locale/bg.js",
+	"./bg.js": "./node_modules/handsontable/node_modules/moment/locale/bg.js",
+	"./bm": "./node_modules/handsontable/node_modules/moment/locale/bm.js",
+	"./bm.js": "./node_modules/handsontable/node_modules/moment/locale/bm.js",
+	"./bn": "./node_modules/handsontable/node_modules/moment/locale/bn.js",
+	"./bn.js": "./node_modules/handsontable/node_modules/moment/locale/bn.js",
+	"./bo": "./node_modules/handsontable/node_modules/moment/locale/bo.js",
+	"./bo.js": "./node_modules/handsontable/node_modules/moment/locale/bo.js",
+	"./br": "./node_modules/handsontable/node_modules/moment/locale/br.js",
+	"./br.js": "./node_modules/handsontable/node_modules/moment/locale/br.js",
+	"./bs": "./node_modules/handsontable/node_modules/moment/locale/bs.js",
+	"./bs.js": "./node_modules/handsontable/node_modules/moment/locale/bs.js",
+	"./ca": "./node_modules/handsontable/node_modules/moment/locale/ca.js",
+	"./ca.js": "./node_modules/handsontable/node_modules/moment/locale/ca.js",
+	"./cs": "./node_modules/handsontable/node_modules/moment/locale/cs.js",
+	"./cs.js": "./node_modules/handsontable/node_modules/moment/locale/cs.js",
+	"./cv": "./node_modules/handsontable/node_modules/moment/locale/cv.js",
+	"./cv.js": "./node_modules/handsontable/node_modules/moment/locale/cv.js",
+	"./cy": "./node_modules/handsontable/node_modules/moment/locale/cy.js",
+	"./cy.js": "./node_modules/handsontable/node_modules/moment/locale/cy.js",
+	"./da": "./node_modules/handsontable/node_modules/moment/locale/da.js",
+	"./da.js": "./node_modules/handsontable/node_modules/moment/locale/da.js",
+	"./de": "./node_modules/handsontable/node_modules/moment/locale/de.js",
+	"./de-at": "./node_modules/handsontable/node_modules/moment/locale/de-at.js",
+	"./de-at.js": "./node_modules/handsontable/node_modules/moment/locale/de-at.js",
+	"./de-ch": "./node_modules/handsontable/node_modules/moment/locale/de-ch.js",
+	"./de-ch.js": "./node_modules/handsontable/node_modules/moment/locale/de-ch.js",
+	"./de.js": "./node_modules/handsontable/node_modules/moment/locale/de.js",
+	"./dv": "./node_modules/handsontable/node_modules/moment/locale/dv.js",
+	"./dv.js": "./node_modules/handsontable/node_modules/moment/locale/dv.js",
+	"./el": "./node_modules/handsontable/node_modules/moment/locale/el.js",
+	"./el.js": "./node_modules/handsontable/node_modules/moment/locale/el.js",
+	"./en-SG": "./node_modules/handsontable/node_modules/moment/locale/en-SG.js",
+	"./en-SG.js": "./node_modules/handsontable/node_modules/moment/locale/en-SG.js",
+	"./en-au": "./node_modules/handsontable/node_modules/moment/locale/en-au.js",
+	"./en-au.js": "./node_modules/handsontable/node_modules/moment/locale/en-au.js",
+	"./en-ca": "./node_modules/handsontable/node_modules/moment/locale/en-ca.js",
+	"./en-ca.js": "./node_modules/handsontable/node_modules/moment/locale/en-ca.js",
+	"./en-gb": "./node_modules/handsontable/node_modules/moment/locale/en-gb.js",
+	"./en-gb.js": "./node_modules/handsontable/node_modules/moment/locale/en-gb.js",
+	"./en-ie": "./node_modules/handsontable/node_modules/moment/locale/en-ie.js",
+	"./en-ie.js": "./node_modules/handsontable/node_modules/moment/locale/en-ie.js",
+	"./en-il": "./node_modules/handsontable/node_modules/moment/locale/en-il.js",
+	"./en-il.js": "./node_modules/handsontable/node_modules/moment/locale/en-il.js",
+	"./en-nz": "./node_modules/handsontable/node_modules/moment/locale/en-nz.js",
+	"./en-nz.js": "./node_modules/handsontable/node_modules/moment/locale/en-nz.js",
+	"./eo": "./node_modules/handsontable/node_modules/moment/locale/eo.js",
+	"./eo.js": "./node_modules/handsontable/node_modules/moment/locale/eo.js",
+	"./es": "./node_modules/handsontable/node_modules/moment/locale/es.js",
+	"./es-do": "./node_modules/handsontable/node_modules/moment/locale/es-do.js",
+	"./es-do.js": "./node_modules/handsontable/node_modules/moment/locale/es-do.js",
+	"./es-us": "./node_modules/handsontable/node_modules/moment/locale/es-us.js",
+	"./es-us.js": "./node_modules/handsontable/node_modules/moment/locale/es-us.js",
+	"./es.js": "./node_modules/handsontable/node_modules/moment/locale/es.js",
+	"./et": "./node_modules/handsontable/node_modules/moment/locale/et.js",
+	"./et.js": "./node_modules/handsontable/node_modules/moment/locale/et.js",
+	"./eu": "./node_modules/handsontable/node_modules/moment/locale/eu.js",
+	"./eu.js": "./node_modules/handsontable/node_modules/moment/locale/eu.js",
+	"./fa": "./node_modules/handsontable/node_modules/moment/locale/fa.js",
+	"./fa.js": "./node_modules/handsontable/node_modules/moment/locale/fa.js",
+	"./fi": "./node_modules/handsontable/node_modules/moment/locale/fi.js",
+	"./fi.js": "./node_modules/handsontable/node_modules/moment/locale/fi.js",
+	"./fo": "./node_modules/handsontable/node_modules/moment/locale/fo.js",
+	"./fo.js": "./node_modules/handsontable/node_modules/moment/locale/fo.js",
+	"./fr": "./node_modules/handsontable/node_modules/moment/locale/fr.js",
+	"./fr-ca": "./node_modules/handsontable/node_modules/moment/locale/fr-ca.js",
+	"./fr-ca.js": "./node_modules/handsontable/node_modules/moment/locale/fr-ca.js",
+	"./fr-ch": "./node_modules/handsontable/node_modules/moment/locale/fr-ch.js",
+	"./fr-ch.js": "./node_modules/handsontable/node_modules/moment/locale/fr-ch.js",
+	"./fr.js": "./node_modules/handsontable/node_modules/moment/locale/fr.js",
+	"./fy": "./node_modules/handsontable/node_modules/moment/locale/fy.js",
+	"./fy.js": "./node_modules/handsontable/node_modules/moment/locale/fy.js",
+	"./ga": "./node_modules/handsontable/node_modules/moment/locale/ga.js",
+	"./ga.js": "./node_modules/handsontable/node_modules/moment/locale/ga.js",
+	"./gd": "./node_modules/handsontable/node_modules/moment/locale/gd.js",
+	"./gd.js": "./node_modules/handsontable/node_modules/moment/locale/gd.js",
+	"./gl": "./node_modules/handsontable/node_modules/moment/locale/gl.js",
+	"./gl.js": "./node_modules/handsontable/node_modules/moment/locale/gl.js",
+	"./gom-latn": "./node_modules/handsontable/node_modules/moment/locale/gom-latn.js",
+	"./gom-latn.js": "./node_modules/handsontable/node_modules/moment/locale/gom-latn.js",
+	"./gu": "./node_modules/handsontable/node_modules/moment/locale/gu.js",
+	"./gu.js": "./node_modules/handsontable/node_modules/moment/locale/gu.js",
+	"./he": "./node_modules/handsontable/node_modules/moment/locale/he.js",
+	"./he.js": "./node_modules/handsontable/node_modules/moment/locale/he.js",
+	"./hi": "./node_modules/handsontable/node_modules/moment/locale/hi.js",
+	"./hi.js": "./node_modules/handsontable/node_modules/moment/locale/hi.js",
+	"./hr": "./node_modules/handsontable/node_modules/moment/locale/hr.js",
+	"./hr.js": "./node_modules/handsontable/node_modules/moment/locale/hr.js",
+	"./hu": "./node_modules/handsontable/node_modules/moment/locale/hu.js",
+	"./hu.js": "./node_modules/handsontable/node_modules/moment/locale/hu.js",
+	"./hy-am": "./node_modules/handsontable/node_modules/moment/locale/hy-am.js",
+	"./hy-am.js": "./node_modules/handsontable/node_modules/moment/locale/hy-am.js",
+	"./id": "./node_modules/handsontable/node_modules/moment/locale/id.js",
+	"./id.js": "./node_modules/handsontable/node_modules/moment/locale/id.js",
+	"./is": "./node_modules/handsontable/node_modules/moment/locale/is.js",
+	"./is.js": "./node_modules/handsontable/node_modules/moment/locale/is.js",
+	"./it": "./node_modules/handsontable/node_modules/moment/locale/it.js",
+	"./it-ch": "./node_modules/handsontable/node_modules/moment/locale/it-ch.js",
+	"./it-ch.js": "./node_modules/handsontable/node_modules/moment/locale/it-ch.js",
+	"./it.js": "./node_modules/handsontable/node_modules/moment/locale/it.js",
+	"./ja": "./node_modules/handsontable/node_modules/moment/locale/ja.js",
+	"./ja.js": "./node_modules/handsontable/node_modules/moment/locale/ja.js",
+	"./jv": "./node_modules/handsontable/node_modules/moment/locale/jv.js",
+	"./jv.js": "./node_modules/handsontable/node_modules/moment/locale/jv.js",
+	"./ka": "./node_modules/handsontable/node_modules/moment/locale/ka.js",
+	"./ka.js": "./node_modules/handsontable/node_modules/moment/locale/ka.js",
+	"./kk": "./node_modules/handsontable/node_modules/moment/locale/kk.js",
+	"./kk.js": "./node_modules/handsontable/node_modules/moment/locale/kk.js",
+	"./km": "./node_modules/handsontable/node_modules/moment/locale/km.js",
+	"./km.js": "./node_modules/handsontable/node_modules/moment/locale/km.js",
+	"./kn": "./node_modules/handsontable/node_modules/moment/locale/kn.js",
+	"./kn.js": "./node_modules/handsontable/node_modules/moment/locale/kn.js",
+	"./ko": "./node_modules/handsontable/node_modules/moment/locale/ko.js",
+	"./ko.js": "./node_modules/handsontable/node_modules/moment/locale/ko.js",
+	"./ku": "./node_modules/handsontable/node_modules/moment/locale/ku.js",
+	"./ku.js": "./node_modules/handsontable/node_modules/moment/locale/ku.js",
+	"./ky": "./node_modules/handsontable/node_modules/moment/locale/ky.js",
+	"./ky.js": "./node_modules/handsontable/node_modules/moment/locale/ky.js",
+	"./lb": "./node_modules/handsontable/node_modules/moment/locale/lb.js",
+	"./lb.js": "./node_modules/handsontable/node_modules/moment/locale/lb.js",
+	"./lo": "./node_modules/handsontable/node_modules/moment/locale/lo.js",
+	"./lo.js": "./node_modules/handsontable/node_modules/moment/locale/lo.js",
+	"./lt": "./node_modules/handsontable/node_modules/moment/locale/lt.js",
+	"./lt.js": "./node_modules/handsontable/node_modules/moment/locale/lt.js",
+	"./lv": "./node_modules/handsontable/node_modules/moment/locale/lv.js",
+	"./lv.js": "./node_modules/handsontable/node_modules/moment/locale/lv.js",
+	"./me": "./node_modules/handsontable/node_modules/moment/locale/me.js",
+	"./me.js": "./node_modules/handsontable/node_modules/moment/locale/me.js",
+	"./mi": "./node_modules/handsontable/node_modules/moment/locale/mi.js",
+	"./mi.js": "./node_modules/handsontable/node_modules/moment/locale/mi.js",
+	"./mk": "./node_modules/handsontable/node_modules/moment/locale/mk.js",
+	"./mk.js": "./node_modules/handsontable/node_modules/moment/locale/mk.js",
+	"./ml": "./node_modules/handsontable/node_modules/moment/locale/ml.js",
+	"./ml.js": "./node_modules/handsontable/node_modules/moment/locale/ml.js",
+	"./mn": "./node_modules/handsontable/node_modules/moment/locale/mn.js",
+	"./mn.js": "./node_modules/handsontable/node_modules/moment/locale/mn.js",
+	"./mr": "./node_modules/handsontable/node_modules/moment/locale/mr.js",
+	"./mr.js": "./node_modules/handsontable/node_modules/moment/locale/mr.js",
+	"./ms": "./node_modules/handsontable/node_modules/moment/locale/ms.js",
+	"./ms-my": "./node_modules/handsontable/node_modules/moment/locale/ms-my.js",
+	"./ms-my.js": "./node_modules/handsontable/node_modules/moment/locale/ms-my.js",
+	"./ms.js": "./node_modules/handsontable/node_modules/moment/locale/ms.js",
+	"./mt": "./node_modules/handsontable/node_modules/moment/locale/mt.js",
+	"./mt.js": "./node_modules/handsontable/node_modules/moment/locale/mt.js",
+	"./my": "./node_modules/handsontable/node_modules/moment/locale/my.js",
+	"./my.js": "./node_modules/handsontable/node_modules/moment/locale/my.js",
+	"./nb": "./node_modules/handsontable/node_modules/moment/locale/nb.js",
+	"./nb.js": "./node_modules/handsontable/node_modules/moment/locale/nb.js",
+	"./ne": "./node_modules/handsontable/node_modules/moment/locale/ne.js",
+	"./ne.js": "./node_modules/handsontable/node_modules/moment/locale/ne.js",
+	"./nl": "./node_modules/handsontable/node_modules/moment/locale/nl.js",
+	"./nl-be": "./node_modules/handsontable/node_modules/moment/locale/nl-be.js",
+	"./nl-be.js": "./node_modules/handsontable/node_modules/moment/locale/nl-be.js",
+	"./nl.js": "./node_modules/handsontable/node_modules/moment/locale/nl.js",
+	"./nn": "./node_modules/handsontable/node_modules/moment/locale/nn.js",
+	"./nn.js": "./node_modules/handsontable/node_modules/moment/locale/nn.js",
+	"./pa-in": "./node_modules/handsontable/node_modules/moment/locale/pa-in.js",
+	"./pa-in.js": "./node_modules/handsontable/node_modules/moment/locale/pa-in.js",
+	"./pl": "./node_modules/handsontable/node_modules/moment/locale/pl.js",
+	"./pl.js": "./node_modules/handsontable/node_modules/moment/locale/pl.js",
+	"./pt": "./node_modules/handsontable/node_modules/moment/locale/pt.js",
+	"./pt-br": "./node_modules/handsontable/node_modules/moment/locale/pt-br.js",
+	"./pt-br.js": "./node_modules/handsontable/node_modules/moment/locale/pt-br.js",
+	"./pt.js": "./node_modules/handsontable/node_modules/moment/locale/pt.js",
+	"./ro": "./node_modules/handsontable/node_modules/moment/locale/ro.js",
+	"./ro.js": "./node_modules/handsontable/node_modules/moment/locale/ro.js",
+	"./ru": "./node_modules/handsontable/node_modules/moment/locale/ru.js",
+	"./ru.js": "./node_modules/handsontable/node_modules/moment/locale/ru.js",
+	"./sd": "./node_modules/handsontable/node_modules/moment/locale/sd.js",
+	"./sd.js": "./node_modules/handsontable/node_modules/moment/locale/sd.js",
+	"./se": "./node_modules/handsontable/node_modules/moment/locale/se.js",
+	"./se.js": "./node_modules/handsontable/node_modules/moment/locale/se.js",
+	"./si": "./node_modules/handsontable/node_modules/moment/locale/si.js",
+	"./si.js": "./node_modules/handsontable/node_modules/moment/locale/si.js",
+	"./sk": "./node_modules/handsontable/node_modules/moment/locale/sk.js",
+	"./sk.js": "./node_modules/handsontable/node_modules/moment/locale/sk.js",
+	"./sl": "./node_modules/handsontable/node_modules/moment/locale/sl.js",
+	"./sl.js": "./node_modules/handsontable/node_modules/moment/locale/sl.js",
+	"./sq": "./node_modules/handsontable/node_modules/moment/locale/sq.js",
+	"./sq.js": "./node_modules/handsontable/node_modules/moment/locale/sq.js",
+	"./sr": "./node_modules/handsontable/node_modules/moment/locale/sr.js",
+	"./sr-cyrl": "./node_modules/handsontable/node_modules/moment/locale/sr-cyrl.js",
+	"./sr-cyrl.js": "./node_modules/handsontable/node_modules/moment/locale/sr-cyrl.js",
+	"./sr.js": "./node_modules/handsontable/node_modules/moment/locale/sr.js",
+	"./ss": "./node_modules/handsontable/node_modules/moment/locale/ss.js",
+	"./ss.js": "./node_modules/handsontable/node_modules/moment/locale/ss.js",
+	"./sv": "./node_modules/handsontable/node_modules/moment/locale/sv.js",
+	"./sv.js": "./node_modules/handsontable/node_modules/moment/locale/sv.js",
+	"./sw": "./node_modules/handsontable/node_modules/moment/locale/sw.js",
+	"./sw.js": "./node_modules/handsontable/node_modules/moment/locale/sw.js",
+	"./ta": "./node_modules/handsontable/node_modules/moment/locale/ta.js",
+	"./ta.js": "./node_modules/handsontable/node_modules/moment/locale/ta.js",
+	"./te": "./node_modules/handsontable/node_modules/moment/locale/te.js",
+	"./te.js": "./node_modules/handsontable/node_modules/moment/locale/te.js",
+	"./tet": "./node_modules/handsontable/node_modules/moment/locale/tet.js",
+	"./tet.js": "./node_modules/handsontable/node_modules/moment/locale/tet.js",
+	"./tg": "./node_modules/handsontable/node_modules/moment/locale/tg.js",
+	"./tg.js": "./node_modules/handsontable/node_modules/moment/locale/tg.js",
+	"./th": "./node_modules/handsontable/node_modules/moment/locale/th.js",
+	"./th.js": "./node_modules/handsontable/node_modules/moment/locale/th.js",
+	"./tl-ph": "./node_modules/handsontable/node_modules/moment/locale/tl-ph.js",
+	"./tl-ph.js": "./node_modules/handsontable/node_modules/moment/locale/tl-ph.js",
+	"./tlh": "./node_modules/handsontable/node_modules/moment/locale/tlh.js",
+	"./tlh.js": "./node_modules/handsontable/node_modules/moment/locale/tlh.js",
+	"./tr": "./node_modules/handsontable/node_modules/moment/locale/tr.js",
+	"./tr.js": "./node_modules/handsontable/node_modules/moment/locale/tr.js",
+	"./tzl": "./node_modules/handsontable/node_modules/moment/locale/tzl.js",
+	"./tzl.js": "./node_modules/handsontable/node_modules/moment/locale/tzl.js",
+	"./tzm": "./node_modules/handsontable/node_modules/moment/locale/tzm.js",
+	"./tzm-latn": "./node_modules/handsontable/node_modules/moment/locale/tzm-latn.js",
+	"./tzm-latn.js": "./node_modules/handsontable/node_modules/moment/locale/tzm-latn.js",
+	"./tzm.js": "./node_modules/handsontable/node_modules/moment/locale/tzm.js",
+	"./ug-cn": "./node_modules/handsontable/node_modules/moment/locale/ug-cn.js",
+	"./ug-cn.js": "./node_modules/handsontable/node_modules/moment/locale/ug-cn.js",
+	"./uk": "./node_modules/handsontable/node_modules/moment/locale/uk.js",
+	"./uk.js": "./node_modules/handsontable/node_modules/moment/locale/uk.js",
+	"./ur": "./node_modules/handsontable/node_modules/moment/locale/ur.js",
+	"./ur.js": "./node_modules/handsontable/node_modules/moment/locale/ur.js",
+	"./uz": "./node_modules/handsontable/node_modules/moment/locale/uz.js",
+	"./uz-latn": "./node_modules/handsontable/node_modules/moment/locale/uz-latn.js",
+	"./uz-latn.js": "./node_modules/handsontable/node_modules/moment/locale/uz-latn.js",
+	"./uz.js": "./node_modules/handsontable/node_modules/moment/locale/uz.js",
+	"./vi": "./node_modules/handsontable/node_modules/moment/locale/vi.js",
+	"./vi.js": "./node_modules/handsontable/node_modules/moment/locale/vi.js",
+	"./x-pseudo": "./node_modules/handsontable/node_modules/moment/locale/x-pseudo.js",
+	"./x-pseudo.js": "./node_modules/handsontable/node_modules/moment/locale/x-pseudo.js",
+	"./yo": "./node_modules/handsontable/node_modules/moment/locale/yo.js",
+	"./yo.js": "./node_modules/handsontable/node_modules/moment/locale/yo.js",
+	"./zh-cn": "./node_modules/handsontable/node_modules/moment/locale/zh-cn.js",
+	"./zh-cn.js": "./node_modules/handsontable/node_modules/moment/locale/zh-cn.js",
+	"./zh-hk": "./node_modules/handsontable/node_modules/moment/locale/zh-hk.js",
+	"./zh-hk.js": "./node_modules/handsontable/node_modules/moment/locale/zh-hk.js",
+	"./zh-tw": "./node_modules/handsontable/node_modules/moment/locale/zh-tw.js",
+	"./zh-tw.js": "./node_modules/handsontable/node_modules/moment/locale/zh-tw.js"
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	if(!__webpack_require__.o(map, req)) {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return map[req];
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "./node_modules/handsontable/node_modules/moment/locale sync recursive ^\\.\\/.*$";
+
+/***/ }),
+
+/***/ "./node_modules/moment/locale sync recursive ^\\.\\/.*$":
+/*!***************************************************!*\
+  !*** ./node_modules/moment/locale/ sync ^\.\/.*$ ***!
+  \***************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var map = {
+	"./af": "./node_modules/moment/locale/af.js",
+	"./af.js": "./node_modules/moment/locale/af.js",
+	"./ar": "./node_modules/moment/locale/ar.js",
+	"./ar-dz": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-dz.js": "./node_modules/moment/locale/ar-dz.js",
+	"./ar-kw": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-kw.js": "./node_modules/moment/locale/ar-kw.js",
+	"./ar-ly": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ly.js": "./node_modules/moment/locale/ar-ly.js",
+	"./ar-ma": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-ma.js": "./node_modules/moment/locale/ar-ma.js",
+	"./ar-sa": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-sa.js": "./node_modules/moment/locale/ar-sa.js",
+	"./ar-tn": "./node_modules/moment/locale/ar-tn.js",
+	"./ar-tn.js": "./node_modules/moment/locale/ar-tn.js",
+	"./ar.js": "./node_modules/moment/locale/ar.js",
+	"./az": "./node_modules/moment/locale/az.js",
+	"./az.js": "./node_modules/moment/locale/az.js",
+	"./be": "./node_modules/moment/locale/be.js",
+	"./be.js": "./node_modules/moment/locale/be.js",
+	"./bg": "./node_modules/moment/locale/bg.js",
+	"./bg.js": "./node_modules/moment/locale/bg.js",
+	"./bm": "./node_modules/moment/locale/bm.js",
+	"./bm.js": "./node_modules/moment/locale/bm.js",
+	"./bn": "./node_modules/moment/locale/bn.js",
+	"./bn-bd": "./node_modules/moment/locale/bn-bd.js",
+	"./bn-bd.js": "./node_modules/moment/locale/bn-bd.js",
+	"./bn.js": "./node_modules/moment/locale/bn.js",
+	"./bo": "./node_modules/moment/locale/bo.js",
+	"./bo.js": "./node_modules/moment/locale/bo.js",
+	"./br": "./node_modules/moment/locale/br.js",
+	"./br.js": "./node_modules/moment/locale/br.js",
+	"./bs": "./node_modules/moment/locale/bs.js",
+	"./bs.js": "./node_modules/moment/locale/bs.js",
+	"./ca": "./node_modules/moment/locale/ca.js",
+	"./ca.js": "./node_modules/moment/locale/ca.js",
+	"./cs": "./node_modules/moment/locale/cs.js",
+	"./cs.js": "./node_modules/moment/locale/cs.js",
+	"./cv": "./node_modules/moment/locale/cv.js",
+	"./cv.js": "./node_modules/moment/locale/cv.js",
+	"./cy": "./node_modules/moment/locale/cy.js",
+	"./cy.js": "./node_modules/moment/locale/cy.js",
+	"./da": "./node_modules/moment/locale/da.js",
+	"./da.js": "./node_modules/moment/locale/da.js",
+	"./de": "./node_modules/moment/locale/de.js",
+	"./de-at": "./node_modules/moment/locale/de-at.js",
+	"./de-at.js": "./node_modules/moment/locale/de-at.js",
+	"./de-ch": "./node_modules/moment/locale/de-ch.js",
+	"./de-ch.js": "./node_modules/moment/locale/de-ch.js",
+	"./de.js": "./node_modules/moment/locale/de.js",
+	"./dv": "./node_modules/moment/locale/dv.js",
+	"./dv.js": "./node_modules/moment/locale/dv.js",
+	"./el": "./node_modules/moment/locale/el.js",
+	"./el.js": "./node_modules/moment/locale/el.js",
+	"./en-au": "./node_modules/moment/locale/en-au.js",
+	"./en-au.js": "./node_modules/moment/locale/en-au.js",
+	"./en-ca": "./node_modules/moment/locale/en-ca.js",
+	"./en-ca.js": "./node_modules/moment/locale/en-ca.js",
+	"./en-gb": "./node_modules/moment/locale/en-gb.js",
+	"./en-gb.js": "./node_modules/moment/locale/en-gb.js",
+	"./en-ie": "./node_modules/moment/locale/en-ie.js",
+	"./en-ie.js": "./node_modules/moment/locale/en-ie.js",
+	"./en-il": "./node_modules/moment/locale/en-il.js",
+	"./en-il.js": "./node_modules/moment/locale/en-il.js",
+	"./en-in": "./node_modules/moment/locale/en-in.js",
+	"./en-in.js": "./node_modules/moment/locale/en-in.js",
+	"./en-nz": "./node_modules/moment/locale/en-nz.js",
+	"./en-nz.js": "./node_modules/moment/locale/en-nz.js",
+	"./en-sg": "./node_modules/moment/locale/en-sg.js",
+	"./en-sg.js": "./node_modules/moment/locale/en-sg.js",
+	"./eo": "./node_modules/moment/locale/eo.js",
+	"./eo.js": "./node_modules/moment/locale/eo.js",
+	"./es": "./node_modules/moment/locale/es.js",
+	"./es-do": "./node_modules/moment/locale/es-do.js",
+	"./es-do.js": "./node_modules/moment/locale/es-do.js",
+	"./es-mx": "./node_modules/moment/locale/es-mx.js",
+	"./es-mx.js": "./node_modules/moment/locale/es-mx.js",
+	"./es-us": "./node_modules/moment/locale/es-us.js",
+	"./es-us.js": "./node_modules/moment/locale/es-us.js",
+	"./es.js": "./node_modules/moment/locale/es.js",
+	"./et": "./node_modules/moment/locale/et.js",
+	"./et.js": "./node_modules/moment/locale/et.js",
+	"./eu": "./node_modules/moment/locale/eu.js",
+	"./eu.js": "./node_modules/moment/locale/eu.js",
+	"./fa": "./node_modules/moment/locale/fa.js",
+	"./fa.js": "./node_modules/moment/locale/fa.js",
+	"./fi": "./node_modules/moment/locale/fi.js",
+	"./fi.js": "./node_modules/moment/locale/fi.js",
+	"./fil": "./node_modules/moment/locale/fil.js",
+	"./fil.js": "./node_modules/moment/locale/fil.js",
+	"./fo": "./node_modules/moment/locale/fo.js",
+	"./fo.js": "./node_modules/moment/locale/fo.js",
+	"./fr": "./node_modules/moment/locale/fr.js",
+	"./fr-ca": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ca.js": "./node_modules/moment/locale/fr-ca.js",
+	"./fr-ch": "./node_modules/moment/locale/fr-ch.js",
+	"./fr-ch.js": "./node_modules/moment/locale/fr-ch.js",
+	"./fr.js": "./node_modules/moment/locale/fr.js",
+	"./fy": "./node_modules/moment/locale/fy.js",
+	"./fy.js": "./node_modules/moment/locale/fy.js",
+	"./ga": "./node_modules/moment/locale/ga.js",
+	"./ga.js": "./node_modules/moment/locale/ga.js",
+	"./gd": "./node_modules/moment/locale/gd.js",
+	"./gd.js": "./node_modules/moment/locale/gd.js",
+	"./gl": "./node_modules/moment/locale/gl.js",
+	"./gl.js": "./node_modules/moment/locale/gl.js",
+	"./gom-deva": "./node_modules/moment/locale/gom-deva.js",
+	"./gom-deva.js": "./node_modules/moment/locale/gom-deva.js",
+	"./gom-latn": "./node_modules/moment/locale/gom-latn.js",
+	"./gom-latn.js": "./node_modules/moment/locale/gom-latn.js",
+	"./gu": "./node_modules/moment/locale/gu.js",
+	"./gu.js": "./node_modules/moment/locale/gu.js",
+	"./he": "./node_modules/moment/locale/he.js",
+	"./he.js": "./node_modules/moment/locale/he.js",
+	"./hi": "./node_modules/moment/locale/hi.js",
+	"./hi.js": "./node_modules/moment/locale/hi.js",
+	"./hr": "./node_modules/moment/locale/hr.js",
+	"./hr.js": "./node_modules/moment/locale/hr.js",
+	"./hu": "./node_modules/moment/locale/hu.js",
+	"./hu.js": "./node_modules/moment/locale/hu.js",
+	"./hy-am": "./node_modules/moment/locale/hy-am.js",
+	"./hy-am.js": "./node_modules/moment/locale/hy-am.js",
+	"./id": "./node_modules/moment/locale/id.js",
+	"./id.js": "./node_modules/moment/locale/id.js",
+	"./is": "./node_modules/moment/locale/is.js",
+	"./is.js": "./node_modules/moment/locale/is.js",
+	"./it": "./node_modules/moment/locale/it.js",
+	"./it-ch": "./node_modules/moment/locale/it-ch.js",
+	"./it-ch.js": "./node_modules/moment/locale/it-ch.js",
+	"./it.js": "./node_modules/moment/locale/it.js",
+	"./ja": "./node_modules/moment/locale/ja.js",
+	"./ja.js": "./node_modules/moment/locale/ja.js",
+	"./jv": "./node_modules/moment/locale/jv.js",
+	"./jv.js": "./node_modules/moment/locale/jv.js",
+	"./ka": "./node_modules/moment/locale/ka.js",
+	"./ka.js": "./node_modules/moment/locale/ka.js",
+	"./kk": "./node_modules/moment/locale/kk.js",
+	"./kk.js": "./node_modules/moment/locale/kk.js",
+	"./km": "./node_modules/moment/locale/km.js",
+	"./km.js": "./node_modules/moment/locale/km.js",
+	"./kn": "./node_modules/moment/locale/kn.js",
+	"./kn.js": "./node_modules/moment/locale/kn.js",
+	"./ko": "./node_modules/moment/locale/ko.js",
+	"./ko.js": "./node_modules/moment/locale/ko.js",
+	"./ku": "./node_modules/moment/locale/ku.js",
+	"./ku.js": "./node_modules/moment/locale/ku.js",
+	"./ky": "./node_modules/moment/locale/ky.js",
+	"./ky.js": "./node_modules/moment/locale/ky.js",
+	"./lb": "./node_modules/moment/locale/lb.js",
+	"./lb.js": "./node_modules/moment/locale/lb.js",
+	"./lo": "./node_modules/moment/locale/lo.js",
+	"./lo.js": "./node_modules/moment/locale/lo.js",
+	"./lt": "./node_modules/moment/locale/lt.js",
+	"./lt.js": "./node_modules/moment/locale/lt.js",
+	"./lv": "./node_modules/moment/locale/lv.js",
+	"./lv.js": "./node_modules/moment/locale/lv.js",
+	"./me": "./node_modules/moment/locale/me.js",
+	"./me.js": "./node_modules/moment/locale/me.js",
+	"./mi": "./node_modules/moment/locale/mi.js",
+	"./mi.js": "./node_modules/moment/locale/mi.js",
+	"./mk": "./node_modules/moment/locale/mk.js",
+	"./mk.js": "./node_modules/moment/locale/mk.js",
+	"./ml": "./node_modules/moment/locale/ml.js",
+	"./ml.js": "./node_modules/moment/locale/ml.js",
+	"./mn": "./node_modules/moment/locale/mn.js",
+	"./mn.js": "./node_modules/moment/locale/mn.js",
+	"./mr": "./node_modules/moment/locale/mr.js",
+	"./mr.js": "./node_modules/moment/locale/mr.js",
+	"./ms": "./node_modules/moment/locale/ms.js",
+	"./ms-my": "./node_modules/moment/locale/ms-my.js",
+	"./ms-my.js": "./node_modules/moment/locale/ms-my.js",
+	"./ms.js": "./node_modules/moment/locale/ms.js",
+	"./mt": "./node_modules/moment/locale/mt.js",
+	"./mt.js": "./node_modules/moment/locale/mt.js",
+	"./my": "./node_modules/moment/locale/my.js",
+	"./my.js": "./node_modules/moment/locale/my.js",
+	"./nb": "./node_modules/moment/locale/nb.js",
+	"./nb.js": "./node_modules/moment/locale/nb.js",
+	"./ne": "./node_modules/moment/locale/ne.js",
+	"./ne.js": "./node_modules/moment/locale/ne.js",
+	"./nl": "./node_modules/moment/locale/nl.js",
+	"./nl-be": "./node_modules/moment/locale/nl-be.js",
+	"./nl-be.js": "./node_modules/moment/locale/nl-be.js",
+	"./nl.js": "./node_modules/moment/locale/nl.js",
+	"./nn": "./node_modules/moment/locale/nn.js",
+	"./nn.js": "./node_modules/moment/locale/nn.js",
+	"./oc-lnc": "./node_modules/moment/locale/oc-lnc.js",
+	"./oc-lnc.js": "./node_modules/moment/locale/oc-lnc.js",
+	"./pa-in": "./node_modules/moment/locale/pa-in.js",
+	"./pa-in.js": "./node_modules/moment/locale/pa-in.js",
+	"./pl": "./node_modules/moment/locale/pl.js",
+	"./pl.js": "./node_modules/moment/locale/pl.js",
+	"./pt": "./node_modules/moment/locale/pt.js",
+	"./pt-br": "./node_modules/moment/locale/pt-br.js",
+	"./pt-br.js": "./node_modules/moment/locale/pt-br.js",
+	"./pt.js": "./node_modules/moment/locale/pt.js",
+	"./ro": "./node_modules/moment/locale/ro.js",
+	"./ro.js": "./node_modules/moment/locale/ro.js",
+	"./ru": "./node_modules/moment/locale/ru.js",
+	"./ru.js": "./node_modules/moment/locale/ru.js",
+	"./sd": "./node_modules/moment/locale/sd.js",
+	"./sd.js": "./node_modules/moment/locale/sd.js",
+	"./se": "./node_modules/moment/locale/se.js",
+	"./se.js": "./node_modules/moment/locale/se.js",
+	"./si": "./node_modules/moment/locale/si.js",
+	"./si.js": "./node_modules/moment/locale/si.js",
+	"./sk": "./node_modules/moment/locale/sk.js",
+	"./sk.js": "./node_modules/moment/locale/sk.js",
+	"./sl": "./node_modules/moment/locale/sl.js",
+	"./sl.js": "./node_modules/moment/locale/sl.js",
+	"./sq": "./node_modules/moment/locale/sq.js",
+	"./sq.js": "./node_modules/moment/locale/sq.js",
+	"./sr": "./node_modules/moment/locale/sr.js",
+	"./sr-cyrl": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr-cyrl.js": "./node_modules/moment/locale/sr-cyrl.js",
+	"./sr.js": "./node_modules/moment/locale/sr.js",
+	"./ss": "./node_modules/moment/locale/ss.js",
+	"./ss.js": "./node_modules/moment/locale/ss.js",
+	"./sv": "./node_modules/moment/locale/sv.js",
+	"./sv.js": "./node_modules/moment/locale/sv.js",
+	"./sw": "./node_modules/moment/locale/sw.js",
+	"./sw.js": "./node_modules/moment/locale/sw.js",
+	"./ta": "./node_modules/moment/locale/ta.js",
+	"./ta.js": "./node_modules/moment/locale/ta.js",
+	"./te": "./node_modules/moment/locale/te.js",
+	"./te.js": "./node_modules/moment/locale/te.js",
+	"./tet": "./node_modules/moment/locale/tet.js",
+	"./tet.js": "./node_modules/moment/locale/tet.js",
+	"./tg": "./node_modules/moment/locale/tg.js",
+	"./tg.js": "./node_modules/moment/locale/tg.js",
+	"./th": "./node_modules/moment/locale/th.js",
+	"./th.js": "./node_modules/moment/locale/th.js",
+	"./tk": "./node_modules/moment/locale/tk.js",
+	"./tk.js": "./node_modules/moment/locale/tk.js",
+	"./tl-ph": "./node_modules/moment/locale/tl-ph.js",
+	"./tl-ph.js": "./node_modules/moment/locale/tl-ph.js",
+	"./tlh": "./node_modules/moment/locale/tlh.js",
+	"./tlh.js": "./node_modules/moment/locale/tlh.js",
+	"./tr": "./node_modules/moment/locale/tr.js",
+	"./tr.js": "./node_modules/moment/locale/tr.js",
+	"./tzl": "./node_modules/moment/locale/tzl.js",
+	"./tzl.js": "./node_modules/moment/locale/tzl.js",
+	"./tzm": "./node_modules/moment/locale/tzm.js",
+	"./tzm-latn": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm-latn.js": "./node_modules/moment/locale/tzm-latn.js",
+	"./tzm.js": "./node_modules/moment/locale/tzm.js",
+	"./ug-cn": "./node_modules/moment/locale/ug-cn.js",
+	"./ug-cn.js": "./node_modules/moment/locale/ug-cn.js",
+	"./uk": "./node_modules/moment/locale/uk.js",
+	"./uk.js": "./node_modules/moment/locale/uk.js",
+	"./ur": "./node_modules/moment/locale/ur.js",
+	"./ur.js": "./node_modules/moment/locale/ur.js",
+	"./uz": "./node_modules/moment/locale/uz.js",
+	"./uz-latn": "./node_modules/moment/locale/uz-latn.js",
+	"./uz-latn.js": "./node_modules/moment/locale/uz-latn.js",
+	"./uz.js": "./node_modules/moment/locale/uz.js",
+	"./vi": "./node_modules/moment/locale/vi.js",
+	"./vi.js": "./node_modules/moment/locale/vi.js",
+	"./x-pseudo": "./node_modules/moment/locale/x-pseudo.js",
+	"./x-pseudo.js": "./node_modules/moment/locale/x-pseudo.js",
+	"./yo": "./node_modules/moment/locale/yo.js",
+	"./yo.js": "./node_modules/moment/locale/yo.js",
+	"./zh-cn": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-cn.js": "./node_modules/moment/locale/zh-cn.js",
+	"./zh-hk": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-hk.js": "./node_modules/moment/locale/zh-hk.js",
+	"./zh-mo": "./node_modules/moment/locale/zh-mo.js",
+	"./zh-mo.js": "./node_modules/moment/locale/zh-mo.js",
+	"./zh-tw": "./node_modules/moment/locale/zh-tw.js",
+	"./zh-tw.js": "./node_modules/moment/locale/zh-tw.js"
+};
+
+
+function webpackContext(req) {
+	var id = webpackContextResolve(req);
+	return __webpack_require__(id);
+}
+function webpackContextResolve(req) {
+	if(!__webpack_require__.o(map, req)) {
+		var e = new Error("Cannot find module '" + req + "'");
+		e.code = 'MODULE_NOT_FOUND';
+		throw e;
+	}
+	return map[req];
+}
+webpackContext.keys = function webpackContextKeys() {
+	return Object.keys(map);
+};
+webpackContext.resolve = webpackContextResolve;
+module.exports = webpackContext;
+webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
 
 /***/ })
 
-/******/ });
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			id: moduleId,
+/******/ 			loaded: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/node module decorator */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nmd = (module) => {
+/******/ 			module.paths = [];
+/******/ 			if (!module.children) module.children = [];
+/******/ 			return module;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"app": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkIds[i]] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunktemplate_feo_react_babel"] = self["webpackChunktemplate_feo_react_babel"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendor"], () => (__webpack_require__("./src/App.tsx")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
 //# sourceMappingURL=app.bundle.js.map

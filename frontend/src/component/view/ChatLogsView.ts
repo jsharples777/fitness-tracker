@@ -76,10 +76,6 @@ class ChatLogsView extends AbstractView implements ChatEventListener,ViewListene
         return item.roomName;
     }
 
-    getLegacyIdForStateItem(name: string, item: any) {
-        return item.roomName;
-    }
-
     getDisplayValueForStateItem(name: string, item: any) {
         return item.users.join(',');
     }
@@ -137,8 +133,8 @@ class ChatLogsView extends AbstractView implements ChatEventListener,ViewListene
     }
 
     itemDeleted(view: View, selectedItem: any): void {
-        ChatManager.getInstance().leaveChat(selectedItem.roomName);
-        if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem.roomName)) {
+        ChatManager.getInstance().leaveChat(selectedItem);
+        if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem)) {
             this.eventForwarder.itemDeselected(this,this.selectedChatLog);
             this.selectedChatLog = null;
         }

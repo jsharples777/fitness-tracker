@@ -23,11 +23,13 @@ import BlockedUserView from "./component/view/BlockedUserView";
 import BoardGameSearchSidebar from "./component/sidebar/BoardGameSearchSidebar";
 import BGGSearchView from "./component/view/BGGSearchView";
 import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "./ui-framework/ConfigurationTypes";
+import {ViewListener} from "./ui-framework/ViewListener";
+import {View} from "./ui-framework/View";
 
 
 const logger = debug('app');
 
-class Root extends React.Component implements UnreadMessageCountListener {
+class Root extends React.Component implements UnreadMessageCountListener,ViewListener {
     private titleEl: any;
     private contentEl: any;
     private modalEl: any;
@@ -74,7 +76,6 @@ class Root extends React.Component implements UnreadMessageCountListener {
         this.handleShowChat = this.handleShowChat.bind(this);
         this.handleShowBGGSearch = this.handleShowBGGSearch.bind(this);
 
-        this.handleDragOver = this.handleDragOver.bind(this);
         this.handleDrop = this.handleDrop.bind(this);
 
         this.handleShowCollection = this.handleShowCollection.bind(this);
@@ -169,7 +170,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
 
         this.hideAllSideBars();
         // @ts-ignore
-        let id = event.target.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
+        let id = event.target.getAttribute(Controller.eventDataKeyId);
         logger(`Handling starting score sheet for ${id}`)
         if (id) {
             // find the entry from the state manager
@@ -252,6 +253,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
         const bggSearch = new BGGSearchView();
         this.bggSearchSidebar.addView(bggSearch,{containerId:BoardGameSearchSidebar.bggSearchResults})
         this.bggSearchSidebar.onDocumentLoaded();
+        bggSearch.addEventListener(this);
 
         this.scoreSheetSidebar = new ScoreSheetsSidebar();
         this.scoresView = new ScoreSheetsView();
@@ -302,7 +304,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
         // @ts-ignore
         this.scoreSheetEl = document.getElementById('scoreSheetZone');
         if (this.thisEl) {
-            this.thisEl.addEventListener('dragover', this.handleDragOver);
+            this.thisEl.addEventListener('dragover', (event) => {event.preventDefault();});
             this.thisEl.addEventListener('drop', this.handleDrop);
         }
 
@@ -342,7 +344,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
         logger(`Handling show board game scores`);
         event.preventDefault();
         // @ts-ignore
-        let id = event.target.getAttribute(this.state.controller.events.boardGames.eventDataKeyId);
+        let id = event.target.getAttribute(Controller.eventDataKeyId);
         logger(`Handling Show board game scores ${id}`);
         if (id) {
             // find the entry from the state manager
@@ -394,10 +396,6 @@ class Root extends React.Component implements UnreadMessageCountListener {
         if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = `${buffer}`;
     }
 
-    private handleDragOver(event: DragEvent) {
-        event.preventDefault();
-    }
-
     private handleDrop(event: Event) {
         // @ts-ignore
         const draggedObjectJSON = event.dataTransfer.getData(DRAGGABLE_KEY_ID);
@@ -406,6 +404,7 @@ class Root extends React.Component implements UnreadMessageCountListener {
         logger(draggedObject);
         // @ts-ignore
         if (draggedObject[DRAGGABLE_TYPE] === DRAGGABLE.typeBoardGame) {
+            draggedObject.gameId = parseInt(draggedObject.gameId);
             this.addBoardGameToDisplay(draggedObject);
         }
 
@@ -426,6 +425,26 @@ class Root extends React.Component implements UnreadMessageCountListener {
             }
         }
     }
+
+    documentLoaded(view: View): void {}
+    hideRequested(view: View): void {}
+    showRequested(view: View): void {}
+    itemAction(view: View, actionName: string, selectedItem: any): void {}
+    itemDeleteStarted(view: View, selectedItem: any): boolean {
+        return true;
+    }
+
+    itemDeleted(view: View, selectedItem: any): void {}
+    itemDeselected(view: View, selectedItem: any): void {}
+    itemDragStarted(view: View, selectedItem: any): void {}
+    itemDropped(view: View, droppedItem: any): void {}
+
+    itemSelected(view: View, selectedItem: any): void {
+        // add a new board game to the display
+        selectedItem.gameId = parseInt(selectedItem.gameId);
+        this.addBoardGameToDisplay(selectedItem);
+    }
+
 
 }
 

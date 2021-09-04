@@ -67,9 +67,8 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     }
 
     setContainedBy(container: HTMLElement): void {}
-    addEventListener(listener: ViewListener): void {
-        throw new Error('Method not implemented.');
-    }
+    addEventListener(listener: ViewListener): void {}
+
     getIdForStateItem(name: string, item: any): string {
         throw new Error('Method not implemented.');
     }
@@ -96,8 +95,8 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     }
 
     itemDeselected(view: View, selectedItem: any): void {
-        csLoggerDetail(`Chat Log with id ${selectedItem.roomName} deselected`);
-        if (this.selectedChatLog && (selectedItem.roomName === this.selectedChatLog.roomName)) {
+        csLoggerDetail(`Chat Log with id ${selectedItem} deselected`);
+        if (this.selectedChatLog && (selectedItem === this.selectedChatLog.roomName)) {
             this.selectedChatLog = null;
             this.checkCanComment();
             this.clearChatLog();
@@ -119,9 +118,9 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     }
 
     itemDeleted(view: View, selectedItem: any): void {
-        csLoggerDetail(`Chat Log with id ${selectedItem.roomName} selected`);
-        this.selectedChatLog = ChatManager.getInstance().getChatLog(selectedItem.roomName);
-        if (this.selectedChatLog) {
+        csLoggerDetail(`Chat Log with id ${selectedItem} selected`);
+        this.selectedChatLog = ChatManager.getInstance().getChatLog(selectedItem);
+        if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem)) {
             this.checkCanComment();
             this.renderChatLog(this.selectedChatLog);
         }

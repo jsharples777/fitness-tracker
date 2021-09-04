@@ -3,9 +3,9 @@ import {SidebarLocation, SidebarPrefs} from "../../ui-framework/ConfigurationTyp
 
 class ScoreSheetsSidebar extends SidebarViewContainer {
     private static SidebarPrefs:SidebarPrefs = {
-        id:'chatSideBar',
+        id:'scoreSheetSidebar',
         expandedSize:'40%',
-        location: SidebarLocation.right
+        location: SidebarLocation.bottom
     }
 
     public static scoreSheets = 'scoreSheets';
