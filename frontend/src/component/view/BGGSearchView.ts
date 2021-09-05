@@ -3,7 +3,7 @@ import browserUtil from "../../util/BrowserUtil";
 import DownloadManager from "../../network/DownloadManager";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import AbstractView from "../../ui-framework/AbstractView";
+import AbstractListView from "../../ui-framework/AbstractListView";
 import {API_Config, DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
@@ -11,7 +11,7 @@ import {View} from "../../ui-framework/View";
 const vLogger = debug('board-game-search-sidebar');
 const vLoggerDetail = debug('board-game-search-sidebar:detail');
 
-class BGGSearchView extends AbstractView implements ViewListener{
+class BGGSearchView extends AbstractListView implements ViewListener{
     // @ts-ignore
     private formEl: HTMLElement;
     // @ts-ignore

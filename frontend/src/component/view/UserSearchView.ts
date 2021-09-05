@@ -8,14 +8,14 @@ import BrowserStorageStateManager from "../../state/BrowserStorageStateManager";
 import {ChatManager} from "../../socket/ChatManager";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import AbstractView from "../../ui-framework/AbstractView";
+import AbstractListView from "../../ui-framework/AbstractListView";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
 
 const vLogger = debug('user-search');
 const vLoggerDetail = debug('user-search-detail');
 
-class UserSearchView extends AbstractView implements ChatUserEventListener,ViewListener {
+class UserSearchView extends AbstractListView implements ChatUserEventListener,ViewListener {
     protected loggedInUsers: string[];
     protected localisedSM: StateManager;
 

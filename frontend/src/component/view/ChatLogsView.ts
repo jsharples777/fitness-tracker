@@ -4,7 +4,7 @@ import {NotificationController} from "../../socket/NotificationController";
 import {ChatManager} from "../../socket/ChatManager";
 import {ChatLog, Invitation, Message} from "../../socket/Types";
 import {ViewListener} from "../../ui-framework/ViewListener";
-import AbstractView from "../../ui-framework/AbstractView";
+import AbstractListView from "../../ui-framework/AbstractListView";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {View} from "../../ui-framework/View";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
@@ -14,7 +14,7 @@ import {isSame, isSameRoom} from "../../util/EqualityFunctions";
 
 const csLogger = debug('chat-sidebar');
 
-class ChatLogsView extends AbstractView implements ChatEventListener,ViewListener {
+class ChatLogsView extends AbstractListView implements ChatEventListener,ViewListener {
     protected selectedChatLog:ChatLog|null = null;
 
     private static DOMConfig: ViewDOMConfig = {

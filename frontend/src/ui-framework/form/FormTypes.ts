@@ -1,0 +1,141 @@
+import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes";
+
+export enum FieldType {
+    text,
+    number,
+    date,
+    time,
+    email,
+    password,
+    hidden,
+}
+
+export type FieldDefinition = {
+    id:string,
+    idType: KeyType,
+    type: FieldType,
+    default?: string,
+    displayName:string,
+    mandatory:boolean
+}
+
+export type ValidationResponse = {
+    isValid:boolean,
+    message?:string
+}
+
+export interface FieldValidator {  // is the current value valid (includes manndatory checks)
+    isValidValue(field:FieldDefinition, currentValue:string):ValidationResponse;
+}
+
+export interface FieldFormatter { // final value for the field on "saving" the form
+    formatValue(field:FieldDefinition, currentValue:string):string;
+}
+
+export interface FieldRenderer { // renders during user changes
+    renderValue(field:FieldDefinition, currentValue:string):string|null;
+}
+
+export interface FieldEditor { // allows for an "editor" component
+    editValue(field:FieldDefinition, currentValue:string):string;
+}
+
+export enum UIFieldType {
+    checkbox,
+    email,
+    hidden,
+    number,
+    password,
+    text,
+    textarea,
+    select
+}
+
+export type FieldLabel = {
+    label:string,
+    attributes?:Attribute[],
+    classes?:string
+}
+
+export type DescriptionText = {
+    id:string,
+    message:string,
+    elementType:string,
+    elementClasses:string,
+}
+
+export type FieldUIConfig = {
+    field:FieldDefinition,
+    elementType:UIFieldType,
+    elementAttributes?:Attribute[],
+    elementClasses?:string,
+    label?:FieldLabel,
+    describedBy?:DescriptionText,
+    containedBy?:BasicElement,
+    showDefault:boolean, // currently not implemented
+    validator?:FieldValidator, // on blur
+    renderer?:FieldRenderer, // on change
+    editor?:FieldEditor, // on focus
+    formatter?:FieldFormatter // used by form when saving
+}
+
+export interface FieldListener {
+    valueChanged(field:FieldDefinition, newValue:string):void;
+    failedValidation(field:FieldDefinition, currentValue:string, message:string):void;
+}
+
+export type FieldGroup = {
+    containedBy?:BasicElement,
+    fields:FieldUIConfig[]
+}
+
+export type FormUIDefinition = {
+    id:string,
+    displayName:string,
+    classes?:string,
+    fieldGroups:FieldGroup[],
+    buttonsContainedBy?:BasicElement
+    deleteButton?:BasicButtonElement,// should be clickable
+    cancelButton:BasicButtonElement,// should be clickable
+    submitButton:BasicButtonElement  // should be clickable
+}
+
+export enum FormMode {
+    unset = -1,
+    create,
+    update
+}
+
+export enum FormEventType {
+    SHOWN,
+    HIDDEN,
+    CANCELLED,
+    SAVED,
+    DELETED,
+    MODECHANGED,
+    RESETTING,
+}
+
+export interface Form {
+    initialise(config:FormUIDefinition):void;
+    setIsVisible(isVisible:boolean):void;
+    reset():void;
+    startCreateNew(useValueForId:string):void;
+    startUpdate(objectToEdit:any):void;
+    addFormListener(listener:FormListener):void;
+    addFieldListener(listener:FieldListener):void;
+}
+
+export type FormEvent = {
+    target:Form,
+    formId:string,
+    event:FormEventType,
+}
+
+export interface FormListener {
+    formChanged(event:FormEvent,formValues?:any):void;
+}
+
+
+
+

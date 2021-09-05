@@ -17,13 +17,13 @@ export type IconClasses = {
     warning?:string,
 }
 
-export type Deletable = {
+export type BasicButtonElement = {
     buttonClasses:string,
     buttonText?:string,
     iconClasses?:string
 }
 
-export type Badgeable = {
+export type BasicElement = {
     elementType:string,
     elementAttributes?:[Attribute],
     elementClasses:string
@@ -38,11 +38,6 @@ export type Draggable = {
     from:string
 }
 
-export type Background = {
-    elementType:string,
-    elementClasses:string
-}
-
 export type Droppable = {
     acceptTypes:string[];
     acceptFrom?:string[];
@@ -53,10 +48,10 @@ export type ContentDetail = {
     textElementType:string,
     textElementClasses:string,
     select:boolean,
-    badge?:Badgeable,
-    delete?:Deletable,
+    badge?:BasicElement,
+    delete?:BasicButtonElement,
     drag?:Draggable,
-    background?:Background,
+    background?:BasicElement,
     drop?:Droppable
 }
 

@@ -4,7 +4,7 @@ import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import Controller from "../../Controller";
 import {ChatManager} from "../../socket/ChatManager";
-import AbstractView from "../../ui-framework/AbstractView";
+import AbstractListView from "../../ui-framework/AbstractListView";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
@@ -13,7 +13,7 @@ import {View} from "../../ui-framework/View";
 const vLogger = debug('user-search-sidebar');
 const vLoggerDetail = debug('user-search-sidebar:detail');
 
-class FavouriteUserView extends AbstractView implements ChatUserEventListener,ViewListener {
+class FavouriteUserView extends AbstractListView implements ChatUserEventListener,ViewListener {
     static DOMConfig: ViewDOMConfig = {
         resultsContainerId: 'favouriteUsers',
         resultsElementType: 'a',

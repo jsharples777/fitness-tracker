@@ -1,7 +1,7 @@
 import debug from 'debug';
 import moment from "moment";
 import Controller from "../../Controller";
-import AbstractView from "../../ui-framework/AbstractView";
+import AbstractListView from "../../ui-framework/AbstractListView";
 import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
@@ -12,7 +12,7 @@ import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 const csLogger = debug('score-sheet-sidebar');
 const csLoggerDetail = debug('score-sheet-sidebar:detail');
 
-class ScoreSheetsView extends AbstractView implements ViewListener{
+class ScoreSheetsView extends AbstractListView implements ViewListener{
     protected selectedBoardGame: any | null = null;
     static SCORESHEETS_ViewConfig:ViewDOMConfig = {
         resultsContainerId:'scoreSheets',

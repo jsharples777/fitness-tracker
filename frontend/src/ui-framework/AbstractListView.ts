@@ -19,7 +19,7 @@ import {isSame} from "../util/EqualityFunctions";
 const avLogger = debug('view-ts');
 const avLoggerDetails = debug('view-ts-detail');
 
-export default abstract class AbstractView implements StateChangeListener, View {
+export default abstract class AbstractListView implements StateChangeListener, View {
 
     public static DATA_SOURCE = 'data-source';
 
@@ -82,7 +82,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
 
         if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
@@ -103,7 +103,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
 
         if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
@@ -130,7 +130,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
         // @ts-ignore
         const actionName = event.target.getAttribute(EXTRA_ACTION_ATTRIBUTE_NAME);
 
@@ -153,7 +153,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
 
         if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
@@ -221,20 +221,20 @@ export default abstract class AbstractView implements StateChangeListener, View 
         browserUtil.addRemoveClasses(childEl, this.uiConfig.resultsClasses);
         browserUtil.addAttributes(childEl, this.uiConfig.resultsElementAttributes);
         childEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-        childEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+        childEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
         // the content may be structured
         let textEl = childEl;
         if (this.uiConfig.detail.containerClasses) {
             let contentEl: HTMLElement = document.createElement('div');
             browserUtil.addRemoveClasses(contentEl, this.uiConfig.detail.containerClasses);
             contentEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-            contentEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+            contentEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
 
 
             textEl = document.createElement(this.uiConfig.detail.textElementType);
             browserUtil.addRemoveClasses(textEl,this.uiConfig.detail.textElementClasses);
             textEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-            textEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+            textEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
 
             contentEl.appendChild(textEl);
 
@@ -255,7 +255,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                     browserUtil.addRemoveClasses(badgeEl, this.uiConfig.detail.badge.elementClasses);
                     browserUtil.addAttributes(badgeEl, this.uiConfig.detail.badge.elementAttributes);
                     badgeEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                    badgeEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                    badgeEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                     buttonsEl.appendChild(badgeEl);
                     badgeEl.innerHTML = `&nbsp;&nbsp;&nbsp;${badgeValue}&nbsp;&nbsp;&nbsp;`;
                 }
@@ -273,12 +273,12 @@ export default abstract class AbstractView implements StateChangeListener, View 
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, extraAction.iconClasses);
                         iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                        iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                         iconEl.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME,extraAction.name);
                         action.appendChild(iconEl);
                     }
                     action.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                    action.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                    action.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                     action.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME,extraAction.name);
 
                     action.addEventListener('click', (event) => {
@@ -300,11 +300,11 @@ export default abstract class AbstractView implements StateChangeListener, View 
                     let iconEl = document.createElement('i');
                     browserUtil.addRemoveClasses(iconEl, this.uiConfig.detail.delete.iconClasses);
                     iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                    iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                    iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                     deleteButtonEl.appendChild(iconEl);
                 }
                 deleteButtonEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                deleteButtonEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                deleteButtonEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                 deleteButtonEl.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
@@ -327,7 +327,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
 
         // add the key ids for selection
         textEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-        textEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+        textEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
         const displayText = this.getDisplayValueForStateItem(name, item);
         textEl.innerHTML = displayText;
         // add modifiers for patient state
@@ -342,7 +342,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.normal);
                         iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                        iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -354,7 +354,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.warning);
                                 iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                                iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -364,7 +364,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.active);
                                 iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                                iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                         }
@@ -379,7 +379,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.active);
                         iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                        iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -391,7 +391,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.warning);
                                 iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                                iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -406,7 +406,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.inactive);
                         iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                        iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -418,7 +418,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.warning);
                                 iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                                iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -428,7 +428,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, this.uiConfig.icons.active);
                                 iconEl.setAttribute(this.uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(AbstractView.DATA_SOURCE,this.uiConfig.dataSourceId);
+                                iconEl.setAttribute(AbstractListView.DATA_SOURCE,this.uiConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
