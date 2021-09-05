@@ -183,7 +183,7 @@ app.get('/js/env.js', (req, res) => {
     if (session.id) {
         env.sessionId = session.id;
     }
-    res.send(`let window.ENV = ${JSON.stringify(env)}`);
+    res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
 
 // construct the web server

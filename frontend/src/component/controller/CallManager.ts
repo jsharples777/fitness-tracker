@@ -240,7 +240,7 @@ export class CallManager {
                 if (navigator.mediaDevices.getUserMedia) {
                     navigator.mediaDevices.getUserMedia({
                         audio: true,
-                        video: false,
+                        video: true,
                     }).then((stream) => {
                         this.myVideoStream = stream;
                         this.addVideoStream(Controller.getInstance().getLoggedInUsername(), this.myVideoStream, true);

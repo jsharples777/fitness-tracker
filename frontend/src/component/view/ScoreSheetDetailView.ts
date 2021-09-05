@@ -69,10 +69,10 @@ export class ScoreSheetDetailView implements StateChangeListener {
         this.resetDisplay();
 
         // @ts-ignore
-        this.ssFastSearchUserNames = document.getElementById(ScoreSheetDetailView.ssFastSearchUserNames);
+        this.ssFastSearchUserNames = document.getElementById(ScoreSheetDetailView.ScoreSheetDom.ssFastSearchUserNames);
         // fast user search
         // @ts-ignore
-        const fastSearchEl = $(`#${ScoreSheetDetailView.ssFastSearchUserNames}`);
+        const fastSearchEl = $(`#${ScoreSheetDetailView.ScoreSheetDom.ssFastSearchUserNames}`);
         fastSearchEl.on('autocompleteselect', this.eventUserSelected);
 
         ScoreSheetController.getInstance().getStateManager().addChangeListenerForName(STATE_NAMES.scoreSheet, this);
