@@ -1,6 +1,9 @@
 import {SidebarLocation, SidebarPrefs, SidebarViewConfig} from "./ConfigurationTypes";
 import {View} from "./View";
 import {ViewListener} from "./ViewListener";
+import debug from 'debug';
+
+const sbvcLogger = debug('sidebar-container');
 
 class SidebarViewContainer implements ViewListener{
     protected prefs:SidebarPrefs;
@@ -15,8 +18,10 @@ class SidebarViewContainer implements ViewListener{
     }
 
     public addView(view:View,config:SidebarViewConfig) {
+        sbvcLogger(`Adding view to container, with containing div of ${config.containerId}`);
         const viewContainer = document.getElementById(config.containerId);
         if (viewContainer) {
+            sbvcLogger(`Adding view to container, with containing div of ${config.containerId} - FOUND`);
             view.setContainedBy(viewContainer);
         }
         this.views.push(view);
@@ -45,6 +50,9 @@ class SidebarViewContainer implements ViewListener{
     public eventHide(event: Event | null) {
         if (event) event.preventDefault();
         this.showHide('0%');
+        this.views.forEach((view) => {
+            view.hidden();
+        })
     }
 
     public eventShow(event: Event | null) {//414,768,1024
@@ -84,7 +92,7 @@ class SidebarViewContainer implements ViewListener{
 
     documentLoaded(view: View): void {}
     itemAction(view: View, actionName: string, selectedItem: any): void {}
-    itemDeleteStarted(view: View, selectedItem: any): boolean {return false;}
+    canDeleteItem(view: View, selectedItem: any): boolean {return true;}
     itemDeleted(view: View, selectedItem: any): void {}
     itemDragStarted(view: View, selectedItem: any): void {}
     itemSelected(view: View, selectedItem: any): void {}

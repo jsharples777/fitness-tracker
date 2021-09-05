@@ -22,7 +22,8 @@ export const STATE_NAMES = {
     selectedEntry: 'selectedEntry',
     recentUserSearches: 'recentUserSearches',
     bggSearchResults: 'bggSearchResults',
-    scoreSheet: 'scoreSheet'
+    scoreSheet: 'scoreSheet',
+    chatLogs: 'chatLogs'
 }
 
 export const API_Config = {
@@ -84,6 +85,16 @@ export const DRAGGABLE = {
     typeUser: 'user',
     fromUserSearch: 'userSearch',
     fromFavourites: 'favourites'
+}
+
+export const VIEW_NAME = {
+    bggSearch: 'bggSearch',
+    blockedUsers: 'blockedUsers',
+    chatLog: 'chatLog',
+    chatLogs: 'chatLogs',
+    favouriteUsers: 'favouriteUsers',
+    scoreSheets: 'scoreSheets',
+    userSearch: 'userSearch'
 }
 
 

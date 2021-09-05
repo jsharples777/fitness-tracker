@@ -2,9 +2,11 @@ import debug from 'debug';
 import moment from "moment";
 import Controller from "../../Controller";
 import AbstractView from "../../ui-framework/AbstractView";
-import {ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
+import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
+import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 
 
 const csLogger = debug('score-sheet-sidebar');
@@ -17,7 +19,8 @@ class ScoreSheetsView extends AbstractView implements ViewListener{
         resultsElementType:'div',
         resultsClasses:'text-white bg-info col-sm-6 col-md-3 col-lg-2 score-card',
         keyId:'id',
-        dataSourceId:'scoreSheet',
+        keyType: KeyType.string,
+        dataSourceId:VIEW_NAME.scoreSheets,
         detail: {
             containerClasses: 'card-img-overlay',
             textElementType:'div',
@@ -37,15 +40,13 @@ class ScoreSheetsView extends AbstractView implements ViewListener{
 
 
     constructor() {
-        super(ScoreSheetsView.SCORESHEETS_ViewConfig,null,null);
-        // handler binding
-        this.updateView = this.updateView.bind(this);
+        super(ScoreSheetsView.SCORESHEETS_ViewConfig,new MemoryBufferStateManager(),STATE_NAMES.scores);
     }
 
     onDocumentLoaded() {
         super.onDocumentLoaded();
         this.addEventListener(this);
-        this.updateView('', {});
+        this.stateManager.setStateByName(STATE_NAMES.scores,[],true);
     }
 
 
@@ -54,7 +55,7 @@ class ScoreSheetsView extends AbstractView implements ViewListener{
         csLoggerDetail(boardGame);
         if (boardGame) {
             this.selectedBoardGame = boardGame;
-            this.updateView('', boardGame);
+            this.stateManager.setStateByName(STATE_NAMES.scores,this.selectedBoardGame.scoresheets,true);
         }
     }
 
@@ -102,16 +103,6 @@ class ScoreSheetsView extends AbstractView implements ViewListener{
         return buffer;
     }
 
-    updateView(name: string, newState: any) {
-        csLoggerDetail(`Updating state with selected board game`);
-        if (newState) {
-            if (newState.scoresheets) {
-                this.createResultsForState(name, newState.scoresheets);
-            }
-        }
-
-    }
-
     getBackgroundImage(name: string, item: any): string {
         return './img/scorecard-vertical.jpg';
     }
@@ -124,22 +115,28 @@ class ScoreSheetsView extends AbstractView implements ViewListener{
     hideRequested(view: View): void {}
     itemAction(view: View, actionName: string, selectedItem: any): void {}
 
-    itemDeleteStarted(view: View, selectedItem: any): boolean {
-        return (this.selectedBoardGame && confirm("Are you sure you want to delete this Score Sheet?"));
+    canDeleteItem(view: View, selectedItem: any): boolean {
+        let result = true;
+        if (this.selectedBoardGame) {
+            if (!confirm("Are you sure you want to delete this Score Sheet?")) {
+                result = false;
+            }
+        }
+        return result;
     }
 
     itemDeleted(view: View, selectedItem: any): void {
         csLogger(`Handling delete ${selectedItem}`);
         // remove the sheet from the selected board game
         if (this.selectedBoardGame.scoresheets) {
-            let index = this.selectedBoardGame.scoresheets.findIndex((sheet: any) => sheet.id === selectedItem);
+            let index = this.selectedBoardGame.scoresheets.findIndex((sheet: any) => sheet.id === selectedItem.id);
             if (index >= 0) {
                 this.selectedBoardGame.scoresheets.splice(index, 1);
                 // let the controller know to remove from the database if the user is logged in
-                Controller.getInstance().scoreSheetRemovedFromBoardGame(this.selectedBoardGame, selectedItem);
+                this.stateManager.setStateByName(STATE_NAMES.scores,this.selectedBoardGame.scoresheets,true);
+                Controller.getInstance().scoreSheetRemovedFromBoardGame(this.selectedBoardGame, selectedItem.id);
             }
         }
-        this.updateView('', this.selectedBoardGame);
     }
 
     itemDragStarted(view: View, selectedItem: any): void {}

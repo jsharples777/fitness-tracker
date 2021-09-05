@@ -3,9 +3,9 @@ import {SidebarLocation, SidebarPrefs} from "../../ui-framework/ConfigurationTyp
 
 class ChatRoomsSidebar extends SidebarViewContainer {
     static SidebarPrefs:SidebarPrefs = {
-        id:'userSearchSideBar',
+        id:'chatSideBar',
         expandedSize:'35%',
-        location: SidebarLocation.left
+        location: SidebarLocation.right
     }
 
     static SidebarContainers = {

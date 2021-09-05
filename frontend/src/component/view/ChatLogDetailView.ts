@@ -9,14 +9,13 @@ import {ChatLog, Invitation, Message, Priority} from "../../socket/Types";
 import Controller from "../../Controller";
 import notifier from "../../notification/NotificationManager";
 import {ViewListener} from "../../ui-framework/ViewListener";
-import {DRAGGABLE, STATE_NAMES} from "../../AppTypes";
+import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import StateChangeListener from "../../state/StateChangeListener";
 import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, Modifier} from "../../ui-framework/ConfigurationTypes";
 import {View} from '../../ui-framework/View';
 import NotificationManager from "../../notification/NotificationManager";
 
 
-const csLogger = debug('chat-sidebar');
 const csLoggerDetail = debug('chat-sidebar:detail');
 
 class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateChangeListener {
@@ -95,8 +94,8 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     }
 
     itemDeselected(view: View, selectedItem: any): void {
-        csLoggerDetail(`Chat Log with id ${selectedItem} deselected`);
-        if (this.selectedChatLog && (selectedItem === this.selectedChatLog.roomName)) {
+        csLoggerDetail(`Chat Log with id ${selectedItem.roomName} deselected`);
+        if (this.selectedChatLog && (selectedItem.roomName === this.selectedChatLog.roomName)) {
             this.selectedChatLog = null;
             this.checkCanComment();
             this.clearChatLog();
@@ -105,42 +104,39 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
 
 
     itemSelected(view: View, selectedItem: ChatLog): void {
-        csLoggerDetail(`Chat Log with id ${selectedItem.roomName} selected`);
-        this.selectedChatLog = ChatManager.getInstance().getChatLog(selectedItem.roomName);
+        this.selectedChatLog = selectedItem;
         if (this.selectedChatLog) {
+            csLoggerDetail(`Chat Log with id ${selectedItem.roomName} selected`);
             this.checkCanComment();
             this.renderChatLog(this.selectedChatLog);
         }
     }
 
-    itemDeleteStarted(view: View, selectedItem: any): boolean {
+    canDeleteItem(view: View, selectedItem: any): boolean {
         return true;
     }
 
     itemDeleted(view: View, selectedItem: any): void {
-        csLoggerDetail(`Chat Log with id ${selectedItem} selected`);
-        this.selectedChatLog = ChatManager.getInstance().getChatLog(selectedItem);
-        if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem)) {
+        csLoggerDetail(`Chat Log with ${selectedItem.roomName} deleting`);
+        if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem.roomName)) {
             this.checkCanComment();
             this.renderChatLog(this.selectedChatLog);
         }
     }
 
     hideRequested(view: View): void {
-        if (this.selectedChatLog) {
-            this.selectedChatLog = null;
-            this.checkCanComment();
-            this.clearChatLog();
-        }
+        this.selectedChatLog = null;
+        this.checkCanComment();
+        this.clearChatLog();
     }
 
     handleUserDrop(event: Event) {
-        csLogger('drop event on current chat room');
+        csLoggerDetail('drop event on current chat room');
         if (this.selectedChatLog) {
             // @ts-ignore
             const draggedObjectJSON = event.dataTransfer.getData(DRAGGABLE_KEY_ID);
             const draggedObject = JSON.parse(draggedObjectJSON);
-            csLogger(draggedObject);
+            csLoggerDetail(draggedObject);
 
             if (draggedObject[DRAGGABLE_TYPE] === DRAGGABLE.typeUser) {
                 //add the user to the current chat if not already there
@@ -152,7 +148,7 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     }
 
     handleChatLogUpdated(log: ChatLog): void {
-        csLogger(`Handling chat log updates`);
+        csLoggerDetail(`Handling chat log updates`);
         this.checkCanComment();
         this.renderChatLog(log);
     }
@@ -160,7 +156,7 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     handleAddMessage(event: Event): void {
         event.preventDefault();
         event.stopPropagation();
-        csLogger(`Handling message event`);
+        csLoggerDetail(`Handling message event`);
         if (this.selectedChatLog) {
             // @ts-ignore
             if (this.commentEl && this.commentEl.value.trim().length === 0) return;
@@ -216,7 +212,7 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     eventUserSelected(event: Event, ui: any) {
         event.preventDefault();
         event.stopPropagation();
-        csLogger(`User ${ui.item.label} with id ${ui.item.value} selected`);
+        csLoggerDetail(`User ${ui.item.label} with id ${ui.item.value} selected`);
         // @ts-ignore
         event.target.innerText = '';
 
@@ -368,6 +364,14 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     documentLoaded(view: View): void {}
     showRequested(view: View): void {}
     itemDropped(view: View, droppedItem: any): void {}
+
+    getName(): string {
+        return VIEW_NAME.chatLog;
+    }
+
+    hidden(): void {
+        this.hideRequested(this);
+    }
 
 }
 

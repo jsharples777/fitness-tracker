@@ -11,3 +11,7 @@ export function isSameUsername(item1: any, item2: any): boolean {
 export function isSameGame(item1: any, item2: any): boolean {
     return (item1.gameId === item2.gameId);
 }
+
+export function isSameRoom(item1:any, item2: any): boolean {
+    return (item1.roomName === item2.roomName);
+}

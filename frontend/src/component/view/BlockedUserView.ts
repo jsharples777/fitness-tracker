@@ -4,10 +4,10 @@ import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import {ChatManager} from "../../socket/ChatManager";
 import AbstractView from "../../ui-framework/AbstractView";
-import {Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import {DRAGGABLE, STATE_NAMES} from "../../AppTypes";
+import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
-import { View } from '../../ui-framework/View';
+import {View} from '../../ui-framework/View';
 
 const vLogger = debug('user-search-sidebar');
 
@@ -17,8 +17,9 @@ class BlockedUserView extends AbstractView implements ChatUserEventListener, Vie
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-        keyId: 'user-id',
-        dataSourceId: 'blockedUsers',
+        keyId: 'id',
+        keyType: KeyType.number,
+        dataSourceId: VIEW_NAME.blockedUsers,
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',
@@ -69,7 +70,7 @@ class BlockedUserView extends AbstractView implements ChatUserEventListener, Vie
         this.addEventListener(this);
     }
 
-    itemDeleteStarted(view: View, selectedItem: any): boolean {return true; }
+    canDeleteItem(view: View, selectedItem: any): boolean {return true; }
     documentLoaded(view: View): void {}
 
     itemDeleted(view: View, selectedItem: any): void {
@@ -119,7 +120,7 @@ class BlockedUserView extends AbstractView implements ChatUserEventListener, Vie
 
 
     getIdForStateItem(name: string, item: any): string {
-        return item.username;
+        return item.id;
     }
 
     updateView(name: string, newState: any) {

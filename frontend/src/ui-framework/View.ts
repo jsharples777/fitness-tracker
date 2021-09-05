@@ -2,6 +2,10 @@ import {ViewListener} from "./ViewListener";
 import {Modifier} from "./ConfigurationTypes";
 
 export interface View {
+    getName():string;
+
+    hidden():void;
+
     setContainedBy(container:HTMLElement):void;
 
     addEventListener(listener: ViewListener): void;

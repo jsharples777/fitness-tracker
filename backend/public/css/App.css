@@ -405,6 +405,10 @@ i:hover {
         width:60vw;
     }
 
+    #queryText {
+        width:30vw;
+    }
+
 }
 
 @media screen and (max-width: 467px) {
@@ -446,6 +450,9 @@ i:hover {
         margin-top: 20px;
     }
 
+    #queryText {
+        width:60vw;
+    }
 }
 
 

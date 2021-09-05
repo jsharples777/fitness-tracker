@@ -15,7 +15,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "API_Config": () => (/* binding */ API_Config),
 /* harmony export */   "NAVIGATION": () => (/* binding */ NAVIGATION),
 /* harmony export */   "ALERT": () => (/* binding */ ALERT),
-/* harmony export */   "DRAGGABLE": () => (/* binding */ DRAGGABLE)
+/* harmony export */   "DRAGGABLE": () => (/* binding */ DRAGGABLE),
+/* harmony export */   "VIEW_NAME": () => (/* binding */ VIEW_NAME)
 /* harmony export */ });
 var Decorator;
 
@@ -33,7 +34,8 @@ var STATE_NAMES = {
   selectedEntry: 'selectedEntry',
   recentUserSearches: 'recentUserSearches',
   bggSearchResults: 'bggSearchResults',
-  scoreSheet: 'scoreSheet'
+  scoreSheet: 'scoreSheet',
+  chatLogs: 'chatLogs'
 };
 var API_Config = {
   login: '/login',
@@ -90,6 +92,15 @@ var DRAGGABLE = {
   typeUser: 'user',
   fromUserSearch: 'userSearch',
   fromFavourites: 'favourites'
+};
+var VIEW_NAME = {
+  bggSearch: 'bggSearch',
+  blockedUsers: 'blockedUsers',
+  chatLog: 'chatLog',
+  chatLogs: 'chatLogs',
+  favouriteUsers: 'favouriteUsers',
+  scoreSheets: 'scoreSheets',
+  userSearch: 'userSearch'
 };
 
 /***/ }),
@@ -1087,7 +1098,7 @@ var CallManager = /*#__PURE__*/function () {
     this.currentUserList.push(username);
     var videoCardHolder = document.createElement('div');
     videoCardHolder.setAttribute("id", username);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCardHolder, 'col-sm-12 col-md-4 col-lg-2');
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCardHolder, 'col-sm-12 col-md-4 col-lg-3');
     var videoCard = document.createElement('div');
     _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(videoCard, 'card');
     var videoCardTitle = document.createElement('div');
@@ -1122,11 +1133,19 @@ var CallManager = /*#__PURE__*/function () {
         var isPaused = video.paused;
 
         if (isPaused) {
-          video.play();
+          try {
+            video.play();
+          } catch (error) {} // account for user with no video
+
+
           _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-success', false);
           _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-warning', true);
         } else {
-          video.pause();
+          try {
+            video.pause();
+          } catch (error) {} // account for user with no video
+
+
           _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-success', true);
           _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(stopVideoButton, 'btn-warning', false);
         }
@@ -1150,7 +1169,11 @@ var CallManager = /*#__PURE__*/function () {
     videoCardHolder.appendChild(videoCard);
     video.srcObject = stream;
     video.addEventListener("loadedmetadata", function () {
-      video.play();
+      try {
+        video.play();
+      } catch (error) {} // account for user with no video
+
+
       if (_this3.webrtcDiv) _this3.webrtcDiv.append(videoCardHolder);
     });
   };
@@ -1226,7 +1249,7 @@ var CallManager = /*#__PURE__*/function () {
         if (navigator.mediaDevices.getUserMedia) {
           navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: true
+            video: false
           }).then(function (stream) {
             _this5.myVideoStream = stream;
 
@@ -1721,7 +1744,7 @@ var ScoreSheetController = /*#__PURE__*/function () {
     if (this.currentScoreRoom && this.isLoggedIn()) {
       var created = parseInt(moment__WEBPACK_IMPORTED_MODULE_7___default()().format('YYYYMMDDHHmmss')); // @ts-ignore
 
-      socketManager.sendMessage(this.getCurrentUser(), this.currentScoreRoom, 'data', created, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.Priority.Normal, scoreSheet);
+      _socket_SocketManager__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().sendMessage(this.getCurrentUser(), this.currentScoreRoom, 'data', created, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.InviteType.ScoreSheet, _socket_Types__WEBPACK_IMPORTED_MODULE_1__.Priority.Normal, scoreSheet);
     }
   };
 
@@ -1979,9 +2002,9 @@ var ChatRoomsSidebar = /*#__PURE__*/function (_SidebarViewContainer) {
 }(_ui_framework_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
 ChatRoomsSidebar.SidebarPrefs = {
-  id: 'userSearchSideBar',
+  id: 'chatSideBar',
   expandedSize: '35%',
-  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.left
+  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.right
 };
 ChatRoomsSidebar.SidebarContainers = {
   chatLogs: 'chatLogs',
@@ -2115,8 +2138,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
 /* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../network/DownloadManager */ "./src/network/DownloadManager.ts");
 /* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
-/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -2147,6 +2171,7 @@ function _setPrototypeOf(o, p) {
 
 
 
+
 var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('board-game-search-sidebar');
 var vLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('board-game-search-sidebar:detail');
 
@@ -2159,7 +2184,7 @@ var BGGSearchView = /*#__PURE__*/function (_AbstractView) {
   function BGGSearchView() {
     var _this;
 
-    _this = _AbstractView.call(this, BGGSearchView.BGGSEARCH_ViewConfig, new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_3__["default"](), _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.bggSearchResults) || this; // handler binding
+    _this = _AbstractView.call(this, BGGSearchView.BGGSEARCH_ViewConfig, new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_3__["default"](), _AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.bggSearchResults) || this; // handler binding
 
     _this.handleSearch = _this.handleSearch.bind(_assertThisInitialized(_this));
     _this.handleSearchResultsCB = _this.handleSearchResultsCB.bind(_assertThisInitialized(_this));
@@ -2252,10 +2277,10 @@ var BGGSearchView = /*#__PURE__*/function (_AbstractView) {
 
     this.changeSearchButton(false); // get the query string from state obj
 
-    var query = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.bggSearchCall;
-    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, query, {
+    var query = _AppTypes__WEBPACK_IMPORTED_MODULE_6__.API_Config.bggSearchCall;
+    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.API_Config.graphQL, query, {
       queryString: queryText
-    }, this.handleSearchResultsCB, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.bggSearchResults);
+    }, this.handleSearchResultsCB, _AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.bggSearchResults);
   };
 
   _proto.documentLoaded = function documentLoaded(view) {};
@@ -2264,7 +2289,7 @@ var BGGSearchView = /*#__PURE__*/function (_AbstractView) {
 
   _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
@@ -2274,7 +2299,7 @@ var BGGSearchView = /*#__PURE__*/function (_AbstractView) {
 
 
     vLoggerDetail("Handling delete of board game search result for game " + selectedItem.gameId);
-    (_this$stateManager = this.stateManager) == null ? void 0 : _this$stateManager.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.bggSearchResults, selectedItem, this.compareStateItemsForEquality, true);
+    (_this$stateManager = this.stateManager) == null ? void 0 : _this$stateManager.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.bggSearchResults, selectedItem, this.compareStateItemsForEquality, true);
   };
 
   _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
@@ -2288,7 +2313,7 @@ var BGGSearchView = /*#__PURE__*/function (_AbstractView) {
   _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
 
   return BGGSearchView;
-}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_4__["default"]);
+}(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_5__["default"]);
 
 BGGSearchView.BGGSEARCH_ViewConfig = {
   resultsContainerId: 'bggSearchResults',
@@ -2299,18 +2324,13 @@ BGGSearchView.BGGSEARCH_ViewConfig = {
   }],
   resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
   keyId: 'gameId',
-  dataSourceId: 'bggSearch',
+  keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.KeyType.number,
+  dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_6__.VIEW_NAME.bggSearch,
   modifiers: {
     normal: 'list-group-item-primary',
     inactive: 'list-group-item-light',
     active: 'list-group-item-info',
     warning: 'list-group-item-danger'
-  },
-  icons: {
-    normal: 'fas fa-dice',
-    inactive: 'fas fa-dice',
-    active: 'fas fa-dice',
-    warning: 'fas fa-dice'
   },
   detail: {
     containerClasses: 'd-flex w-100 justify-content-between',
@@ -2318,7 +2338,7 @@ BGGSearchView.BGGSEARCH_ViewConfig = {
     textElementClasses: 'mb-1',
     select: true,
     drag: {
-      type: _AppTypes__WEBPACK_IMPORTED_MODULE_5__.DRAGGABLE.typeBoardGame,
+      type: _AppTypes__WEBPACK_IMPORTED_MODULE_6__.DRAGGABLE.typeBoardGame,
       from: 'boardGameSearch'
     }
   }
@@ -2408,7 +2428,7 @@ var BlockedUserView = /*#__PURE__*/function (_AbstractView) {
     this.addEventListener(this);
   };
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
@@ -2462,7 +2482,7 @@ var BlockedUserView = /*#__PURE__*/function (_AbstractView) {
   };
 
   _proto.getIdForStateItem = function getIdForStateItem(name, item) {
-    return item.username;
+    return item.id;
   };
 
   _proto.updateView = function updateView(name, newState) {
@@ -2506,8 +2526,9 @@ BlockedUserView.DOMConfig = {
     value: '#'
   }],
   resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-  keyId: 'user-id',
-  dataSourceId: 'blockedUsers',
+  keyId: 'id',
+  keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.KeyType.number,
+  dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_5__.VIEW_NAME.blockedUsers,
   modifiers: {
     normal: 'list-group-item-primary',
     inactive: 'list-group-item-light',
@@ -2572,7 +2593,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar');
 var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar:detail');
 
 var ChatLogDetailView = /*#__PURE__*/function () {
@@ -2630,9 +2650,9 @@ var ChatLogDetailView = /*#__PURE__*/function () {
   };
 
   _proto.itemDeselected = function itemDeselected(view, selectedItem) {
-    csLoggerDetail("Chat Log with id " + selectedItem + " deselected");
+    csLoggerDetail("Chat Log with id " + selectedItem.roomName + " deselected");
 
-    if (this.selectedChatLog && selectedItem === this.selectedChatLog.roomName) {
+    if (this.selectedChatLog && selectedItem.roomName === this.selectedChatLog.roomName) {
       this.selectedChatLog = null;
       this.checkCanComment();
       this.clearChatLog();
@@ -2640,45 +2660,42 @@ var ChatLogDetailView = /*#__PURE__*/function () {
   };
 
   _proto.itemSelected = function itemSelected(view, selectedItem) {
-    csLoggerDetail("Chat Log with id " + selectedItem.roomName + " selected");
-    this.selectedChatLog = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLog(selectedItem.roomName);
+    this.selectedChatLog = selectedItem;
 
     if (this.selectedChatLog) {
+      csLoggerDetail("Chat Log with id " + selectedItem.roomName + " selected");
       this.checkCanComment();
       this.renderChatLog(this.selectedChatLog);
     }
   };
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
   _proto.itemDeleted = function itemDeleted(view, selectedItem) {
-    csLoggerDetail("Chat Log with id " + selectedItem + " selected");
-    this.selectedChatLog = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLog(selectedItem);
+    csLoggerDetail("Chat Log with " + selectedItem.roomName + " deleting");
 
-    if (this.selectedChatLog && this.selectedChatLog.roomName === selectedItem) {
+    if (this.selectedChatLog && this.selectedChatLog.roomName === selectedItem.roomName) {
       this.checkCanComment();
       this.renderChatLog(this.selectedChatLog);
     }
   };
 
   _proto.hideRequested = function hideRequested(view) {
-    if (this.selectedChatLog) {
-      this.selectedChatLog = null;
-      this.checkCanComment();
-      this.clearChatLog();
-    }
+    this.selectedChatLog = null;
+    this.checkCanComment();
+    this.clearChatLog();
   };
 
   _proto.handleUserDrop = function handleUserDrop(event) {
-    csLogger('drop event on current chat room');
+    csLoggerDetail('drop event on current chat room');
 
     if (this.selectedChatLog) {
       // @ts-ignore
       var draggedObjectJSON = event.dataTransfer.getData(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_8__.DRAGGABLE_KEY_ID);
       var draggedObject = JSON.parse(draggedObjectJSON);
-      csLogger(draggedObject);
+      csLoggerDetail(draggedObject);
 
       if (draggedObject[_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_8__.DRAGGABLE_TYPE] === _AppTypes__WEBPACK_IMPORTED_MODULE_7__.DRAGGABLE.typeUser) {
         //add the user to the current chat if not already there
@@ -2689,7 +2706,7 @@ var ChatLogDetailView = /*#__PURE__*/function () {
   };
 
   _proto.handleChatLogUpdated = function handleChatLogUpdated(log) {
-    csLogger("Handling chat log updates");
+    csLoggerDetail("Handling chat log updates");
     this.checkCanComment();
     this.renderChatLog(log);
   };
@@ -2697,7 +2714,7 @@ var ChatLogDetailView = /*#__PURE__*/function () {
   _proto.handleAddMessage = function handleAddMessage(event) {
     event.preventDefault();
     event.stopPropagation();
-    csLogger("Handling message event");
+    csLoggerDetail("Handling message event");
 
     if (this.selectedChatLog) {
       // @ts-ignore
@@ -2751,7 +2768,7 @@ var ChatLogDetailView = /*#__PURE__*/function () {
   _proto.eventUserSelected = function eventUserSelected(event, ui) {
     event.preventDefault();
     event.stopPropagation();
-    csLogger("User " + ui.item.label + " with id " + ui.item.value + " selected"); // @ts-ignore
+    csLoggerDetail("User " + ui.item.label + " with id " + ui.item.value + " selected"); // @ts-ignore
 
     event.target.innerText = ''; // add to the chat, if one selected
 
@@ -2919,6 +2936,14 @@ var ChatLogDetailView = /*#__PURE__*/function () {
 
   _proto.itemDropped = function itemDropped(view, droppedItem) {};
 
+  _proto.getName = function getName() {
+    return _AppTypes__WEBPACK_IMPORTED_MODULE_7__.VIEW_NAME.chatLog;
+  };
+
+  _proto.hidden = function hidden() {
+    this.hideRequested(this);
+  };
+
   return ChatLogDetailView;
 }();
 
@@ -2950,6 +2975,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../socket/ChatManager */ "./src/socket/ChatManager.ts");
 /* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -2979,20 +3007,20 @@ function _setPrototypeOf(o, p) {
 
 
 
+
+
+
 var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar');
-var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('chat-sidebar:detail');
 
 var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
-  _inheritsLoose(ChatLogsView, _AbstractView); // @ts-ignore
-
+  _inheritsLoose(ChatLogsView, _AbstractView);
 
   function ChatLogsView() {
     var _this;
 
-    _this = _AbstractView.call(this, ChatLogsView.DOMConfig, null, null) || this; // handler binding
+    _this = _AbstractView.call(this, ChatLogsView.DOMConfig, new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__["default"](), _AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.chatLogs) || this; // handler binding
 
     _this.selectedChatLog = null;
-    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
     _this.handleChatLogsUpdated = _this.handleChatLogsUpdated.bind(_assertThisInitialized(_this));
     _this.handleChatLogUpdated = _this.handleChatLogUpdated.bind(_assertThisInitialized(_this));
     _this.handleChatStarted = _this.handleChatStarted.bind(_assertThisInitialized(_this));
@@ -3002,20 +3030,31 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
 
   var _proto = ChatLogsView.prototype;
 
+  _proto.compareStateItemsForEquality = function compareStateItemsForEquality(item1, item2) {
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_7__.isSameRoom)(item1, item2);
+  };
+
+  _proto.updateStateManager = function updateStateManager() {
+    csLogger("Updating state with chat manager");
+    var newState = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLogs();
+    csLogger(newState);
+    this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.chatLogs, newState, true);
+  };
+
   _proto.handleNewInviteReceived = function handleNewInviteReceived(invite) {
     return true;
   };
 
   _proto.handleChatLogUpdated = function handleChatLogUpdated(log) {
     csLogger("Handling chat log updates");
-    this.updateView('', {});
+    this.updateStateManager();
   };
 
   _proto.onDocumentLoaded = function onDocumentLoaded() {
     _AbstractView.prototype.onDocumentLoaded.call(this);
 
     this.addEventListener(this);
-    this.updateView('', {});
+    this.updateStateManager();
   };
 
   _proto.getIdForStateItem = function getIdForStateItem(name, item) {
@@ -3042,19 +3081,11 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
     return this.getModifierForStateItem(name, item);
   };
 
-  _proto.updateView = function updateView(name, newState) {
-    csLoggerDetail("Updating state with chat manager");
-    newState = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLogs();
-    csLoggerDetail(newState);
-
-    _AbstractView.prototype.updateView.call(this, name, newState);
-  };
-
   _proto.selectChatRoom = function selectChatRoom(roomName) {
     var room = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().getChatLog(roomName);
     this.selectedChatLog = room;
     this.eventForwarder.itemSelected(this, this.selectedChatLog);
-    this.updateView('', {});
+    this.updateStateManager();
   };
 
   _proto.handleChatLogsUpdated = function handleChatLogsUpdated() {
@@ -3062,32 +3093,33 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
       _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().touchChatLog(this.selectedChatLog.roomName);
     }
 
-    this.updateView('', {});
+    this.updateStateManager();
   };
 
   _proto.handleChatStarted = function handleChatStarted(log) {
     this.selectedChatLog = log;
     this.eventForwarder.itemSelected(this, this.selectedChatLog);
-    this.updateView('', {});
+    this.updateStateManager();
   };
 
   _proto.getBadgeValue = function getBadgeValue(name, item) {
     return item.numOfNewMessages;
   };
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
   _proto.itemDeleted = function itemDeleted(view, selectedItem) {
-    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().leaveChat(selectedItem);
+    csLogger("Deleting chat " + selectedItem.roomName);
+    _socket_ChatManager__WEBPACK_IMPORTED_MODULE_2__.ChatManager.getInstance().leaveChat(selectedItem.roomName);
 
-    if (this.selectedChatLog && this.selectedChatLog.roomName === selectedItem) {
+    if (this.selectedChatLog && this.selectedChatLog.roomName === selectedItem.roomName) {
       this.eventForwarder.itemDeselected(this, this.selectedChatLog);
       this.selectedChatLog = null;
     }
 
-    this.updateView('', {});
+    this.updateStateManager();
   };
 
   _proto.hideRequested = function hideRequested(view) {
@@ -3095,6 +3127,10 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
       this.eventForwarder.itemDeselected(this, this.selectedChatLog);
       this.selectedChatLog = null;
     }
+  };
+
+  _proto.hidden = function hidden() {
+    this.hideRequested(this);
   };
 
   _proto.documentLoaded = function documentLoaded(view) {};
@@ -3105,9 +3141,15 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
 
   _proto.itemDropped = function itemDropped(view, droppedItem) {};
 
-  _proto.itemSelected = function itemSelected(view, selectedItem) {};
+  _proto.itemSelected = function itemSelected(view, selectedItem) {
+    this.selectedChatLog = selectedItem;
+    this.updateStateManager();
+  };
 
-  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {
+    this.selectedChatLog = null;
+    this.updateStateManager();
+  };
 
   _proto.showRequested = function showRequested(view) {};
 
@@ -3118,7 +3160,6 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractView) {
   return ChatLogsView;
 }(_ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-ChatLogsView.chatFastSearchUserNames = 'chatFastSearchUserNames';
 ChatLogsView.DOMConfig = {
   resultsContainerId: 'chatLogs',
   resultsElementType: 'a',
@@ -3127,8 +3168,9 @@ ChatLogsView.DOMConfig = {
     value: '#'
   }],
   resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-  keyId: 'room',
-  dataSourceId: 'chatLogs',
+  keyId: 'roomName',
+  keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.KeyType.string,
+  dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_6__.VIEW_NAME.chatLogs,
   modifiers: {
     normal: '',
     inactive: 'list-group-item-dark',
@@ -3143,6 +3185,10 @@ ChatLogsView.DOMConfig = {
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
       iconClasses: 'text-black fas fa-sign-out-alt'
+    },
+    badge: {
+      elementType: 'span',
+      elementClasses: 'badge badge-pill badge-primary mr-1'
     }
   }
 };
@@ -3324,7 +3370,7 @@ var FavouriteUserView = /*#__PURE__*/function (_AbstractView) {
     }
   };
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
@@ -3338,6 +3384,8 @@ var FavouriteUserView = /*#__PURE__*/function (_AbstractView) {
   _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
 
   _proto.itemDropped = function itemDropped(view, droppedItem) {
+    vLogger("Handling item dropped " + droppedItem.username);
+
     if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().isUserInFavouriteList(droppedItem.username)) {
       vLogger(droppedItem.username + " already in fav list, ignoring");
       return;
@@ -3365,8 +3413,9 @@ FavouriteUserView.DOMConfig = {
     value: '#'
   }],
   resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-  keyId: 'user-id',
-  dataSourceId: 'blockedUsers',
+  keyId: 'id',
+  keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__.KeyType.number,
+  dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_6__.VIEW_NAME.favouriteUsers,
   modifiers: {
     normal: 'list-group-item-primary',
     inactive: 'list-group-item-light',
@@ -3772,14 +3821,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
 /* harmony import */ var _ui_framework_AbstractView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/AbstractView */ "./src/ui-framework/AbstractView.ts");
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
@@ -3800,6 +3844,9 @@ function _setPrototypeOf(o, p) {
 
 
 
+
+
+
 var csLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('score-sheet-sidebar');
 var csLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('score-sheet-sidebar:detail');
 
@@ -3809,10 +3856,8 @@ var ScoreSheetsView = /*#__PURE__*/function (_AbstractView) {
   function ScoreSheetsView() {
     var _this;
 
-    _this = _AbstractView.call(this, ScoreSheetsView.SCORESHEETS_ViewConfig, null, null) || this; // handler binding
-
+    _this = _AbstractView.call(this, ScoreSheetsView.SCORESHEETS_ViewConfig, new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__["default"](), _AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.scores) || this;
     _this.selectedBoardGame = null;
-    _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -3822,7 +3867,7 @@ var ScoreSheetsView = /*#__PURE__*/function (_AbstractView) {
     _AbstractView.prototype.onDocumentLoaded.call(this);
 
     this.addEventListener(this);
-    this.updateView('', {});
+    this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.scores, [], true);
   };
 
   _proto.setSelectedBoardGame = function setSelectedBoardGame(boardGame) {
@@ -3831,7 +3876,7 @@ var ScoreSheetsView = /*#__PURE__*/function (_AbstractView) {
 
     if (boardGame) {
       this.selectedBoardGame = boardGame;
-      this.updateView('', boardGame);
+      this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.scores, this.selectedBoardGame.scoresheets, true);
     }
   };
 
@@ -3887,16 +3932,6 @@ var ScoreSheetsView = /*#__PURE__*/function (_AbstractView) {
     return buffer;
   };
 
-  _proto.updateView = function updateView(name, newState) {
-    csLoggerDetail("Updating state with selected board game");
-
-    if (newState) {
-      if (newState.scoresheets) {
-        this.createResultsForState(name, newState.scoresheets);
-      }
-    }
-  };
-
   _proto.getBackgroundImage = function getBackgroundImage(name, item) {
     return './img/scorecard-vertical.jpg';
   };
@@ -3911,8 +3946,16 @@ var ScoreSheetsView = /*#__PURE__*/function (_AbstractView) {
 
   _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
-    return this.selectedBoardGame && confirm("Are you sure you want to delete this Score Sheet?");
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    var result = true;
+
+    if (this.selectedBoardGame) {
+      if (!confirm("Are you sure you want to delete this Score Sheet?")) {
+        result = false;
+      }
+    }
+
+    return result;
   };
 
   _proto.itemDeleted = function itemDeleted(view, selectedItem) {
@@ -3920,17 +3963,16 @@ var ScoreSheetsView = /*#__PURE__*/function (_AbstractView) {
 
     if (this.selectedBoardGame.scoresheets) {
       var index = this.selectedBoardGame.scoresheets.findIndex(function (sheet) {
-        return sheet.id === selectedItem;
+        return sheet.id === selectedItem.id;
       });
 
       if (index >= 0) {
         this.selectedBoardGame.scoresheets.splice(index, 1); // let the controller know to remove from the database if the user is logged in
 
-        _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().scoreSheetRemovedFromBoardGame(this.selectedBoardGame, selectedItem);
+        this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.scores, this.selectedBoardGame.scoresheets, true);
+        _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().scoreSheetRemovedFromBoardGame(this.selectedBoardGame, selectedItem.id);
       }
     }
-
-    this.updateView('', this.selectedBoardGame);
   };
 
   _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
@@ -3951,7 +3993,8 @@ ScoreSheetsView.SCORESHEETS_ViewConfig = {
   resultsElementType: 'div',
   resultsClasses: 'text-white bg-info col-sm-6 col-md-3 col-lg-2 score-card',
   keyId: 'id',
-  dataSourceId: 'scoreSheet',
+  keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.KeyType.string,
+  dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_6__.VIEW_NAME.scoreSheets,
   detail: {
     containerClasses: 'card-img-overlay',
     textElementType: 'div',
@@ -4026,8 +4069,8 @@ function _setPrototypeOf(o, p) {
 
 
 
-var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-sidebar');
-var vLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-sidebar:detail');
+var vLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search');
+var vLoggerDetail = debug__WEBPACK_IMPORTED_MODULE_0___default()('user-search-detail');
 
 var UserSearchView = /*#__PURE__*/function (_AbstractView) {
   _inheritsLoose(UserSearchView, _AbstractView);
@@ -4039,14 +4082,14 @@ var UserSearchView = /*#__PURE__*/function (_AbstractView) {
     _this.loggedInUsers = []; // handler binding
 
     _this.updateView = _this.updateView.bind(_assertThisInitialized(_this));
-    _this.eventClickItem = _this.eventClickItem.bind(_assertThisInitialized(_this));
     _this.eventUserSelected = _this.eventUserSelected.bind(_assertThisInitialized(_this));
     _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
     _this.handleFavouriteUserLoggedIn = _this.handleFavouriteUserLoggedIn.bind(_assertThisInitialized(_this));
     _this.handleFavouriteUserLoggedOut = _this.handleFavouriteUserLoggedOut.bind(_assertThisInitialized(_this));
     _this.handleFavouriteUsersChanged = _this.handleFavouriteUsersChanged.bind(_assertThisInitialized(_this));
     _this.handleBlockedUsersChanged = _this.handleBlockedUsersChanged.bind(_assertThisInitialized(_this));
-    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this)); // register state change listening
+    _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
+    _this.itemDeleted = _this.itemDeleted.bind(_assertThisInitialized(_this)); // register state change listening
 
     _this.localisedSM = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_4__["default"](true);
 
@@ -4206,7 +4249,7 @@ var UserSearchView = /*#__PURE__*/function (_AbstractView) {
 
     if (actionName === this.uiConfig.extraActions[1].name) {
       if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
-        vLogger(selectedItem.username + " already in fav list, ignoring");
+        vLogger(selectedItem.username + " already in blocked list, ignoring");
         return;
       }
 
@@ -4214,11 +4257,12 @@ var UserSearchView = /*#__PURE__*/function (_AbstractView) {
     }
   };
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
   _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    vLoggerDetail(selectedItem);
     vLogger("Recent search user " + selectedItem.username + " with id " + selectedItem.id + " deleted - removing");
     this.localisedSM.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, selectedItem, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_1__.isSame, true);
   };
@@ -4253,8 +4297,9 @@ UserSearchView.DOMConfig = {
     value: '#'
   }],
   resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-  keyId: 'user-id',
-  dataSourceId: 'recentUserSearches',
+  keyId: 'id',
+  keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__.KeyType.number,
+  dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_7__.VIEW_NAME.userSearch,
   modifiers: {
     normal: 'list-group-item-primary',
     inactive: 'list-group-item-light',
@@ -4286,7 +4331,7 @@ UserSearchView.DOMConfig = {
     buttonClasses: 'btn bg-info text-white btn-circle btn-sm mr-1',
     iconClasses: 'fas fa-user-plus'
   }, {
-    name: 'blocked',
+    name: 'block',
     buttonClasses: 'btn bg-warning text-white btn-circle btn-sm mr-1',
     iconClasses: 'fas fa-user-slash'
   }]
@@ -5589,6 +5634,7 @@ var ChatManager = /*#__PURE__*/function () {
 
     this.removeChatLog(room);
     _SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().leaveChat(this.getCurrentUser(), room, _Types__WEBPACK_IMPORTED_MODULE_3__.InviteType.ChatRoom);
+    this.emitUnreadMessageCountChanged();
   };
 
   _proto.login = function login() {
@@ -8264,7 +8310,7 @@ var AbstractView = /*#__PURE__*/function () {
     this.eventActionClicked = this.eventActionClicked.bind(this);
     this.handleDrop = this.handleDrop.bind(this); // setup state listener
 
-    if (this.stateManager && this.stateName) this.stateManager.addChangeListenerForName(this.stateName, this);
+    this.stateManager.addChangeListenerForName(this.stateName, this);
   }
 
   var _proto = AbstractView.prototype;
@@ -8299,18 +8345,17 @@ var AbstractView = /*#__PURE__*/function () {
 
     var itemId = event.target.getAttribute(this.uiConfig.keyId); // @ts-ignore
 
-    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
+    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
+    if (this.uiConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
 
-    avLoggerDetails("Item with id " + itemId + " clicked from " + dataSource);
+    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " clicked from " + dataSource);
     var compareWith = {}; // @ts-ignore
 
     compareWith[this.uiConfig.keyId] = itemId;
     avLoggerDetails(compareWith);
-
-    if (this.stateManager && this.stateName) {
-      var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
-      if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
-    }
+    var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+    console.log(selectedItem);
+    if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
   };
 
   _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
@@ -8319,30 +8364,23 @@ var AbstractView = /*#__PURE__*/function () {
 
     var itemId = event.target.getAttribute(this.uiConfig.keyId); // @ts-ignore
 
-    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
+    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
+    if (this.uiConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
 
-    avLoggerDetails("Item with id " + itemId + " attempting delete from " + dataSource);
+    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
     var compareWith = {}; // @ts-ignore
 
     compareWith[this.uiConfig.keyId] = itemId;
     avLoggerDetails(compareWith);
+    var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
 
-    if (this.stateManager && this.stateName) {
-      var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+    if (selectedItem) {
+      var shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
+      avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource + " - " + shouldDelete);
 
-      if (selectedItem) {
-        var shouldDelete = this.eventForwarder.itemDeleteStarted(this, selectedItem);
-
-        if (shouldDelete) {
-          this.eventForwarder.itemDeleted(this, selectedItem);
-        }
-      }
-    } else {
-      // no statemanager - send the id to the listener
-      var _shouldDelete = this.eventForwarder.itemDeleteStarted(this, itemId);
-
-      if (_shouldDelete) {
-        this.eventForwarder.itemDeleted(this, itemId);
+      if (shouldDelete) {
+        avLoggerDetails(selectedItem);
+        this.eventForwarder.itemDeleted(this, selectedItem);
       }
     }
   };
@@ -8355,20 +8393,18 @@ var AbstractView = /*#__PURE__*/function () {
 
     var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
 
-    var actionName = event.target.getAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.EXTRA_ACTION_ATTRIBUTE_NAME); // @ts-ignore
+    var actionName = event.target.getAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.EXTRA_ACTION_ATTRIBUTE_NAME);
+    if (this.uiConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
 
-    avLoggerDetails("Item with id " + itemId + " attempting delete from " + dataSource);
+    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
     var compareWith = {}; // @ts-ignore
 
     compareWith[this.uiConfig.keyId] = itemId;
     avLoggerDetails(compareWith);
+    var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
 
-    if (this.stateManager && this.stateName) {
-      var selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
-
-      if (selectedItem) {
-        this.eventForwarder.itemAction(this, actionName, selectedItem);
-      }
+    if (selectedItem) {
+      this.eventForwarder.itemAction(this, actionName, selectedItem);
     }
   };
 
@@ -8376,25 +8412,23 @@ var AbstractView = /*#__PURE__*/function () {
     // @ts-ignore
     var itemId = event.target.getAttribute(this.uiConfig.keyId); // @ts-ignore
 
-    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE); // @ts-ignore
+    var dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
+    if (this.uiConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
 
-    avLoggerDetails("Item with id " + itemId + " getting drag data from " + dataSource);
+    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " getting drag data from " + dataSource);
     var compareWith = {}; // @ts-ignore
 
     compareWith[this.uiConfig.keyId] = itemId;
     var selectedItem = {};
+    selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
 
-    if (this.stateManager && this.stateName) {
-      selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
-
-      if (selectedItem) {
-        var _this$uiConfig$detail, _this$uiConfig$detail2; // @ts-ignore
+    if (selectedItem) {
+      var _this$uiConfig$detail, _this$uiConfig$detail2; // @ts-ignore
 
 
-        selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_TYPE] = (_this$uiConfig$detail = this.uiConfig.detail.drag) == null ? void 0 : _this$uiConfig$detail.type; // @ts-ignore
+      selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_TYPE] = (_this$uiConfig$detail = this.uiConfig.detail.drag) == null ? void 0 : _this$uiConfig$detail.type; // @ts-ignore
 
-        selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_FROM] = (_this$uiConfig$detail2 = this.uiConfig.detail.drag) == null ? void 0 : _this$uiConfig$detail2.from;
-      }
+      selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_FROM] = (_this$uiConfig$detail2 = this.uiConfig.detail.drag) == null ? void 0 : _this$uiConfig$detail2.from;
     }
 
     return selectedItem;
@@ -8425,7 +8459,7 @@ var AbstractView = /*#__PURE__*/function () {
   };
 
   _proto.eventStartDrag = function eventStartDrag(event) {
-    avLogger('drag start');
+    avLogger("view " + this.getName() + ": drag start");
     avLoggerDetails(event.target);
     var data = JSON.stringify(this.getDragData(event));
     avLoggerDetails(data); // @ts-ignore
@@ -8436,7 +8470,7 @@ var AbstractView = /*#__PURE__*/function () {
   _proto.createResultForItem = function createResultForItem(name, item) {
     var _this = this;
 
-    avLogger('Abstract View : creating Result');
+    avLogger("view " + this.getName() + ": creating Result");
     avLogger(item);
     var resultDataKeyId = this.getIdForStateItem(name, item);
     var childEl = document.createElement(this.uiConfig.resultsElementType);
@@ -8568,7 +8602,7 @@ var AbstractView = /*#__PURE__*/function () {
       switch (modifier) {
         case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.normal:
           {
-            avLogger('Abstract View: normal item');
+            avLogger("view " + this.getName() + ": normal item");
             _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.normal);
 
             if (this.uiConfig.icons && this.uiConfig.icons.normal) {
@@ -8625,7 +8659,7 @@ var AbstractView = /*#__PURE__*/function () {
 
         case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.active:
           {
-            avLogger('Abstract View: active item', 10);
+            avLogger("view " + this.getName() + ": active item");
             _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.active);
 
             if (this.uiConfig.icons && this.uiConfig.icons.active) {
@@ -8667,7 +8701,7 @@ var AbstractView = /*#__PURE__*/function () {
 
         case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.Modifier.inactive:
           {
-            avLogger('Abstract View: inactive item', 10);
+            avLogger("view " + this.getName() + ": inactive item");
             _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, this.uiConfig.modifiers.inactive);
 
             if (this.uiConfig.icons && this.uiConfig.icons.inactive) {
@@ -8732,7 +8766,7 @@ var AbstractView = /*#__PURE__*/function () {
   _proto.createResultsForState = function createResultsForState(name, newState) {
     var _this2 = this;
 
-    avLogger('Abstract View : creating Results', 10);
+    avLogger("view " + this.getName() + ": creating Results", 10);
     avLogger(newState); // remove the previous items from list
 
     var viewEl = document.getElementById(this.uiConfig.resultsContainerId);
@@ -8742,7 +8776,7 @@ var AbstractView = /*#__PURE__*/function () {
       var childEl = _this2.createResultForItem(name, item); // add draggable actions
 
 
-      avLogger("Abstract View: Adding child " + _this2.getIdForStateItem(name, item));
+      avLogger("view " + _this2.getName() + ":  Adding child " + _this2.getIdForStateItem(name, item));
       if (viewEl) viewEl.appendChild(childEl);
     });
   };
@@ -8751,6 +8785,8 @@ var AbstractView = /*#__PURE__*/function () {
     this.containerEl = container;
 
     if (this.uiConfig.detail.drop) {
+      avLoggerDetails("view " + this.getName() + ": Adding dragover events to " + this.uiConfig.dataSourceId);
+      avLoggerDetails(container);
       container.addEventListener('dragover', function (event) {
         event.preventDefault();
       });
@@ -8759,7 +8795,8 @@ var AbstractView = /*#__PURE__*/function () {
   };
 
   _proto.handleDrop = function handleDrop(event) {
-    avLogger('drop event'); // @ts-ignore
+    avLogger("view " + this.getName() + ": drop event");
+    avLoggerDetails(event.target); // @ts-ignore
 
     var draggedObjectJSON = event.dataTransfer.getData(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_KEY_ID);
     var draggedObject = JSON.parse(draggedObjectJSON);
@@ -8767,7 +8804,7 @@ var AbstractView = /*#__PURE__*/function () {
 
     var droppedObjectType = draggedObject[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_TYPE];
     var droppedObjectFrom = draggedObject[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_3__.DRAGGABLE_FROM];
-    avLogger("drop event from " + droppedObjectFrom + " with type " + droppedObjectType);
+    avLogger("view " + this.getName() + ": drop event from " + droppedObjectFrom + " with type " + droppedObjectType);
 
     if (this.uiConfig.detail.drop) {
       var acceptType = this.uiConfig.detail.drop.acceptTypes.findIndex(function (objectType) {
@@ -8782,7 +8819,7 @@ var AbstractView = /*#__PURE__*/function () {
           }) >= 0;
         }
 
-        avLoggerDetails("accepted type? " + acceptType + " and from? " + acceptFrom);
+        avLoggerDetails("view " + this.getName() + ": accepted type? " + acceptType + " and from? " + acceptFrom);
 
         if (acceptType && acceptFrom) {
           this.eventForwarder.itemDropped(this, draggedObject);
@@ -8790,6 +8827,12 @@ var AbstractView = /*#__PURE__*/function () {
       }
     }
   };
+
+  _proto.getName = function getName() {
+    return this.uiConfig.dataSourceId;
+  };
+
+  _proto.hidden = function hidden() {};
 
   return AbstractView;
 }();
@@ -8813,6 +8856,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DRAGGABLE_FROM": () => (/* binding */ DRAGGABLE_FROM),
 /* harmony export */   "EXTRA_ACTION_ATTRIBUTE_NAME": () => (/* binding */ EXTRA_ACTION_ATTRIBUTE_NAME),
 /* harmony export */   "Modifier": () => (/* binding */ Modifier),
+/* harmony export */   "KeyType": () => (/* binding */ KeyType),
 /* harmony export */   "SidebarLocation": () => (/* binding */ SidebarLocation)
 /* harmony export */ });
 var DRAGGABLE_KEY_ID = 'text/plain';
@@ -8827,6 +8871,13 @@ var Modifier;
   Modifier[Modifier["inactive"] = 2] = "inactive";
   Modifier[Modifier["warning"] = 3] = "warning";
 })(Modifier || (Modifier = {}));
+
+var KeyType;
+
+(function (KeyType) {
+  KeyType[KeyType["number"] = 0] = "number";
+  KeyType[KeyType["string"] = 1] = "string";
+})(KeyType || (KeyType = {}));
 
 var SidebarLocation;
 
@@ -8851,7 +8902,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
 
+
+var sbvcLogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('sidebar-container');
 
 var SidebarViewContainer = /*#__PURE__*/function () {
   function SidebarViewContainer(prefs) {
@@ -8865,9 +8920,11 @@ var SidebarViewContainer = /*#__PURE__*/function () {
   var _proto = SidebarViewContainer.prototype;
 
   _proto.addView = function addView(view, config) {
+    sbvcLogger("Adding view to container, with containing div of " + config.containerId);
     var viewContainer = document.getElementById(config.containerId);
 
     if (viewContainer) {
+      sbvcLogger("Adding view to container, with containing div of " + config.containerId + " - FOUND");
       view.setContainedBy(viewContainer);
     }
 
@@ -8896,6 +8953,9 @@ var SidebarViewContainer = /*#__PURE__*/function () {
   _proto.eventHide = function eventHide(event) {
     if (event) event.preventDefault();
     this.showHide('0%');
+    this.views.forEach(function (view) {
+      view.hidden();
+    });
   };
 
   _proto.eventShow = function eventShow(event) {
@@ -8948,8 +9008,8 @@ var SidebarViewContainer = /*#__PURE__*/function () {
 
   _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
-    return false;
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    return true;
   };
 
   _proto.itemDeleted = function itemDeleted(view, selectedItem) {};
@@ -9052,12 +9112,12 @@ var ViewListenerForwarder = /*#__PURE__*/function () {
     }
   };
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     var result = true; // return false if cancelling delete
 
     if (!this.suppressEventEmits) {
       this.viewListeners.forEach(function (listener) {
-        if (!listener.itemDeleteStarted(view, selectedItem)) {
+        if (!listener.canDeleteItem(view, selectedItem)) {
           result = false;
         }
       });
@@ -9213,7 +9273,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "isSame": () => (/* binding */ isSame),
 /* harmony export */   "isSameUsername": () => (/* binding */ isSameUsername),
-/* harmony export */   "isSameGame": () => (/* binding */ isSameGame)
+/* harmony export */   "isSameGame": () => (/* binding */ isSameGame),
+/* harmony export */   "isSameRoom": () => (/* binding */ isSameRoom)
 /* harmony export */ });
 function isSame(item1, item2) {
   return item1.id === item2.id;
@@ -9223,6 +9284,9 @@ function isSameUsername(item1, item2) {
 }
 function isSameGame(item1, item2) {
   return item1.gameId === item2.gameId;
+}
+function isSameRoom(item1, item2) {
+  return item1.roomName === item2.roomName;
 }
 
 /***/ }),
@@ -9755,7 +9819,7 @@ var Root = /*#__PURE__*/function (_React$Component) {
 
   _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
 
-  _proto.itemDeleteStarted = function itemDeleteStarted(view, selectedItem) {
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
@@ -9774,14 +9838,10 @@ var Root = /*#__PURE__*/function (_React$Component) {
   };
 
   return Root;
-}(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app view-ts controller-ts socket-ts api-ts local-storage-ts state-manager-ts view-ts:blogentry view-ts:comments view-ts:details';
-//localStorage.debug = 'app controller-ts socket-ts api-ts local-storage-ts state-manager-ts indexeddb-ts user-search-sidebar user-search-sidebar:detail state-manager-ms state-manager-api state-manager-aggregate state-manager-async';
-//localStorage.debug = 'app controller-ts  chat-sidebar chat-sidebar:detail board-game-search-sidebar board-game-search-sidebar:detail ';
-//localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts template-manager' ;
-//localStorage.debug = 'score-sheet-controller call-manager peer';
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
 
 
-localStorage.debug = '*';
+localStorage.debug = 'board-game-search-sidebar board-game-search-sidebar:detail chat-sidebar chat-sidebar:detail chat-manager';
 (debug__WEBPACK_IMPORTED_MODULE_2___default().log) = console.info.bind(console); // @ts-ignore
 
 var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Root, {

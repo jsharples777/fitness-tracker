@@ -99,7 +99,7 @@ export class CallManager {
 
         const videoCardHolder = document.createElement('div');
         videoCardHolder.setAttribute("id", username);
-        browserUtil.addRemoveClasses(videoCardHolder, 'col-sm-12 col-md-4 col-lg-2');
+        browserUtil.addRemoveClasses(videoCardHolder, 'col-sm-12 col-md-4 col-lg-3');
         const videoCard = document.createElement('div');
         browserUtil.addRemoveClasses(videoCard,'card');
         const videoCardTitle = document.createElement('div');
@@ -138,13 +138,18 @@ export class CallManager {
             stopVideoButton.addEventListener('click',() => {
                 const isPaused = video.paused;
                 if (isPaused) {
-                    video.play();
+                    try {
+                        video.play();
+                    }
+                    catch (error) { }// account for user with no video
                     browserUtil.addRemoveClasses(stopVideoButton,'btn-success',false);
                     browserUtil.addRemoveClasses(stopVideoButton,'btn-warning',true);
 
                 }
                 else {
-                    video.pause();
+                    try {
+                        video.pause();
+                    } catch (error) {}// account for user with no video
                     browserUtil.addRemoveClasses(stopVideoButton,'btn-success',true);
                     browserUtil.addRemoveClasses(stopVideoButton,'btn-warning',false);
                 }
@@ -172,7 +177,10 @@ export class CallManager {
         videoCardHolder.appendChild(videoCard);
         video.srcObject = stream;
         video.addEventListener("loadedmetadata", () => {
-            video.play();
+            try {
+                video.play();
+            }
+            catch (error) {} // account for user with no video
             if (this.webrtcDiv) this.webrtcDiv.append(videoCardHolder);
         });
     };
@@ -232,7 +240,7 @@ export class CallManager {
                 if (navigator.mediaDevices.getUserMedia) {
                     navigator.mediaDevices.getUserMedia({
                         audio: true,
-                        video: true,
+                        video: false,
                     }).then((stream) => {
                         this.myVideoStream = stream;
                         this.addVideoStream(Controller.getInstance().getLoggedInUsername(), this.myVideoStream, true);

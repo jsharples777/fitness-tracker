@@ -2,9 +2,9 @@ import debug from 'debug';
 import browserUtil from "../../util/BrowserUtil";
 import DownloadManager from "../../network/DownloadManager";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
-import {ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import AbstractView from "../../ui-framework/AbstractView";
-import {API_Config, DRAGGABLE, STATE_NAMES} from "../../AppTypes";
+import {API_Config, DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
 
@@ -25,18 +25,13 @@ class BGGSearchView extends AbstractView implements ViewListener{
         resultsElementAttributes:[{name:'href',value:'#'}],
         resultsClasses:'list-group-item my-list-item truncate-notification list-group-item-action',
         keyId:'gameId',
-        dataSourceId:'bggSearch',
+        keyType:KeyType.number,
+        dataSourceId:VIEW_NAME.bggSearch,
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',
             active:'list-group-item-info',
             warning:'list-group-item-danger'
-        },
-        icons: {
-            normal: 'fas fa-dice',
-            inactive: 'fas fa-dice',
-            active:'fas fa-dice',
-            warning:'fas fa-dice'
         },
         detail: {
             containerClasses: 'd-flex w-100 justify-content-between',
@@ -149,7 +144,7 @@ class BGGSearchView extends AbstractView implements ViewListener{
     documentLoaded(view: View): void {}
     hideRequested(view: View): void {}
     itemAction(view: View, actionName: string, selectedItem: any): void {    }
-    itemDeleteStarted(view: View, selectedItem: any): boolean {return true;}
+    canDeleteItem(view: View, selectedItem: any): boolean {return true;}
 
     itemDeleted(view: View, selectedItem: any): void {
         /* listen for our own deletes as we are expected to implement them */

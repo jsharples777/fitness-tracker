@@ -6,14 +6,14 @@ import {NotificationController} from "../../socket/NotificationController";
 import Controller from "../../Controller";
 import BrowserStorageStateManager from "../../state/BrowserStorageStateManager";
 import {ChatManager} from "../../socket/ChatManager";
-import {Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import {DRAGGABLE, STATE_NAMES} from "../../AppTypes";
+import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import AbstractView from "../../ui-framework/AbstractView";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
 
-const vLogger = debug('user-search-sidebar');
-const vLoggerDetail = debug('user-search-sidebar:detail');
+const vLogger = debug('user-search');
+const vLoggerDetail = debug('user-search-detail');
 
 class UserSearchView extends AbstractView implements ChatUserEventListener,ViewListener {
     protected loggedInUsers: string[];
@@ -27,8 +27,9 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-        keyId: 'user-id',
-        dataSourceId: 'recentUserSearches',
+        keyId: 'id',
+        keyType: KeyType.number,
+        dataSourceId: VIEW_NAME.userSearch,
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',
@@ -62,10 +63,9 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
                 iconClasses: 'fas fa-user-plus',
             },
             {
-                name: 'blocked',
+                name: 'block',
                 buttonClasses: 'btn bg-warning text-white btn-circle btn-sm mr-1',
-                iconClasses: 'fas fa-user-slash',
-
+                iconClasses: 'fas fa-user-slash'
             }
         ]
     };
@@ -78,7 +78,6 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
 
         // handler binding
         this.updateView = this.updateView.bind(this);
-        this.eventClickItem = this.eventClickItem.bind(this);
         this.eventUserSelected = this.eventUserSelected.bind(this);
         this.handleLoggedInUsersUpdated = this.handleLoggedInUsersUpdated.bind(this);
         this.handleFavouriteUserLoggedIn = this.handleFavouriteUserLoggedIn.bind(this);
@@ -86,6 +85,8 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
         this.handleFavouriteUsersChanged = this.handleFavouriteUsersChanged.bind(this);
         this.handleBlockedUsersChanged = this.handleBlockedUsersChanged.bind(this);
         this.handleLoggedInUsersUpdated = this.handleLoggedInUsersUpdated.bind(this);
+
+        this.itemDeleted = this.itemDeleted.bind(this);
 
         // register state change listening
         this.localisedSM = new BrowserStorageStateManager(true);
@@ -95,7 +96,6 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
         vLogger(this.localisedSM.getStateByName(STATE_NAMES.recentUserSearches));
 
     }
-
 
 
     handleLoggedInUsersUpdated(usernames: string[]): void {
@@ -237,18 +237,19 @@ class UserSearchView extends AbstractView implements ChatUserEventListener,ViewL
         // @ts-ignore
         if (actionName === this.uiConfig.extraActions[1].name) {
             if (ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
-                vLogger(`${selectedItem.username} already in fav list, ignoring`);
+                vLogger(`${selectedItem.username} already in blocked list, ignoring`);
                 return;
             }
             ChatManager.getInstance().addUserToBlockedList(selectedItem.username);
         }
     }
 
-    itemDeleteStarted(view: View, selectedItem: any): boolean {
+    canDeleteItem(view: View, selectedItem: any): boolean {
         return true;
     }
 
     itemDeleted(view: View, selectedItem: any): void {
+        vLoggerDetail(selectedItem);
         vLogger(`Recent search user ${selectedItem.username} with id ${selectedItem.id} deleted - removing`);
         this.localisedSM.removeItemFromState(STATE_NAMES.recentUserSearches, selectedItem, isSame, true);
     }

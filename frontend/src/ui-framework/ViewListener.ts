@@ -3,7 +3,7 @@ import {View} from "./View";
 export interface ViewListener {
     itemSelected(view:View,selectedItem:any):void;
     itemDeselected(view:View,selectedItem:any):void;
-    itemDeleteStarted(view:View,selectedItem:any):boolean; // listener should return false to cancel delete
+    canDeleteItem(view:View, selectedItem:any):boolean; // listener should return false to cancel delete
     itemDeleted(view:View,selectedItem:any):void;
     itemDragStarted(view:View,selectedItem:any):void;
     itemAction(view:View,actionName:string, selectedItem:any):void;

@@ -52,11 +52,11 @@ class ViewListenerForwarder implements ViewListener {
         }
     }
 
-    itemDeleteStarted(view: View, selectedItem: any): boolean {
+    canDeleteItem(view: View, selectedItem: any): boolean {
         let result = true; // return false if cancelling delete
         if (!this.suppressEventEmits) {
             this.viewListeners.forEach((listener) => {
-                if (!(listener.itemDeleteStarted(view,selectedItem))) {
+                if (!(listener.canDeleteItem(view,selectedItem))) {
                     result = false;
                 }
             });

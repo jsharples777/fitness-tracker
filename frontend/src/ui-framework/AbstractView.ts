@@ -8,6 +8,7 @@ import {
     DRAGGABLE_KEY_ID,
     DRAGGABLE_TYPE,
     EXTRA_ACTION_ATTRIBUTE_NAME,
+    KeyType,
     Modifier,
     ViewDOMConfig,
 } from "./ConfigurationTypes";
@@ -24,13 +25,13 @@ export default abstract class AbstractView implements StateChangeListener, View 
 
     protected uiConfig: ViewDOMConfig;
 
-    protected stateManager: StateManager|null;
-    protected stateName: string|null;
+    protected stateManager: StateManager;
+    protected stateName: string;
 
     protected eventForwarder: ViewListenerForwarder;
     protected containerEl: HTMLElement|null = null;
 
-    protected constructor(uiConfig: ViewDOMConfig, stateManager: StateManager|null, stateName:string|null) {
+    protected constructor(uiConfig: ViewDOMConfig, stateManager: StateManager, stateName:string) {
         this.uiConfig = uiConfig;
         this.stateManager = stateManager;
         this.stateName = stateName;
@@ -47,7 +48,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
         this.handleDrop = this.handleDrop.bind(this);
 
         // setup state listener
-        if (this.stateManager && this.stateName) this.stateManager.addChangeListenerForName(this.stateName,this);
+        this.stateManager.addChangeListenerForName(this.stateName,this);
 
     }
 
@@ -79,54 +80,47 @@ export default abstract class AbstractView implements StateChangeListener, View 
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
-        const itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
+        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
-        avLoggerDetails(`Item with id ${itemId} clicked from ${dataSource}`);
+        avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} clicked from ${dataSource}`);
         let compareWith = {};
         // @ts-ignore
         compareWith[this.uiConfig.keyId] = itemId;
         avLoggerDetails(compareWith);
 
-        if (this.stateManager && this.stateName) {
-            let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
-            if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
-        }
+        let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+        console.log(selectedItem);
+        if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
     }
 
     protected eventDeleteClickItem(event: MouseEvent): void {
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
-        const itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
+        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
-        avLoggerDetails(`Item with id ${itemId} attempting delete from ${dataSource}`);
+        avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource}`);
         let compareWith = {};
         // @ts-ignore
         compareWith[this.uiConfig.keyId] = itemId;
         avLoggerDetails(compareWith);
 
-        if (this.stateManager && this.stateName) {
-            let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
-            if (selectedItem) {
-                const shouldDelete = this.eventForwarder.itemDeleteStarted(this, selectedItem);
-                if (shouldDelete) {
-                    this.eventForwarder.itemDeleted(this, selectedItem);
-                }
-            }
-        }
-        else {
-            // no statemanager - send the id to the listener
-            const shouldDelete = this.eventForwarder.itemDeleteStarted(this, itemId);
+        let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+        if (selectedItem) {
+            const shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
+            avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource} - ${shouldDelete}`);
             if (shouldDelete) {
-                this.eventForwarder.itemDeleted(this, itemId);
+                avLoggerDetails(selectedItem);
+                this.eventForwarder.itemDeleted(this, selectedItem);
             }
-
         }
     }
 
@@ -134,36 +128,36 @@ export default abstract class AbstractView implements StateChangeListener, View 
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
-        const itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
         // @ts-ignore
         const actionName = event.target.getAttribute(EXTRA_ACTION_ATTRIBUTE_NAME);
 
+        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
-        avLoggerDetails(`Item with id ${itemId} attempting delete from ${dataSource}`);
+        avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource}`);
         let compareWith = {};
         // @ts-ignore
         compareWith[this.uiConfig.keyId] = itemId;
         avLoggerDetails(compareWith);
 
-        if (this.stateManager && this.stateName) {
-            let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
-            if (selectedItem) {
-                this.eventForwarder.itemAction(this, actionName, selectedItem);
-            }
+        let selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+        if (selectedItem) {
+            this.eventForwarder.itemAction(this, actionName, selectedItem);
         }
     }
 
 
     protected getDragData(event: DragEvent): any {
         // @ts-ignore
-        const itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
+        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
-        avLoggerDetails(`Item with id ${itemId} getting drag data from ${dataSource}`);
+        avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} getting drag data from ${dataSource}`);
 
         let compareWith = {};
         // @ts-ignore
@@ -171,14 +165,12 @@ export default abstract class AbstractView implements StateChangeListener, View 
 
         let selectedItem = {};
 
-        if (this.stateManager && this.stateName) {
-            selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
-            if (selectedItem) {
-                // @ts-ignore
-                selectedItem[DRAGGABLE_TYPE] = this.uiConfig.detail.drag?.type;
-                // @ts-ignore
-                selectedItem[DRAGGABLE_FROM] = this.uiConfig.detail.drag?.from;
-            }
+        selectedItem = this.stateManager.findItemInState(this.stateName, compareWith, this.compareStateItemsForEquality);
+        if (selectedItem) {
+            // @ts-ignore
+            selectedItem[DRAGGABLE_TYPE] = this.uiConfig.detail.drag?.type;
+            // @ts-ignore
+            selectedItem[DRAGGABLE_FROM] = this.uiConfig.detail.drag?.from;
         }
         return selectedItem;
     }
@@ -211,7 +203,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
     }
 
     protected eventStartDrag(event: DragEvent) {
-        avLogger('drag start');
+        avLogger(`view ${this.getName()}: drag start`);
         avLoggerDetails(event.target);
         const data = JSON.stringify(this.getDragData(event));
         avLoggerDetails(data);
@@ -220,7 +212,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
     }
 
     protected createResultForItem(name: string, item: any): HTMLElement {
-        avLogger('Abstract View : creating Result');
+        avLogger(`view ${this.getName()}: creating Result`);
         avLogger(item);
 
         const resultDataKeyId = this.getIdForStateItem(name, item);
@@ -344,7 +336,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
             const secondModifier = this.getSecondaryModifierForStateItem(name, item);
             switch (modifier) {
                 case Modifier.normal: {
-                    avLogger('Abstract View: normal item');
+                    avLogger(`view ${this.getName()}: normal item`);
                     browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.normal);
                     if (this.uiConfig.icons && this.uiConfig.icons.normal) {
                         let iconEl = document.createElement('i');
@@ -381,7 +373,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                     break;
                 }
                 case Modifier.active: {
-                    avLogger('Abstract View: active item', 10);
+                    avLogger(`view ${this.getName()}: active item`);
                     browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.active);
                     if (this.uiConfig.icons && this.uiConfig.icons.active) {
                         let iconEl = document.createElement('i');
@@ -408,7 +400,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
                     break;
                 }
                 case Modifier.inactive: {
-                    avLogger('Abstract View: inactive item', 10);
+                    avLogger(`view ${this.getName()}: inactive item`);
                     browserUtil.addRemoveClasses(childEl, this.uiConfig.modifiers.inactive);
                     if (this.uiConfig.icons && this.uiConfig.icons.inactive) {
                         let iconEl = document.createElement('i');
@@ -450,7 +442,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
     }
 
     protected createResultsForState(name: string, newState: any): void {
-        avLogger('Abstract View : creating Results', 10);
+        avLogger(`view ${this.getName()}: creating Results`, 10);
         avLogger(newState);
         // remove the previous items from list
         const viewEl = document.getElementById(this.uiConfig.resultsContainerId);
@@ -460,7 +452,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
         newState.map((item: any, index: number) => {
             const childEl = this.createResultForItem(name, item);
             // add draggable actions
-            avLogger(`Abstract View: Adding child ${this.getIdForStateItem(name,item)}`);
+            avLogger(`view ${this.getName()}:  Adding child ${this.getIdForStateItem(name,item)}`);
             if (viewEl) viewEl.appendChild(childEl);
         });
     }
@@ -468,6 +460,8 @@ export default abstract class AbstractView implements StateChangeListener, View 
     setContainedBy(container: HTMLElement): void {
         this.containerEl = container;
         if (this.uiConfig.detail.drop) {
+            avLoggerDetails(`view ${this.getName()}: Adding dragover events to ${this.uiConfig.dataSourceId}`)
+            avLoggerDetails(container);
             container.addEventListener('dragover', (event) => {
                 event.preventDefault();
             });
@@ -478,7 +472,8 @@ export default abstract class AbstractView implements StateChangeListener, View 
     }
 
     handleDrop(event: Event) {
-        avLogger('drop event');
+        avLogger(`view ${this.getName()}: drop event`);
+        avLoggerDetails(event.target);
         // @ts-ignore
         const draggedObjectJSON = event.dataTransfer.getData(DRAGGABLE_KEY_ID);
         const draggedObject = JSON.parse(draggedObjectJSON);
@@ -487,7 +482,7 @@ export default abstract class AbstractView implements StateChangeListener, View 
         // check to see if we accept the dropped type and source
         const droppedObjectType = draggedObject[DRAGGABLE_TYPE];
         const droppedObjectFrom = draggedObject[DRAGGABLE_FROM];
-        avLogger(`drop event from ${droppedObjectFrom} with type ${droppedObjectType}`);
+        avLogger(`view ${this.getName()}: drop event from ${droppedObjectFrom} with type ${droppedObjectType}`);
         if (this.uiConfig.detail.drop) {
             const acceptType = (this.uiConfig.detail.drop.acceptTypes.findIndex((objectType) => objectType === droppedObjectType) >= 0);
             let acceptFrom = true;
@@ -495,12 +490,18 @@ export default abstract class AbstractView implements StateChangeListener, View 
                 if (this.uiConfig.detail.drop.acceptFrom) {
                     acceptFrom = (this.uiConfig.detail.drop.acceptFrom.findIndex((from) => from === droppedObjectFrom) >= 0);
                 }
-                avLoggerDetails(`accepted type? ${acceptType} and from? ${acceptFrom}`);
+                avLoggerDetails(`view ${this.getName()}: accepted type? ${acceptType} and from? ${acceptFrom}`);
                 if (acceptType && acceptFrom) {
                     this.eventForwarder.itemDropped(this,draggedObject);
                 }
             }
         }
     }
+
+    getName(): string {
+        return this.uiConfig.dataSourceId;
+    }
+
+    hidden(): void {}
 
 }

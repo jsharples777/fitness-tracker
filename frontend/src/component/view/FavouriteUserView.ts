@@ -6,8 +6,8 @@ import Controller from "../../Controller";
 import {ChatManager} from "../../socket/ChatManager";
 import AbstractView from "../../ui-framework/AbstractView";
 import {ViewListener} from "../../ui-framework/ViewListener";
-import {Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import {DRAGGABLE, STATE_NAMES} from "../../AppTypes";
+import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {View} from "../../ui-framework/View";
 
 const vLogger = debug('user-search-sidebar');
@@ -19,8 +19,9 @@ class FavouriteUserView extends AbstractView implements ChatUserEventListener,Vi
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-        keyId: 'user-id',
-        dataSourceId: 'blockedUsers',
+        keyId: 'id',
+        keyType: KeyType.number,
+        dataSourceId: VIEW_NAME.favouriteUsers,
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',
@@ -175,7 +176,7 @@ class FavouriteUserView extends AbstractView implements ChatUserEventListener,Vi
         }
     }
 
-    itemDeleteStarted(view: View, selectedItem: any): boolean {
+    canDeleteItem(view: View, selectedItem: any): boolean {
         return true;
     }
 
@@ -189,6 +190,7 @@ class FavouriteUserView extends AbstractView implements ChatUserEventListener,Vi
 
 
     itemDropped(view: View, droppedItem: any): void {
+        vLogger(`Handling item dropped ${droppedItem.username}`);
         if (ChatManager.getInstance().isUserInFavouriteList(droppedItem.username)) {
             vLogger(`${droppedItem.username} already in fav list, ignoring`);
             return;

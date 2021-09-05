@@ -427,7 +427,7 @@ export class ScoreSheetController implements ChatReceiver {
         if (this.currentScoreRoom && this.isLoggedIn()) {
             const created = parseInt(moment().format('YYYYMMDDHHmmss'));
             // @ts-ignore
-            socketManager.sendMessage(
+            SocketManager.getInstance().sendMessage(
                 this.getCurrentUser(),
                 this.currentScoreRoom,
                 'data',

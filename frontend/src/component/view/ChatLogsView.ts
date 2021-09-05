@@ -5,27 +5,26 @@ import {ChatManager} from "../../socket/ChatManager";
 import {ChatLog, Invitation, Message} from "../../socket/Types";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import AbstractView from "../../ui-framework/AbstractView";
-import {Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {View} from "../../ui-framework/View";
+import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
+import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
+import {isSame, isSameRoom} from "../../util/EqualityFunctions";
 
 
 const csLogger = debug('chat-sidebar');
-const csLoggerDetail = debug('chat-sidebar:detail');
 
 class ChatLogsView extends AbstractView implements ChatEventListener,ViewListener {
-    // @ts-ignore
-    protected fastUserSearch: HTMLElement;
     protected selectedChatLog:ChatLog|null = null;
-
-    private static chatFastSearchUserNames:string = 'chatFastSearchUserNames';
 
     private static DOMConfig: ViewDOMConfig = {
         resultsContainerId: 'chatLogs',
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-        keyId: 'room',
-        dataSourceId: 'chatLogs',
+        keyId: 'roomName',
+        keyType: KeyType.string,
+        dataSourceId: VIEW_NAME.chatLogs,
         modifiers: {
             normal: '',
             inactive: 'list-group-item-dark',
@@ -41,15 +40,18 @@ class ChatLogsView extends AbstractView implements ChatEventListener,ViewListene
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
                 iconClasses: 'text-black fas fa-sign-out-alt',
             },
+            badge: {
+                elementType: 'span',
+                elementClasses: 'badge badge-pill badge-primary mr-1',
+            }
         },
     };
 
     constructor() {
-        super(ChatLogsView.DOMConfig,null, null);
+        super(ChatLogsView.DOMConfig,new MemoryBufferStateManager(), STATE_NAMES.chatLogs);
 
 
         // handler binding
-        this.updateView = this.updateView.bind(this);
         this.handleChatLogsUpdated = this.handleChatLogsUpdated.bind(this);
         this.handleChatLogUpdated = this.handleChatLogUpdated.bind(this);
         this.handleChatStarted = this.handleChatStarted.bind(this);
@@ -57,19 +59,29 @@ class ChatLogsView extends AbstractView implements ChatEventListener,ViewListene
         NotificationController.getInstance().addListener(this);
     }
 
+    compareStateItemsForEquality(item1:any, item2:any) :boolean {
+        return isSameRoom(item1,item2);
+    }
+
+    private updateStateManager() {
+        csLogger(`Updating state with chat manager`);
+        let newState = ChatManager.getInstance().getChatLogs();
+        csLogger(newState);
+        this.stateManager.setStateByName(STATE_NAMES.chatLogs,newState,true);
+    }
+
     handleNewInviteReceived(invite: Invitation): boolean { return true; }
 
     handleChatLogUpdated(log: ChatLog): void {
         csLogger(`Handling chat log updates`);
-        this.updateView('', {})
+        this.updateStateManager();
     }
 
 
     onDocumentLoaded() {
         super.onDocumentLoaded();
         this.addEventListener(this);
-
-        this.updateView('', {});
+        this.updateStateManager();
     }
 
     getIdForStateItem(name: string, item: any) {
@@ -96,18 +108,11 @@ class ChatLogsView extends AbstractView implements ChatEventListener,ViewListene
     }
 
 
-    updateView(name: string, newState: any) {
-        csLoggerDetail(`Updating state with chat manager`);
-        newState = ChatManager.getInstance().getChatLogs();
-        csLoggerDetail(newState);
-        super.updateView(name, newState);
-    }
-
     selectChatRoom(roomName:string) {
         let room = ChatManager.getInstance().getChatLog(roomName);
         this.selectedChatLog = room;
         this.eventForwarder.itemSelected(this,this.selectedChatLog);
-        this.updateView('',{});
+        this.updateStateManager();
     }
 
 
@@ -115,31 +120,31 @@ class ChatLogsView extends AbstractView implements ChatEventListener,ViewListene
         if (this.selectedChatLog) {
             ChatManager.getInstance().touchChatLog(this.selectedChatLog.roomName);
         }
-        this.updateView('', {});
+        this.updateStateManager();
     }
 
     handleChatStarted(log: ChatLog): void {
         this.selectedChatLog = log;
         this.eventForwarder.itemSelected(this,this.selectedChatLog);
-        this.updateView('', {});
+        this.updateStateManager();
     }
 
     getBadgeValue(name: string, item: any): number {
         return item.numOfNewMessages;
     }
 
-    itemDeleteStarted(view: View, selectedItem: any): boolean {
+    canDeleteItem(view: View, selectedItem: any): boolean {
         return true;
     }
 
     itemDeleted(view: View, selectedItem: any): void {
-        ChatManager.getInstance().leaveChat(selectedItem);
-        if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem)) {
+        csLogger(`Deleting chat ${selectedItem.roomName}`);
+        ChatManager.getInstance().leaveChat(selectedItem.roomName);
+        if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem.roomName)) {
             this.eventForwarder.itemDeselected(this,this.selectedChatLog);
             this.selectedChatLog = null;
         }
-
-        this.updateView('', {});
+        this.updateStateManager();
     }
 
 
@@ -150,12 +155,23 @@ class ChatLogsView extends AbstractView implements ChatEventListener,ViewListene
         }
     }
 
+    hidden() {
+        this.hideRequested(this);
+    }
+
     documentLoaded(view: View): void {}
     itemAction(view: View, actionName: string, selectedItem: any): void {}
     itemDragStarted(view: View, selectedItem: any): void {}
     itemDropped(view: View, droppedItem: any): void {}
-    itemSelected(view: View, selectedItem: any): void {}
-    itemDeselected(view: View, selectedItem: any): void {}
+    itemSelected(view: View, selectedItem: any): void {
+        this.selectedChatLog = selectedItem;
+        this.updateStateManager();
+    }
+
+    itemDeselected(view: View, selectedItem: any): void {
+        this.selectedChatLog = null;
+        this.updateStateManager();
+    }
     showRequested(view: View): void {}
 
     handleOfflineMessagesReceived(messages: Message[]): void {}

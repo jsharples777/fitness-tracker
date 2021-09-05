@@ -76,12 +76,18 @@ export enum Modifier {
     warning
 }
 
+export enum KeyType {
+    number,
+    string
+}
+
 export type ViewDOMConfig = {
     resultsContainerId:string,
     resultsElementType:string,
     resultsElementAttributes?:[Attribute],
     resultsClasses:string,
     keyId:string,
+    keyType: KeyType,
     dataSourceId:string,
     modifiers?:ModifierClasses,
     icons?:IconClasses,

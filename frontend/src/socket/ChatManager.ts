@@ -376,6 +376,7 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
         if (this.getCurrentUser().trim().length === 0) return;  // we are not logged in
         this.removeChatLog(room);
         SocketManager.getInstance().leaveChat(this.getCurrentUser(), room, InviteType.ChatRoom);
+        this.emitUnreadMessageCountChanged();
     }
 
     login(): void {
