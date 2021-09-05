@@ -1,10 +1,23 @@
-import {FieldGroup, FieldListener, FieldUIConfig, Form, FormListener, FormMode, FormUIDefinition} from "./FormTypes";
+import {
+    FieldGroup,
+    FieldListener,
+    FieldUIConfig,
+    Form,
+    FormEvent,
+    FormEventType,
+    FormListener,
+    FormUIDefinition
+} from "./FormTypes";
 import browserUtil from "../../util/BrowserUtil";
 import {FieldInputElementFactory} from "./FieldInputElementFactory";
+import {BasicButtonElement} from "../ConfigurationTypes";
 
 export type FormFactoryResponse = {
     form: HTMLFormElement,
     fields: HTMLInputElement[],
+    deleteButton: HTMLButtonElement|null,
+    cancelButton: HTMLButtonElement,
+    submitButton: HTMLButtonElement,
 }
 
 export class FormElementFactory {
@@ -20,7 +33,35 @@ export class FormElementFactory {
 
     private constructor() {}
 
-    public createFormElements(form:Form, formListener:FormListener,mode:FormMode,formConfig:FormUIDefinition,listener:FieldListener,idValueToUse?:string, dataObject?:any):FormFactoryResponse {
+    private createFormButton(form:Form,formConfig:FormUIDefinition,formListener:FormListener,buttonDef:BasicButtonElement,eventType:FormEventType):HTMLButtonElement {
+        let buttonEl:HTMLButtonElement = document.createElement('button');
+        browserUtil.addRemoveClasses(buttonEl,buttonDef.buttonClasses);
+        buttonEl.setAttribute('id',`${formConfig.id}.${eventType}`);
+        if (buttonDef.buttonText) {
+            buttonEl.innerText = buttonDef.buttonText;
+        }
+        if (buttonDef.iconClasses) {
+            let iconEl = document.createElement('i');
+            if (iconEl) {
+                browserUtil.addRemoveClasses(iconEl,buttonDef.iconClasses);
+                buttonEl.appendChild(iconEl);
+            }
+        }
+        /* setup the event handler for the button */
+        buttonEl.addEventListener('click',(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            let formEvent:FormEvent = {
+                target:form,
+                formId:formConfig.id,
+                eventType:eventType
+            }
+            formListener.formChanged(formEvent);
+        });
+        return buttonEl;
+    }
+
+    public createFormElements(form:Form, formListener:FormListener,formConfig:FormUIDefinition,listener:FieldListener):FormFactoryResponse {
         let formEl:HTMLFormElement = document.createElement('form');
         formEl.setAttribute('id',formConfig.id);
         formEl.setAttribute('name',formConfig.displayName);
@@ -47,9 +88,39 @@ export class FormElementFactory {
             });
         });
 
+        /* setup the buttons */
+        let buttonContainer:HTMLElement = formEl;
+
+        if (formConfig.buttonsContainedBy) {
+            buttonContainer = document.createElement(formConfig.buttonsContainedBy.elementType);
+            if (buttonContainer) {
+                if (formConfig.buttonsContainedBy.elementAttributes) browserUtil.addAttributes(buttonContainer,formConfig.buttonsContainedBy.elementAttributes);
+                browserUtil.addRemoveClasses(buttonContainer,formConfig.buttonsContainedBy.elementClasses);
+                formEl.appendChild(buttonContainer);
+            }
+            else {
+                buttonContainer = formEl; // couldn't create the button container, use the form
+            }
+        }
+
+        let deleteButtonEl:HTMLButtonElement|null = null;
+        if (formConfig.deleteButton) {
+            deleteButtonEl = this.createFormButton(form,formConfig,formListener,formConfig.deleteButton,FormEventType.DELETED);
+            buttonContainer.appendChild(deleteButtonEl);
+        }
+
+        let cancelButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListener,formConfig.cancelButton,FormEventType.CANCELLED);
+        buttonContainer.appendChild(cancelButtonEl);
+
+        let submitButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListener,formConfig.submitButton,FormEventType.SAVED);
+        buttonContainer.appendChild(cancelButtonEl);
+
         let result:FormFactoryResponse = {
             form: formEl,
-            fields: formInputElements
+            fields: formInputElements,
+            deleteButton:deleteButtonEl,
+            cancelButton:cancelButtonEl,
+            submitButton:submitButtonEl
         }
 
         return result;

@@ -65,6 +65,21 @@ export class FieldInputElementFactory {
         if (fieldConfig.elementAttributes) browserUtil.addAttributes(fieldElement,fieldConfig.elementAttributes);
         if (fieldConfig.elementClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.elementClasses);
 
+        // if the field has a validator, then we need a div for error messages
+        let errorMessageDivEl:HTMLElement|null = null;
+
+        if (fieldConfig.validator) {
+            errorMessageDivEl = document.createElement('div');
+            errorMessageDivEl.setAttribute('id',`${fieldConfig.field.id}.error`);
+            errorMessageDivEl.setAttribute('style','display: none'); // default to not visible
+            let messageEl = document.createElement(fieldConfig.validator.messageDisplay.elementType);
+            if (messageEl) {
+                messageEl.setAttribute('id',`${fieldConfig.field.id}.error.message`);
+                browserUtil.addRemoveClasses(messageEl,fieldConfig.validator.messageDisplay.elementClasses);
+                if (fieldConfig.validator.messageDisplay.elementAttributes) browserUtil.addAttributes(messageEl,fieldConfig.validator.messageDisplay.elementAttributes);
+            }
+        }
+
         /*
         setup event handlers
         */
@@ -75,7 +90,7 @@ export class FieldInputElementFactory {
                 if (fieldConfig.validator) {
                     const field: FieldDefinition = fieldConfig.field;
                     const value: string = fieldElement.value;
-                    const validationResp: ValidationResponse = fieldConfig.validator.isValidValue(field, value);
+                    const validationResp: ValidationResponse = fieldConfig.validator.validator.isValidValue(field, value);
                     if (!validationResp.isValid) {
                         let message = validationResp.message;
                         if (!message) {
@@ -126,6 +141,8 @@ export class FieldInputElementFactory {
             let containedByEl = document.createElement(fieldConfig.containedBy.elementType);
             if (containedByEl) {
                 browserUtil.addRemoveClasses(containedByEl,fieldConfig.containedBy.elementClasses);
+                containedByEl.setAttribute('id',`${fieldConfig.field.id}.container`);
+
                 if (fieldConfig.containedBy.elementAttributes) browserUtil.addAttributes(containerEl,fieldConfig.containedBy.elementAttributes);
                 // do we have a label also?
                 if (fieldConfig.label) {
@@ -144,22 +161,27 @@ export class FieldInputElementFactory {
                         if (fieldConfig.describedBy.elementClasses) browserUtil.addRemoveClasses(descEl,fieldConfig.describedBy.elementClasses);
                         containedByEl.appendChild(fieldElement);
                         containedByEl.appendChild(descEl);
+                        if (errorMessageDivEl) containedByEl.appendChild(errorMessageDivEl);
                     }
                     else { // description failure, add the field
                         containedByEl.appendChild(fieldElement);
+                        if (errorMessageDivEl) containedByEl.appendChild(errorMessageDivEl);
                     }
                 }
                 else { // no description, add field to container
                     containedByEl.appendChild(fieldElement);
+                    if (errorMessageDivEl) containedByEl.appendChild(errorMessageDivEl);
                 }
                 containerEl.appendChild(containedByEl);
             }
             else { // errors should keep making something!
                 containerEl.appendChild(fieldElement);
+                if (errorMessageDivEl) containerEl.appendChild(errorMessageDivEl);
             }
         }
         else {
             containerEl.appendChild(fieldElement);
+            if (errorMessageDivEl) containerEl.appendChild(errorMessageDivEl);
         }
 
         return fieldElement;

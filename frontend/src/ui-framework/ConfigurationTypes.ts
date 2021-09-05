@@ -25,7 +25,7 @@ export type BasicButtonElement = {
 
 export type BasicElement = {
     elementType:string,
-    elementAttributes?:[Attribute],
+    elementAttributes?:Attribute[],
     elementClasses:string
 }
 
@@ -73,7 +73,8 @@ export enum Modifier {
 
 export enum KeyType {
     number,
-    string
+    string,
+    boolean
 }
 
 export type ViewDOMConfig = {

@@ -1,4 +1,4 @@
-import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes";
+import {Attribute, BasicButtonElement, BasicElement,KeyType} from "../ConfigurationTypes";
 
 export enum FieldType {
     text,
@@ -16,7 +16,13 @@ export type FieldDefinition = {
     type: FieldType,
     default?: string,
     displayName:string,
-    mandatory:boolean
+    mandatory:boolean,
+    description?:string
+}
+
+export type AttributeFieldMapItem = {
+    fieldId:string,
+    attributeName:string
 }
 
 export type ValidationResponse = {
@@ -38,6 +44,10 @@ export interface FieldRenderer { // renders during user changes
 
 export interface FieldEditor { // allows for an "editor" component
     editValue(field:FieldDefinition, currentValue:string):string;
+}
+
+export interface ConditionalField { // a field may not be visible based on other field values
+    shouldBeVisible(field:FieldDefinition, formValues:string[]):boolean;
 }
 
 export enum UIFieldType {
@@ -72,11 +82,14 @@ export type FieldUIConfig = {
     label?:FieldLabel,
     describedBy?:DescriptionText,
     containedBy?:BasicElement,
-    showDefault:boolean, // currently not implemented
-    validator?:FieldValidator, // on blur
+    validator?: {
+        validator:FieldValidator, // on blur
+        messageDisplay:BasicElement
+    }
     renderer?:FieldRenderer, // on change
     editor?:FieldEditor, // on focus
     formatter?:FieldFormatter // used by form when saving
+    conditionalDisplay?:ConditionalField // used to determine if the is visible
 }
 
 export interface FieldListener {
@@ -107,13 +120,13 @@ export enum FormMode {
 }
 
 export enum FormEventType {
-    SHOWN,
-    HIDDEN,
-    CANCELLED,
-    SAVED,
-    DELETED,
-    MODECHANGED,
-    RESETTING,
+    SHOWN = 'shown',
+    HIDDEN = 'hidden',
+    CANCELLED = 'cancel',
+    SAVED = 'save',
+    DELETED = 'delete',
+    MODECHANGED = 'modechanged',
+    RESETTING = 'reset',
 }
 
 export interface Form {
@@ -129,12 +142,15 @@ export interface Form {
 export type FormEvent = {
     target:Form,
     formId:string,
-    event:FormEventType,
+    eventType:FormEventType,
 }
 
 export interface FormListener {
     formChanged(event:FormEvent,formValues?:any):void;
 }
+
+
+
 
 
 
