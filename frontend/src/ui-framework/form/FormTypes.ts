@@ -1,13 +1,21 @@
 import {Attribute, BasicButtonElement, BasicElement,KeyType} from "../ConfigurationTypes";
 
 export enum FieldType {
-    text,
-    number,
-    date,
-    time,
-    email,
-    password,
-    hidden,
+    id = 'Id',
+    uuid = 'UUID',
+    text = 'Text',
+    integer = 'Integer',
+    float = 'Number',
+    date = 'Date',
+    time = 'Time',
+    datetime = 'Datetime',
+    email = 'Email',
+    password = 'Password',
+    boolean = 'True/False'
+}
+
+export interface FieldValueGenerator {
+    generate(field:FieldDefinition,isCreate:boolean):string;
 }
 
 export type FieldDefinition = {
@@ -17,7 +25,12 @@ export type FieldDefinition = {
     default?: string,
     displayName:string,
     mandatory:boolean,
-    description?:string
+    description?:string,
+    generator?:{
+        onCreation:boolean,
+        onModify:boolean,
+        generator:FieldValueGenerator
+    }
 }
 
 export type AttributeFieldMapItem = {
@@ -27,7 +40,8 @@ export type AttributeFieldMapItem = {
 
 export type ValidationResponse = {
     isValid:boolean,
-    message?:string
+    message?:string,
+    resetOnFailure:boolean
 }
 
 export interface FieldValidator {  // is the current value valid (includes manndatory checks)

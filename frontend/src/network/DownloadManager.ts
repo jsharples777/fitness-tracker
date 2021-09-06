@@ -1,5 +1,5 @@
 import apiUtil from './ApiUtil';
-import uuid from '../util/UUID';
+import uuid from 'uuid';
 import QueueListener from "./QueueListener";
 import {jsonRequest, managerRequest, queueType, RequestCallBackFunction, RequestType} from "./Types";
 
@@ -74,7 +74,7 @@ class DownloadManager {
 
     public addApiRequest(jsonRequest: jsonRequest, isPriority = false) {
         // add a new requestId to the request for future tracking
-        const requestId = uuid.getUniqueId();
+        const requestId = uuid.v4();
         dlLogger(`Download Manger: Adding Queue Request ${requestId}`);
         dlLogger(jsonRequest, 200);
 

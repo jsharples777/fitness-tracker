@@ -102,7 +102,7 @@ export class FieldInputElementFactory {
             });
         }
 
-        if (fieldConfig.renderer) { // render the value when the field gains focus
+        if (fieldConfig.renderer) { // render the value when the field changes
             fieldElement.addEventListener('change',(event) => {
                 event.preventDefault();
                 event.stopPropagation();

@@ -9,7 +9,7 @@ import {ChatEventListener} from "./ChatEventListener";
 
 import {StateManager} from "../state/StateManager";
 import BrowserStorageStateManager from "../state/BrowserStorageStateManager";
-import uuid from "../util/UUID";
+import uuid from "uuid";
 import {ChatUserEventListener} from "./ChatUserEventListener";
 import {UnreadMessageCountListener} from "./UnreadMessageCountListener";
 
@@ -506,7 +506,7 @@ export class ChatManager implements ChatReceiver, ChatEmitter {
         }
         if (!foundLog) {
             foundLog = {
-                roomName: uuid.getUniqueId(),
+                roomName: uuid.v4(),
                 users: [this.getCurrentUser(), username],
                 messages: [],
                 lastViewed: parseInt(moment().format('YYYYMMDDHHmmss')),
