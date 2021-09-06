@@ -5,7 +5,7 @@ import {ChatReceiver} from "../../socket/ChatReceiver";
 import NotificationManager from "../../notification/NotificationManager";
 import {ScoreSheetDetailView} from "../view/ScoreSheetDetailView";
 import {ScoreSheet, STATE_NAMES} from "../../AppTypes";
-import uuid from 'uuid';
+import {v4} from 'uuid';
 import {ChatManager} from "../../socket/ChatManager";
 import {StateManager} from "../../state/StateManager";
 import moment from "moment";
@@ -278,7 +278,7 @@ export class ScoreSheetController implements ChatReceiver {
             this.currentlySelectedBoardGame = boardGame;
             if (this.isLoggedIn()) this.currentUsersInScoreSheet = [this.getCurrentUser()];
             this.isRoomCreator = true;
-            this.currentScoreRoom = uuid.v4();
+            this.currentScoreRoom = v4();
             this.currentScoreSheet = {
                 room: this.currentScoreRoom,
                 boardGameName: boardGame.name,

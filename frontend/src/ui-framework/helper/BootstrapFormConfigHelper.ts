@@ -1,4 +1,5 @@
-import {FieldDefinition, FieldGroup, FieldUIConfig, FormUIDefinition} from "../form/FormTypes";
+import {FieldDefinition, FieldGroup, FieldType, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormTypes";
+import {BasicFieldOperations} from "./BasicFieldOperations";
 
 export class BootstrapFormConfigHelper {
 
@@ -14,12 +15,77 @@ export class BootstrapFormConfigHelper {
     private constructor() {}
 
     public generateFormConfig(formId:string, displayName:string, fieldDefs:FieldDefinition[]) {
+        let fieldOperations:BasicFieldOperations = new BasicFieldOperations();
+
         // create the Field UI config for each field
         let fieldUIConfigs:FieldUIConfig[] = [];
         fieldDefs.forEach((fieldDef) => {
+            let fieldType:UIFieldType = UIFieldType.text;
+            switch (fieldDef.type) {
+                case (FieldType.time):
+                case (FieldType.text):
+                case (FieldType.datetime):
+                case (FieldType.date): {
+                    break;
+                }
+                case (FieldType.uuid):
+                case (FieldType.id): {
+                    fieldType = UIFieldType.hidden;
+                    break;
+                }
+                case (FieldType.integer):
+                case (FieldType.float): {
+                    fieldType = UIFieldType.number;
+                    break;
+                }
+                case (FieldType.email): {
+                    fieldType = UIFieldType.email;
+                    break;
+                }
+                case (FieldType.password): {
+                    fieldType = UIFieldType.password;
+                    break;
+                }
+                case (FieldType.boolean): {
+                    fieldType = UIFieldType.checkbox;
+                    break;
+                }
+            }
+
             // construct the field ui config
+            let fieldUIConfig:FieldUIConfig = {
+                field:fieldDef,
+                elementType:fieldType,
+                elementClasses:'form-control',
+                label: {
+                    label: fieldDef.displayName,
+                },
+                containedBy: {
+                    elementType: 'div',
+                    elementClasses: 'form-group'
+                },
+                validator: {
+                    validator: fieldOperations,
+                    messageDisplay: {
+                        elementType: 'div',
+                        elementClasses: 'invalid-feedback'
+                    },
+                    validClasses:'is-valid',
+                    invalidClasses:'is-invalid',
+                },
+                renderer: fieldOperations,
+                formatter: fieldOperations,
+            }
 
+            if (fieldDef.description) {
+                fieldUIConfig.describedBy = {
+                    message: fieldDef.description,
+                    elementType:'small',
+                    elementClasses: 'text-muted'
+                }
+            }
 
+            fieldUIConfigs.push(fieldUIConfig);
         });
         // create a form with a single group and button container with Bootstrap styles
         const fieldGroup:FieldGroup = {

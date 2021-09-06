@@ -1,4 +1,4 @@
-import {FieldDefinition, FieldListener, FieldUIConfig, UIFieldType, ValidationResponse} from "./FormTypes";
+import {FieldDefinition, FieldListener, FieldType, FieldUIConfig, UIFieldType, ValidationResponse} from "./FormTypes";
 import browserUtil from "../../util/BrowserUtil";
 
 export class FieldInputElementFactory {
@@ -16,7 +16,7 @@ export class FieldInputElementFactory {
 
     public createFormFieldComponentElement(containerEl:HTMLElement, fieldConfig:FieldUIConfig,listener:FieldListener):HTMLInputElement { // return the input element
         let fieldElement:HTMLInputElement = document.createElement('input');
-        fieldElement.setAttribute('id',fieldConfig.field.id);
+        fieldElement.setAttribute('id',`field.${fieldConfig.field.id}`);
         fieldElement.setAttribute('name',fieldConfig.field.id);
 
         switch(fieldConfig.elementType) {
@@ -70,11 +70,11 @@ export class FieldInputElementFactory {
 
         if (fieldConfig.validator) {
             errorMessageDivEl = document.createElement('div');
-            errorMessageDivEl.setAttribute('id',`${fieldConfig.field.id}.error`);
+            errorMessageDivEl.setAttribute('id',`field.${fieldConfig.field.id}.error`);
             errorMessageDivEl.setAttribute('style','display: none'); // default to not visible
             let messageEl = document.createElement(fieldConfig.validator.messageDisplay.elementType);
             if (messageEl) {
-                messageEl.setAttribute('id',`${fieldConfig.field.id}.error.message`);
+                messageEl.setAttribute('id',`field.${fieldConfig.field.id}.error.message`);
                 browserUtil.addRemoveClasses(messageEl,fieldConfig.validator.messageDisplay.elementClasses);
                 if (fieldConfig.validator.messageDisplay.elementAttributes) browserUtil.addAttributes(messageEl,fieldConfig.validator.messageDisplay.elementAttributes);
             }
@@ -91,10 +91,44 @@ export class FieldInputElementFactory {
                     const field: FieldDefinition = fieldConfig.field;
                     const value: string = fieldElement.value;
                     const validationResp: ValidationResponse = fieldConfig.validator.validator.isValidValue(field, value);
+
+                    const errorMessageDiv = document.getElementById(`field.${fieldConfig.field.id}.error`);
+                    const errorMessageEl = document.getElementById(`field.${fieldConfig.field.id}.error.message`);
+
+                    // clear any previous message
+                    errorMessageDiv?.setAttribute('style','display:none');
+                    if (errorMessageEl) errorMessageEl.innerHTML = '';
+
+                    if (fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.invalidClasses,false);
+                    if (fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.validClasses);
+
                     if (!validationResp.isValid) {
+                        if (fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.invalidClasses);
+                        if (fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.validClasses,false);
+
                         let message = validationResp.message;
                         if (!message) {
                             message = `${field.displayName} does not have a valid value.`;
+                        }
+                        // show the error message
+                        errorMessageDiv?.setAttribute('style','display:block')
+                        if (errorMessageEl) errorMessageEl.innerHTML = message;
+
+                        if (validationResp.resetOnFailure) {
+                            switch (field.type) {
+                                case (FieldType.boolean): {
+                                    fieldElement.value = 'false';
+                                    break;
+                                }
+                                case (FieldType.float): {
+                                    fieldElement.value = '0.0';
+                                    break;
+                                }
+                                default: {
+                                    fieldElement.value = '';
+                                    break;
+                                }
+                            }
                         }
                         listener.failedValidation(field, value, message);
                     }
@@ -141,7 +175,7 @@ export class FieldInputElementFactory {
             let containedByEl = document.createElement(fieldConfig.containedBy.elementType);
             if (containedByEl) {
                 browserUtil.addRemoveClasses(containedByEl,fieldConfig.containedBy.elementClasses);
-                containedByEl.setAttribute('id',`${fieldConfig.field.id}.container`);
+                containedByEl.setAttribute('id',`field.${fieldConfig.field.id}.container`);
 
                 if (fieldConfig.containedBy.elementAttributes) browserUtil.addAttributes(containerEl,fieldConfig.containedBy.elementAttributes);
                 // do we have a label also?
@@ -156,8 +190,8 @@ export class FieldInputElementFactory {
                     let descEl:HTMLElement = document.createElement(fieldConfig.describedBy.elementType);
                     if (descEl) {
                         // link the field and the description
-                        descEl.setAttribute('id',fieldConfig.describedBy.id);
-                        fieldElement.setAttribute('aria-describedby',fieldConfig.describedBy.id);
+                        descEl.setAttribute('id',`field.${fieldConfig.field.id}.desc`);
+                        fieldElement.setAttribute('aria-describedby',`field.${fieldConfig.field.id}.desc`);
                         if (fieldConfig.describedBy.elementClasses) browserUtil.addRemoveClasses(descEl,fieldConfig.describedBy.elementClasses);
                         containedByEl.appendChild(fieldElement);
                         containedByEl.appendChild(descEl);

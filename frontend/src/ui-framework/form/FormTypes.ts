@@ -82,7 +82,6 @@ export type FieldLabel = {
 }
 
 export type DescriptionText = {
-    id:string,
     message:string,
     elementType:string,
     elementClasses:string,
@@ -98,12 +97,15 @@ export type FieldUIConfig = {
     containedBy?:BasicElement,
     validator?: {
         validator:FieldValidator, // on blur
-        messageDisplay:BasicElement
+        messageDisplay:BasicElement,
+        validClasses?:string,
+        invalidClasses?:string
     }
     renderer?:FieldRenderer, // on change
     editor?:FieldEditor, // on focus
     formatter?:FieldFormatter // used by form when saving
     conditionalDisplay?:ConditionalField // used to determine if the is visible
+
 }
 
 export interface FieldListener {
