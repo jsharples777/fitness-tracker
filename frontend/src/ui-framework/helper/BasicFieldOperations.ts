@@ -1,15 +1,8 @@
-import {
-    FieldDefinition,
-    FieldFormatter,
-    FieldRenderer,
-    FieldType,
-    FieldValidator,
-    FieldValueGenerator,
-    ValidationResponse
-} from "../form/FormTypes";
 import moment from "moment";
-import uuid from 'uuid';
+import {v4} from 'uuid';
 import Controller from "../../Controller";
+import {FieldFormatter, FieldRenderer, FieldValidator} from "../form/FormUITypes";
+import {FieldDefinition, FieldType, FieldValueGenerator, ValidationResponse} from "../form/DataObjectTypes";
 
 type FieldNameValue = {
     id: string,
@@ -238,7 +231,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 break;
             }
             case (FieldType.uuid): {
-                result = uuid.v4();
+                result = v4();
                 break;
             }
             case (FieldType.userId): {

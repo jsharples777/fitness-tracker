@@ -1,56 +1,5 @@
-import {Attribute, BasicButtonElement, BasicElement,KeyType} from "../ConfigurationTypes";
-
-export enum FieldType {
-    id = 'Id',
-    uuid = 'UUID',
-    text = 'Text',
-    integer = 'Integer',
-    float = 'Number',
-    date = 'Date',
-    time = 'Time',
-    datetime = 'Datetime',
-    email = 'Email',
-    password = 'Password',
-    boolean = 'True/False',
-    userId = 'User',
-}
-
-export interface FieldValueGenerator {
-    generate(field:FieldDefinition,isCreate:boolean):string;
-}
-
-export type FieldDefinition = {
-    id:string,
-    idType: KeyType,
-    type: FieldType,
-    default?: string,
-    displayName:string,
-    mandatory:boolean,
-    displayOnly?:boolean,
-    description?:string,
-    generator?:{
-        onCreation:boolean,
-        onModify:boolean,
-        generator:FieldValueGenerator
-    }
-}
-
-export type DataObjectDefinition = {
-    id:string,
-    displayName:string,
-    fields:FieldDefinition[]
-}
-
-export type AttributeFieldMapItem = {
-    fieldId:string,
-    attributeName:string
-}
-
-export type ValidationResponse = {
-    isValid:boolean,
-    message?:string,
-    resetOnFailure:boolean
-}
+import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes";
+import {FieldDefinition, ValidationResponse} from "./DataObjectTypes";
 
 export interface FieldValidator {  // is the current value valid (includes manndatory checks)
     isValidValue(field:FieldDefinition, currentValue:string):ValidationResponse;
@@ -116,11 +65,6 @@ export type FieldUIConfig = {
 
 }
 
-export interface FieldListener {
-    valueChanged(field:FieldDefinition, newValue:string):void;
-    failedValidation(field:FieldDefinition, currentValue:string, message:string):void;
-}
-
 export type FieldGroup = {
     containedBy?:BasicElement,
     fields:FieldUIConfig[]
@@ -143,43 +87,18 @@ export enum FormMode {
     update
 }
 
-export enum FormEventType {
-    SHOWN = 'shown',
-    HIDDEN = 'hidden',
-    CANCELLED = 'cancel',
-    SAVED = 'save',
-    DELETED = 'delete',
-    MODECHANGED_CREATE = 'modechangedcreate',
-    MODECHANGED_MODIFY = 'modechangedmodify',
-    RESETTING = 'reset',
+export type AttributeFieldMapItem = {
+    fieldId:string,
+    attributeId:string
 }
 
-export interface Field {
-    initialise(config:FieldUIConfig):void;
-    addFieldListener(listener:FieldListener):void;
-    isValid():boolean;
-    getValue():string|null;
-}
+export const DATA_ID_ATTRIBUTE:string = 'data-id';
 
-export interface Form {
-    initialise(config:FormUIDefinition):void;
-    setIsVisible(isVisible:boolean):void;
-    reset():void;
-    startCreateNew():void;
-    startUpdate(objectToEdit:any):void;
-    addFormListener(listener:FormListener):void;
-    addFieldListener(listener:FieldListener):void;
-}
 
-export type FormEvent = {
-    target:Form,
-    formId:string,
-    eventType:FormEventType,
-}
 
-export interface FormListener {
-    formChanged(event:FormEvent,formValues?:any):void;
-}
+
+
+
 
 
 

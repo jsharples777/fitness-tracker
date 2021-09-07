@@ -1,5 +1,7 @@
-import {FieldDefinition, FieldListener, FieldType, FieldUIConfig, UIFieldType, ValidationResponse} from "./FormTypes";
 import browserUtil from "../../util/BrowserUtil";
+import {DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypes";
+import {FieldListener} from "./FieldListener";
+import {FieldDefinition, FieldType, ValidationResponse} from "./DataObjectTypes";
 
 export class FieldInputElementFactory {
 
@@ -17,6 +19,7 @@ export class FieldInputElementFactory {
     public createFormFieldComponentElement(containerEl:HTMLElement, fieldConfig:FieldUIConfig,listeners:FieldListener[]):HTMLInputElement { // return the input element
         let fieldElement:HTMLInputElement = document.createElement('input');
         fieldElement.setAttribute('id',`field.${fieldConfig.field.id}`);
+        fieldElement.setAttribute(DATA_ID_ATTRIBUTE,fieldConfig.field.id);
         fieldElement.setAttribute('name',fieldConfig.field.id);
 
         switch(fieldConfig.elementType) {
@@ -123,6 +126,10 @@ export class FieldInputElementFactory {
                             switch (field.type) {
                                 case (FieldType.boolean): {
                                     fieldElement.value = 'false';
+                                    break;
+                                }
+                                case (FieldType.integer): {
+                                    fieldElement.value = '0';
                                     break;
                                 }
                                 case (FieldType.float): {

@@ -1,16 +1,11 @@
-import {
-    FieldGroup,
-    FieldListener,
-    FieldUIConfig,
-    Form,
-    FormEvent,
-    FormEventType,
-    FormListener,
-    FormUIDefinition
-} from "./FormTypes";
+
 import browserUtil from "../../util/BrowserUtil";
 import {FieldInputElementFactory} from "./FieldInputElementFactory";
 import {BasicButtonElement} from "../ConfigurationTypes";
+import {Form} from "./Form";
+import {FieldGroup, FieldUIConfig, FormUIDefinition} from "./FormUITypes";
+import {FormEvent, FormEventType, FormListener} from "./FormListener";
+import {FieldListener} from "./FieldListener";
 
 export type FormFactoryResponse = {
     form: HTMLFormElement,
@@ -33,7 +28,7 @@ export class FormElementFactory {
 
     private constructor() {}
 
-    private createFormButton(form:Form,formConfig:FormUIDefinition,formListener:FormListener,buttonDef:BasicButtonElement,eventType:FormEventType):HTMLButtonElement {
+    private createFormButton(form:Form,formConfig:FormUIDefinition,formListeners:FormListener[],buttonDef:BasicButtonElement,eventType:FormEventType):HTMLButtonElement {
         let buttonEl:HTMLButtonElement = document.createElement('button');
         browserUtil.addRemoveClasses(buttonEl,buttonDef.buttonClasses);
         buttonEl.setAttribute('id',`${formConfig.id}.${eventType}`);
@@ -56,12 +51,12 @@ export class FormElementFactory {
                 formId:formConfig.id,
                 eventType:eventType
             }
-            formListener.formChanged(formEvent);
+            formListeners.forEach((listener) => listener.formChanged(formEvent));
         });
         return buttonEl;
     }
 
-    public createFormElements(form:Form, formListener:FormListener,formConfig:FormUIDefinition,listener:FieldListener):FormFactoryResponse {
+    public createFormElements(form:Form, formListeners:FormListener[],formConfig:FormUIDefinition,fieldListeners:FieldListener[]):FormFactoryResponse {
         let formEl:HTMLFormElement = document.createElement('form');
         formEl.setAttribute('id',formConfig.id);
         formEl.setAttribute('name',formConfig.displayName);
@@ -83,7 +78,7 @@ export class FormElementFactory {
                 }
             }
             group.fields.forEach((field:FieldUIConfig) => {
-                const fieldEl = FieldInputElementFactory.getInstance().createFormFieldComponentElement(containerEl,field,listener);
+                const fieldEl = FieldInputElementFactory.getInstance().createFormFieldComponentElement(containerEl,field,fieldListeners);
                 formInputElements.push(fieldEl);
             });
         });
@@ -105,14 +100,14 @@ export class FormElementFactory {
 
         let deleteButtonEl:HTMLButtonElement|null = null;
         if (formConfig.deleteButton) {
-            deleteButtonEl = this.createFormButton(form,formConfig,formListener,formConfig.deleteButton,FormEventType.DELETED);
+            deleteButtonEl = this.createFormButton(form,formConfig,formListeners,formConfig.deleteButton,FormEventType.DELETING);
             buttonContainer.appendChild(deleteButtonEl);
         }
 
-        let cancelButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListener,formConfig.cancelButton,FormEventType.CANCELLED);
+        let cancelButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListeners,formConfig.cancelButton,FormEventType.CANCELLING);
         buttonContainer.appendChild(cancelButtonEl);
 
-        let submitButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListener,formConfig.submitButton,FormEventType.SAVED);
+        let submitButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListeners,formConfig.submitButton,FormEventType.SAVING);
         buttonContainer.appendChild(cancelButtonEl);
 
         let result:FormFactoryResponse = {

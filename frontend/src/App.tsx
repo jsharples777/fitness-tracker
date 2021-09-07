@@ -25,6 +25,10 @@ import BGGSearchView from "./component/view/BGGSearchView";
 import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "./ui-framework/ConfigurationTypes";
 import {ViewListener} from "./ui-framework/ViewListener";
 import {View} from "./ui-framework/View";
+import {DataObjectDefinition, FieldType} from "./ui-framework/form/DataObjectTypes";
+import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
+import {Form} from "./ui-framework/form/Form";
+import {BasicFormImplementation} from "./ui-framework/form/BasicFormImplementation";
 
 
 const logger = debug('app');
@@ -311,6 +315,20 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         // ok lets try get things done
         ScoreSheetController.getInstance().initialise(this);
         Controller.getInstance().initialise();
+
+        // now lets break things with a new form
+        let dataObjDef:DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObject("test","Test", true, true);
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"email","Email",FieldType.email,true,"We totally won't message with this...");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"float","Float",FieldType.float,true,"A number yo....");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"checkbox","Checkbox?",FieldType.boolean,true,"Yes or No?");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"date","Date",FieldType.date,true,"Date yep");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"time","Time",FieldType.time,true,"How long till we get there?");
+        // okay lets make a form
+        let form:Form = new BasicFormImplementation("testForm",dataObjDef);
+        form.initialise();
+        form.startCreateNew();
+        form.setIsVisible(true);
+
     }
 
     hideAllSideBars() {

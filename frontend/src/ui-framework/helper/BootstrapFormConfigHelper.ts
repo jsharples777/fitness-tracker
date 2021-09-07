@@ -1,5 +1,6 @@
-import {FieldDefinition, FieldGroup, FieldType, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormTypes";
 import {BasicFieldOperations} from "./BasicFieldOperations";
+import {DataObjectDefinition, FieldType} from "../form/DataObjectTypes";
+import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypes";
 
 export class BootstrapFormConfigHelper {
 
@@ -14,12 +15,12 @@ export class BootstrapFormConfigHelper {
 
     private constructor() {}
 
-    public generateFormConfig(formId:string, displayName:string, fieldDefs:FieldDefinition[]) {
+    public generateFormConfig(dataObjDef:DataObjectDefinition):FormUIDefinition {
         let fieldOperations:BasicFieldOperations = new BasicFieldOperations();
 
         // create the Field UI config for each field
         let fieldUIConfigs:FieldUIConfig[] = [];
-        fieldDefs.forEach((fieldDef) => {
+        dataObjDef.fields.forEach((fieldDef) => {
             let fieldType:UIFieldType = UIFieldType.text;
             switch (fieldDef.type) {
                 case (FieldType.time):
@@ -97,8 +98,8 @@ export class BootstrapFormConfigHelper {
         }
 
         const formConfig:FormUIDefinition = {
-            id: formId,
-            displayName: displayName,
+            id: dataObjDef.id,
+            displayName: dataObjDef.displayName,
             fieldGroups: [fieldGroup],
             buttonsContainedBy: {
                 elementType:'div',

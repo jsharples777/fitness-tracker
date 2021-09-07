@@ -1,6 +1,6 @@
-import {DataObjectDefinition, FieldDefinition, FieldType} from "../form/FormTypes";
-import {KeyType} from "../ConfigurationTypes";
-import {BasicFieldOperations} from "./BasicFieldOperations";
+import {KeyType} from "../ui-framework/ConfigurationTypes";
+import {BasicFieldOperations} from "../ui-framework/helper/BasicFieldOperations";
+import {DataObjectDefinition, FieldDefinition, FieldType} from "../ui-framework/form/DataObjectTypes";
 
 export const FIELD_ID:string = 'id';
 export const FIELD_CreatedBy:string = 'createdBy';
