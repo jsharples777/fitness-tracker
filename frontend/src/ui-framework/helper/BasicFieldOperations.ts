@@ -3,6 +3,9 @@ import {v4} from 'uuid';
 import Controller from "../../Controller";
 import {FieldFormatter, FieldRenderer, FieldValidator} from "../form/FormUITypes";
 import {FieldDefinition, FieldType, FieldValueGenerator, ValidationResponse} from "../form/DataObjectTypes";
+import debug from 'debug';
+
+const logger = debug('basic-field-operations');
 
 type FieldNameValue = {
     id: string,
@@ -29,6 +32,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
 
     // called when saving, change to final values
     formatValue(field: FieldDefinition, currentValue: string): string {
+        logger(`Handling format value for field ${field.displayName} with value ${currentValue}`);
         let result = "";
         switch (field.type) { // only need to change dates
             case (FieldType.date): {
@@ -41,13 +45,15 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 result = moment(currentValue, 'DD/MM/YYYY HH:mm:ss').format('YYYYMMDDHHmmss');
             }
         }
+        logger(`Handling format value for field ${field.displayName} with value ${currentValue} - result is ${result}`);
         return result;
     }
 
     isValidValue(field: FieldDefinition, currentValue: string): ValidationResponse {
+        logger(`Handling is valid value for field ${field.displayName} with value ${currentValue}`);
         let response: ValidationResponse = {
             isValid: true,
-            resetOnFailure: true
+            resetOnFailure: false
         }
 
         // basics first, is the field mandatory?
@@ -67,6 +73,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 response.isValid = BasicFieldOperations.dateTimeRegex.test(currentValue);
                 if (!response.isValid) {
                     response.message = `${field.displayName} must be DD/MM/YYYY hh:mm`;
+
                 }
                 break;
             }
@@ -74,6 +81,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 response.isValid = BasicFieldOperations.dateRegex.test(currentValue);
                 if (!response.isValid) {
                     response.message = `${field.displayName} must be DD/MM/YYYY`;
+
                 }
                 break;
             }
@@ -119,7 +127,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
             case (FieldType.time): {
                 response.isValid = BasicFieldOperations.timeRegex.test(currentValue);
                 if (!response.isValid) {
-                    response.message = `${field.displayName} must be 24 hour time format 00:00`;
+                    response.message = `${field.displayName} must be 24 hour time format 00:00:00`;
                 }
                 break;
             }
@@ -132,17 +140,19 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
             }
         }
 
-
+        logger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - result is ${response.isValid} - ${response.message}`);
         return response;
     }
 
     private setPreviousValue(field: FieldDefinition, newValue: string) {
+        logger(`Storing previous value for field ${field.displayName} with  new value ${newValue}`);
         let fieldValue: FieldNameValue;
 
         let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
         if (index >= 0) {
             //we have a previous value
             fieldValue = this.previousFieldValues[index];
+            logger(`Storing previous value for field ${field.displayName} with new value ${newValue} - old value was ${fieldValue}`);
             fieldValue.value = newValue;
         } else {
             // create a new record of the value
@@ -150,17 +160,20 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 id: field.id,
                 value: newValue
             }
+            logger(`Storing previous value for field ${field.displayName} with new value ${newValue} - NO previous`);
             this.previousFieldValues.push(fieldValue);
         }
     }
 
     renderValue(field: FieldDefinition, currentValue: string): string | null {
+        logger(`Rendering value for field ${field.displayName} with new value ${currentValue}`);
         // ensure we don't end up in an endless loop
         // if the value hasn't changed return null
         let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
         if (index >= 0) {
             //we have a previous value
             let fieldValue: FieldNameValue = this.previousFieldValues[index];
+            logger(`Rendering value for field ${field.displayName} with new value ${currentValue} - previous value ${fieldValue.value}`);
             if (fieldValue.value === currentValue) return null;
         }
         // either not yet seen or value has changed from previous
@@ -180,9 +193,12 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
 
             // store the previous value
             this.setPreviousValue(field, newValue);
+            logger(`Rendering value for field ${field.displayName} with new value ${currentValue} - rendered to ${newValue}`);
             return newValue;
         } else {
             // empty value, no rendering required
+            logger(`Rendering value for field ${field.displayName} with new value is empty - no rendering required`);
+
             return null;
         }
     }
@@ -223,7 +239,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 break;
             }
             case (FieldType.time): {
-                result = '00:00';
+                result = '00:00:00';
                 break;
             }
             case (FieldType.boolean): {
@@ -249,10 +265,12 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
             // are we only generating on create
             if (field.generator.onCreation && isCreate) {
                 result = this.generateValue(field);
+                logger(`Generating value for field ${field.displayName} with on creation ${result}`);
             }
             // or if we are modifying and should also be modifying the value
             if (field.generator.onModify && !isCreate) {
                 result = this.generateValue(field);
+                logger(`Generating value for field ${field.displayName} with on modify ${result}`);
             }
         }
         return result;

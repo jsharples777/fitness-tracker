@@ -56,7 +56,7 @@ export type FieldUIConfig = {
         validator:FieldValidator, // on blur
         messageDisplay:BasicElement,
         validClasses?:string,
-        invalidClasses?:string
+        invalidClasses?:string,
     }
     renderer?:FieldRenderer, // on change
     editor?:FieldEditor, // on focus

@@ -1,5 +1,5 @@
 import {Field} from "./Field";
-import {FieldUIConfig, FieldValidator} from "./FormUITypes";
+import {FieldUIConfig, FieldValidator, UIFieldType} from "./FormUITypes";
 import {FieldDefinition, FieldType, ValidationResponse} from "./DataObjectTypes";
 
 
@@ -20,6 +20,7 @@ export class InputField implements Field {
         let result:string|null = null;
         if (this.config && this.element) {
             result = this.element.value;
+            if (this.config.elementType === UIFieldType.checkbox) result = ''+ this.element.checked;
             if (this.config.formatter) {
                 result = this.config.formatter.formatValue(this.definition,result);
             }
@@ -48,6 +49,7 @@ export class InputField implements Field {
     setValue(newValue: string): void {
         if (this.element) {
             this.element.value = newValue;
+            if (this.definition.type === FieldType.boolean) this.element.checked = (newValue.toLowerCase() === 'true');
         }
     }
 
@@ -55,7 +57,7 @@ export class InputField implements Field {
         if (this.element) {
             switch (this.definition.type) {
                 case (FieldType.boolean): {
-                    this.element.value = 'false';
+                    this.element.checked = false;
                     break;
                 }
                 case (FieldType.integer): {

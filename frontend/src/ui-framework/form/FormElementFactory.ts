@@ -108,7 +108,7 @@ export class FormElementFactory {
         buttonContainer.appendChild(cancelButtonEl);
 
         let submitButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListeners,formConfig.submitButton,FormEventType.SAVING);
-        buttonContainer.appendChild(cancelButtonEl);
+        buttonContainer.appendChild(submitButtonEl);
 
         let result:FormFactoryResponse = {
             form: formEl,

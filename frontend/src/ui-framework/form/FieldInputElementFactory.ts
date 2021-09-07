@@ -80,11 +80,12 @@ export class FieldInputElementFactory {
             errorMessageDivEl = document.createElement('div');
             errorMessageDivEl.setAttribute('id',`field.${fieldConfig.field.id}.error`);
             errorMessageDivEl.setAttribute('style','display: none'); // default to not visible
+            browserUtil.addRemoveClasses(errorMessageDivEl,fieldConfig.validator.messageDisplay.elementClasses);
             let messageEl = document.createElement(fieldConfig.validator.messageDisplay.elementType);
             if (messageEl) {
                 messageEl.setAttribute('id',`field.${fieldConfig.field.id}.error.message`);
-                browserUtil.addRemoveClasses(messageEl,fieldConfig.validator.messageDisplay.elementClasses);
                 if (fieldConfig.validator.messageDisplay.elementAttributes) browserUtil.addAttributes(messageEl,fieldConfig.validator.messageDisplay.elementAttributes);
+                errorMessageDivEl.appendChild(messageEl);
             }
         }
 
@@ -97,7 +98,10 @@ export class FieldInputElementFactory {
                 event.stopPropagation();
                 if (fieldConfig.validator) {
                     const field: FieldDefinition = fieldConfig.field;
-                    const value: string = fieldElement.value;
+                    let value: string = fieldElement.value;
+                    // checkboxes store values differently
+                    if (fieldConfig.elementType === UIFieldType.checkbox) value = ''+ fieldElement.checked;
+
                     const validationResp: ValidationResponse = fieldConfig.validator.validator.isValidValue(field, value);
 
                     const errorMessageDiv = document.getElementById(`field.${fieldConfig.field.id}.error`);
@@ -125,7 +129,7 @@ export class FieldInputElementFactory {
                         if (validationResp.resetOnFailure) {
                             switch (field.type) {
                                 case (FieldType.boolean): {
-                                    fieldElement.value = 'false';
+                                    fieldElement.checked = false;
                                     break;
                                 }
                                 case (FieldType.integer): {
@@ -149,21 +153,21 @@ export class FieldInputElementFactory {
             });
         }
 
-        if (fieldConfig.renderer) { // render the value when the field changes
-            fieldElement.addEventListener('change',(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                if (fieldConfig.renderer) {
-                    const field: FieldDefinition = fieldConfig.field;
-                    const value: string = fieldElement.value;
-                    const newValue: string | null = fieldConfig.renderer.renderValue(field, value);
-                    if (newValue) {
-                        fieldElement.value = newValue;
-                        listeners.forEach((listener) => listener.valueChanged(field, newValue));
-                    }
-                }
-            });
-        } // care for endless loops here, renderer needs to return null if no changes
+        // if (fieldConfig.renderer) { // render the value when the field changes
+        //     fieldElement.addEventListener('change',(event) => {
+        //         event.preventDefault();
+        //         event.stopPropagation();
+        //         if (fieldConfig.renderer) {
+        //             const field: FieldDefinition = fieldConfig.field;
+        //             const value: string = fieldElement.value;
+        //             const newValue: string | null = fieldConfig.renderer.renderValue(field, value);
+        //             if (newValue) {
+        //                 fieldElement.value = newValue;
+        //                 listeners.forEach((listener) => listener.valueChanged(field, newValue));
+        //             }
+        //         }
+        //     });
+        // } // care for endless loops here, renderer needs to return null if no changes
 
         if (fieldConfig.editor) { // render the value when the field gains focus
             fieldElement.addEventListener('focus',(event) => {
@@ -196,6 +200,7 @@ export class FieldInputElementFactory {
                 if (fieldConfig.label) {
                     let labelEl:HTMLLabelElement = document.createElement('label');
                     labelEl.setAttribute('for',fieldConfig.field.id);
+                    labelEl.innerHTML = fieldConfig.field.displayName;
                     if (fieldConfig.label.attributes) browserUtil.addAttributes(labelEl,fieldConfig.label.attributes);
                     if (fieldConfig.label.classes) browserUtil.addRemoveClasses(labelEl,fieldConfig.label.classes);
                     containedByEl.appendChild(labelEl);
@@ -205,6 +210,7 @@ export class FieldInputElementFactory {
                     if (descEl) {
                         // link the field and the description
                         descEl.setAttribute('id',`field.${fieldConfig.field.id}.desc`);
+                        if (fieldConfig.field.description) descEl.innerHTML = fieldConfig.field.description;
                         fieldElement.setAttribute('aria-describedby',`field.${fieldConfig.field.id}.desc`);
                         if (fieldConfig.describedBy.elementClasses) browserUtil.addRemoveClasses(descEl,fieldConfig.describedBy.elementClasses);
                         containedByEl.appendChild(fieldElement);

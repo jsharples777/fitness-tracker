@@ -9963,12 +9963,13 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
       errorMessageDivEl.setAttribute('id', "field." + fieldConfig.field.id + ".error");
       errorMessageDivEl.setAttribute('style', 'display: none'); // default to not visible
 
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(errorMessageDivEl, fieldConfig.validator.messageDisplay.elementClasses);
       var messageEl = document.createElement(fieldConfig.validator.messageDisplay.elementType);
 
       if (messageEl) {
         messageEl.setAttribute('id', "field." + fieldConfig.field.id + ".error.message");
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(messageEl, fieldConfig.validator.messageDisplay.elementClasses);
         if (fieldConfig.validator.messageDisplay.elementAttributes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(messageEl, fieldConfig.validator.messageDisplay.elementAttributes);
+        errorMessageDivEl.appendChild(messageEl);
       }
     }
     /*
@@ -9984,7 +9985,9 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
         if (fieldConfig.validator) {
           var field = fieldConfig.field;
-          var value = fieldElement.value;
+          var value = fieldElement.value; // checkboxes store values differently
+
+          if (fieldConfig.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_1__.UIFieldType.checkbox) value = '' + fieldElement.checked;
           var validationResp = fieldConfig.validator.validator.isValidValue(field, value);
           var errorMessageDiv = document.getElementById("field." + fieldConfig.field.id + ".error");
           var errorMessageEl = document.getElementById("field." + fieldConfig.field.id + ".error.message"); // clear any previous message
@@ -10011,7 +10014,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
               switch (field.type) {
                 case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean:
                   {
-                    fieldElement.value = 'false';
+                    fieldElement.checked = false;
                     break;
                   }
 
@@ -10042,28 +10045,21 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
           }
         }
       });
-    }
-
-    if (fieldConfig.renderer) {
-      // render the value when the field changes
-      fieldElement.addEventListener('change', function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (fieldConfig.renderer) {
-          var field = fieldConfig.field;
-          var value = fieldElement.value;
-          var newValue = fieldConfig.renderer.renderValue(field, value);
-
-          if (newValue) {
-            fieldElement.value = newValue;
-            listeners.forEach(function (listener) {
-              return listener.valueChanged(field, newValue);
-            });
-          }
-        }
-      });
-    } // care for endless loops here, renderer needs to return null if no changes
+    } // if (fieldConfig.renderer) { // render the value when the field changes
+    //     fieldElement.addEventListener('change',(event) => {
+    //         event.preventDefault();
+    //         event.stopPropagation();
+    //         if (fieldConfig.renderer) {
+    //             const field: FieldDefinition = fieldConfig.field;
+    //             const value: string = fieldElement.value;
+    //             const newValue: string | null = fieldConfig.renderer.renderValue(field, value);
+    //             if (newValue) {
+    //                 fieldElement.value = newValue;
+    //                 listeners.forEach((listener) => listener.valueChanged(field, newValue));
+    //             }
+    //         }
+    //     });
+    // } // care for endless loops here, renderer needs to return null if no changes
 
 
     if (fieldConfig.editor) {
@@ -10101,6 +10097,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
         if (fieldConfig.label) {
           var labelEl = document.createElement('label');
           labelEl.setAttribute('for', fieldConfig.field.id);
+          labelEl.innerHTML = fieldConfig.field.displayName;
           if (fieldConfig.label.attributes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(labelEl, fieldConfig.label.attributes);
           if (fieldConfig.label.classes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(labelEl, fieldConfig.label.classes);
           containedByEl.appendChild(labelEl);
@@ -10112,6 +10109,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
           if (descEl) {
             // link the field and the description
             descEl.setAttribute('id', "field." + fieldConfig.field.id + ".desc");
+            if (fieldConfig.field.description) descEl.innerHTML = fieldConfig.field.description;
             fieldElement.setAttribute('aria-describedby', "field." + fieldConfig.field.id + ".desc");
             if (fieldConfig.describedBy.elementClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(descEl, fieldConfig.describedBy.elementClasses);
             containedByEl.appendChild(fieldElement);
@@ -10265,7 +10263,7 @@ var FormElementFactory = /*#__PURE__*/function () {
     var cancelButtonEl = this.createFormButton(form, formConfig, formListeners, formConfig.cancelButton, _FormListener__WEBPACK_IMPORTED_MODULE_2__.FormEventType.CANCELLING);
     buttonContainer.appendChild(cancelButtonEl);
     var submitButtonEl = this.createFormButton(form, formConfig, formListeners, formConfig.submitButton, _FormListener__WEBPACK_IMPORTED_MODULE_2__.FormEventType.SAVING);
-    buttonContainer.appendChild(cancelButtonEl);
+    buttonContainer.appendChild(submitButtonEl);
     var result = {
       form: formEl,
       fields: formInputElements,
@@ -10358,7 +10356,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "InputField": () => (/* binding */ InputField)
 /* harmony export */ });
-/* harmony import */ var _DataObjectTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DataObjectTypes */ "./src/ui-framework/form/DataObjectTypes.ts");
+/* harmony import */ var _FormUITypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FormUITypes */ "./src/ui-framework/form/FormUITypes.ts");
+/* harmony import */ var _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DataObjectTypes */ "./src/ui-framework/form/DataObjectTypes.ts");
+
 
 var InputField = /*#__PURE__*/function () {
   function InputField(config, fieldDef, element) {
@@ -10377,6 +10377,7 @@ var InputField = /*#__PURE__*/function () {
 
     if (this.config && this.element) {
       result = this.element.value;
+      if (this.config.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.checkbox) result = '' + this.element.checked;
 
       if (this.config.formatter) {
         result = this.config.formatter.formatValue(this.definition, result);
@@ -10409,25 +10410,26 @@ var InputField = /*#__PURE__*/function () {
   _proto.setValue = function setValue(newValue) {
     if (this.element) {
       this.element.value = newValue;
+      if (this.definition.type === _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean) this.element.checked = newValue.toLowerCase() === 'true';
     }
   };
 
   _proto.reset = function reset() {
     if (this.element) {
       switch (this.definition.type) {
-        case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_0__.FieldType.boolean:
+        case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean:
           {
-            this.element.value = 'false';
+            this.element.checked = false;
             break;
           }
 
-        case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_0__.FieldType.integer:
+        case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.integer:
           {
             this.element.value = '0';
             break;
           }
 
-        case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_0__.FieldType.float:
+        case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.float:
           {
             this.element.value = '0.0';
             break;
@@ -10464,13 +10466,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
 /* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
 /* harmony import */ var _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../form/DataObjectTypes */ "./src/ui-framework/form/DataObjectTypes.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
 
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-field-operations');
 var BasicFieldOperations = /*#__PURE__*/function () {
   function BasicFieldOperations() {
     this.previousFieldValues = [];
@@ -10480,6 +10486,7 @@ var BasicFieldOperations = /*#__PURE__*/function () {
   var _proto = BasicFieldOperations.prototype;
 
   _proto.formatValue = function formatValue(field, currentValue) {
+    logger("Handling format value for field " + field.displayName + " with value " + currentValue);
     var result = "";
 
     switch (field.type) {
@@ -10498,13 +10505,15 @@ var BasicFieldOperations = /*#__PURE__*/function () {
         }
     }
 
+    logger("Handling format value for field " + field.displayName + " with value " + currentValue + " - result is " + result);
     return result;
   };
 
   _proto.isValidValue = function isValidValue(field, currentValue) {
+    logger("Handling is valid value for field " + field.displayName + " with value " + currentValue);
     var response = {
       isValid: true,
-      resetOnFailure: true
+      resetOnFailure: false
     }; // basics first, is the field mandatory?
 
     if (field.mandatory) {
@@ -10607,7 +10616,7 @@ var BasicFieldOperations = /*#__PURE__*/function () {
           response.isValid = BasicFieldOperations.timeRegex.test(currentValue);
 
           if (!response.isValid) {
-            response.message = field.displayName + " must be 24 hour time format 00:00";
+            response.message = field.displayName + " must be 24 hour time format 00:00:00";
           }
 
           break;
@@ -10625,10 +10634,12 @@ var BasicFieldOperations = /*#__PURE__*/function () {
         }
     }
 
+    logger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - result is " + response.isValid + " - " + response.message);
     return response;
   };
 
   _proto.setPreviousValue = function setPreviousValue(field, newValue) {
+    logger("Storing previous value for field " + field.displayName + " with  new value " + newValue);
     var fieldValue;
     var index = this.previousFieldValues.findIndex(function (fieldValue) {
       return fieldValue.id === field.id;
@@ -10637,6 +10648,7 @@ var BasicFieldOperations = /*#__PURE__*/function () {
     if (index >= 0) {
       //we have a previous value
       fieldValue = this.previousFieldValues[index];
+      logger("Storing previous value for field " + field.displayName + " with new value " + newValue + " - old value was " + fieldValue);
       fieldValue.value = newValue;
     } else {
       // create a new record of the value
@@ -10644,13 +10656,15 @@ var BasicFieldOperations = /*#__PURE__*/function () {
         id: field.id,
         value: newValue
       };
+      logger("Storing previous value for field " + field.displayName + " with new value " + newValue + " - NO previous");
       this.previousFieldValues.push(fieldValue);
     }
   };
 
   _proto.renderValue = function renderValue(field, currentValue) {
-    // ensure we don't end up in an endless loop
+    logger("Rendering value for field " + field.displayName + " with new value " + currentValue); // ensure we don't end up in an endless loop
     // if the value hasn't changed return null
+
     var index = this.previousFieldValues.findIndex(function (fieldValue) {
       return fieldValue.id === field.id;
     });
@@ -10658,6 +10672,7 @@ var BasicFieldOperations = /*#__PURE__*/function () {
     if (index >= 0) {
       //we have a previous value
       var fieldValue = this.previousFieldValues[index];
+      logger("Rendering value for field " + field.displayName + " with new value " + currentValue + " - previous value " + fieldValue.value);
       if (fieldValue.value === currentValue) return null;
     } // either not yet seen or value has changed from previous
 
@@ -10682,9 +10697,11 @@ var BasicFieldOperations = /*#__PURE__*/function () {
 
 
       this.setPreviousValue(field, newValue);
+      logger("Rendering value for field " + field.displayName + " with new value " + currentValue + " - rendered to " + newValue);
       return newValue;
     } else {
       // empty value, no rendering required
+      logger("Rendering value for field " + field.displayName + " with new value is empty - no rendering required");
       return null;
     }
   };
@@ -10743,7 +10760,7 @@ var BasicFieldOperations = /*#__PURE__*/function () {
 
       case _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_2__.FieldType.time:
         {
-          result = '00:00';
+          result = '00:00:00';
           break;
         }
 
@@ -10755,7 +10772,7 @@ var BasicFieldOperations = /*#__PURE__*/function () {
 
       case _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_2__.FieldType.uuid:
         {
-          result = (0,uuid__WEBPACK_IMPORTED_MODULE_3__["default"])();
+          result = (0,uuid__WEBPACK_IMPORTED_MODULE_4__["default"])();
           break;
         }
 
@@ -10776,11 +10793,13 @@ var BasicFieldOperations = /*#__PURE__*/function () {
       // are we only generating on create
       if (field.generator.onCreation && isCreate) {
         result = this.generateValue(field);
+        logger("Generating value for field " + field.displayName + " with on creation " + result);
       } // or if we are modifying and should also be modifying the value
 
 
       if (field.generator.onModify && !isCreate) {
         result = this.generateValue(field);
+        logger("Generating value for field " + field.displayName + " with on modify " + result);
       }
     }
 
@@ -10814,9 +10833,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BasicFieldOperations */ "./src/ui-framework/helper/BasicFieldOperations.ts");
 /* harmony import */ var _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../form/DataObjectTypes */ "./src/ui-framework/form/DataObjectTypes.ts");
 /* harmony import */ var _form_FormUITypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../form/FormUITypes */ "./src/ui-framework/form/FormUITypes.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_3___default()('bootstrap-form-config-helper');
 var BootstrapFormConfigHelper = /*#__PURE__*/function () {
   BootstrapFormConfigHelper.getInstance = function getInstance() {
     if (!BootstrapFormConfigHelper._instance) {
@@ -10883,33 +10906,43 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
       var fieldUIConfig = {
         field: fieldDef,
         elementType: fieldType,
-        elementClasses: 'form-control',
-        label: {
-          label: fieldDef.displayName
-        },
-        containedBy: {
-          elementType: 'div',
-          elementClasses: 'form-group'
-        },
-        validator: {
-          validator: fieldOperations,
-          messageDisplay: {
-            elementType: 'div',
-            elementClasses: 'invalid-feedback'
-          },
-          validClasses: 'is-valid',
-          invalidClasses: 'is-invalid'
-        },
+        elementClasses: 'form-control col-sm-9',
         renderer: fieldOperations,
         formatter: fieldOperations
       };
 
-      if (fieldDef.description) {
-        fieldUIConfig.describedBy = {
-          message: fieldDef.description,
-          elementType: 'small',
-          elementClasses: 'text-muted'
+      if (fieldDef.type !== _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.id && fieldDef.type !== _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid) {
+        // no labels, descriptions, container for id,uuid
+        fieldUIConfig.containedBy = {
+          elementType: 'div',
+          elementClasses: 'form-group row'
         };
+        fieldUIConfig.label = {
+          label: fieldDef.displayName,
+          classes: 'col-sm-3 col-form-label'
+        };
+
+        if (fieldDef.description) {
+          // descriptions if the field has one
+          fieldUIConfig.describedBy = {
+            message: fieldDef.description,
+            elementType: 'small',
+            elementClasses: 'text-muted col-sm-9 offset-sm-3'
+          };
+        }
+
+        if (!fieldDef.displayOnly) {
+          // no validator for readonly items
+          fieldUIConfig.validator = {
+            validator: fieldOperations,
+            messageDisplay: {
+              elementType: 'div',
+              elementClasses: 'invalid-feedback col-sm-9 offset-sm-3'
+            },
+            validClasses: 'is-valid',
+            invalidClasses: 'is-invalid'
+          };
+        }
       }
 
       fieldUIConfigs.push(fieldUIConfig);
@@ -10942,10 +10975,11 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
       },
       submitButton: {
         buttonText: 'Save  ',
-        buttonClasses: 'btn-warning rounded p-1 mt-2 w-100',
+        buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
         iconClasses: 'fas fa-save'
       }
     };
+    logger(formConfig);
     return formConfig;
   };
 
@@ -11232,7 +11266,7 @@ var Root = /*#__PURE__*/function (_React$Component) {
       className: "root container-fluid"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
       className: "card-group"
-    }, games));
+    }));
   };
 
   _proto.cancelDelete = function cancelDelete(event) {
@@ -11616,7 +11650,7 @@ var Root = /*#__PURE__*/function (_React$Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
 
 
-localStorage.debug = 'score-sheet-view';
+localStorage.debug = 'bootstrap-form-config-helper basic-field-operations';
 (debug__WEBPACK_IMPORTED_MODULE_2___default().log) = console.info.bind(console); // @ts-ignore
 
 var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Root, {

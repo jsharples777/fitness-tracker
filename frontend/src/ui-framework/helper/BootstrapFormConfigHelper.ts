@@ -2,6 +2,10 @@ import {BasicFieldOperations} from "./BasicFieldOperations";
 import {DataObjectDefinition, FieldType} from "../form/DataObjectTypes";
 import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypes";
 
+import debug from 'debug';
+
+const logger = debug('bootstrap-form-config-helper');
+
 export class BootstrapFormConfigHelper {
 
     private static _instance: BootstrapFormConfigHelper;
@@ -21,6 +25,7 @@ export class BootstrapFormConfigHelper {
         // create the Field UI config for each field
         let fieldUIConfigs:FieldUIConfig[] = [];
         dataObjDef.fields.forEach((fieldDef) => {
+
             let fieldType:UIFieldType = UIFieldType.text;
             switch (fieldDef.type) {
                 case (FieldType.time):
@@ -57,34 +62,42 @@ export class BootstrapFormConfigHelper {
             let fieldUIConfig:FieldUIConfig = {
                 field:fieldDef,
                 elementType:fieldType,
-                elementClasses:'form-control',
-                label: {
-                    label: fieldDef.displayName,
-                },
-                containedBy: {
-                    elementType: 'div',
-                    elementClasses: 'form-group'
-                },
-                validator: {
-                    validator: fieldOperations,
-                    messageDisplay: {
-                        elementType: 'div',
-                        elementClasses: 'invalid-feedback'
-                    },
-                    validClasses:'is-valid',
-                    invalidClasses:'is-invalid',
-                },
+                elementClasses:'form-control col-sm-9',
                 renderer: fieldOperations,
                 formatter: fieldOperations,
             }
 
-            if (fieldDef.description) {
-                fieldUIConfig.describedBy = {
-                    message: fieldDef.description,
-                    elementType:'small',
-                    elementClasses: 'text-muted'
+            if ((fieldDef.type !== FieldType.id) && (fieldDef.type !== FieldType.uuid)) { // no labels, descriptions, container for id,uuid
+                fieldUIConfig.containedBy = {
+                    elementType: 'div',
+                    elementClasses: 'form-group row'
+                };
+
+                fieldUIConfig.label = {
+                    label: fieldDef.displayName,
+                    classes: 'col-sm-3 col-form-label'
+                };
+                if (fieldDef.description) { // descriptions if the field has one
+                    fieldUIConfig.describedBy = {
+                        message: fieldDef.description,
+                        elementType:'small',
+                        elementClasses: 'text-muted col-sm-9 offset-sm-3'
+                    }
+                }
+                if (!fieldDef.displayOnly) { // no validator for readonly items
+                    fieldUIConfig.validator = {
+                        validator: fieldOperations,
+                            messageDisplay: {
+                            elementType: 'div',
+                            elementClasses: 'invalid-feedback col-sm-9 offset-sm-3'
+                        },
+                        validClasses:'is-valid',
+                        invalidClasses:'is-invalid',
+                    };
                 }
             }
+
+
 
             fieldUIConfigs.push(fieldUIConfig);
         });
@@ -117,10 +130,11 @@ export class BootstrapFormConfigHelper {
             },
             submitButton: {
                 buttonText: 'Save  ',
-                buttonClasses: 'btn-warning rounded p-1 mt-2 w-100',
+                buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
                 iconClasses: 'fas fa-save'
             }
         }
+        logger(formConfig);
         return formConfig;
     }
 }
