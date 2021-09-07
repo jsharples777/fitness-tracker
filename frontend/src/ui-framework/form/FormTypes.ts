@@ -11,7 +11,8 @@ export enum FieldType {
     datetime = 'Datetime',
     email = 'Email',
     password = 'Password',
-    boolean = 'True/False'
+    boolean = 'True/False',
+    userId = 'User',
 }
 
 export interface FieldValueGenerator {
@@ -25,12 +26,19 @@ export type FieldDefinition = {
     default?: string,
     displayName:string,
     mandatory:boolean,
+    displayOnly?:boolean,
     description?:string,
     generator?:{
         onCreation:boolean,
         onModify:boolean,
         generator:FieldValueGenerator
     }
+}
+
+export type DataObjectDefinition = {
+    id:string,
+    displayName:string,
+    fields:FieldDefinition[]
 }
 
 export type AttributeFieldMapItem = {
@@ -141,15 +149,23 @@ export enum FormEventType {
     CANCELLED = 'cancel',
     SAVED = 'save',
     DELETED = 'delete',
-    MODECHANGED = 'modechanged',
+    MODECHANGED_CREATE = 'modechangedcreate',
+    MODECHANGED_MODIFY = 'modechangedmodify',
     RESETTING = 'reset',
+}
+
+export interface Field {
+    initialise(config:FieldUIConfig):void;
+    addFieldListener(listener:FieldListener):void;
+    isValid():boolean;
+    getValue():string|null;
 }
 
 export interface Form {
     initialise(config:FormUIDefinition):void;
     setIsVisible(isVisible:boolean):void;
     reset():void;
-    startCreateNew(useValueForId:string):void;
+    startCreateNew():void;
     startUpdate(objectToEdit:any):void;
     addFormListener(listener:FormListener):void;
     addFieldListener(listener:FieldListener):void;

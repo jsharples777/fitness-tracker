@@ -14,7 +14,7 @@ export class FieldInputElementFactory {
 
     private constructor() {}
 
-    public createFormFieldComponentElement(containerEl:HTMLElement, fieldConfig:FieldUIConfig,listener:FieldListener):HTMLInputElement { // return the input element
+    public createFormFieldComponentElement(containerEl:HTMLElement, fieldConfig:FieldUIConfig,listeners:FieldListener[]):HTMLInputElement { // return the input element
         let fieldElement:HTMLInputElement = document.createElement('input');
         fieldElement.setAttribute('id',`field.${fieldConfig.field.id}`);
         fieldElement.setAttribute('name',fieldConfig.field.id);
@@ -64,6 +64,11 @@ export class FieldInputElementFactory {
 
         if (fieldConfig.elementAttributes) browserUtil.addAttributes(fieldElement,fieldConfig.elementAttributes);
         if (fieldConfig.elementClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.elementClasses);
+
+        // readonly field?
+        if (fieldConfig.field.displayOnly) {
+            browserUtil.addAttributes(fieldElement,[{name:'disabled',value:'true'},{name:'readonly',value:'true'}])
+        }
 
         // if the field has a validator, then we need a div for error messages
         let errorMessageDivEl:HTMLElement|null = null;
@@ -130,7 +135,8 @@ export class FieldInputElementFactory {
                                 }
                             }
                         }
-                        listener.failedValidation(field, value, message);
+                        // @ts-ignore
+                        listeners.forEach((listener) => listener.failedValidation(field, value, message));
                     }
                 }
             });
@@ -146,7 +152,7 @@ export class FieldInputElementFactory {
                     const newValue: string | null = fieldConfig.renderer.renderValue(field, value);
                     if (newValue) {
                         fieldElement.value = newValue;
-                        listener.valueChanged(field, newValue);
+                        listeners.forEach((listener) => listener.valueChanged(field, newValue));
                     }
                 }
             });
@@ -162,7 +168,8 @@ export class FieldInputElementFactory {
                     const newValue: string = fieldConfig.editor.editValue(field, value);
                     if (newValue) {
                         fieldElement.value = newValue;
-                        listener.valueChanged(field, newValue);
+                        listeners.forEach((listener) => listener.valueChanged(field, newValue));
+
                     }
                 }
             });
