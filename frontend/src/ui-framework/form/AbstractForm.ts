@@ -6,6 +6,10 @@ import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITy
 import {Field} from "./Field";
 import {KeyType} from "../ConfigurationTypes";
 
+import debug from 'debug';
+
+const logger = debug('abstract-form');
+
 
 export abstract class AbstractForm implements Form,FormListener{
     protected formListeners: FormListener[] = [];
@@ -33,7 +37,7 @@ export abstract class AbstractForm implements Form,FormListener{
     }
 
     /* methods to be implemented in the subclass */
-    protected abstract _startUpdate(objectToEdit:any):void;
+    protected abstract _startUpdate():void;
     protected abstract _startCreate():void;
     protected abstract _reset():void;
     protected abstract _visible():void;
@@ -56,13 +60,17 @@ export abstract class AbstractForm implements Form,FormListener{
     }
 
     protected findFieldUiConfig(fieldDef:FieldDefinition):FieldUIConfig|null|undefined {
+        logger(`Finding field UI Config for field ${fieldDef.displayName}`);
         let result:FieldUIConfig|null|undefined = null;
         if (this.uiDef) {
             let index = 0;
             while (index < this.uiDef.fieldGroups.length) {
                 const fieldGroup = this.uiDef.fieldGroups[index];
                 result = fieldGroup.fields.find((uiConfig) => uiConfig.field.id === fieldDef.id);
-                if (result) break;
+                if (result) {
+                    logger(`Finding field UI Config for field ${fieldDef.displayName} - Found`);
+                    break;
+                }
                 index ++;
             }
         }
@@ -71,6 +79,8 @@ export abstract class AbstractForm implements Form,FormListener{
 
 
     public reset(): void {
+        logger(`Resetting form`);
+
         // inform the listeners
         if (this.uiDef) {
             let formEvent: FormEvent = {
@@ -91,6 +101,7 @@ export abstract class AbstractForm implements Form,FormListener{
     }
 
     public setIsVisible(isVisible: boolean): void {
+        logger(`Changing visibility to ${isVisible}`);
         this.isVisible = isVisible;
         if (this.uiDef) {
             let eventType = FormEventType.HIDDEN;
@@ -112,6 +123,7 @@ export abstract class AbstractForm implements Form,FormListener{
     }
 
     public startCreateNew(): void {
+        logger(`Starting create new`);
         this.currentDataObj = {};
         if (this.uiDef) {
             let eventType = FormEventType.CREATING;
@@ -128,6 +140,8 @@ export abstract class AbstractForm implements Form,FormListener{
 
 
     public startUpdate(objectToEdit: any): void {
+        logger(`Starting modify existing on `);
+        logger(objectToEdit);
         this.currentDataObj = {...objectToEdit}; // take a copy
 
         if (this.uiDef) {
@@ -138,7 +152,7 @@ export abstract class AbstractForm implements Form,FormListener{
                 target: this,
                 eventType: eventType
             }
-            this._startUpdate(objectToEdit);
+            this._startUpdate();
             this.informFormListeners(formEvent, this.currentDataObj);
         }
     }
@@ -150,16 +164,20 @@ export abstract class AbstractForm implements Form,FormListener{
         let shouldCancelChange = false;
         switch (event.eventType) {
             case (FormEventType.CANCELLING): {
+                logger(`Form is cancelling - resetting`);
+
                 // user cancelled the form, will become invisible
                 this._reset(); // reset the form state
                 break;
             }
             case (FormEventType.DELETING): {
+                logger(`Form is deleting - resetting`);
                 // user is deleting the object, will become invisible
                 this._reset();
                 break;
             }
             case (FormEventType.SAVING): {
+                logger(`Form is saving, checking validation and storing values`);
                 let allFieldsValid:boolean = true;
 
                 // user attempting to save the form, lets check the field validation
@@ -175,6 +193,7 @@ export abstract class AbstractForm implements Form,FormListener{
 
                 // is every field valid?
                 if (!allFieldsValid) {
+                    logger(`Form is saving, checking validation - FAILED`);
                     shouldCancelChange = true;
                 }
                 break;
@@ -184,6 +203,7 @@ export abstract class AbstractForm implements Form,FormListener{
     }
 
     getFormattedDataObject(): any {
+        logger(`Getting current formatted data`);
         let formattedResult:any = {};
         this.dataObjDef.fields.forEach((field) => {
             let fieldValue = this.currentDataObj[field.id];
@@ -215,6 +235,7 @@ export abstract class AbstractForm implements Form,FormListener{
                 }
             }
         });
+        logger(formattedResult);
         return formattedResult;
     }
 

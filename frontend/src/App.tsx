@@ -467,7 +467,7 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
 }
 
 //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
-localStorage.debug = 'bootstrap-form-config-helper basic-field-operations' ;
+localStorage.debug = 'basic-form basic-form-detail abstract-form bootstrap-form-config-helper basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
 debug.log = console.info.bind(console);
 
 // @ts-ignore

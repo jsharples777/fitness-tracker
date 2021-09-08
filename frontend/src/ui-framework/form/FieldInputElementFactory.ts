@@ -2,6 +2,9 @@ import browserUtil from "../../util/BrowserUtil";
 import {DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypes";
 import {FieldListener} from "./FieldListener";
 import {FieldDefinition, FieldType, ValidationResponse} from "./DataObjectTypes";
+import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
+import {EditingEventListener} from "./event-handlers/EditingEventListener";
+import {RenderingEventListener} from "./event-handlers/RenderingEventListener";
 
 export class FieldInputElementFactory {
 
@@ -93,97 +96,15 @@ export class FieldInputElementFactory {
         setup event handlers
         */
         if (fieldConfig.validator) { // is the value in the field valid
-            fieldElement.addEventListener('blur',(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                if (fieldConfig.validator) {
-                    const field: FieldDefinition = fieldConfig.field;
-                    let value: string = fieldElement.value;
-                    // checkboxes store values differently
-                    if (fieldConfig.elementType === UIFieldType.checkbox) value = ''+ fieldElement.checked;
-
-                    const validationResp: ValidationResponse = fieldConfig.validator.validator.isValidValue(field, value);
-
-                    const errorMessageDiv = document.getElementById(`field.${fieldConfig.field.id}.error`);
-                    const errorMessageEl = document.getElementById(`field.${fieldConfig.field.id}.error.message`);
-
-                    // clear any previous message
-                    errorMessageDiv?.setAttribute('style','display:none');
-                    if (errorMessageEl) errorMessageEl.innerHTML = '';
-
-                    if (fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.invalidClasses,false);
-                    if (fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.validClasses);
-
-                    if (!validationResp.isValid) {
-                        if (fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.invalidClasses);
-                        if (fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.validator.validClasses,false);
-
-                        let message = validationResp.message;
-                        if (!message) {
-                            message = `${field.displayName} does not have a valid value.`;
-                        }
-                        // show the error message
-                        errorMessageDiv?.setAttribute('style','display:block')
-                        if (errorMessageEl) errorMessageEl.innerHTML = message;
-
-                        if (validationResp.resetOnFailure) {
-                            switch (field.type) {
-                                case (FieldType.boolean): {
-                                    fieldElement.checked = false;
-                                    break;
-                                }
-                                case (FieldType.integer): {
-                                    fieldElement.value = '0';
-                                    break;
-                                }
-                                case (FieldType.float): {
-                                    fieldElement.value = '0.0';
-                                    break;
-                                }
-                                default: {
-                                    fieldElement.value = '';
-                                    break;
-                                }
-                            }
-                        }
-                        // @ts-ignore
-                        listeners.forEach((listener) => listener.failedValidation(field, value, message));
-                    }
-                }
-            });
+            fieldElement.addEventListener('blur',new ValidationEventHandler(fieldConfig,listeners));
         }
 
-        // if (fieldConfig.renderer) { // render the value when the field changes
-        //     fieldElement.addEventListener('change',(event) => {
-        //         event.preventDefault();
-        //         event.stopPropagation();
-        //         if (fieldConfig.renderer) {
-        //             const field: FieldDefinition = fieldConfig.field;
-        //             const value: string = fieldElement.value;
-        //             const newValue: string | null = fieldConfig.renderer.renderValue(field, value);
-        //             if (newValue) {
-        //                 fieldElement.value = newValue;
-        //                 listeners.forEach((listener) => listener.valueChanged(field, newValue));
-        //             }
-        //         }
-        //     });
-        // } // care for endless loops here, renderer needs to return null if no changes
+        if (fieldConfig.renderer) { // render the value when the field changes
+            //fieldElement.addEventListener('change',new RenderingEventListener(fieldConfig,listeners));
+        } // care for endless loops here, renderer needs to return null if no changes
 
         if (fieldConfig.editor) { // render the value when the field gains focus
-            fieldElement.addEventListener('focus',(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                if (fieldConfig.editor) {
-                    const field: FieldDefinition = fieldConfig.field;
-                    const value: string = fieldElement.value;
-                    const newValue: string = fieldConfig.editor.editValue(field, value);
-                    if (newValue) {
-                        fieldElement.value = newValue;
-                        listeners.forEach((listener) => listener.valueChanged(field, newValue));
-
-                    }
-                }
-            });
+            fieldElement.addEventListener('focus',new EditingEventListener(fieldConfig,listeners));
         } // care for endless loops here, renderer needs to return null if no changes
 
 

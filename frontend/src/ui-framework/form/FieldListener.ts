@@ -1,4 +1,4 @@
-import {FieldDefinition} from "./FormUITypes";
+import {FieldDefinition} from "./DataObjectTypes";
 
 export interface FieldListener {
     valueChanged(field:FieldDefinition, newValue:string):void;

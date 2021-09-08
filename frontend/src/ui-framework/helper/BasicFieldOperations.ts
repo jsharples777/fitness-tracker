@@ -5,7 +5,10 @@ import {FieldFormatter, FieldRenderer, FieldValidator} from "../form/FormUITypes
 import {FieldDefinition, FieldType, FieldValueGenerator, ValidationResponse} from "../form/DataObjectTypes";
 import debug from 'debug';
 
-const logger = debug('basic-field-operations');
+const flogger = debug('basic-field-operations-formatter');
+const vlogger = debug('basic-field-operations-validator');
+const glogger = debug('basic-field-operations-generator');
+const rlogger = debug('basic-field-operations-renderer');
 
 type FieldNameValue = {
     id: string,
@@ -32,7 +35,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
 
     // called when saving, change to final values
     formatValue(field: FieldDefinition, currentValue: string): string {
-        logger(`Handling format value for field ${field.displayName} with value ${currentValue}`);
+        flogger(`Handling format value for field ${field.displayName} with value ${currentValue}`);
         let result = "";
         switch (field.type) { // only need to change dates
             case (FieldType.date): {
@@ -45,12 +48,12 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 result = moment(currentValue, 'DD/MM/YYYY HH:mm:ss').format('YYYYMMDDHHmmss');
             }
         }
-        logger(`Handling format value for field ${field.displayName} with value ${currentValue} - result is ${result}`);
+        flogger(`Handling format value for field ${field.displayName} with value ${currentValue} - result is ${result}`);
         return result;
     }
 
     isValidValue(field: FieldDefinition, currentValue: string): ValidationResponse {
-        logger(`Handling is valid value for field ${field.displayName} with value ${currentValue}`);
+        vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue}`);
         let response: ValidationResponse = {
             isValid: true,
             resetOnFailure: false
@@ -140,19 +143,19 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
             }
         }
 
-        logger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - result is ${response.isValid} - ${response.message}`);
+        vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - result is ${response.isValid} - ${response.message}`);
         return response;
     }
 
     private setPreviousValue(field: FieldDefinition, newValue: string) {
-        logger(`Storing previous value for field ${field.displayName} with  new value ${newValue}`);
+        rlogger(`Storing previous value for field ${field.displayName} with  new value ${newValue}`);
         let fieldValue: FieldNameValue;
 
         let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
         if (index >= 0) {
             //we have a previous value
             fieldValue = this.previousFieldValues[index];
-            logger(`Storing previous value for field ${field.displayName} with new value ${newValue} - old value was ${fieldValue}`);
+            rlogger(`Storing previous value for field ${field.displayName} with new value ${newValue} - old value was ${fieldValue}`);
             fieldValue.value = newValue;
         } else {
             // create a new record of the value
@@ -160,20 +163,20 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 id: field.id,
                 value: newValue
             }
-            logger(`Storing previous value for field ${field.displayName} with new value ${newValue} - NO previous`);
+            rlogger(`Storing previous value for field ${field.displayName} with new value ${newValue} - NO previous`);
             this.previousFieldValues.push(fieldValue);
         }
     }
 
     renderValue(field: FieldDefinition, currentValue: string): string | null {
-        logger(`Rendering value for field ${field.displayName} with new value ${currentValue}`);
+        rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue}`);
         // ensure we don't end up in an endless loop
         // if the value hasn't changed return null
         let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
         if (index >= 0) {
             //we have a previous value
             let fieldValue: FieldNameValue = this.previousFieldValues[index];
-            logger(`Rendering value for field ${field.displayName} with new value ${currentValue} - previous value ${fieldValue.value}`);
+            rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue} - previous value ${fieldValue.value}`);
             if (fieldValue.value === currentValue) return null;
         }
         // either not yet seen or value has changed from previous
@@ -193,11 +196,11 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
 
             // store the previous value
             this.setPreviousValue(field, newValue);
-            logger(`Rendering value for field ${field.displayName} with new value ${currentValue} - rendered to ${newValue}`);
+            rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue} - rendered to ${newValue}`);
             return newValue;
         } else {
             // empty value, no rendering required
-            logger(`Rendering value for field ${field.displayName} with new value is empty - no rendering required`);
+            rlogger(`Rendering value for field ${field.displayName} with new value is empty - no rendering required`);
 
             return null;
         }
@@ -207,11 +210,11 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
         let result = '';
         switch (field.type) {
             case (FieldType.datetime): {
-                result = moment().format('YYYYMMDDHHmmss');
+                result = moment().format('DD/MM/YYYY HH:mm:ss');
                 break;
             }
             case (FieldType.date): {
-                result = moment().format('YYYYMMDD');
+                result = moment().format('DD/MM/YYYY');
                 break;
             }
             case (FieldType.float): {
@@ -251,7 +254,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 break;
             }
             case (FieldType.userId): {
-                result = `${Controller.getInstance().getCurrentUser()}`;
+                result = `${Controller.getInstance().getLoggedInUsername()}`;
                 break;
             }
         }
@@ -265,12 +268,12 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
             // are we only generating on create
             if (field.generator.onCreation && isCreate) {
                 result = this.generateValue(field);
-                logger(`Generating value for field ${field.displayName} with on creation ${result}`);
+                glogger(`Generating value for field ${field.displayName} with on creation ${result}`);
             }
             // or if we are modifying and should also be modifying the value
             if (field.generator.onModify && !isCreate) {
                 result = this.generateValue(field);
-                logger(`Generating value for field ${field.displayName} with on modify ${result}`);
+                glogger(`Generating value for field ${field.displayName} with on modify ${result}`);
             }
         }
         return result;

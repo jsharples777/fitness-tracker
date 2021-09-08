@@ -81,7 +81,7 @@ export class BootstrapFormConfigHelper {
                     fieldUIConfig.describedBy = {
                         message: fieldDef.description,
                         elementType:'small',
-                        elementClasses: 'text-muted col-sm-9 offset-sm-3'
+                        elementClasses: 'text-muted col-sm-9 offset-sm-3 mt-1'
                     }
                 }
                 if (!fieldDef.displayOnly) { // no validator for readonly items

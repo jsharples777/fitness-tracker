@@ -1,17 +1,21 @@
 import {Field} from "./Field";
 import {FieldUIConfig, FieldValidator, UIFieldType} from "./FormUITypes";
 import {FieldDefinition, FieldType, ValidationResponse} from "./DataObjectTypes";
+import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
+import {FieldListener} from "./FieldListener";
 
 
-export class InputField implements Field {
+export class InputField implements Field,FieldListener {
     protected config:FieldUIConfig|null = null;
     protected definition:FieldDefinition;
     protected element:HTMLInputElement;
+    protected validationHandler:ValidationEventHandler;
 
     constructor(config:FieldUIConfig,fieldDef:FieldDefinition,element:HTMLInputElement) {
         this.config = config;
         this.definition = fieldDef;
         this.element = element;
+        this.validationHandler = new ValidationEventHandler(config,[this]);
     }
 
     public initialise(): void {}
@@ -79,6 +83,17 @@ export class InputField implements Field {
     clearValue(): void {
         this.reset();
     }
+
+    validate(): void {
+        if (this.element) {
+            this.validationHandler.processValidation(this.element);
+
+        }
+
+    }
+
+    failedValidation(field: FieldDefinition, currentValue: string, message: string): void {}
+    valueChanged(field: FieldDefinition, newValue: string): void {}
 
 
 }

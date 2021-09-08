@@ -6,4 +6,5 @@ export interface Field {
     setValue(newValue:string):void;
     clearValue():void;
     reset():void;
+    validate():void;
 }

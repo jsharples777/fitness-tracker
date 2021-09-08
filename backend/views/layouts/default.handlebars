@@ -6,45 +6,6 @@
 {{#if error}}
     <div class="alert alert-danger">{{error}}</div>
 {{/if}}
-{{#if user}}
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <strong>Board Games</strong> Start by going to Board Game Search and finding some games to add to your collection.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-{{else}}
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>Welcome</strong> If you register with us the benefits are below.  But feel free to search for games and create score sheets with your friends.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <strong>Collection</strong> When you login, you can save your collection to access it anywhere you login with us.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <strong>Chat</strong> Find other users and have chats about your games.  You an invite other users by dragging them over to your chat window from User Search.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Chat and Invites</strong> Offline?  The system will keep the chat messages and invites and let you know when you log back in.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <strong>Score Sheets</strong> Create a score sheet from your collection and then invite your friends to collaborate on the score sheet together by dragging them over from the User Search.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-{{/if}}
 {{{body}}}
 {{> sidebars/score-sheet-sb }}
 {{> sidebars/user-search-sb }}
