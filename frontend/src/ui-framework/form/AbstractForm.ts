@@ -202,42 +202,5 @@ export abstract class AbstractForm implements Form,FormListener{
         return shouldCancelChange;
     }
 
-    getFormattedDataObject(): any {
-        logger(`Getting current formatted data`);
-        let formattedResult:any = {};
-        this.dataObjDef.fields.forEach((field) => {
-            let fieldValue = this.currentDataObj[field.id];
-            if (fieldValue) {
-                switch (field.idType) {
-                    case (KeyType.number): {
-                        let parsed;
-                        if (field.type === FieldType.float) {
-                            parsed = parseFloat(fieldValue);
-                            if (!isNaN(parsed)) {
-                                formattedResult[field.id] = parsed;
-                            }
-                        }
-                        if (field.type === FieldType.integer) {
-                            parsed = parseInt(fieldValue);
-                            if (!isNaN(parsed)) {
-                                formattedResult[field.id] = parsed;
-                            }
-                        }
-                        break;
-                    }
-                    case (KeyType.boolean): {
-                        formattedResult[field.id] = (fieldValue.toLowerCase() === 'true')
-                        break;
-                    }
-                    default: {
-                        formattedResult[field.id] = fieldValue;
-                    }
-                }
-            }
-        });
-        logger(formattedResult);
-        return formattedResult;
-    }
-
-
+    abstract getFormattedDataObject(): any;
 }

@@ -13,15 +13,23 @@ export class RenderingEventListener {
         this.handleEvent = this.handleEvent.bind(this);
     }
 
-    processRendering(fieldElement:HTMLInputElement) {
+    processRendering(fieldElement:HTMLInputElement):string{
+        let newValue:string|null = '';
         if (this.fieldConfig.renderer) {
             const field: FieldDefinition = this.fieldConfig.field;
             const value: string = fieldElement.value;
-            const newValue: string | null = this.fieldConfig.renderer.renderValue(field, value);
+            newValue = this.fieldConfig.renderer.renderValue(field, value);
             if (newValue) {
                 fieldElement.value = newValue;
+                // @ts-ignore
                 this.listeners.forEach((listener) => listener.valueChanged(field, newValue));
             }
+        }
+        if (newValue) {
+            return newValue;
+        }
+        else {
+            return '';
         }
     }
 

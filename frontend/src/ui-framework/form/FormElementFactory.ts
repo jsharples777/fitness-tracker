@@ -10,7 +10,7 @@ import {FieldListener} from "./FieldListener";
 export type FormFactoryResponse = {
     form: HTMLFormElement,
     fields: HTMLInputElement[],
-    deleteButton: HTMLButtonElement|null,
+    deleteButton: HTMLButtonElement,
     cancelButton: HTMLButtonElement,
     submitButton: HTMLButtonElement,
 }
@@ -98,11 +98,8 @@ export class FormElementFactory {
             }
         }
 
-        let deleteButtonEl:HTMLButtonElement|null = null;
-        if (formConfig.deleteButton) {
-            deleteButtonEl = this.createFormButton(form,formConfig,formListeners,formConfig.deleteButton,FormEventType.DELETING);
-            buttonContainer.appendChild(deleteButtonEl);
-        }
+        let deleteButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListeners,formConfig.deleteButton,FormEventType.DELETING);
+        buttonContainer.appendChild(deleteButtonEl);
 
         let cancelButtonEl:HTMLButtonElement = this.createFormButton(form,formConfig,formListeners,formConfig.cancelButton,FormEventType.CANCELLING);
         buttonContainer.appendChild(cancelButtonEl);

@@ -7,4 +7,5 @@ export interface Field {
     clearValue():void;
     reset():void;
     validate():void;
+    render(value:string):string;
 }

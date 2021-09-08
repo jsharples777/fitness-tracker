@@ -1,11 +1,13 @@
 import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig} from "./FormUITypes";
 import {AbstractForm} from "./AbstractForm";
 import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
-import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypes";
+import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypes";
 import {Field} from "./Field";
 import {FormElementFactory, FormFactoryResponse} from "./FormElementFactory";
 import {InputField} from "./InputField";
 import debug from 'debug';
+import {KeyType} from "../ConfigurationTypes";
+import browserUtil from "../../util/BrowserUtil";
 
 const logger = debug('basic-form');
 const dlogger = debug('basic-form-detail');
@@ -81,6 +83,21 @@ export class BasicFormImplementation extends AbstractForm {
         }
     }
 
+    protected renderField(fieldDef:FieldDefinition,currentValue:string):string {
+        let result = currentValue;
+
+        const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === fieldDef.id);
+        if (mapItem) {
+            dlogger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId} with for validation`);
+            // find the field with that id
+            const field: Field | undefined = this.fields.find((field) => field.getId() === mapItem.attributeId);
+            if (field) {
+                result = field.render(currentValue);
+            }
+        }
+        return result;
+    }
+
 
     protected _startCreate(): void {
         // we have a new object, there might be some values to generate
@@ -90,11 +107,15 @@ export class BasicFormImplementation extends AbstractForm {
                 dlogger(`Setting default values for ${fieldDef.displayName} to ${fieldValue}`);
                 this.currentDataObj[fieldDef.id] = fieldValue;
             }
-            this.setFieldValueFromDataObject(fieldDef,this.currentDataObj[fieldDef.id]);
+            let fieldValue = this.currentDataObj[fieldDef.id];
+            if (fieldValue) fieldValue = this.renderField(fieldDef, fieldValue);
+            this.setFieldValueFromDataObject(fieldDef,fieldValue);
             // run the validation to let the user know what is required
             this.validateField(fieldDef);
         });
 
+        // delete button can go
+        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton,[{name:'style',value:'display:none'}]);
 
     }
 
@@ -107,10 +128,14 @@ export class BasicFormImplementation extends AbstractForm {
                 dlogger(`Setting default modified values for ${fieldDef.displayName} to ${fieldValue}`);
                 this.currentDataObj[fieldDef.id] = fieldValue;
             }
-            logger(this.currentDataObj);
+            let fieldValue = this.currentDataObj[fieldDef.id];
+            if (fieldValue) fieldValue = this.renderField(fieldDef, fieldValue);
             this.setFieldValueFromDataObject(fieldDef,this.currentDataObj[fieldDef.id]);
             this.validateField(fieldDef);
         });
+        // delete button make visible again
+        if (this.factoryElements) browserUtil.removeAttributes(this.factoryElements.deleteButton,['style']);
+        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton,[{name:'style',value:'display:block'}]);
     }
 
     protected _visible(): void {
@@ -154,4 +179,38 @@ export class BasicFormImplementation extends AbstractForm {
         }
 
     }
+
+    getFormattedDataObject(): any {
+        logger(`Getting current formatted data`);
+        let formattedResult:any = {};
+        this.dataObjDef.fields.forEach((field) => {
+            let fieldValue = this.currentDataObj[field.id];
+            if (fieldValue) {
+                switch (field.idType) {
+                    case (KeyType.number): {
+                        let parsed;
+                        if (field.type === FieldType.float) {
+                        }
+                        if (field.type === FieldType.integer) {
+                            parsed = parseInt(fieldValue);
+                            if (!isNaN(parsed)) {
+                                formattedResult[field.id] = parsed;
+                            }
+                        }
+                        break;
+                    }
+                    case (KeyType.boolean): {
+
+                        break;
+                    }
+                    default: {
+                        formattedResult[field.id] = fieldValue;
+                    }
+                }
+            }
+        });
+        logger(formattedResult);
+        return formattedResult;
+    }
+
 }

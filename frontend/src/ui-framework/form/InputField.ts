@@ -3,6 +3,7 @@ import {FieldUIConfig, FieldValidator, UIFieldType} from "./FormUITypes";
 import {FieldDefinition, FieldType, ValidationResponse} from "./DataObjectTypes";
 import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
 import {FieldListener} from "./FieldListener";
+import {RenderingEventListener} from "./event-handlers/RenderingEventListener";
 
 
 export class InputField implements Field,FieldListener {
@@ -10,18 +11,29 @@ export class InputField implements Field,FieldListener {
     protected definition:FieldDefinition;
     protected element:HTMLInputElement;
     protected validationHandler:ValidationEventHandler;
+    protected renderingHandler:RenderingEventListener;
 
     constructor(config:FieldUIConfig,fieldDef:FieldDefinition,element:HTMLInputElement) {
         this.config = config;
         this.definition = fieldDef;
         this.element = element;
         this.validationHandler = new ValidationEventHandler(config,[this]);
+        this.renderingHandler = new RenderingEventListener(config, [this]);
     }
 
     public initialise(): void {}
 
     getValue(): string|null {
         let result:string|null = null;
+        if (this.config && this.element) {
+            result = this.element.value;
+            if (this.config.elementType === UIFieldType.checkbox) result = ''+ this.element.checked;
+        }
+        return result;
+    }
+
+    getFormattedValue(): any|null {
+        let result:any|null = null;
         if (this.config && this.element) {
             result = this.element.value;
             if (this.config.elementType === UIFieldType.checkbox) result = ''+ this.element.checked;
@@ -38,7 +50,7 @@ export class InputField implements Field,FieldListener {
             if (this.config.validator) {
                 if (this.config.validator.validator) {
                     const validator:FieldValidator = this.config.validator.validator;
-                    const response:ValidationResponse = validator.isValidValue(this.definition,this.element.value);
+                    const response:ValidationResponse = validator.isValidValue(this.definition,this.getValue());
                     result = response.isValid;
                 }
             }
@@ -87,9 +99,16 @@ export class InputField implements Field,FieldListener {
     validate(): void {
         if (this.element) {
             this.validationHandler.processValidation(this.element);
-
         }
+    }
 
+    render(currentValue:string): string {
+        let result = currentValue;
+        if (this.config?.renderer) {
+            let value = this.config.renderer.renderValue(this.definition,currentValue);
+            if (value) result = value;
+        }
+        return result;
     }
 
     failedValidation(field: FieldDefinition, currentValue: string, message: string): void {}

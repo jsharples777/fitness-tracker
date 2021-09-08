@@ -2,11 +2,11 @@ import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes
 import {FieldDefinition, ValidationResponse} from "./DataObjectTypes";
 
 export interface FieldValidator {  // is the current value valid (includes manndatory checks)
-    isValidValue(field:FieldDefinition, currentValue:string):ValidationResponse;
+    isValidValue(field:FieldDefinition, currentValue:string|null):ValidationResponse;
 }
 
 export interface FieldFormatter { // final value for the field on "saving" the form
-    formatValue(field:FieldDefinition, currentValue:string):string;
+    formatValue(field:FieldDefinition, currentValue:string):any;
 }
 
 export interface FieldRenderer { // renders during user changes
@@ -76,7 +76,7 @@ export type FormUIDefinition = {
     classes?:string,
     fieldGroups:FieldGroup[],
     buttonsContainedBy?:BasicElement
-    deleteButton?:BasicButtonElement,// should be clickable
+    deleteButton:BasicButtonElement,// should be clickable
     cancelButton:BasicButtonElement,// should be clickable
     submitButton:BasicButtonElement  // should be clickable
 }

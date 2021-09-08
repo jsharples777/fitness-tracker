@@ -4,6 +4,7 @@ import Controller from "../../Controller";
 import {FieldFormatter, FieldRenderer, FieldValidator} from "../form/FormUITypes";
 import {FieldDefinition, FieldType, FieldValueGenerator, ValidationResponse} from "../form/DataObjectTypes";
 import debug from 'debug';
+import {KeyType} from "../ConfigurationTypes";
 
 const flogger = debug('basic-field-operations-formatter');
 const vlogger = debug('basic-field-operations-validator');
@@ -34,9 +35,9 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
 
 
     // called when saving, change to final values
-    formatValue(field: FieldDefinition, currentValue: string): string {
+    formatValue(field: FieldDefinition, currentValue: string): any {
         flogger(`Handling format value for field ${field.displayName} with value ${currentValue}`);
-        let result = "";
+        let result:any = currentValue;
         switch (field.type) { // only need to change dates
             case (FieldType.date): {
                 //convert to underlying number format
@@ -46,13 +47,39 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
             case (FieldType.datetime): {
                 //convert to underlying number format
                 result = moment(currentValue, 'DD/MM/YYYY HH:mm:ss').format('YYYYMMDDHHmmss');
+                break;
             }
+            case (FieldType.boolean): {
+                result = (currentValue.toLowerCase() === 'true');
+                break;
+            }
+            case (FieldType.id): {
+                if (field.idType === KeyType.number) {
+                    result = parseInt(currentValue);
+                }
+                break;
+            }
+            case (FieldType.float): {
+                let parsed = parseFloat(currentValue);
+                if (!isNaN(parsed)) {
+                    result = parsed;
+                }
+                break;
+            }
+            case (FieldType.integer): {
+                let parsed = parseFloat(currentValue);
+                if (!isNaN(parsed)) {
+                    result = parsed;
+                }
+                break;
+            }
+
         }
         flogger(`Handling format value for field ${field.displayName} with value ${currentValue} - result is ${result}`);
         return result;
     }
 
-    isValidValue(field: FieldDefinition, currentValue: string): ValidationResponse {
+    isValidValue(field: FieldDefinition, currentValue: string | null): ValidationResponse {
         vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue}`);
         let response: ValidationResponse = {
             isValid: true,
@@ -62,88 +89,89 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
         // basics first, is the field mandatory?
         if (field.mandatory) {
             // do we have any content?
-            if (currentValue.trim().length === 0) {
-                // no content, invalid
+            if ((!currentValue) || (currentValue.trim().length === 0)) {
                 response.isValid = false;
                 response.message = `${field.displayName} is required. Please enter a valid value.`;
+                vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - is valid is ${response.isValid} with message ${response.message}`);
                 return response;
             }
         }
 
         // ok, so we have some content, we need to check if the value is a valid format with regular expressions
-        switch (field.type) {
-            case (FieldType.datetime): {
-                response.isValid = BasicFieldOperations.dateTimeRegex.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be DD/MM/YYYY hh:mm`;
+        if (currentValue) {
+            switch (field.type) {
+                case (FieldType.datetime): {
+                    response.isValid = BasicFieldOperations.dateTimeRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be DD/MM/YYYY hh:mm`;
 
+                    }
+                    break;
                 }
-                break;
-            }
-            case (FieldType.date): {
-                response.isValid = BasicFieldOperations.dateRegex.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be DD/MM/YYYY`;
+                case (FieldType.date): {
+                    response.isValid = BasicFieldOperations.dateRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be DD/MM/YYYY`;
 
+                    }
+                    break;
                 }
-                break;
-            }
-            case (FieldType.float): {
-                response.isValid = BasicFieldOperations.floatRegexp.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be 00.00`;
+                case (FieldType.float): {
+                    response.isValid = BasicFieldOperations.floatRegexp.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be 00.00`;
+                    }
+                    break;
                 }
-                break;
-            }
-            case (FieldType.id): {
-                response.isValid = BasicFieldOperations.integerRegex.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be an integer`;
+                case (FieldType.id): {
+                    response.isValid = BasicFieldOperations.integerRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be an integer`;
+                    }
+                    break;
                 }
-                break;
-            }
-            case (FieldType.email): {
-                response.isValid = BasicFieldOperations.emailRegex.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be an email address`;
+                case (FieldType.email): {
+                    response.isValid = BasicFieldOperations.emailRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be an email address`;
+                    }
+                    break;
                 }
-                break;
-            }
-            case (FieldType.integer): {
-                response.isValid = BasicFieldOperations.dateRegex.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be an integer`;
+                case (FieldType.integer): {
+                    response.isValid = BasicFieldOperations.integerRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be an integer`;
+                    }
+                    break;
                 }
-                break;
-            }
-            case (FieldType.text): {
-                response.isValid = true;
-                break;
-            }
-            case (FieldType.password): {
-                response.isValid = BasicFieldOperations.basicPasswordRegex.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be 8 to 15 letters and digits only`;
+                case (FieldType.text): {
+                    break;
                 }
-                break;
-            }
-            case (FieldType.time): {
-                response.isValid = BasicFieldOperations.timeRegex.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be 24 hour time format 00:00:00`;
+                case (FieldType.password): {
+                    response.isValid = BasicFieldOperations.basicPasswordRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be 8 to 15 letters and digits only`;
+                    }
+                    break;
                 }
-                break;
-            }
-            case (FieldType.boolean): {
-                response.isValid = BasicFieldOperations.booleanRegexp.test(currentValue);
-                if (!response.isValid) {
-                    response.message = `${field.displayName} must be true or false`;
+                case (FieldType.time): {
+                    response.isValid = BasicFieldOperations.timeRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be 24 hour time format 00:00:00`;
+                    }
+                    break;
                 }
-                break;
+                case (FieldType.boolean): {
+                    response.isValid = BasicFieldOperations.booleanRegexp.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be true or false`;
+                    }
+                    break;
+                }
             }
         }
 
-        vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - result is ${response.isValid} - ${response.message}`);
+        vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - is valid is ${response.isValid} with message ${response.message}`);
         return response;
     }
 
@@ -210,11 +238,11 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
         let result = '';
         switch (field.type) {
             case (FieldType.datetime): {
-                result = moment().format('DD/MM/YYYY HH:mm:ss');
+                result = moment().format('YYYYMMDDHHmmss');
                 break;
             }
             case (FieldType.date): {
-                result = moment().format('DD/MM/YYYY');
+                result = moment().format('YYYYMMDD');
                 break;
             }
             case (FieldType.float): {

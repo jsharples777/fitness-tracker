@@ -72,6 +72,12 @@ class BrowserUtil {
         }
     }
 
+    removeAttributes(element: HTMLElement, attributes: string[]) {
+        attributes.forEach((attribute: string) => {
+            element.removeAttribute(attribute);
+        });
+    }
+
 }
 
 const browserUtil = new BrowserUtil();
