@@ -1,10 +1,31 @@
 import browserUtil from "../../util/BrowserUtil";
-import {DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypes";
+import {DATA_ID_ATTRIBUTE, FieldUIConfig, FieldValueOptionsListener, UIFieldType} from "./FormUITypes";
 import {FieldListener} from "./FieldListener";
 import {FieldDefinition, FieldType, ValidationResponse, ValueOption} from "./DataObjectTypes";
 import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
 import {EditingEventListener} from "./event-handlers/EditingEventListener";
 import {RenderingEventListener} from "./event-handlers/RenderingEventListener";
+
+class DefaultOptionsFieldOptionsListener implements FieldValueOptionsListener {
+    private parentElement:HTMLElement;
+    private fieldUIConfig:FieldUIConfig;
+
+    constructor(parentElement:HTMLElement,fieldUIConfig:FieldUIConfig) {
+        this.parentElement = parentElement;
+        this.fieldUIConfig = fieldUIConfig;
+    }
+
+    optionsChanged(newOptions: ValueOption[]): void {
+        browserUtil.removeAllChildren(this.parentElement);
+        newOptions.forEach((valueOption) => {
+            let optionElement = document.createElement('option');
+            optionElement.setAttribute('value',valueOption.value);
+            optionElement.innerHTML = valueOption.name;
+            this.parentElement.appendChild(optionElement);
+        });
+    }
+
+}
 
 export class FieldInputElementFactory {
 
@@ -178,6 +199,8 @@ export class FieldInputElementFactory {
                 optionElement.innerHTML = valueOption.name;
                 fieldElement.appendChild(optionElement);
             });
+            // listen for data source changes
+            fieldConfig.datasource.addListener(new DefaultOptionsFieldOptionsListener(fieldElement,fieldConfig));
         }
 
         this.setupFieldElement(fieldElement,formId,fieldConfig,listeners);

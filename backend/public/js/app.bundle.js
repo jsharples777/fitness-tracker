@@ -9994,6 +9994,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+var DefaultOptionsFieldOptionsListener = /*#__PURE__*/function () {
+  function DefaultOptionsFieldOptionsListener(parentElement, fieldUIConfig) {
+    this.parentElement = parentElement;
+    this.fieldUIConfig = fieldUIConfig;
+  }
+
+  var _proto = DefaultOptionsFieldOptionsListener.prototype;
+
+  _proto.optionsChanged = function optionsChanged(newOptions) {
+    var _this = this;
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].removeAllChildren(this.parentElement);
+    newOptions.forEach(function (valueOption) {
+      var optionElement = document.createElement('option');
+      optionElement.setAttribute('value', valueOption.value);
+      optionElement.innerHTML = valueOption.name;
+
+      _this.parentElement.appendChild(optionElement);
+    });
+  };
+
+  return DefaultOptionsFieldOptionsListener;
+}();
+
 var FieldInputElementFactory = /*#__PURE__*/function () {
   FieldInputElementFactory.getInstance = function getInstance() {
     if (!FieldInputElementFactory._instance) {
@@ -10005,9 +10030,9 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
   function FieldInputElementFactory() {}
 
-  var _proto = FieldInputElementFactory.prototype;
+  var _proto2 = FieldInputElementFactory.prototype;
 
-  _proto.setupFieldElement = function setupFieldElement(fieldElement, formId, fieldConfig, listeners) {
+  _proto2.setupFieldElement = function setupFieldElement(fieldElement, formId, fieldConfig, listeners) {
     fieldElement.setAttribute('id', formId + ".field." + fieldConfig.field.id);
     fieldElement.setAttribute(_FormUITypes__WEBPACK_IMPORTED_MODULE_1__.DATA_ID_ATTRIBUTE, fieldConfig.field.id);
     fieldElement.setAttribute('name', fieldConfig.field.id);
@@ -10045,7 +10070,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
   };
 
-  _proto.completeComponentElement = function completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners) {
+  _proto2.completeComponentElement = function completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners) {
     // if the field has a validator, then we need a div for error messages
     var errorMessageDivEl = null;
 
@@ -10118,7 +10143,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
     }
   };
 
-  _proto.createInputFormFieldComponentElement = function createInputFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
+  _proto2.createInputFormFieldComponentElement = function createInputFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
     // return the input element
     var fieldElement = document.createElement('input');
 
@@ -10166,7 +10191,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
     return fieldElement;
   };
 
-  _proto.createTAFormFieldComponentElement = function createTAFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
+  _proto2.createTAFormFieldComponentElement = function createTAFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
     // return the input element
     var fieldElement = document.createElement('textarea');
 
@@ -10180,7 +10205,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
     return fieldElement;
   };
 
-  _proto.createSelectFormFieldComponentElement = function createSelectFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
+  _proto2.createSelectFormFieldComponentElement = function createSelectFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
     // return the input element
     var fieldElement = document.createElement('select'); // create the options from the data source
 
@@ -10191,7 +10216,9 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
         optionElement.setAttribute('value', valueOption.value);
         optionElement.innerHTML = valueOption.name;
         fieldElement.appendChild(optionElement);
-      });
+      }); // listen for data source changes
+
+      fieldConfig.datasource.addListener(new DefaultOptionsFieldOptionsListener(fieldElement, fieldConfig));
     }
 
     this.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
@@ -10199,7 +10226,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
     return fieldElement;
   };
 
-  _proto.createRadioGroupFormFieldComponentElement = function createRadioGroupFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
+  _proto2.createRadioGroupFormFieldComponentElement = function createRadioGroupFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
     // create a div for each option in the source
     // create the div for the radio group
     var radioGroupElement = document.createElement('div');
