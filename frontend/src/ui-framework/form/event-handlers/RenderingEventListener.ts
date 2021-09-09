@@ -1,6 +1,5 @@
-import {FieldDefinition, FieldType, ValidationResponse} from "../DataObjectTypes";
-import {FieldUIConfig, UIFieldType} from "../FormUITypes";
-import browserUtil from "../../../util/BrowserUtil";
+import {FieldDefinition} from "../DataObjectTypeDefs";
+import {FieldUIConfig} from "../FormUITypeDefs";
 import {FieldListener} from "../FieldListener";
 
 export class RenderingEventListener {

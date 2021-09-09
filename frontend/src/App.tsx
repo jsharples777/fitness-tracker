@@ -25,7 +25,7 @@ import BGGSearchView from "./component/view/BGGSearchView";
 import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "./ui-framework/ConfigurationTypes";
 import {ViewListener} from "./ui-framework/ViewListener";
 import {View} from "./ui-framework/View";
-import {DataObjectDefinition, FieldType} from "./ui-framework/form/DataObjectTypes";
+import {DataObjectDefinition, FieldType} from "./ui-framework/form/DataObjectTypeDefs";
 import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
 import {Form} from "./ui-framework/form/Form";
 import {BasicFormImplementation} from "./ui-framework/form/BasicFormImplementation";

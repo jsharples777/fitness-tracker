@@ -1,4 +1,4 @@
-import {FieldDefinition} from "./DataObjectTypes";
+import {FieldDefinition} from "./DataObjectTypeDefs";
 
 export interface FieldListener {
     valueChanged(field:FieldDefinition, newValue:string):void;

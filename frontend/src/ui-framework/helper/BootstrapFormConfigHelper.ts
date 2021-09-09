@@ -1,6 +1,6 @@
 import {BasicFieldOperations} from "./BasicFieldOperations";
-import {DataObjectDefinition, FieldType} from "../form/DataObjectTypes";
-import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypes";
+import {DataObjectDefinition, FieldType} from "../form/DataObjectTypeDefs";
+import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypeDefs";
 
 import debug from 'debug';
 import {RBGFieldOperations} from "./RBGFieldOperations";

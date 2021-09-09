@@ -1,7 +1,7 @@
-import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypes";
+import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypeDefs";
 import {AbstractForm} from "./AbstractForm";
 import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
-import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypes";
+import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypeDefs";
 import {Field} from "./Field";
 import {FormElementFactory, FormFactoryResponse} from "./FormElementFactory";
 import {InputField, RadioButtonGroupField, SelectField, TextAreaField} from "./InputField";
@@ -22,10 +22,6 @@ export class BasicFormImplementation extends AbstractForm {
 
     protected _hidden(): void {
         if (this.factoryElements) this.containerEl?.removeChild(this.factoryElements.form);
-    }
-
-    protected createInputField(formId:string,config:FieldUIConfig,fieldDef:FieldDefinition,fieldEl:HTMLInputElement):Field {
-        return new InputField(formId,config, fieldDef, fieldEl);
     }
 
     protected setupFieldObject(fieldEl:HTMLElement,subElements:HTMLInputElement[] = []) {
@@ -119,26 +115,16 @@ export class BasicFormImplementation extends AbstractForm {
     protected _reset(): void {}
 
     protected validateField(fieldDef:FieldDefinition) {
-        const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === fieldDef.id);
-        if (mapItem) {
-            dlogger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId} with for validation`);
-            // find the field with that id
-            const field: Field | undefined = this.fields.find((field) => field.getId() === mapItem.attributeId);
-            if (field) field.validate();
-        }
+        const field: Field | undefined = this.getFieldFromDataFieldId(fieldDef.id);
+        if (field) field.validate();
     }
 
     protected renderField(fieldDef:FieldDefinition,currentValue:string):string {
         let result = currentValue;
+        const field: Field | undefined = this.getFieldFromDataFieldId(fieldDef.id);
 
-        const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === fieldDef.id);
-        if (mapItem) {
-            dlogger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId} with for validation`);
-            // find the field with that id
-            const field: Field | undefined = this.fields.find((field) => field.getId() === mapItem.attributeId);
-            if (field) {
-                result = field.render(currentValue);
-            }
+        if (field) {
+            result = field.render(currentValue);
         }
         return result;
     }
@@ -206,7 +192,7 @@ export class BasicFormImplementation extends AbstractForm {
         if (mapItem) {
             dlogger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId} with value ${currentValue}`);
             // find the field with that id
-            const field:Field|undefined = this.fields.find((field) => field.getId() === mapItem.attributeId);
+XXXXX            const field:Field|undefined = this.fields.find((field) => field.getId() === mapItem.attributeId);
             if (field) {
                 if (currentValue) {
                     field.setValue(currentValue);

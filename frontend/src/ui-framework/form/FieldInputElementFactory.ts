@@ -1,10 +1,10 @@
 import browserUtil from "../../util/BrowserUtil";
-import {DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypes";
+import {DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypeDefs";
 import {FieldListener} from "./FieldListener";
 import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
 import {EditingEventListener} from "./event-handlers/EditingEventListener";
 import {FieldValueOptionsListener, ValueOption} from "./CommonTypes";
-import {FieldType} from "./DataObjectTypes";
+import {FieldType} from "./DataObjectTypeDefs";
 
 class DefaultFieldOptionsListener implements FieldValueOptionsListener {
     private formId: string;

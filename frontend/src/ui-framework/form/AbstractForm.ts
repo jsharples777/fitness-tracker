@@ -1,8 +1,8 @@
 import {Form} from "./Form";
 import {FormEvent, FormEventType, FormListener} from "./FormListener";
 import {FieldListener} from "./FieldListener";
-import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypes";
-import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITypes";
+import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypeDefs";
+import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITypeDefs";
 import {Field} from "./Field";
 import {KeyType} from "../ConfigurationTypes";
 
@@ -207,4 +207,26 @@ export abstract class AbstractForm implements Form,FormListener{
     }
 
     abstract getFormattedDataObject(): any;
+
+    getId(): string {
+        let result = '';
+        if (this.uiDef) {
+            result = this.uiDef.id;
+        }
+        return result;
+    }
+
+    getFieldFromDataFieldId(dataFieldId:string): Field | undefined {
+        let result:Field|undefined = undefined;
+        logger(`Finding field for attribute ${dataFieldId} `);
+
+        const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === dataFieldId);
+        if (mapItem) {
+            logger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId}`);
+            // find the field with that id
+           result = this.fields.find((field) => field.getId() === mapItem.attributeId);
+        }
+
+        return result;
+    }
 }

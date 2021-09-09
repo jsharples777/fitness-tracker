@@ -1,5 +1,5 @@
-import {FieldDefinition, FieldType, ValidationResponse} from "../DataObjectTypes";
-import {FieldUIConfig, UIFieldType} from "../FormUITypes";
+import {FieldDefinition, FieldType} from "../DataObjectTypeDefs";
+import {FieldUIConfig, UIFieldType, ValidationResponse} from "../FormUITypeDefs";
 import browserUtil from "../../../util/BrowserUtil";
 import {FieldListener} from "../FieldListener";
 

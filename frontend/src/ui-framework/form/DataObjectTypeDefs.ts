@@ -1,5 +1,6 @@
 import {KeyType} from "../ConfigurationTypes";
 import {FieldValueOptions} from "./CommonTypes";
+import {ValidationRule} from "./validation/ValidationTypeDefs";
 
 export enum FieldType {
     id = 'Id',
@@ -49,42 +50,5 @@ export type DataObjectDefinition = {
     rules?:ValidationRule
 }
 
-export type ValidationResponse = {
-    isValid:boolean,
-    message?:string,
-    resetOnFailure:boolean
-}
-
-export enum ConditionType {
-    equals,
-    lessThan,
-    lessThanEqual,
-    greaterThan,
-    greaterThanEqual,
-    isNull,
-    isNotNull
-};
-
-export enum ConditionResponse {
-    show,
-    hide,
-    invalid,
-    valid
-}
-
-export type ValidationCondition = {
-    fieldId:string,
-    type: ConditionType,
-    comparedWith: {
-        fieldId?:string,
-        static?:string
-    }
-}
-
-export type ValidationRule = {
-    fieldId:string,
-    response: ConditionResponse,
-    conditions: ValidationCondition[]
-}
 
 

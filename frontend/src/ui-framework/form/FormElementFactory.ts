@@ -2,7 +2,7 @@ import browserUtil from "../../util/BrowserUtil";
 import {FieldInputElementFactory} from "./FieldInputElementFactory";
 import {BasicButtonElement} from "../ConfigurationTypes";
 import {Form} from "./Form";
-import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "./FormUITypes";
+import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "./FormUITypeDefs";
 import {FormEvent, FormEventType, FormListener} from "./FormListener";
 import {FieldListener} from "./FieldListener";
 

@@ -1,6 +1,6 @@
 import {Field} from "./Field";
-import {FieldUIConfig, FieldValidator, UIFieldType} from "./FormUITypes";
-import {FieldDefinition, FieldType, ValidationResponse} from "./DataObjectTypes";
+import {FieldUIConfig, FieldValidator, UIFieldType, ValidationResponse} from "./FormUITypeDefs";
+import {FieldDefinition, FieldType} from "./DataObjectTypeDefs";
 import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
 import {FieldListener} from "./FieldListener";
 import {RenderingEventListener} from "./event-handlers/RenderingEventListener";

@@ -1,6 +1,12 @@
 import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes";
-import {FieldDefinition, ValidationResponse} from "./DataObjectTypes";
+import {FieldDefinition} from "./DataObjectTypeDefs";
 import {FieldValueOptions} from "./CommonTypes";
+
+export type ValidationResponse = {
+    isValid:boolean,
+    message?:string,
+    resetOnFailure:boolean
+}
 
 export interface FieldValidator {  // is the current value valid (includes manndatory checks)
     isValidValue(field:FieldDefinition, currentValue:string|null):ValidationResponse;

@@ -1,8 +1,8 @@
 import moment from "moment";
 import {v4} from 'uuid';
 import Controller from "../../Controller";
-import {FieldFormatter, FieldRenderer, FieldValidator} from "../form/FormUITypes";
-import {FieldDefinition, FieldType, FieldValueGenerator, ValidationResponse} from "../form/DataObjectTypes";
+import {FieldFormatter, FieldRenderer, FieldValidator, ValidationResponse} from "../form/FormUITypeDefs";
+import {FieldDefinition, FieldType, FieldValueGenerator} from "../form/DataObjectTypeDefs";
 import debug from 'debug';
 import {KeyType} from "../ConfigurationTypes";
 
