@@ -19,7 +19,22 @@ export class ValidationEventHandler {
 
     processValidation(fieldElement:HTMLElement) {
         if (this.fieldConfig.validator && fieldElement) {
-            if (this.subElements) this.fieldConfig.validator.validator.setSubElements(this.subElements);
+            let validationElementTarget = fieldElement; // we are providing user feedback on the field element, unless...
+            if (this.subElements) { // sub elements change the validation target
+                this.fieldConfig.validator.validator.setSubElements(this.subElements);
+                if (this.fieldConfig.subElement) { // should be targetting the parentelement
+                    let parentEl = fieldElement.parentElement;
+                    if (parentEl) {
+                        validationElementTarget = parentEl;
+                        if (this.fieldConfig.subElement.container) { // another layer up required
+                            parentEl = parentEl.parentElement;
+                            if (parentEl) {
+                                validationElementTarget = parentEl;
+                            }
+                        }
+                    }
+                }
+            }
             const field: FieldDefinition = this.fieldConfig.field;
             // @ts-ignore
             let value: string = fieldElement.value;
@@ -37,12 +52,12 @@ export class ValidationEventHandler {
             errorMessageDiv?.setAttribute('style', 'display:none');
             if (errorMessageEl) errorMessageEl.innerHTML = '';
 
-            if (this.fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(fieldElement, this.fieldConfig.validator.invalidClasses, false);
-            if (this.fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(fieldElement, this.fieldConfig.validator.validClasses);
+            if (this.fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(validationElementTarget, this.fieldConfig.validator.invalidClasses, false);
+            if (this.fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(validationElementTarget, this.fieldConfig.validator.validClasses);
 
             if (!validationResp.isValid) {
-                if (this.fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(fieldElement, this.fieldConfig.validator.invalidClasses);
-                if (this.fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(fieldElement, this.fieldConfig.validator.validClasses, false);
+                if (this.fieldConfig.validator.invalidClasses) browserUtil.addRemoveClasses(validationElementTarget, this.fieldConfig.validator.invalidClasses);
+                if (this.fieldConfig.validator.validClasses) browserUtil.addRemoveClasses(validationElementTarget, this.fieldConfig.validator.validClasses, false);
 
                 let message = validationResp.message;
                 if (!message) {

@@ -10059,6 +10059,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FormUITypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FormUITypes */ "./src/ui-framework/form/FormUITypes.ts");
 /* harmony import */ var _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./event-handlers/ValidationEventHandler */ "./src/ui-framework/form/event-handlers/ValidationEventHandler.ts");
 /* harmony import */ var _event_handlers_EditingEventListener__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./event-handlers/EditingEventListener */ "./src/ui-framework/form/event-handlers/EditingEventListener.ts");
+/* harmony import */ var _DataObjectTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DataObjectTypes */ "./src/ui-framework/form/DataObjectTypes.ts");
+
 
 
 
@@ -10092,7 +10094,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
   function FieldInputElementFactory() {}
 
-  FieldInputElementFactory.setupFieldElement = function setupFieldElement(fieldElement, formId, fieldConfig, listeners, subElements) {
+  FieldInputElementFactory.initialiseFieldElementAndEventHandlers = function initialiseFieldElementAndEventHandlers(fieldElement, formId, fieldConfig, listeners, subElements) {
     if (subElements === void 0) {
       subElements = null;
     }
@@ -10119,17 +10121,32 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
     if (fieldConfig.validator) {
       // is the value in the field valid
-      fieldElement.addEventListener('blur', new _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__.ValidationEventHandler(formId, fieldConfig, listeners, subElements));
+      var eventHandler = new _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__.ValidationEventHandler(formId, fieldConfig, listeners, subElements);
+
+      if (subElements) {
+        // event for the subelements
+        subElements.forEach(function (subElement) {
+          subElement.addEventListener('blur', eventHandler);
+        });
+      } else {
+        fieldElement.addEventListener('blur', eventHandler);
+      }
     }
 
     if (fieldConfig.editor) {
       // render the value when the field gains focus
       fieldElement.addEventListener('focus', new _event_handlers_EditingEventListener__WEBPACK_IMPORTED_MODULE_3__.EditingEventListener(formId, fieldConfig, listeners));
     } // care for endless loops here, renderer needs to return null if no changes
+    // date picker for date fields
 
+
+    if (fieldConfig.field.type === _DataObjectTypes__WEBPACK_IMPORTED_MODULE_4__.FieldType.date) {
+      $(fieldElement).datepicker();
+      $(fieldElement).datepicker("option", "dateFormat", 'dd/mm/yy');
+    }
   };
 
-  FieldInputElementFactory.completeComponentElement = function completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners) {
+  FieldInputElementFactory.createFieldComponentsAndContainer = function createFieldComponentsAndContainer(fieldElement, formId, containerEl, fieldConfig, listeners) {
     // if the field has a validator, then we need a div for error messages
     var errorMessageDivEl = null;
 
@@ -10247,8 +10264,8 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
         }
     }
 
-    FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-    FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+    FieldInputElementFactory.initialiseFieldElementAndEventHandlers(fieldElement, formId, fieldConfig, listeners);
+    FieldInputElementFactory.createFieldComponentsAndContainer(fieldElement, formId, containerEl, fieldConfig, listeners);
     return fieldElement;
   };
 
@@ -10261,8 +10278,8 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
       fieldElement.setAttribute('cols', "" + fieldConfig.textarea.cols);
     }
 
-    FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-    FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+    FieldInputElementFactory.initialiseFieldElementAndEventHandlers(fieldElement, formId, fieldConfig, listeners);
+    FieldInputElementFactory.createFieldComponentsAndContainer(fieldElement, formId, containerEl, fieldConfig, listeners);
     return fieldElement;
   };
 
@@ -10313,8 +10330,8 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
       fieldConfig.datasource.addListener(new DefaultFieldOptionsListener(formId, fieldElement, fieldConfig));
     }
 
-    FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-    FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+    FieldInputElementFactory.initialiseFieldElementAndEventHandlers(fieldElement, formId, fieldConfig, listeners);
+    FieldInputElementFactory.createFieldComponentsAndContainer(fieldElement, formId, containerEl, fieldConfig, listeners);
     return fieldElement;
   };
 
@@ -10337,8 +10354,8 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
       if (fieldConfig.formatter) fieldConfig.formatter.setSubElements(subElements);
     }
 
-    FieldInputElementFactory.setupFieldElement(radioGroupElement, formId, fieldConfig, listeners, subElements);
-    FieldInputElementFactory.completeComponentElement(radioGroupElement, formId, containerEl, fieldConfig, listeners);
+    FieldInputElementFactory.initialiseFieldElementAndEventHandlers(radioGroupElement, formId, fieldConfig, listeners, subElements);
+    FieldInputElementFactory.createFieldComponentsAndContainer(radioGroupElement, formId, containerEl, fieldConfig, listeners);
     return {
       container: radioGroupElement,
       radioButtons: subElements
@@ -10956,7 +10973,31 @@ var ValidationEventHandler = /*#__PURE__*/function () {
 
   _proto.processValidation = function processValidation(fieldElement) {
     if (this.fieldConfig.validator && fieldElement) {
-      if (this.subElements) this.fieldConfig.validator.validator.setSubElements(this.subElements);
+      var validationElementTarget = fieldElement; // we are providing user feedback on the field element, unless...
+
+      if (this.subElements) {
+        // sub elements change the validation target
+        this.fieldConfig.validator.validator.setSubElements(this.subElements);
+
+        if (this.fieldConfig.subElement) {
+          // should be targetting the parentelement
+          var parentEl = fieldElement.parentElement;
+
+          if (parentEl) {
+            validationElementTarget = parentEl;
+
+            if (this.fieldConfig.subElement.container) {
+              // another layer up required
+              parentEl = parentEl.parentElement;
+
+              if (parentEl) {
+                validationElementTarget = parentEl;
+              }
+            }
+          }
+        }
+      }
+
       var field = this.fieldConfig.field; // @ts-ignore
 
       var value = fieldElement.value; // checkboxes store values differently
@@ -10972,12 +11013,12 @@ var ValidationEventHandler = /*#__PURE__*/function () {
 
       errorMessageDiv == null ? void 0 : errorMessageDiv.setAttribute('style', 'display:none');
       if (errorMessageEl) errorMessageEl.innerHTML = '';
-      if (this.fieldConfig.validator.invalidClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(fieldElement, this.fieldConfig.validator.invalidClasses, false);
-      if (this.fieldConfig.validator.validClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(fieldElement, this.fieldConfig.validator.validClasses);
+      if (this.fieldConfig.validator.invalidClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(validationElementTarget, this.fieldConfig.validator.invalidClasses, false);
+      if (this.fieldConfig.validator.validClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(validationElementTarget, this.fieldConfig.validator.validClasses);
 
       if (!validationResp.isValid) {
-        if (this.fieldConfig.validator.invalidClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(fieldElement, this.fieldConfig.validator.invalidClasses);
-        if (this.fieldConfig.validator.validClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(fieldElement, this.fieldConfig.validator.validClasses, false);
+        if (this.fieldConfig.validator.invalidClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(validationElementTarget, this.fieldConfig.validator.invalidClasses);
+        if (this.fieldConfig.validator.validClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(validationElementTarget, this.fieldConfig.validator.validClasses, false);
         var message = validationResp.message;
 
         if (!message) {
@@ -12328,6 +12369,9 @@ var Root = /*#__PURE__*/function (_React$Component) {
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "time", "Time", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.time, true, "How long till we get there?");
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "textarea", "TextArea", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.largeText, true, "An essay");
               dataSource = new _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_24__.SimpleValueDataSource([{
+                name: ' ',
+                value: ' '
+              }, {
                 name: 'Justice League',
                 value: 'jl'
               }, {
@@ -12519,10 +12563,10 @@ var Root = /*#__PURE__*/function (_React$Component) {
   };
 
   return Root;
-}(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
 
 
-localStorage.debug = 'basic-form basic-form-detail abstract-form bootstrap-form-config-helper basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter';
+localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter';
 (debug__WEBPACK_IMPORTED_MODULE_2___default().log) = console.info.bind(console); // @ts-ignore
 
 var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Root, {

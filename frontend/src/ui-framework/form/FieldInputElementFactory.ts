@@ -4,6 +4,7 @@ import {FieldListener} from "./FieldListener";
 import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
 import {EditingEventListener} from "./event-handlers/EditingEventListener";
 import {FieldValueOptionsListener, ValueOption} from "./CommonTypes";
+import {FieldType} from "./DataObjectTypes";
 
 class DefaultFieldOptionsListener implements FieldValueOptionsListener {
     private formId: string;
@@ -38,7 +39,7 @@ export class FieldInputElementFactory {
     private constructor() {
     }
 
-    public static setupFieldElement(fieldElement: HTMLElement, formId: string, fieldConfig: FieldUIConfig, listeners: FieldListener[], subElements:HTMLInputElement[]|null = null):void {
+    public static initialiseFieldElementAndEventHandlers(fieldElement: HTMLElement, formId: string, fieldConfig: FieldUIConfig, listeners: FieldListener[], subElements:HTMLInputElement[]|null = null):void {
         fieldElement.setAttribute('id', `${formId}.field.${fieldConfig.field.id}`);
         fieldElement.setAttribute(DATA_ID_ATTRIBUTE, fieldConfig.field.id);
         fieldElement.setAttribute('name', fieldConfig.field.id);
@@ -56,17 +57,33 @@ export class FieldInputElementFactory {
         setup event handlers
         */
         if (fieldConfig.validator) { // is the value in the field valid
-            fieldElement.addEventListener('blur', new ValidationEventHandler(formId, fieldConfig, listeners,subElements));
+            const eventHandler = new ValidationEventHandler(formId, fieldConfig, listeners,subElements);
+            if (subElements) { // event for the subelements
+                subElements.forEach((subElement) => {
+                   subElement.addEventListener('blur',eventHandler);
+                });
+
+            }
+            else {
+                fieldElement.addEventListener('blur', eventHandler);
+            }
+
         }
 
         if (fieldConfig.editor) { // render the value when the field gains focus
             fieldElement.addEventListener('focus', new EditingEventListener(formId, fieldConfig, listeners));
         } // care for endless loops here, renderer needs to return null if no changes
 
+        // date picker for date fields
+        if (fieldConfig.field.type === FieldType.date) {
+            $(fieldElement).datepicker( );
+            $(fieldElement).datepicker( "option", "dateFormat",'dd/mm/yy' );
+        }
+
     }
 
 
-    public static completeComponentElement(fieldElement: HTMLElement, formId: string, containerEl: HTMLElement, fieldConfig: FieldUIConfig, listeners: FieldListener[]): void {
+    public static createFieldComponentsAndContainer(fieldElement: HTMLElement, formId: string, containerEl: HTMLElement, fieldConfig: FieldUIConfig, listeners: FieldListener[]): void {
 
         // if the field has a validator, then we need a div for error messages
         let errorMessageDivEl: HTMLElement | null = null;
@@ -164,8 +181,8 @@ export class FieldInputElementFactory {
                 break;
             }
         }
-        FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-        FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+        FieldInputElementFactory.initialiseFieldElementAndEventHandlers(fieldElement, formId, fieldConfig, listeners);
+        FieldInputElementFactory.createFieldComponentsAndContainer(fieldElement, formId, containerEl, fieldConfig, listeners);
         return fieldElement;
     }
 
@@ -175,8 +192,8 @@ export class FieldInputElementFactory {
             fieldElement.setAttribute('rows', `${fieldConfig.textarea.rows}`);
             fieldElement.setAttribute('cols', `${fieldConfig.textarea.cols}`);
         }
-        FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-        FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+        FieldInputElementFactory.initialiseFieldElementAndEventHandlers(fieldElement, formId, fieldConfig, listeners);
+        FieldInputElementFactory.createFieldComponentsAndContainer(fieldElement, formId, containerEl, fieldConfig, listeners);
         return fieldElement;
     }
 
@@ -227,8 +244,8 @@ export class FieldInputElementFactory {
             fieldConfig.datasource.addListener(new DefaultFieldOptionsListener(formId, fieldElement, fieldConfig));
         }
 
-        FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-        FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+        FieldInputElementFactory.initialiseFieldElementAndEventHandlers(fieldElement, formId, fieldConfig, listeners);
+        FieldInputElementFactory.createFieldComponentsAndContainer(fieldElement, formId, containerEl, fieldConfig, listeners);
         return fieldElement;
     }
 
@@ -257,8 +274,8 @@ export class FieldInputElementFactory {
             if (fieldConfig.formatter) fieldConfig.formatter.setSubElements(subElements);
         }
 
-        FieldInputElementFactory.setupFieldElement(radioGroupElement, formId, fieldConfig, listeners,subElements);
-        FieldInputElementFactory.completeComponentElement(radioGroupElement, formId, containerEl, fieldConfig, listeners);
+        FieldInputElementFactory.initialiseFieldElementAndEventHandlers(radioGroupElement, formId, fieldConfig, listeners,subElements);
+        FieldInputElementFactory.createFieldComponentsAndContainer(radioGroupElement, formId, containerEl, fieldConfig, listeners);
         return {
             container:radioGroupElement,
             radioButtons:subElements

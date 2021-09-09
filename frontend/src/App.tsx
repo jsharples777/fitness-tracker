@@ -328,6 +328,7 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"textarea","TextArea",FieldType.largeText,true,"An essay");
 
         let dataSource:SimpleValueDataSource = new SimpleValueDataSource([
+            {name:' ',value:' '},
             {name:'Justice League',value:'jl'},
             {name:'Marvel',value:'marvel'},
             {name:'Other',value:'other'},
@@ -487,8 +488,8 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
 
 }
 
-//localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
-localStorage.debug = 'basic-form basic-form-detail abstract-form bootstrap-form-config-helper basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
+//localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
+localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
 debug.log = console.info.bind(console);
 
 // @ts-ignore
