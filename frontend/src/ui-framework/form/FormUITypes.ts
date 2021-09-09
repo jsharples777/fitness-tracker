@@ -1,16 +1,20 @@
 import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes";
-import {FieldDefinition, ValidationResponse, ValueOption} from "./DataObjectTypes";
+import {FieldDefinition, ValidationResponse} from "./DataObjectTypes";
+import {FieldValueOptions} from "./CommonTypes";
 
 export interface FieldValidator {  // is the current value valid (includes manndatory checks)
     isValidValue(field:FieldDefinition, currentValue:string|null):ValidationResponse;
+    setSubElements(elements:HTMLInputElement[]):void;
 }
 
 export interface FieldFormatter { // final value for the field on "saving" the form
     formatValue(field:FieldDefinition, currentValue:string):any;
+    setSubElements(elements:HTMLInputElement[]):void;
 }
 
 export interface FieldRenderer { // renders during user changes
     renderValue(field:FieldDefinition, currentValue:string):string|null;
+    setSubElements(elements:HTMLInputElement[]):void;
 }
 
 export interface FieldEditor { // allows for an "editor" component
@@ -45,14 +49,6 @@ export type DescriptionText = {
     elementClasses:string,
 }
 
-export interface FieldValueOptionsListener {
-    optionsChanged(newOptions:ValueOption[]):void;
-}
-
-export interface FieldValueOptions {
-    addListener(listener:FieldValueOptionsListener):void;
-    getOptions():ValueOption[];
-}
 
 
 
@@ -61,8 +57,11 @@ export type FieldUIConfig = {
     elementType: UIFieldType,
     elementAttributes?: Attribute[],
     elementClasses?: string,
-    subElementAttributes?:Attribute[], // for radio and selection options
-    subElementClasses?:string,// for radio and selection options
+    subElement?:{
+        container?:BasicElement,
+        label?: FieldLabel,
+        element:BasicElement,
+    },// for radio and selection options
     label?: FieldLabel,
     describedBy?: DescriptionText,
     containedBy?: BasicElement,

@@ -1,4 +1,5 @@
 import {KeyType} from "../ConfigurationTypes";
+import {FieldValueOptions} from "./CommonTypes";
 
 export enum FieldType {
     id = 'Id',
@@ -14,6 +15,7 @@ export enum FieldType {
     boolean = 'True/False',
     userId = 'User',
     choice = 'Choice',
+    limitedChoice = 'Limited Choice',
     largeText = 'TextArea'
 }
 
@@ -21,10 +23,6 @@ export interface FieldValueGenerator {
     generate(field:FieldDefinition,isCreate:boolean):string;
 }
 
-export type ValueOption = {
-    name:string,
-    value:string
-}
 
 
 
@@ -41,6 +39,7 @@ export type FieldDefinition = {
         onModify:boolean,
         generator:FieldValueGenerator
     },
+    dataSource?:FieldValueOptions
 }
 
 export type DataObjectDefinition = {

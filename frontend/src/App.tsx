@@ -29,6 +29,8 @@ import {DataObjectDefinition, FieldType} from "./ui-framework/form/DataObjectTyp
 import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
 import {Form} from "./ui-framework/form/Form";
 import {BasicFormImplementation} from "./ui-framework/form/BasicFormImplementation";
+import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
+import {FieldValueOptions} from "./ui-framework/form/CommonTypes";
 
 
 const logger = debug('app');
@@ -323,11 +325,30 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"checkbox","Checkbox?",FieldType.boolean,true,"Yes or No?");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"date","Date",FieldType.date,true,"Date yep");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"time","Time",FieldType.time,true,"How long till we get there?");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"textarea","TextArea",FieldType.largeText,true,"An essay");
+
+        let dataSource:SimpleValueDataSource = new SimpleValueDataSource([
+            {name:'Justice League',value:'jl'},
+            {name:'Marvel',value:'marvel'},
+            {name:'Other',value:'other'},
+
+        ]);
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"select","Select",FieldType.choice,true,"Some choices",dataSource);
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"rbg","RBG",FieldType.limitedChoice,true,"Some similar choices",
+            new SimpleValueDataSource([
+                {name:'Justice League',value:'jl'},
+                {name:'Marvel',value:'marvel'},
+                {name:'Other',value:'other'},
+
+            ]));
         // okay lets make a form
         let form:Form = new BasicFormImplementation("testForm",dataObjDef);
         form.initialise();
         form.startCreateNew();
         form.setIsVisible(true);
+
+        // change the select options
+        dataSource.addValueOption('X-Men','xmen');
 
     }
 

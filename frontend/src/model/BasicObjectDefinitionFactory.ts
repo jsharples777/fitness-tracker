@@ -1,6 +1,7 @@
 import {KeyType} from "../ui-framework/ConfigurationTypes";
 import {BasicFieldOperations} from "../ui-framework/helper/BasicFieldOperations";
 import {DataObjectDefinition, FieldDefinition, FieldType} from "../ui-framework/form/DataObjectTypes";
+import {FieldValueOptions} from "../ui-framework/form/CommonTypes";
 
 export const FIELD_ID:string = 'id';
 export const FIELD_CreatedBy:string = 'createdBy';
@@ -106,7 +107,7 @@ export class BasicObjectDefinitionFactory {
         fieldDef.displayOnly = true;
     }
 
-    private addFieldToArray(fields:FieldDefinition[],keyType:KeyType, id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null):FieldDefinition {
+    private addFieldToArray(fields:FieldDefinition[],keyType:KeyType, id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):FieldDefinition {
         let fieldDef:FieldDefinition = {
             id:id,
             idType: keyType,
@@ -117,24 +118,26 @@ export class BasicObjectDefinitionFactory {
         }
 
         if (description) fieldDef.description = description;
+        if (datasource) fieldDef.dataSource = datasource;
+
         fields.push(fieldDef);
         return fieldDef;
     }
 
-    private addStringFieldToArray(fields:FieldDefinition[],id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null):FieldDefinition {
-        return this.addFieldToArray(fields,KeyType.string, id,displayName,type,isMandatory,description);
+    private addStringFieldToArray(fields:FieldDefinition[],id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):FieldDefinition {
+        return this.addFieldToArray(fields,KeyType.string, id,displayName,type,isMandatory,description,datasource);
     }
 
-    private addNumericFieldToArray(fields:FieldDefinition[],id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null):FieldDefinition {
-        return this.addFieldToArray(fields,KeyType.string, id,displayName,type,isMandatory,description);
+    private addNumericFieldToArray(fields:FieldDefinition[],id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):FieldDefinition {
+        return this.addFieldToArray(fields,KeyType.string, id,displayName,type,isMandatory,description,datasource);
     }
 
-    public addStringFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null):void {
-        this.addStringFieldToArray(objDef.fields,id,displayName,type,isMandatory,description);
+    public addStringFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):void {
+        this.addStringFieldToArray(objDef.fields,id,displayName,type,isMandatory,description,datasource);
     }
 
-    public addNumericFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null):void {
-        this.addNumericFieldToArray(objDef.fields,id,displayName,type,isMandatory,description);
+    public addNumericFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):void {
+        this.addNumericFieldToArray(objDef.fields,id,displayName,type,isMandatory,description,datasource);
     }
 
 }

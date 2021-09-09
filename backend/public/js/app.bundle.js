@@ -4470,13 +4470,17 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
     fieldDef.displayOnly = true;
   };
 
-  _proto.addFieldToArray = function addFieldToArray(fields, keyType, id, displayName, type, isMandatory, description) {
+  _proto.addFieldToArray = function addFieldToArray(fields, keyType, id, displayName, type, isMandatory, description, datasource) {
     if (isMandatory === void 0) {
       isMandatory = false;
     }
 
     if (description === void 0) {
       description = null;
+    }
+
+    if (datasource === void 0) {
+      datasource = null;
     }
 
     var fieldDef = {
@@ -4488,11 +4492,12 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
       displayOnly: false
     };
     if (description) fieldDef.description = description;
+    if (datasource) fieldDef.dataSource = datasource;
     fields.push(fieldDef);
     return fieldDef;
   };
 
-  _proto.addStringFieldToArray = function addStringFieldToArray(fields, id, displayName, type, isMandatory, description) {
+  _proto.addStringFieldToArray = function addStringFieldToArray(fields, id, displayName, type, isMandatory, description, datasource) {
     if (isMandatory === void 0) {
       isMandatory = false;
     }
@@ -4501,10 +4506,14 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
       description = null;
     }
 
-    return this.addFieldToArray(fields, _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.string, id, displayName, type, isMandatory, description);
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    return this.addFieldToArray(fields, _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.string, id, displayName, type, isMandatory, description, datasource);
   };
 
-  _proto.addNumericFieldToArray = function addNumericFieldToArray(fields, id, displayName, type, isMandatory, description) {
+  _proto.addNumericFieldToArray = function addNumericFieldToArray(fields, id, displayName, type, isMandatory, description, datasource) {
     if (isMandatory === void 0) {
       isMandatory = false;
     }
@@ -4513,10 +4522,14 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
       description = null;
     }
 
-    return this.addFieldToArray(fields, _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.string, id, displayName, type, isMandatory, description);
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    return this.addFieldToArray(fields, _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.string, id, displayName, type, isMandatory, description, datasource);
   };
 
-  _proto.addStringFieldToObjDefinition = function addStringFieldToObjDefinition(objDef, id, displayName, type, isMandatory, description) {
+  _proto.addStringFieldToObjDefinition = function addStringFieldToObjDefinition(objDef, id, displayName, type, isMandatory, description, datasource) {
     if (isMandatory === void 0) {
       isMandatory = false;
     }
@@ -4525,10 +4538,14 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
       description = null;
     }
 
-    this.addStringFieldToArray(objDef.fields, id, displayName, type, isMandatory, description);
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    this.addStringFieldToArray(objDef.fields, id, displayName, type, isMandatory, description, datasource);
   };
 
-  _proto.addNumericFieldToObjDefinition = function addNumericFieldToObjDefinition(objDef, id, displayName, type, isMandatory, description) {
+  _proto.addNumericFieldToObjDefinition = function addNumericFieldToObjDefinition(objDef, id, displayName, type, isMandatory, description, datasource) {
     if (isMandatory === void 0) {
       isMandatory = false;
     }
@@ -4537,7 +4554,11 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
       description = null;
     }
 
-    this.addNumericFieldToArray(objDef.fields, id, displayName, type, isMandatory, description);
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    this.addNumericFieldToArray(objDef.fields, id, displayName, type, isMandatory, description, datasource);
   };
 
   return BasicObjectDefinitionFactory;
@@ -9680,6 +9701,80 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     if (this.factoryElements) (_this$containerEl = this.containerEl) == null ? void 0 : _this$containerEl.removeChild(this.factoryElements.form);
   };
 
+  _proto.createInputField = function createInputField(formId, config, fieldDef, fieldEl) {
+    return new _InputField__WEBPACK_IMPORTED_MODULE_4__.InputField(formId, config, fieldDef, fieldEl);
+  };
+
+  _proto.setupFieldObject = function setupFieldObject(fieldEl, subElements) {
+    if (subElements === void 0) {
+      subElements = [];
+    } // get the data-id field from the field element
+
+
+    var dataId = fieldEl.getAttribute(_FormUITypes__WEBPACK_IMPORTED_MODULE_0__.DATA_ID_ATTRIBUTE);
+    var fieldId = fieldEl.getAttribute('id');
+    dlogger("Converting field input element " + fieldId + " with data-id of " + dataId);
+
+    if (dataId && fieldId) {
+      // find the corresponding field definition
+      var index = this.dataObjDef.fields.findIndex(function (value) {
+        return value.id === dataId;
+      });
+      var fieldDef = this.dataObjDef.fields.find(function (value) {
+        return value.id === dataId;
+      });
+
+      if (fieldDef) {
+        dlogger("Converting field input element " + fieldId + " with data-id of " + dataId + " field definition is");
+        logger(fieldDef); // find the corresponding ui definition
+
+        var fieldUIConfig = this.findFieldUiConfig(fieldDef);
+        dlogger("Converting field input element " + fieldId + " with data-id of " + dataId + " field ui config is");
+        logger(fieldUIConfig);
+
+        if (fieldUIConfig) {
+          if (this.uiDef) {
+            var field;
+
+            switch (fieldUIConfig.elementType) {
+              case _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.textarea:
+                {
+                  field = new _InputField__WEBPACK_IMPORTED_MODULE_4__.TextAreaField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl);
+                  break;
+                }
+
+              case _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.radioGroup:
+                {
+                  field = new _InputField__WEBPACK_IMPORTED_MODULE_4__.RadioButtonGroupField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl, subElements);
+                  break;
+                }
+
+              case _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.select:
+                {
+                  field = new _InputField__WEBPACK_IMPORTED_MODULE_4__.SelectField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl);
+                  break;
+                }
+
+              default:
+                {
+                  field = new _InputField__WEBPACK_IMPORTED_MODULE_4__.InputField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl);
+                  break;
+                }
+            }
+
+            this.fields.push(field);
+            this.map.push({
+              attributeId: dataId,
+              fieldId: fieldId
+            });
+          }
+        }
+      } else {
+        dlogger("Converting field input element " + fieldId + " with data-id of " + dataId + " field definition is NOT FOUND");
+      }
+    }
+  };
+
   _proto.initialise = function initialise() {
     var _this2 = this;
 
@@ -9693,46 +9788,19 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
 
     logger("Converting field input elements to Field objects");
     this.factoryElements.fields.forEach(function (fieldEl) {
-      // get the data-id field from the field element
-      var dataId = fieldEl.getAttribute(_FormUITypes__WEBPACK_IMPORTED_MODULE_0__.DATA_ID_ATTRIBUTE);
-      var fieldId = fieldEl.getAttribute('id');
-      dlogger("Converting field input element " + fieldId + " with data-id of " + dataId);
-
-      if (dataId && fieldId) {
-        // find the corresponding field definition
-        var index = _this2.dataObjDef.fields.findIndex(function (value) {
-          return value.id === dataId;
-        });
-
-        var fieldDef = _this2.dataObjDef.fields.find(function (value) {
-          return value.id === dataId;
-        });
-
-        if (fieldDef) {
-          dlogger("Converting field input element " + fieldId + " with data-id of " + dataId + " field definition is");
-          logger(fieldDef); // find the corresponding ui definition
-
-          var fieldUIConfig = _this2.findFieldUiConfig(fieldDef);
-
-          dlogger("Converting field input element " + fieldId + " with data-id of " + dataId + " field ui config is");
-          logger(fieldUIConfig);
-
-          if (fieldUIConfig) {
-            if (_this2.uiDef) {
-              var field = new _InputField__WEBPACK_IMPORTED_MODULE_4__.InputField(_this2.uiDef.id, fieldUIConfig, fieldDef, fieldEl);
-
-              _this2.fields.push(field);
-
-              _this2.map.push({
-                attributeId: dataId,
-                fieldId: fieldId
-              });
-            }
-          }
-        } else {
-          dlogger("Converting field input element " + fieldId + " with data-id of " + dataId + " field definition is NOT FOUND");
-        }
-      }
+      _this2.setupFieldObject(fieldEl);
+    });
+    logger("Converting field text area elements to Field objects");
+    this.factoryElements.textFields.forEach(function (fieldEl) {
+      _this2.setupFieldObject(fieldEl);
+    });
+    logger("Converting field select elements to Field objects");
+    this.factoryElements.selectFields.forEach(function (fieldEl) {
+      _this2.setupFieldObject(fieldEl);
+    });
+    logger("Converting field rbg elements to Field objects");
+    this.factoryElements.radioButtonGroups.forEach(function (rbg) {
+      _this2.setupFieldObject(rbg.container, rbg.radioButtons);
     });
     logger("field/data map is ");
     logger(this.map);
@@ -9948,6 +10016,7 @@ var FieldType;
   FieldType["boolean"] = "True/False";
   FieldType["userId"] = "User";
   FieldType["choice"] = "Choice";
+  FieldType["limitedChoice"] = "Limited Choice";
   FieldType["largeText"] = "TextArea";
 })(FieldType || (FieldType = {}));
 
@@ -9995,28 +10064,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var DefaultOptionsFieldOptionsListener = /*#__PURE__*/function () {
-  function DefaultOptionsFieldOptionsListener(parentElement, fieldUIConfig) {
+var DefaultFieldOptionsListener = /*#__PURE__*/function () {
+  function DefaultFieldOptionsListener(formId, parentElement, fieldUIConfig) {
+    this.formId = formId;
     this.parentElement = parentElement;
     this.fieldUIConfig = fieldUIConfig;
   }
 
-  var _proto = DefaultOptionsFieldOptionsListener.prototype;
+  var _proto = DefaultFieldOptionsListener.prototype;
 
   _proto.optionsChanged = function optionsChanged(newOptions) {
-    var _this = this;
-
     _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].removeAllChildren(this.parentElement);
-    newOptions.forEach(function (valueOption) {
-      var optionElement = document.createElement('option');
-      optionElement.setAttribute('value', valueOption.value);
-      optionElement.innerHTML = valueOption.name;
-
-      _this.parentElement.appendChild(optionElement);
-    });
+    var subEls = FieldInputElementFactory.createSubElements(this.formId, this.parentElement, this.fieldUIConfig, newOptions);
   };
 
-  return DefaultOptionsFieldOptionsListener;
+  return DefaultFieldOptionsListener;
 }();
 
 var FieldInputElementFactory = /*#__PURE__*/function () {
@@ -10030,9 +10092,11 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
   function FieldInputElementFactory() {}
 
-  var _proto2 = FieldInputElementFactory.prototype;
+  FieldInputElementFactory.setupFieldElement = function setupFieldElement(fieldElement, formId, fieldConfig, listeners, subElements) {
+    if (subElements === void 0) {
+      subElements = null;
+    }
 
-  _proto2.setupFieldElement = function setupFieldElement(fieldElement, formId, fieldConfig, listeners) {
     fieldElement.setAttribute('id', formId + ".field." + fieldConfig.field.id);
     fieldElement.setAttribute(_FormUITypes__WEBPACK_IMPORTED_MODULE_1__.DATA_ID_ATTRIBUTE, fieldConfig.field.id);
     fieldElement.setAttribute('name', fieldConfig.field.id);
@@ -10055,13 +10119,8 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
     if (fieldConfig.validator) {
       // is the value in the field valid
-      fieldElement.addEventListener('blur', new _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__.ValidationEventHandler(formId, fieldConfig, listeners));
+      fieldElement.addEventListener('blur', new _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__.ValidationEventHandler(formId, fieldConfig, listeners, subElements));
     }
-
-    if (fieldConfig.renderer) {// render the value when the field changes
-      //fieldElement.addEventListener('change',new RenderingEventListener(fieldConfig,listeners));
-    } // care for endless loops here, renderer needs to return null if no changes
-
 
     if (fieldConfig.editor) {
       // render the value when the field gains focus
@@ -10070,7 +10129,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
 
   };
 
-  _proto2.completeComponentElement = function completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners) {
+  FieldInputElementFactory.completeComponentElement = function completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners) {
     // if the field has a validator, then we need a div for error messages
     var errorMessageDivEl = null;
 
@@ -10143,6 +10202,8 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
     }
   };
 
+  var _proto2 = FieldInputElementFactory.prototype;
+
   _proto2.createInputFormFieldComponentElement = function createInputFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
     // return the input element
     var fieldElement = document.createElement('input');
@@ -10186,8 +10247,8 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
         }
     }
 
-    this.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-    this.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+    FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
+    FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
     return fieldElement;
   };
 
@@ -10200,9 +10261,46 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
       fieldElement.setAttribute('cols', "" + fieldConfig.textarea.cols);
     }
 
-    this.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-    this.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+    FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
+    FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
     return fieldElement;
+  };
+
+  FieldInputElementFactory.createSubElements = function createSubElements(formId, parentEl, fieldConfig, valueOptions) {
+    var results = [];
+    valueOptions.forEach(function (valueOption, index) {
+      if (fieldConfig.subElement) {
+        var containerEl = parentEl; // is there a container?
+
+        if (fieldConfig.subElement.container) {
+          containerEl = document.createElement(fieldConfig.subElement.container.elementType);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(containerEl, fieldConfig.subElement.container.elementClasses);
+          if (fieldConfig.subElement.container.elementAttributes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(containerEl, fieldConfig.subElement.container.elementAttributes);
+          parentEl.appendChild(containerEl);
+        }
+
+        var valueEl = document.createElement(fieldConfig.subElement.element.elementType);
+        valueEl.setAttribute('value', valueOption.value);
+        valueEl.setAttribute('id', formId + ".field." + fieldConfig.field.id + "." + index);
+        valueEl.setAttribute('name', formId + ".field." + fieldConfig.field.id);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(valueEl, fieldConfig.subElement.element.elementClasses);
+        if (fieldConfig.subElement.element.elementAttributes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(valueEl, fieldConfig.subElement.element.elementAttributes);
+        containerEl.appendChild(valueEl);
+
+        if (fieldConfig.subElement.label) {
+          var labelEl = document.createElement('label');
+          if (fieldConfig.subElement.label.classes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(labelEl, fieldConfig.subElement.label.classes);
+          if (fieldConfig.subElement.label.attributes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(labelEl, fieldConfig.subElement.label.attributes);
+          labelEl.innerHTML = valueOption.name;
+          containerEl.appendChild(labelEl);
+        } else {
+          valueEl.innerHTML = valueOption.name;
+        }
+
+        results.push(valueEl);
+      }
+    });
+    return results;
   };
 
   _proto2.createSelectFormFieldComponentElement = function createSelectFormFieldComponentElement(formId, containerEl, fieldConfig, listeners) {
@@ -10210,19 +10308,13 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
     var fieldElement = document.createElement('select'); // create the options from the data source
 
     if (fieldConfig.datasource) {
-      var valueOptions = fieldConfig.datasource.getOptions();
-      valueOptions.forEach(function (valueOption) {
-        var optionElement = document.createElement('option');
-        optionElement.setAttribute('value', valueOption.value);
-        optionElement.innerHTML = valueOption.name;
-        fieldElement.appendChild(optionElement);
-      }); // listen for data source changes
+      FieldInputElementFactory.createSubElements(formId, fieldElement, fieldConfig, fieldConfig.datasource.getOptions()); // listen for data source changes
 
-      fieldConfig.datasource.addListener(new DefaultOptionsFieldOptionsListener(fieldElement, fieldConfig));
+      fieldConfig.datasource.addListener(new DefaultFieldOptionsListener(formId, fieldElement, fieldConfig));
     }
 
-    this.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
-    this.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
+    FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
+    FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
     return fieldElement;
   };
 
@@ -10231,7 +10323,26 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
     // create the div for the radio group
     var radioGroupElement = document.createElement('div');
     if (fieldConfig.elementAttributes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(radioGroupElement, fieldConfig.elementAttributes);
-    if (fieldConfig.elementClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(radioGroupElement, fieldConfig.elementClasses); //
+    if (fieldConfig.elementClasses) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(radioGroupElement, fieldConfig.elementClasses);
+    var subElements = []; // create the options from the data source
+
+    if (fieldConfig.datasource) {
+      // we should get the radio buttons back
+      subElements = FieldInputElementFactory.createSubElements(formId, radioGroupElement, fieldConfig, fieldConfig.datasource.getOptions()); // listen for data source changes
+
+      fieldConfig.datasource.addListener(new DefaultFieldOptionsListener(formId, radioGroupElement, fieldConfig)); // setup the subelements for the validator, formatter, and renderer
+
+      if (fieldConfig.validator) fieldConfig.validator.validator.setSubElements(subElements);
+      if (fieldConfig.renderer) fieldConfig.renderer.setSubElements(subElements);
+      if (fieldConfig.formatter) fieldConfig.formatter.setSubElements(subElements);
+    }
+
+    FieldInputElementFactory.setupFieldElement(radioGroupElement, formId, fieldConfig, listeners, subElements);
+    FieldInputElementFactory.completeComponentElement(radioGroupElement, formId, containerEl, fieldConfig, listeners);
+    return {
+      container: radioGroupElement,
+      radioButtons: subElements
+    };
   };
 
   return FieldInputElementFactory;
@@ -10314,6 +10425,8 @@ var FormElementFactory = /*#__PURE__*/function () {
 
     var formInputElements = [];
     var formTAElements = [];
+    var formRBGElements = [];
+    var formSelectElements = [];
     formConfig.fieldGroups.forEach(function (group) {
       // if the group has a container make that, otherwise the form is the container
       var containerEl = formEl;
@@ -10338,11 +10451,27 @@ var FormElementFactory = /*#__PURE__*/function () {
               break;
             }
 
+          case _FormUITypes__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.select:
+            {
+              var _fieldEl = _FieldInputElementFactory__WEBPACK_IMPORTED_MODULE_1__.FieldInputElementFactory.getInstance().createSelectFormFieldComponentElement(formConfig.id, containerEl, field, fieldListeners);
+
+              formSelectElements.push(_fieldEl);
+              break;
+            }
+
+          case _FormUITypes__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.radioGroup:
+            {
+              var _fieldEl2 = _FieldInputElementFactory__WEBPACK_IMPORTED_MODULE_1__.FieldInputElementFactory.getInstance().createRadioGroupFormFieldComponentElement(formConfig.id, containerEl, field, fieldListeners);
+
+              formRBGElements.push(_fieldEl2);
+              break;
+            }
+
           default:
             {
-              var _fieldEl = _FieldInputElementFactory__WEBPACK_IMPORTED_MODULE_1__.FieldInputElementFactory.getInstance().createInputFormFieldComponentElement(formConfig.id, containerEl, field, fieldListeners);
+              var _fieldEl3 = _FieldInputElementFactory__WEBPACK_IMPORTED_MODULE_1__.FieldInputElementFactory.getInstance().createInputFormFieldComponentElement(formConfig.id, containerEl, field, fieldListeners);
 
-              formInputElements.push(_fieldEl);
+              formInputElements.push(_fieldEl3);
             }
         }
       });
@@ -10372,6 +10501,9 @@ var FormElementFactory = /*#__PURE__*/function () {
     var result = {
       form: formEl,
       fields: formInputElements,
+      selectFields: formSelectElements,
+      radioButtonGroups: formRBGElements,
+      textFields: formTAElements,
       deleteButton: deleteButtonEl,
       cancelButton: cancelButtonEl,
       submitButton: submitButtonEl
@@ -10460,28 +10592,52 @@ var DATA_ID_ATTRIBUTE = 'data-id';
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "InputField": () => (/* binding */ InputField)
+/* harmony export */   "InputField": () => (/* binding */ InputField),
+/* harmony export */   "SelectField": () => (/* binding */ SelectField),
+/* harmony export */   "TextAreaField": () => (/* binding */ TextAreaField),
+/* harmony export */   "RadioButtonGroupField": () => (/* binding */ RadioButtonGroupField)
 /* harmony export */ });
 /* harmony import */ var _FormUITypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FormUITypes */ "./src/ui-framework/form/FormUITypes.ts");
 /* harmony import */ var _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DataObjectTypes */ "./src/ui-framework/form/DataObjectTypes.ts");
 /* harmony import */ var _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./event-handlers/ValidationEventHandler */ "./src/ui-framework/form/event-handlers/ValidationEventHandler.ts");
 /* harmony import */ var _event_handlers_RenderingEventListener__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./event-handlers/RenderingEventListener */ "./src/ui-framework/form/event-handlers/RenderingEventListener.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
 
 
 
 
-var InputField = /*#__PURE__*/function () {
-  function InputField(formId, config, fieldDef, element) {
+
+
+var AbstractField = /*#__PURE__*/function () {
+  function AbstractField(formId, config, fieldDef, element, subElements) {
+    if (subElements === void 0) {
+      subElements = null;
+    }
+
     this.config = null;
     this.formId = formId;
     this.config = config;
     this.definition = fieldDef;
     this.element = element;
-    this.validationHandler = new _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__.ValidationEventHandler(formId, config, [this]);
-    this.renderingHandler = new _event_handlers_RenderingEventListener__WEBPACK_IMPORTED_MODULE_3__.RenderingEventListener(formId, config, [this]);
+    this.validationHandler = new _event_handlers_ValidationEventHandler__WEBPACK_IMPORTED_MODULE_2__.ValidationEventHandler(formId, config, [this], subElements);
+    this.renderingHandler = new _event_handlers_RenderingEventListener__WEBPACK_IMPORTED_MODULE_3__.RenderingEventListener(formId, config, [this], subElements);
   }
 
-  var _proto = InputField.prototype;
+  var _proto = AbstractField.prototype;
 
   _proto.initialise = function initialise() {};
 
@@ -10489,8 +10645,13 @@ var InputField = /*#__PURE__*/function () {
     var result = null;
 
     if (this.config && this.element) {
+      // @ts-ignore
       result = this.element.value;
-      if (this.config.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.checkbox) result = '' + this.element.checked;
+
+      if (this.config.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.checkbox) {
+        // @ts-ignore
+        result = '' + this.element.checked;
+      }
     }
 
     return result;
@@ -10500,8 +10661,13 @@ var InputField = /*#__PURE__*/function () {
     var result = null;
 
     if (this.config && this.element) {
+      // @ts-ignore
       result = this.element.value;
-      if (this.config.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.checkbox) result = '' + this.element.checked;
+
+      if (this.config.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.checkbox) {
+        // @ts-ignore
+        result = '' + this.element.checked;
+      }
 
       if (this.config.formatter) {
         result = this.config.formatter.formatValue(this.definition, result);
@@ -10533,8 +10699,13 @@ var InputField = /*#__PURE__*/function () {
 
   _proto.setValue = function setValue(newValue) {
     if (this.element) {
+      // @ts-ignore
       this.element.value = newValue;
-      if (this.definition.type === _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean) this.element.checked = newValue.toLowerCase() === 'true';
+
+      if (this.definition.type === _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean) {
+        // @ts-ignore
+        this.element.checked = newValue.toLowerCase() === 'true';
+      }
     }
   };
 
@@ -10543,24 +10714,28 @@ var InputField = /*#__PURE__*/function () {
       switch (this.definition.type) {
         case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean:
           {
+            // @ts-ignore
             this.element.checked = false;
             break;
           }
 
         case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.integer:
           {
+            // @ts-ignore
             this.element.value = '0';
             break;
           }
 
         case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.float:
           {
+            // @ts-ignore
             this.element.value = '0.0';
             break;
           }
 
         default:
           {
+            // @ts-ignore
             this.element.value = '';
             break;
           }
@@ -10595,8 +10770,45 @@ var InputField = /*#__PURE__*/function () {
 
   _proto.valueChanged = function valueChanged(field, newValue) {};
 
-  return InputField;
+  return AbstractField;
 }();
+
+var InputField = /*#__PURE__*/function (_AbstractField) {
+  _inheritsLoose(InputField, _AbstractField);
+
+  function InputField(formId, config, fieldDef, element) {
+    return _AbstractField.call(this, formId, config, fieldDef, element) || this;
+  }
+
+  return InputField;
+}(AbstractField);
+var SelectField = /*#__PURE__*/function (_AbstractField2) {
+  _inheritsLoose(SelectField, _AbstractField2);
+
+  function SelectField(formId, config, fieldDef, element) {
+    return _AbstractField2.call(this, formId, config, fieldDef, element) || this;
+  }
+
+  return SelectField;
+}(AbstractField);
+var TextAreaField = /*#__PURE__*/function (_AbstractField3) {
+  _inheritsLoose(TextAreaField, _AbstractField3);
+
+  function TextAreaField(formId, config, fieldDef, element) {
+    return _AbstractField3.call(this, formId, config, fieldDef, element) || this;
+  }
+
+  return TextAreaField;
+}(AbstractField);
+var RadioButtonGroupField = /*#__PURE__*/function (_AbstractField4) {
+  _inheritsLoose(RadioButtonGroupField, _AbstractField4);
+
+  function RadioButtonGroupField(formId, config, fieldDef, element, subElements) {
+    return _AbstractField4.call(this, formId, config, fieldDef, element, subElements) || this;
+  }
+
+  return RadioButtonGroupField;
+}(AbstractField);
 
 /***/ }),
 
@@ -10658,10 +10870,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "RenderingEventListener": () => (/* binding */ RenderingEventListener)
 /* harmony export */ });
 var RenderingEventListener = /*#__PURE__*/function () {
-  function RenderingEventListener(formId, fieldConfig, listeners) {
+  function RenderingEventListener(formId, fieldConfig, listeners, subElements) {
+    if (subElements === void 0) {
+      subElements = null;
+    }
+
     this.formId = formId;
     this.fieldConfig = fieldConfig;
     this.listeners = listeners;
+    this.subElements = subElements;
     this.handleEvent = this.handleEvent.bind(this);
   }
 
@@ -10673,6 +10890,7 @@ var RenderingEventListener = /*#__PURE__*/function () {
     if (this.fieldConfig.renderer) {
       var field = this.fieldConfig.field;
       var value = fieldElement.value;
+      if (this.subElements) this.fieldConfig.renderer.setSubElements(this.subElements);
       newValue = this.fieldConfig.renderer.renderValue(field, value);
 
       if (newValue) {
@@ -10722,10 +10940,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var ValidationEventHandler = /*#__PURE__*/function () {
-  function ValidationEventHandler(formId, fieldConfig, listeners) {
+  function ValidationEventHandler(formId, fieldConfig, listeners, subElements) {
+    if (subElements === void 0) {
+      subElements = null;
+    }
+
     this.formId = formId;
     this.fieldConfig = fieldConfig;
     this.listeners = listeners;
+    this.subElements = subElements;
     this.handleEvent = this.handleEvent.bind(this);
   }
 
@@ -10733,10 +10956,16 @@ var ValidationEventHandler = /*#__PURE__*/function () {
 
   _proto.processValidation = function processValidation(fieldElement) {
     if (this.fieldConfig.validator && fieldElement) {
-      var field = this.fieldConfig.field;
+      if (this.subElements) this.fieldConfig.validator.validator.setSubElements(this.subElements);
+      var field = this.fieldConfig.field; // @ts-ignore
+
       var value = fieldElement.value; // checkboxes store values differently
 
-      if (this.fieldConfig.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_1__.UIFieldType.checkbox) value = '' + fieldElement.checked;
+      if (this.fieldConfig.elementType === _FormUITypes__WEBPACK_IMPORTED_MODULE_1__.UIFieldType.checkbox) {
+        // @ts-ignore
+        value = '' + fieldElement.checked;
+      }
+
       var validationResp = this.fieldConfig.validator.validator.isValidValue(field, value);
       var errorMessageDiv = document.getElementById("field." + this.fieldConfig.field.id + ".error");
       var errorMessageEl = document.getElementById("field." + this.fieldConfig.field.id + ".error.message"); // clear any previous message
@@ -10763,24 +10992,28 @@ var ValidationEventHandler = /*#__PURE__*/function () {
           switch (field.type) {
             case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_0__.FieldType.boolean:
               {
+                // @ts-ignore
                 fieldElement.checked = false;
                 break;
               }
 
             case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_0__.FieldType.integer:
               {
+                // @ts-ignore
                 fieldElement.value = '0';
                 break;
               }
 
             case _DataObjectTypes__WEBPACK_IMPORTED_MODULE_0__.FieldType.float:
               {
+                // @ts-ignore
                 fieldElement.value = '0.0';
                 break;
               }
 
             default:
               {
+                // @ts-ignore
                 fieldElement.value = '';
                 break;
               }
@@ -10840,10 +11073,12 @@ var rlogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-field-operatio
 var BasicFieldOperations = /*#__PURE__*/function () {
   function BasicFieldOperations() {
     this.previousFieldValues = [];
-  } // called when saving, change to final values
-
+  }
 
   var _proto = BasicFieldOperations.prototype;
+
+  _proto.setSubElements = function setSubElements(elements) {} // called when saving, change to final values
+  ;
 
   _proto.formatValue = function formatValue(field, currentValue) {
     flogger("Handling format value for field " + field.displayName + " with value " + currentValue);
@@ -11234,6 +11469,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _form_FormUITypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../form/FormUITypes */ "./src/ui-framework/form/FormUITypes.ts");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./RBGFieldOperations */ "./src/ui-framework/helper/RBGFieldOperations.ts");
+
 
 
 
@@ -11253,7 +11490,8 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
   var _proto = BootstrapFormConfigHelper.prototype;
 
   _proto.generateFormConfig = function generateFormConfig(dataObjDef) {
-    var fieldOperations = new _BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__.BasicFieldOperations(); // create the Field UI config for each field
+    var fieldOperations = new _BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__.BasicFieldOperations();
+    var rbgFieldOperation = new _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__.RBGFieldOperations(); // create the Field UI config for each field
 
     var fieldUIConfigs = [];
     dataObjDef.fields.forEach(function (fieldDef) {
@@ -11299,6 +11537,24 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
             fieldType = _form_FormUITypes__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.checkbox;
             break;
           }
+
+        case _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText:
+          {
+            fieldType = _form_FormUITypes__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.textarea;
+            break;
+          }
+
+        case _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice:
+          {
+            fieldType = _form_FormUITypes__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.select;
+            break;
+          }
+
+        case _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice:
+          {
+            fieldType = _form_FormUITypes__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.radioGroup;
+            break;
+          }
       } // construct the field ui config
 
 
@@ -11342,6 +11598,52 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
             invalidClasses: 'is-invalid'
           };
         }
+      } // text areas
+
+
+      if (fieldDef.type === _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText) {
+        fieldUIConfig.textarea = {
+          rows: 5,
+          cols: 20
+        };
+      } // select
+
+
+      if (fieldDef.type === _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice) {
+        // subelements are options, with no classes, no labels, and no other container
+        fieldUIConfig.subElement = {
+          element: {
+            elementType: 'option',
+            elementClasses: ''
+          }
+        };
+        fieldUIConfig.datasource = fieldDef.dataSource;
+      } // radio button group
+
+
+      if (fieldDef.type === _form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice) {
+        fieldUIConfig.subElement = {
+          element: {
+            elementType: 'input',
+            elementClasses: 'form-check-input',
+            elementAttributes: [{
+              name: 'type',
+              value: 'radio'
+            }]
+          },
+          container: {
+            elementType: 'div',
+            elementClasses: 'form-check form-check-inline'
+          },
+          label: {
+            label: 'label',
+            classes: 'form-check-label'
+          }
+        };
+        fieldUIConfig.renderer = rbgFieldOperation;
+        if (fieldUIConfig.validator) fieldUIConfig.validator.validator = rbgFieldOperation;
+        fieldUIConfig.formatter = rbgFieldOperation;
+        fieldUIConfig.datasource = fieldDef.dataSource;
       }
 
       fieldUIConfigs.push(fieldUIConfig);
@@ -11383,6 +11685,145 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
   };
 
   return BootstrapFormConfigHelper;
+}();
+
+/***/ }),
+
+/***/ "./src/ui-framework/helper/RBGFieldOperations.ts":
+/*!*******************************************************!*\
+  !*** ./src/ui-framework/helper/RBGFieldOperations.ts ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "RBGFieldOperations": () => (/* binding */ RBGFieldOperations)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+
+
+var flogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('basic-field-operations-formatter');
+var vlogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('basic-field-operations-validator');
+var glogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('basic-field-operations-generator');
+var rlogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('basic-field-operations-renderer');
+var RBGFieldOperations = /*#__PURE__*/function () {
+  function RBGFieldOperations() {
+    this.radioButtons = [];
+  } // called when saving, change to final values
+
+
+  var _proto = RBGFieldOperations.prototype;
+
+  _proto.formatValue = function formatValue(field, currentValue) {
+    flogger("Handling format value for RBG " + field.displayName + " with value " + currentValue);
+    var result = currentValue; // find the current selected radio button
+
+    this.radioButtons.forEach(function (radioButton) {
+      if (radioButton.checked) {
+        result = radioButton.value;
+
+        if (field.idType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+          result = parseInt(result);
+        }
+      }
+    });
+    flogger("Handling format value for field " + field.displayName + " with value " + currentValue + " - result is " + result);
+    return result;
+  };
+
+  _proto.isValidValue = function isValidValue(field, currentValue) {
+    vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue);
+    var response = {
+      isValid: false,
+      resetOnFailure: false
+    }; // basics first, is the field mandatory?
+
+    if (field.mandatory) {
+      this.radioButtons.forEach(function (radioButton) {
+        if (radioButton.checked) {
+          response.isValid = true;
+        }
+      });
+
+      if (!response.isValid) {
+        response.message = field.displayName + " is required. Please select one of the values.";
+        vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - is valid is " + response.isValid + " with message " + response.message);
+        return response;
+      }
+    } else {
+      response.isValid = true;
+    } // ok, so we have some content, we need to check if the value is a valid format with regular expressions
+
+
+    vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - is valid is " + response.isValid + " with message " + response.message);
+    return response;
+  };
+
+  _proto.renderValue = function renderValue(field, currentValue) {
+    rlogger("Rendering value for field " + field.displayName + " with new value " + currentValue);
+    this.radioButtons.forEach(function (radioButton) {
+      if (radioButton.value === currentValue) radioButton.checked = true;
+    });
+    return null;
+  };
+
+  _proto.generate = function generate(field, isCreate) {
+    return '';
+  };
+
+  _proto.setSubElements = function setSubElements(elements) {
+    this.radioButtons = elements;
+  };
+
+  return RBGFieldOperations;
+}();
+
+/***/ }),
+
+/***/ "./src/ui-framework/helper/SimpleValueDataSource.ts":
+/*!**********************************************************!*\
+  !*** ./src/ui-framework/helper/SimpleValueDataSource.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SimpleValueDataSource": () => (/* binding */ SimpleValueDataSource)
+/* harmony export */ });
+var SimpleValueDataSource = /*#__PURE__*/function () {
+  // static value list
+  function SimpleValueDataSource(options) {
+    this.options = options;
+    this.listeners = [];
+  }
+
+  var _proto = SimpleValueDataSource.prototype;
+
+  _proto.addValueOption = function addValueOption(name, value) {
+    var _this = this;
+
+    this.options.push({
+      name: name,
+      value: value
+    });
+    this.listeners.forEach(function (listener) {
+      return listener.optionsChanged(_this.options);
+    });
+  };
+
+  _proto.addListener = function addListener(listener) {
+    this.listeners.push(listener);
+  };
+
+  _proto.getOptions = function getOptions() {
+    return this.options;
+  };
+
+  return SimpleValueDataSource;
 }();
 
 /***/ }),
@@ -11552,6 +11993,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./ui-framework/form/DataObjectTypes */ "./src/ui-framework/form/DataObjectTypes.ts");
 /* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
 /* harmony import */ var _ui_framework_form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./ui-framework/form/BasicFormImplementation */ "./src/ui-framework/form/BasicFormImplementation.ts");
+/* harmony import */ var _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./ui-framework/helper/SimpleValueDataSource */ "./src/ui-framework/helper/SimpleValueDataSource.ts");
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -11565,6 +12007,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 /* eslint "react/react-in-jsx-scope":"off" */
 
 /* eslint "react/jsx-no-undef":"off" */
+
 
 
 
@@ -11780,7 +12223,7 @@ var Root = /*#__PURE__*/function (_React$Component) {
 
   _proto.componentDidMount = /*#__PURE__*/function () {
     var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var chatLogView, recentSearches, favouriteUsers, blockedUsers, bggSearch, dataObjDef, form;
+      var chatLogView, recentSearches, favouriteUsers, blockedUsers, bggSearch, dataObjDef, dataSource, form;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -11882,14 +12325,38 @@ var Root = /*#__PURE__*/function (_React$Component) {
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float", "Float", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.float, true, "A number yo....");
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "checkbox", "Checkbox?", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.boolean, true, "Yes or No?");
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "date", "Date", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.date, true, "Date yep");
-              _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "time", "Time", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.time, true, "How long till we get there?"); // okay lets make a form
+              _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "time", "Time", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.time, true, "How long till we get there?");
+              _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "textarea", "TextArea", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.largeText, true, "An essay");
+              dataSource = new _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_24__.SimpleValueDataSource([{
+                name: 'Justice League',
+                value: 'jl'
+              }, {
+                name: 'Marvel',
+                value: 'marvel'
+              }, {
+                name: 'Other',
+                value: 'other'
+              }]);
+              _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "select", "Select", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.choice, true, "Some choices", dataSource);
+              _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "rbg", "RBG", _ui_framework_form_DataObjectTypes__WEBPACK_IMPORTED_MODULE_21__.FieldType.limitedChoice, true, "Some similar choices", new _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_24__.SimpleValueDataSource([{
+                name: 'Justice League',
+                value: 'jl'
+              }, {
+                name: 'Marvel',
+                value: 'marvel'
+              }, {
+                name: 'Other',
+                value: 'other'
+              }])); // okay lets make a form
 
               form = new _ui_framework_form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_23__.BasicFormImplementation("testForm", dataObjDef);
               form.initialise();
               form.startCreateNew();
-              form.setIsVisible(true);
+              form.setIsVisible(true); // change the select options
 
-            case 51:
+              dataSource.addValueOption('X-Men', 'xmen');
+
+            case 56:
             case "end":
               return _context.stop();
           }

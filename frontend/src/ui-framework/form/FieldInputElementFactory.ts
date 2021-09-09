@@ -1,28 +1,25 @@
 import browserUtil from "../../util/BrowserUtil";
-import {DATA_ID_ATTRIBUTE, FieldUIConfig, FieldValueOptionsListener, UIFieldType} from "./FormUITypes";
+import {DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypes";
 import {FieldListener} from "./FieldListener";
-import {FieldDefinition, FieldType, ValidationResponse, ValueOption} from "./DataObjectTypes";
 import {ValidationEventHandler} from "./event-handlers/ValidationEventHandler";
 import {EditingEventListener} from "./event-handlers/EditingEventListener";
-import {RenderingEventListener} from "./event-handlers/RenderingEventListener";
+import {FieldValueOptionsListener, ValueOption} from "./CommonTypes";
 
-class DefaultOptionsFieldOptionsListener implements FieldValueOptionsListener {
-    private parentElement:HTMLElement;
-    private fieldUIConfig:FieldUIConfig;
+class DefaultFieldOptionsListener implements FieldValueOptionsListener {
+    private formId: string;
+    private parentElement: HTMLElement;
+    private fieldUIConfig: FieldUIConfig;
 
-    constructor(parentElement:HTMLElement,fieldUIConfig:FieldUIConfig) {
+    constructor(formId: string, parentElement: HTMLElement, fieldUIConfig: FieldUIConfig) {
+        this.formId = formId;
         this.parentElement = parentElement;
         this.fieldUIConfig = fieldUIConfig;
     }
 
     optionsChanged(newOptions: ValueOption[]): void {
         browserUtil.removeAllChildren(this.parentElement);
-        newOptions.forEach((valueOption) => {
-            let optionElement = document.createElement('option');
-            optionElement.setAttribute('value',valueOption.value);
-            optionElement.innerHTML = valueOption.name;
-            this.parentElement.appendChild(optionElement);
-        });
+        let subEls: HTMLElement[] = FieldInputElementFactory.createSubElements(this.formId, this.parentElement, this.fieldUIConfig, newOptions);
+
     }
 
 }
@@ -38,55 +35,54 @@ export class FieldInputElementFactory {
         return FieldInputElementFactory._instance;
     }
 
-    private constructor() {}
+    private constructor() {
+    }
 
-    private setupFieldElement(fieldElement:HTMLElement,formId:string, fieldConfig:FieldUIConfig, listeners:FieldListener[]) {
-        fieldElement.setAttribute('id',`${formId}.field.${fieldConfig.field.id}`);
-        fieldElement.setAttribute(DATA_ID_ATTRIBUTE,fieldConfig.field.id);
-        fieldElement.setAttribute('name',fieldConfig.field.id);
-        if (fieldConfig.elementAttributes) browserUtil.addAttributes(fieldElement,fieldConfig.elementAttributes);
-        if (fieldConfig.elementClasses) browserUtil.addRemoveClasses(fieldElement,fieldConfig.elementClasses);
+    public static setupFieldElement(fieldElement: HTMLElement, formId: string, fieldConfig: FieldUIConfig, listeners: FieldListener[], subElements:HTMLInputElement[]|null = null):void {
+        fieldElement.setAttribute('id', `${formId}.field.${fieldConfig.field.id}`);
+        fieldElement.setAttribute(DATA_ID_ATTRIBUTE, fieldConfig.field.id);
+        fieldElement.setAttribute('name', fieldConfig.field.id);
+        if (fieldConfig.elementAttributes) browserUtil.addAttributes(fieldElement, fieldConfig.elementAttributes);
+        if (fieldConfig.elementClasses) browserUtil.addRemoveClasses(fieldElement, fieldConfig.elementClasses);
 
         // readonly field?
         if (fieldConfig.field.displayOnly) {
-            browserUtil.addAttributes(fieldElement,[{name:'disabled',value:'true'},{name:'readonly',value:'true'}])
+            browserUtil.addAttributes(fieldElement, [{name: 'disabled', value: 'true'}, {
+                name: 'readonly',
+                value: 'true'
+            }])
         }
         /*
         setup event handlers
         */
         if (fieldConfig.validator) { // is the value in the field valid
-            fieldElement.addEventListener('blur',new ValidationEventHandler(formId,fieldConfig,listeners));
+            fieldElement.addEventListener('blur', new ValidationEventHandler(formId, fieldConfig, listeners,subElements));
         }
 
-        if (fieldConfig.renderer) { // render the value when the field changes
-            //fieldElement.addEventListener('change',new RenderingEventListener(fieldConfig,listeners));
-        } // care for endless loops here, renderer needs to return null if no changes
-
         if (fieldConfig.editor) { // render the value when the field gains focus
-            fieldElement.addEventListener('focus',new EditingEventListener(formId,fieldConfig,listeners));
+            fieldElement.addEventListener('focus', new EditingEventListener(formId, fieldConfig, listeners));
         } // care for endless loops here, renderer needs to return null if no changes
 
     }
 
 
-    private completeComponentElement(fieldElement:HTMLElement,formId:string, containerEl:HTMLElement, fieldConfig:FieldUIConfig,listeners:FieldListener[]):void {
+    public static completeComponentElement(fieldElement: HTMLElement, formId: string, containerEl: HTMLElement, fieldConfig: FieldUIConfig, listeners: FieldListener[]): void {
 
         // if the field has a validator, then we need a div for error messages
-        let errorMessageDivEl:HTMLElement|null = null;
+        let errorMessageDivEl: HTMLElement | null = null;
 
         if (fieldConfig.validator) {
             errorMessageDivEl = document.createElement('div');
-            errorMessageDivEl.setAttribute('id',`${formId}.field.${fieldConfig.field.id}.error`);
-            errorMessageDivEl.setAttribute('style','display: none'); // default to not visible
-            browserUtil.addRemoveClasses(errorMessageDivEl,fieldConfig.validator.messageDisplay.elementClasses);
+            errorMessageDivEl.setAttribute('id', `${formId}.field.${fieldConfig.field.id}.error`);
+            errorMessageDivEl.setAttribute('style', 'display: none'); // default to not visible
+            browserUtil.addRemoveClasses(errorMessageDivEl, fieldConfig.validator.messageDisplay.elementClasses);
             let messageEl = document.createElement(fieldConfig.validator.messageDisplay.elementType);
             if (messageEl) {
-                messageEl.setAttribute('id',`${formId}.field.${fieldConfig.field.id}.error.message`);
-                if (fieldConfig.validator.messageDisplay.elementAttributes) browserUtil.addAttributes(messageEl,fieldConfig.validator.messageDisplay.elementAttributes);
+                messageEl.setAttribute('id', `${formId}.field.${fieldConfig.field.id}.error.message`);
+                if (fieldConfig.validator.messageDisplay.elementAttributes) browserUtil.addAttributes(messageEl, fieldConfig.validator.messageDisplay.elementAttributes);
                 errorMessageDivEl.appendChild(messageEl);
             }
         }
-
 
 
         // ok, so is the field contained?
@@ -94,69 +90,65 @@ export class FieldInputElementFactory {
             // we need to create a container for the field and option label and description text
             let containedByEl = document.createElement(fieldConfig.containedBy.elementType);
             if (containedByEl) {
-                browserUtil.addRemoveClasses(containedByEl,fieldConfig.containedBy.elementClasses);
-                containedByEl.setAttribute('id',`${formId}.field.${fieldConfig.field.id}.container`);
+                browserUtil.addRemoveClasses(containedByEl, fieldConfig.containedBy.elementClasses);
+                containedByEl.setAttribute('id', `${formId}.field.${fieldConfig.field.id}.container`);
 
-                if (fieldConfig.containedBy.elementAttributes) browserUtil.addAttributes(containerEl,fieldConfig.containedBy.elementAttributes);
+                if (fieldConfig.containedBy.elementAttributes) browserUtil.addAttributes(containerEl, fieldConfig.containedBy.elementAttributes);
                 // do we have a label also?
                 if (fieldConfig.label) {
-                    let labelEl:HTMLLabelElement = document.createElement('label');
-                    labelEl.setAttribute('for',`${formId}.field.${fieldConfig.field.id}`);
+                    let labelEl: HTMLLabelElement = document.createElement('label');
+                    labelEl.setAttribute('for', `${formId}.field.${fieldConfig.field.id}`);
                     labelEl.innerHTML = fieldConfig.field.displayName;
-                    if (fieldConfig.label.attributes) browserUtil.addAttributes(labelEl,fieldConfig.label.attributes);
-                    if (fieldConfig.label.classes) browserUtil.addRemoveClasses(labelEl,fieldConfig.label.classes);
+                    if (fieldConfig.label.attributes) browserUtil.addAttributes(labelEl, fieldConfig.label.attributes);
+                    if (fieldConfig.label.classes) browserUtil.addRemoveClasses(labelEl, fieldConfig.label.classes);
                     containedByEl.appendChild(labelEl);
                 }
                 if (fieldConfig.describedBy) {
-                    let descEl:HTMLElement = document.createElement(fieldConfig.describedBy.elementType);
+                    let descEl: HTMLElement = document.createElement(fieldConfig.describedBy.elementType);
                     if (descEl) {
                         // link the field and the description
-                        descEl.setAttribute('id',`${formId}.field.${fieldConfig.field.id}.desc`);
+                        descEl.setAttribute('id', `${formId}.field.${fieldConfig.field.id}.desc`);
                         if (fieldConfig.field.description) descEl.innerHTML = fieldConfig.field.description;
-                        fieldElement.setAttribute('aria-describedby',`${formId}.field.${fieldConfig.field.id}.desc`);
-                        if (fieldConfig.describedBy.elementClasses) browserUtil.addRemoveClasses(descEl,fieldConfig.describedBy.elementClasses);
+                        fieldElement.setAttribute('aria-describedby', `${formId}.field.${fieldConfig.field.id}.desc`);
+                        if (fieldConfig.describedBy.elementClasses) browserUtil.addRemoveClasses(descEl, fieldConfig.describedBy.elementClasses);
                         containedByEl.appendChild(fieldElement);
                         containedByEl.appendChild(descEl);
                         if (errorMessageDivEl) containedByEl.appendChild(errorMessageDivEl);
-                    }
-                    else { // description failure, add the field
+                    } else { // description failure, add the field
                         containedByEl.appendChild(fieldElement);
                         if (errorMessageDivEl) containedByEl.appendChild(errorMessageDivEl);
                     }
-                }
-                else { // no description, add field to container
+                } else { // no description, add field to container
                     containedByEl.appendChild(fieldElement);
                     if (errorMessageDivEl) containedByEl.appendChild(errorMessageDivEl);
                 }
                 containerEl.appendChild(containedByEl);
-            }
-            else { // errors should keep making something!
+            } else { // errors should keep making something!
                 containerEl.appendChild(fieldElement);
                 if (errorMessageDivEl) containerEl.appendChild(errorMessageDivEl);
             }
-        }
-        else {
+        } else {
             containerEl.appendChild(fieldElement);
             if (errorMessageDivEl) containerEl.appendChild(errorMessageDivEl);
         }
 
     }
 
-    public createInputFormFieldComponentElement(formId:string, containerEl:HTMLElement, fieldConfig:FieldUIConfig,listeners:FieldListener[]):HTMLInputElement { // return the input element
-        let fieldElement:HTMLInputElement = document.createElement('input');
+    public createInputFormFieldComponentElement(formId: string, containerEl: HTMLElement, fieldConfig: FieldUIConfig, listeners: FieldListener[]): HTMLInputElement { // return the input element
+        let fieldElement: HTMLInputElement = document.createElement('input');
 
-        switch(fieldConfig.elementType) {
+        switch (fieldConfig.elementType) {
             case UIFieldType.checkbox: {
-                fieldElement.setAttribute('type','checkbox');
-                fieldElement.setAttribute('value',fieldConfig.field.id);
+                fieldElement.setAttribute('type', 'checkbox');
+                fieldElement.setAttribute('value', fieldConfig.field.id);
                 break;
             }
             case UIFieldType.email: {
-                fieldElement.setAttribute('type','email');
+                fieldElement.setAttribute('type', 'email');
                 break;
             }
             case UIFieldType.hidden: {
-                fieldElement.setAttribute('type','hidden');
+                fieldElement.setAttribute('type', 'hidden');
                 break;
             }
             case UIFieldType.number: {
@@ -164,57 +156,113 @@ export class FieldInputElementFactory {
                 break;
             }
             case UIFieldType.password: {
-                fieldElement.setAttribute('type','password');
+                fieldElement.setAttribute('type', 'password');
                 break;
             }
             case UIFieldType.text: {
-                fieldElement.setAttribute('type','text');
+                fieldElement.setAttribute('type', 'text');
                 break;
             }
         }
-        this.setupFieldElement(fieldElement,formId,fieldConfig,listeners);
-        this.completeComponentElement(fieldElement,formId, containerEl,fieldConfig,listeners);
+        FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
+        FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
         return fieldElement;
     }
 
-    public createTAFormFieldComponentElement(formId:string, containerEl:HTMLElement, fieldConfig:FieldUIConfig,listeners:FieldListener[]):HTMLTextAreaElement { // return the input element
-        let fieldElement:HTMLTextAreaElement = document.createElement('textarea');
+    public createTAFormFieldComponentElement(formId: string, containerEl: HTMLElement, fieldConfig: FieldUIConfig, listeners: FieldListener[]): HTMLTextAreaElement { // return the input element
+        let fieldElement: HTMLTextAreaElement = document.createElement('textarea');
         if (fieldConfig.textarea) {
-            fieldElement.setAttribute('rows',`${fieldConfig.textarea.rows}`);
-            fieldElement.setAttribute('cols',`${fieldConfig.textarea.cols}`);
+            fieldElement.setAttribute('rows', `${fieldConfig.textarea.rows}`);
+            fieldElement.setAttribute('cols', `${fieldConfig.textarea.cols}`);
         }
-        this.setupFieldElement(fieldElement,formId,fieldConfig,listeners);
-        this.completeComponentElement(fieldElement,formId, containerEl,fieldConfig,listeners);
+        FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
+        FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
         return fieldElement;
     }
 
-    public createSelectFormFieldComponentElement(formId:string, containerEl:HTMLElement, fieldConfig:FieldUIConfig,listeners:FieldListener[]):HTMLSelectElement { // return the input element
-        let fieldElement:HTMLSelectElement = document.createElement('select');
+    public static createSubElements(formId: string, parentEl: HTMLElement, fieldConfig: FieldUIConfig, valueOptions: ValueOption[]): HTMLElement[] {
+        let results: HTMLElement[] = [];
+
+        valueOptions.forEach((valueOption, index) => {
+            if (fieldConfig.subElement) {
+                let containerEl: HTMLElement = parentEl;
+                // is there a container?
+                if (fieldConfig.subElement.container) {
+                    containerEl = document.createElement(fieldConfig.subElement.container.elementType);
+                    browserUtil.addRemoveClasses(containerEl, fieldConfig.subElement.container.elementClasses);
+                    if (fieldConfig.subElement.container.elementAttributes) browserUtil.addAttributes(containerEl, fieldConfig.subElement.container.elementAttributes);
+                    parentEl.appendChild(containerEl);
+                }
+                let valueEl: HTMLElement = document.createElement(fieldConfig.subElement.element.elementType);
+                valueEl.setAttribute('value', valueOption.value);
+                valueEl.setAttribute('id', `${formId}.field.${fieldConfig.field.id}.${index}`);
+                valueEl.setAttribute('name', `${formId}.field.${fieldConfig.field.id}`);
+
+                browserUtil.addRemoveClasses(valueEl, fieldConfig.subElement.element.elementClasses);
+                if (fieldConfig.subElement.element.elementAttributes) browserUtil.addAttributes(valueEl, fieldConfig.subElement.element.elementAttributes);
+
+                containerEl.appendChild(valueEl);
+
+                if (fieldConfig.subElement.label) {
+                    let labelEl = document.createElement('label');
+                    if (fieldConfig.subElement.label.classes) browserUtil.addRemoveClasses(labelEl, fieldConfig.subElement.label.classes);
+                    if (fieldConfig.subElement.label.attributes) browserUtil.addAttributes(labelEl, fieldConfig.subElement.label.attributes);
+                    labelEl.innerHTML = valueOption.name;
+                    containerEl.appendChild(labelEl);
+                } else {
+                    valueEl.innerHTML = valueOption.name;
+                }
+                results.push(valueEl);
+            }
+        });
+        return results;
+    }
+
+    public createSelectFormFieldComponentElement(formId: string, containerEl: HTMLElement, fieldConfig: FieldUIConfig, listeners: FieldListener[]): HTMLSelectElement { // return the input element
+        let fieldElement: HTMLSelectElement = document.createElement('select');
         // create the options from the data source
         if (fieldConfig.datasource) {
-            const valueOptions:ValueOption[] = fieldConfig.datasource.getOptions();
-            valueOptions.forEach((valueOption) => {
-                let optionElement = document.createElement('option');
-                optionElement.setAttribute('value',valueOption.value);
-                optionElement.innerHTML = valueOption.name;
-                fieldElement.appendChild(optionElement);
-            });
+            FieldInputElementFactory.createSubElements(formId, fieldElement, fieldConfig, fieldConfig.datasource.getOptions());
             // listen for data source changes
-            fieldConfig.datasource.addListener(new DefaultOptionsFieldOptionsListener(fieldElement,fieldConfig));
+            fieldConfig.datasource.addListener(new DefaultFieldOptionsListener(formId, fieldElement, fieldConfig));
         }
 
-        this.setupFieldElement(fieldElement,formId,fieldConfig,listeners);
-        this.completeComponentElement(fieldElement,formId, containerEl,fieldConfig,listeners);
+        FieldInputElementFactory.setupFieldElement(fieldElement, formId, fieldConfig, listeners);
+        FieldInputElementFactory.completeComponentElement(fieldElement, formId, containerEl, fieldConfig, listeners);
         return fieldElement;
     }
 
-    public createRadioGroupFormFieldComponentElement(formId:string, containerEl:HTMLElement, fieldConfig:FieldUIConfig,listeners:FieldListener[]):HTMLInputElement[] {
+    public createRadioGroupFormFieldComponentElement(formId: string, containerEl: HTMLElement, fieldConfig: FieldUIConfig, listeners: FieldListener[]):
+        {
+            container:HTMLElement,
+            radioButtons:HTMLInputElement[]
+        }
+    {
         // create a div for each option in the source
         // create the div for the radio group
-        let radioGroupElement:HTMLDivElement = document.createElement('div');
-        if (fieldConfig.elementAttributes) browserUtil.addAttributes(radioGroupElement,fieldConfig.elementAttributes);
-        if (fieldConfig.elementClasses) browserUtil.addRemoveClasses(radioGroupElement,fieldConfig.elementClasses);
-        //
+        let radioGroupElement: HTMLDivElement = document.createElement('div');
+        if (fieldConfig.elementAttributes) browserUtil.addAttributes(radioGroupElement, fieldConfig.elementAttributes);
+        if (fieldConfig.elementClasses) browserUtil.addRemoveClasses(radioGroupElement, fieldConfig.elementClasses);
+
+        let subElements:HTMLInputElement[] = [];
+        // create the options from the data source
+        if (fieldConfig.datasource) {
+            // we should get the radio buttons back
+            subElements = <HTMLInputElement[]>FieldInputElementFactory.createSubElements(formId, radioGroupElement, fieldConfig, fieldConfig.datasource.getOptions());
+            // listen for data source changes
+            fieldConfig.datasource.addListener(new DefaultFieldOptionsListener(formId, radioGroupElement, fieldConfig));
+            // setup the subelements for the validator, formatter, and renderer
+            if (fieldConfig.validator) fieldConfig.validator.validator.setSubElements(subElements);
+            if (fieldConfig.renderer) fieldConfig.renderer.setSubElements(subElements);
+            if (fieldConfig.formatter) fieldConfig.formatter.setSubElements(subElements);
+        }
+
+        FieldInputElementFactory.setupFieldElement(radioGroupElement, formId, fieldConfig, listeners,subElements);
+        FieldInputElementFactory.completeComponentElement(radioGroupElement, formId, containerEl, fieldConfig, listeners);
+        return {
+            container:radioGroupElement,
+            radioButtons:subElements
+        };
 
     }
 

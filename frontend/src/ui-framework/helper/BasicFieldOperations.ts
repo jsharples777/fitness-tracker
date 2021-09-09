@@ -33,6 +33,8 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
         this.previousFieldValues = [];
     }
 
+    setSubElements(elements: HTMLInputElement[]): void {}
+
 
     // called when saving, change to final values
     formatValue(field: FieldDefinition, currentValue: string): any {

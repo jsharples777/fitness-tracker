@@ -3,6 +3,7 @@ import {DataObjectDefinition, FieldType} from "../form/DataObjectTypes";
 import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypes";
 
 import debug from 'debug';
+import {RBGFieldOperations} from "./RBGFieldOperations";
 
 const logger = debug('bootstrap-form-config-helper');
 
@@ -17,16 +18,18 @@ export class BootstrapFormConfigHelper {
         return BootstrapFormConfigHelper._instance;
     }
 
-    private constructor() {}
+    private constructor() {
+    }
 
-    public generateFormConfig(dataObjDef:DataObjectDefinition):FormUIDefinition {
-        let fieldOperations:BasicFieldOperations = new BasicFieldOperations();
+    public generateFormConfig(dataObjDef: DataObjectDefinition): FormUIDefinition {
+        let fieldOperations: BasicFieldOperations = new BasicFieldOperations();
+        let rbgFieldOperation:RBGFieldOperations = new RBGFieldOperations();
 
         // create the Field UI config for each field
-        let fieldUIConfigs:FieldUIConfig[] = [];
+        let fieldUIConfigs: FieldUIConfig[] = [];
         dataObjDef.fields.forEach((fieldDef) => {
 
-            let fieldType:UIFieldType = UIFieldType.text;
+            let fieldType: UIFieldType = UIFieldType.text;
             switch (fieldDef.type) {
                 case (FieldType.time):
                 case (FieldType.text):
@@ -56,13 +59,25 @@ export class BootstrapFormConfigHelper {
                     fieldType = UIFieldType.checkbox;
                     break;
                 }
+                case (FieldType.largeText): {
+                    fieldType = UIFieldType.textarea;
+                    break;
+                }
+                case (FieldType.choice): {
+                    fieldType = UIFieldType.select;
+                    break;
+                }
+                case (FieldType.limitedChoice): {
+                    fieldType = UIFieldType.radioGroup;
+                    break;
+                }
             }
 
             // construct the field ui config
-            let fieldUIConfig:FieldUIConfig = {
-                field:fieldDef,
-                elementType:fieldType,
-                elementClasses:'form-control col-sm-9',
+            let fieldUIConfig: FieldUIConfig = {
+                field: fieldDef,
+                elementType: fieldType,
+                elementClasses: 'form-control col-sm-9',
                 renderer: fieldOperations,
                 formatter: fieldOperations,
             }
@@ -80,42 +95,79 @@ export class BootstrapFormConfigHelper {
                 if (fieldDef.description) { // descriptions if the field has one
                     fieldUIConfig.describedBy = {
                         message: fieldDef.description,
-                        elementType:'small',
+                        elementType: 'small',
                         elementClasses: 'text-muted col-sm-9 offset-sm-3 mt-1'
                     }
                 }
                 if (!fieldDef.displayOnly) { // no validator for readonly items
                     fieldUIConfig.validator = {
-                        validator: fieldOperations,
+                            validator: fieldOperations,
                             messageDisplay: {
                             elementType: 'div',
                             elementClasses: 'invalid-feedback col-sm-9 offset-sm-3'
                         },
-                        validClasses:'is-valid',
-                        invalidClasses:'is-invalid',
+                        validClasses: 'is-valid',
+                        invalidClasses: 'is-invalid',
                     };
                 }
             }
 
+            // text areas
+            if (fieldDef.type === FieldType.largeText) {
+                fieldUIConfig.textarea = {
+                    rows: 5,
+                    cols: 20
+                }
+            }
+            // select
+            if (fieldDef.type === FieldType.choice) { // subelements are options, with no classes, no labels, and no other container
+                fieldUIConfig.subElement = {
+                    element: {elementType: 'option', elementClasses: ''},
+                };
+                fieldUIConfig.datasource = fieldDef.dataSource;
+            }
+            // radio button group
+            if (fieldDef.type === FieldType.limitedChoice) {
+                fieldUIConfig.subElement = {
+                    element: {
+                        elementType: 'input',
+                        elementClasses: 'form-check-input',
+                        elementAttributes: [{name: 'type', value: 'radio'}]
+                    },
+                    container: {
+                        elementType: 'div',
+                        elementClasses: 'form-check form-check-inline'
+                    },
+                    label: {
+                        label: 'label',
+                        classes: 'form-check-label',
+                    },
+                }
+                fieldUIConfig.renderer = rbgFieldOperation;
+                if (fieldUIConfig.validator) fieldUIConfig.validator.validator = rbgFieldOperation;
+                fieldUIConfig.formatter = rbgFieldOperation;
+
+                fieldUIConfig.datasource = fieldDef.dataSource;
+            }
 
 
             fieldUIConfigs.push(fieldUIConfig);
         });
         // create a form with a single group and button container with Bootstrap styles
-        const fieldGroup:FieldGroup = {
+        const fieldGroup: FieldGroup = {
             containedBy: {
-                elementType:'div',
+                elementType: 'div',
                 elementClasses: 'col-sm-12',
             },
-            fields:fieldUIConfigs
+            fields: fieldUIConfigs
         }
 
-        const formConfig:FormUIDefinition = {
+        const formConfig: FormUIDefinition = {
             id: dataObjDef.id,
             displayName: dataObjDef.displayName,
             fieldGroups: [fieldGroup],
             buttonsContainedBy: {
-                elementType:'div',
+                elementType: 'div',
                 elementClasses: 'd-flex w-100 justify-space-between',
             },
             deleteButton: {

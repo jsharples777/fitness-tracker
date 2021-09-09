@@ -9,9 +9,12 @@ import {FieldListener} from "./FieldListener";
 export type FormFactoryResponse = {
     form: HTMLFormElement,
     fields: HTMLInputElement[],
-    textFields?:HTMLTextAreaElement[],
-    selectFields?:HTMLSelectElement,
-    radioButtonGroups?: HTMLInputElement[][],
+    textFields:HTMLTextAreaElement[],
+    selectFields:HTMLSelectElement[],
+    radioButtonGroups: {
+        container:HTMLElement,
+        radioButtons:HTMLInputElement[]
+    }[],
     deleteButton: HTMLButtonElement,
     cancelButton: HTMLButtonElement,
     submitButton: HTMLButtonElement,
@@ -67,6 +70,11 @@ export class FormElementFactory {
         // create each of the fields and collect them
         let formInputElements:HTMLInputElement[] = [];
         let formTAElements:HTMLTextAreaElement[] = [];
+        let formRBGElements:{
+            container:HTMLElement,
+            radioButtons:HTMLInputElement[]
+            }[] = [];
+        let formSelectElements:HTMLSelectElement[] = [];
 
         formConfig.fieldGroups.forEach((group:FieldGroup) => {
             // if the group has a container make that, otherwise the form is the container
@@ -85,6 +93,16 @@ export class FormElementFactory {
                     case (UIFieldType.textarea): {
                         const fieldEl = FieldInputElementFactory.getInstance().createTAFormFieldComponentElement(formConfig.id,containerEl,field,fieldListeners);
                         formTAElements.push(fieldEl);
+                        break;
+                    }
+                    case (UIFieldType.select): {
+                        const fieldEl = FieldInputElementFactory.getInstance().createSelectFormFieldComponentElement(formConfig.id,containerEl,field,fieldListeners);
+                        formSelectElements.push(fieldEl);
+                        break;
+                    }
+                    case (UIFieldType.radioGroup): {
+                        const fieldEl = FieldInputElementFactory.getInstance().createRadioGroupFormFieldComponentElement(formConfig.id,containerEl,field,fieldListeners);
+                        formRBGElements.push(fieldEl);
                         break;
                     }
                     default: {
@@ -122,6 +140,9 @@ export class FormElementFactory {
         let result:FormFactoryResponse = {
             form: formEl,
             fields: formInputElements,
+            selectFields:formSelectElements,
+            radioButtonGroups:formRBGElements,
+            textFields:formTAElements,
             deleteButton:deleteButtonEl,
             cancelButton:cancelButtonEl,
             submitButton:submitButtonEl

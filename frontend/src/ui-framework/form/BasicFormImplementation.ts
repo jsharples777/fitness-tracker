@@ -1,12 +1,11 @@
-import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig} from "./FormUITypes";
+import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypes";
 import {AbstractForm} from "./AbstractForm";
 import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
-import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypes";
+import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypes";
 import {Field} from "./Field";
 import {FormElementFactory, FormFactoryResponse} from "./FormElementFactory";
-import {InputField} from "./InputField";
+import {InputField, RadioButtonGroupField, SelectField, TextAreaField} from "./InputField";
 import debug from 'debug';
-import {KeyType} from "../ConfigurationTypes";
 import browserUtil from "../../util/BrowserUtil";
 
 const logger = debug('basic-form');
@@ -25,6 +24,61 @@ export class BasicFormImplementation extends AbstractForm {
         if (this.factoryElements) this.containerEl?.removeChild(this.factoryElements.form);
     }
 
+    protected createInputField(formId:string,config:FieldUIConfig,fieldDef:FieldDefinition,fieldEl:HTMLInputElement):Field {
+        return new InputField(formId,config, fieldDef, fieldEl);
+    }
+
+    protected setupFieldObject(fieldEl:HTMLElement,subElements:HTMLInputElement[] = []) {
+        // get the data-id field from the field element
+        const dataId:string|null = fieldEl.getAttribute(DATA_ID_ATTRIBUTE);
+        const fieldId:string|null = fieldEl.getAttribute('id');
+        dlogger(`Converting field input element ${fieldId} with data-id of ${dataId}`);
+        if (dataId && fieldId) {
+            // find the corresponding field definition
+            const index = this.dataObjDef.fields.findIndex((value) => value.id === dataId);
+            const fieldDef:FieldDefinition|undefined = this.dataObjDef.fields.find((value) => value.id === dataId);
+            if (fieldDef) {
+                dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field definition is`);
+                logger(fieldDef);
+
+                // find the corresponding ui definition
+                const fieldUIConfig:FieldUIConfig|null|undefined = this.findFieldUiConfig(fieldDef);
+                dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field ui config is`);
+                logger(fieldUIConfig);
+                if (fieldUIConfig) {
+                    if (this.uiDef) {
+                        let field:Field;
+                        switch (fieldUIConfig.elementType) {
+                            case UIFieldType.textarea: {
+                                field = new TextAreaField(this.uiDef.id,fieldUIConfig,fieldDef,<HTMLTextAreaElement>fieldEl);
+                                break;
+                            }
+                            case UIFieldType.radioGroup: {
+                                field = new RadioButtonGroupField(this.uiDef.id,fieldUIConfig,fieldDef,fieldEl,subElements);
+                                break;
+                            }
+                            case UIFieldType.select: {
+                                field = new SelectField(this.uiDef.id,fieldUIConfig,fieldDef,<HTMLSelectElement>fieldEl);
+                                break;
+                            }
+                            default: {
+                                field = new InputField(this.uiDef.id,fieldUIConfig,fieldDef,<HTMLInputElement>fieldEl);
+                                break;
+                            }
+                        }
+                        this.fields.push(field);
+                        this.map.push({attributeId: dataId, fieldId: fieldId});
+                    }
+                }
+            }
+            else {
+                dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field definition is NOT FOUND`);
+
+            }
+        }
+
+    }
+
     public initialise(): void {
         logger(`Initialising`);
 
@@ -37,36 +91,25 @@ export class BasicFormImplementation extends AbstractForm {
         // create field elements for each field element, and the basic map
         logger(`Converting field input elements to Field objects`);
         this.factoryElements.fields.forEach((fieldEl) => {
-            // get the data-id field from the field element
-            const dataId:string|null = fieldEl.getAttribute(DATA_ID_ATTRIBUTE);
-            const fieldId:string|null = fieldEl.getAttribute('id');
-            dlogger(`Converting field input element ${fieldId} with data-id of ${dataId}`);
-            if (dataId && fieldId) {
-                // find the corresponding field definition
-                const index = this.dataObjDef.fields.findIndex((value) => value.id === dataId);
-                const fieldDef:FieldDefinition|undefined = this.dataObjDef.fields.find((value) => value.id === dataId);
-                if (fieldDef) {
-                    dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field definition is`);
-                    logger(fieldDef);
-
-                    // find the corresponding ui definition
-                    const fieldUIConfig:FieldUIConfig|null|undefined = this.findFieldUiConfig(fieldDef);
-                    dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field ui config is`);
-                    logger(fieldUIConfig);
-                    if (fieldUIConfig) {
-                        if (this.uiDef) {
-                            let field:Field = new InputField(this.uiDef.id,fieldUIConfig, fieldDef, fieldEl);
-                            this.fields.push(field);
-                            this.map.push({attributeId: dataId, fieldId: fieldId});
-                        }
-                    }
-                }
-                else {
-                    dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field definition is NOT FOUND`);
-
-                }
-            }
+            this.setupFieldObject(fieldEl);
         });
+
+        logger(`Converting field text area elements to Field objects`);
+        this.factoryElements.textFields.forEach((fieldEl) => {
+            this.setupFieldObject(fieldEl);
+        });
+
+        logger(`Converting field select elements to Field objects`);
+        this.factoryElements.selectFields.forEach((fieldEl) => {
+            this.setupFieldObject(fieldEl);
+        });
+
+        logger(`Converting field rbg elements to Field objects`);
+        this.factoryElements.radioButtonGroups.forEach((rbg) => {
+            this.setupFieldObject(rbg.container,rbg.radioButtons);
+        });
+
+
         logger(`field/data map is `);
         logger(this.map);
         logger('fields are');

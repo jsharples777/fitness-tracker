@@ -7,20 +7,26 @@ export class ValidationEventHandler {
     private formId:string;
     private fieldConfig:FieldUIConfig;
     private listeners:FieldListener[];
+    private subElements:HTMLInputElement[]|null;
 
-    constructor(formId:string,fieldConfig:FieldUIConfig,listeners:FieldListener[]) {
+    constructor(formId:string,fieldConfig:FieldUIConfig,listeners:FieldListener[],subElements:HTMLInputElement[]|null = null) {
         this.formId = formId;
         this.fieldConfig = fieldConfig;
         this.listeners = listeners;
+        this.subElements = subElements;
         this.handleEvent = this.handleEvent.bind(this);
     }
 
-    processValidation(fieldElement:HTMLInputElement) {
+    processValidation(fieldElement:HTMLElement) {
         if (this.fieldConfig.validator && fieldElement) {
+            if (this.subElements) this.fieldConfig.validator.validator.setSubElements(this.subElements);
             const field: FieldDefinition = this.fieldConfig.field;
+            // @ts-ignore
             let value: string = fieldElement.value;
             // checkboxes store values differently
-            if (this.fieldConfig.elementType === UIFieldType.checkbox) value = '' + fieldElement.checked;
+            if (this.fieldConfig.elementType === UIFieldType.checkbox) { // @ts-ignore
+                value = '' + fieldElement.checked;
+            }
 
             const validationResp: ValidationResponse = this.fieldConfig.validator.validator.isValidValue(field, value);
 
@@ -49,18 +55,22 @@ export class ValidationEventHandler {
                 if (validationResp.resetOnFailure) {
                     switch (field.type) {
                         case (FieldType.boolean): {
+                            // @ts-ignore
                             fieldElement.checked = false;
                             break;
                         }
                         case (FieldType.integer): {
+                            // @ts-ignore
                             fieldElement.value = '0';
                             break;
                         }
                         case (FieldType.float): {
+                            // @ts-ignore
                             fieldElement.value = '0.0';
                             break;
                         }
                         default: {
+                            // @ts-ignore
                             fieldElement.value = '';
                             break;
                         }
