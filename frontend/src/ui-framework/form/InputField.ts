@@ -7,18 +7,20 @@ import {RenderingEventListener} from "./event-handlers/RenderingEventListener";
 
 
 export class InputField implements Field,FieldListener {
+    protected formId:string;
     protected config:FieldUIConfig|null = null;
     protected definition:FieldDefinition;
     protected element:HTMLInputElement;
     protected validationHandler:ValidationEventHandler;
     protected renderingHandler:RenderingEventListener;
 
-    constructor(config:FieldUIConfig,fieldDef:FieldDefinition,element:HTMLInputElement) {
+    constructor(formId:string, config:FieldUIConfig,fieldDef:FieldDefinition,element:HTMLInputElement) {
+        this.formId = formId;
         this.config = config;
         this.definition = fieldDef;
         this.element = element;
-        this.validationHandler = new ValidationEventHandler(config,[this]);
-        this.renderingHandler = new RenderingEventListener(config, [this]);
+        this.validationHandler = new ValidationEventHandler(formId,config,[this]);
+        this.renderingHandler = new RenderingEventListener(formId,config, [this]);
     }
 
     public initialise(): void {}

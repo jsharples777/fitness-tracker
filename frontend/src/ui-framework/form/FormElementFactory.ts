@@ -1,15 +1,17 @@
-
 import browserUtil from "../../util/BrowserUtil";
 import {FieldInputElementFactory} from "./FieldInputElementFactory";
 import {BasicButtonElement} from "../ConfigurationTypes";
 import {Form} from "./Form";
-import {FieldGroup, FieldUIConfig, FormUIDefinition} from "./FormUITypes";
+import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "./FormUITypes";
 import {FormEvent, FormEventType, FormListener} from "./FormListener";
 import {FieldListener} from "./FieldListener";
 
 export type FormFactoryResponse = {
     form: HTMLFormElement,
     fields: HTMLInputElement[],
+    textFields?:HTMLTextAreaElement[],
+    selectFields?:HTMLSelectElement,
+    radioButtonGroups?: HTMLInputElement[][],
     deleteButton: HTMLButtonElement,
     cancelButton: HTMLButtonElement,
     submitButton: HTMLButtonElement,
@@ -64,6 +66,7 @@ export class FormElementFactory {
         if (formConfig.classes) browserUtil.addRemoveClasses(formEl,formConfig.classes);
         // create each of the fields and collect them
         let formInputElements:HTMLInputElement[] = [];
+        let formTAElements:HTMLTextAreaElement[] = [];
 
         formConfig.fieldGroups.forEach((group:FieldGroup) => {
             // if the group has a container make that, otherwise the form is the container
@@ -78,8 +81,17 @@ export class FormElementFactory {
                 }
             }
             group.fields.forEach((field:FieldUIConfig) => {
-                const fieldEl = FieldInputElementFactory.getInstance().createFormFieldComponentElement(containerEl,field,fieldListeners);
-                formInputElements.push(fieldEl);
+                switch (field.elementType) {
+                    case (UIFieldType.textarea): {
+                        const fieldEl = FieldInputElementFactory.getInstance().createTAFormFieldComponentElement(formConfig.id,containerEl,field,fieldListeners);
+                        formTAElements.push(fieldEl);
+                        break;
+                    }
+                    default: {
+                        const fieldEl = FieldInputElementFactory.getInstance().createInputFormFieldComponentElement(formConfig.id,containerEl,field,fieldListeners);
+                        formInputElements.push(fieldEl);
+                    }
+                }
             });
         });
 

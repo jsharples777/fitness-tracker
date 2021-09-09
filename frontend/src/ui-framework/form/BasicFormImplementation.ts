@@ -54,9 +54,11 @@ export class BasicFormImplementation extends AbstractForm {
                     dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field ui config is`);
                     logger(fieldUIConfig);
                     if (fieldUIConfig) {
-                        let field:Field = new InputField(fieldUIConfig, fieldDef, fieldEl);
-                        this.fields.push(field);
-                        this.map.push({attributeId: dataId, fieldId: fieldId});
+                        if (this.uiDef) {
+                            let field:Field = new InputField(this.uiDef.id,fieldUIConfig, fieldDef, fieldEl);
+                            this.fields.push(field);
+                            this.map.push({attributeId: dataId, fieldId: fieldId});
+                        }
                     }
                 }
                 else {
@@ -180,34 +182,27 @@ export class BasicFormImplementation extends AbstractForm {
 
     }
 
+    protected getFormattedFieldValue(fieldDef:FieldDefinition):any|null{
+        let result:any|null = null;
+
+        const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === fieldDef.id);
+        if (mapItem) {
+            dlogger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId} with for getting formatted value`);
+            // find the field with that id
+            const field: Field | undefined = this.fields.find((field) => field.getId() === mapItem.attributeId);
+            if (field) {
+                result = field.getFormattedValue();
+            }
+        }
+        return result;
+    }
+
     getFormattedDataObject(): any {
         logger(`Getting current formatted data`);
         let formattedResult:any = {};
-        this.dataObjDef.fields.forEach((field) => {
-            let fieldValue = this.currentDataObj[field.id];
-            if (fieldValue) {
-                switch (field.idType) {
-                    case (KeyType.number): {
-                        let parsed;
-                        if (field.type === FieldType.float) {
-                        }
-                        if (field.type === FieldType.integer) {
-                            parsed = parseInt(fieldValue);
-                            if (!isNaN(parsed)) {
-                                formattedResult[field.id] = parsed;
-                            }
-                        }
-                        break;
-                    }
-                    case (KeyType.boolean): {
-
-                        break;
-                    }
-                    default: {
-                        formattedResult[field.id] = fieldValue;
-                    }
-                }
-            }
+        this.dataObjDef.fields.forEach((fieldDef) => {
+            let fieldValue = this.currentDataObj[fieldDef.id];
+            formattedResult[fieldDef.id] = this.getFormattedFieldValue(fieldDef)
         });
         logger(formattedResult);
         return formattedResult;

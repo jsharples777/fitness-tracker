@@ -196,6 +196,10 @@ export abstract class AbstractForm implements Form,FormListener{
                     logger(`Form is saving, checking validation - FAILED`);
                     shouldCancelChange = true;
                 }
+                else {
+                    logger(`formatted data object is`);
+                    logger(this.getFormattedDataObject());
+                }
                 break;
             }
         }

@@ -13,17 +13,25 @@ export enum FieldType {
     password = 'Password',
     boolean = 'True/False',
     userId = 'User',
+    choice = 'Choice',
+    largeText = 'TextArea'
 }
 
 export interface FieldValueGenerator {
     generate(field:FieldDefinition,isCreate:boolean):string;
 }
 
+export type ValueOption = {
+    name:string,
+    value:string
+}
+
+
+
 export type FieldDefinition = {
     id:string,
     idType: KeyType,
     type: FieldType,
-    default?: string,
     displayName:string,
     mandatory:boolean,
     displayOnly?:boolean,
@@ -32,21 +40,52 @@ export type FieldDefinition = {
         onCreation:boolean,
         onModify:boolean,
         generator:FieldValueGenerator
-    }
+    },
 }
 
 export type DataObjectDefinition = {
     id:string,
     displayName:string,
-    fields:FieldDefinition[]
+    fields:FieldDefinition[],
+    rules?:ValidationRule
 }
-
-
 
 export type ValidationResponse = {
     isValid:boolean,
     message?:string,
     resetOnFailure:boolean
+}
+
+export enum ConditionType {
+    equals,
+    lessThan,
+    lessThanEqual,
+    greaterThan,
+    greaterThanEqual,
+    isNull,
+    isNotNull
+};
+
+export enum ConditionResponse {
+    show,
+    hide,
+    invalid,
+    valid
+}
+
+export type ValidationCondition = {
+    fieldId:string,
+    type: ConditionType,
+    comparedWith: {
+        fieldId?:string,
+        static?:string
+    }
+}
+
+export type ValidationRule = {
+    fieldId:string,
+    response: ConditionResponse,
+    conditions: ValidationCondition[]
 }
 
 

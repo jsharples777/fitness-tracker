@@ -1,5 +1,5 @@
 import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes";
-import {FieldDefinition, ValidationResponse} from "./DataObjectTypes";
+import {FieldDefinition, ValidationResponse, ValueOption} from "./DataObjectTypes";
 
 export interface FieldValidator {  // is the current value valid (includes manndatory checks)
     isValidValue(field:FieldDefinition, currentValue:string|null):ValidationResponse;
@@ -29,7 +29,8 @@ export enum UIFieldType {
     password,
     text,
     textarea,
-    select
+    select,
+    radioGroup
 }
 
 export type FieldLabel = {
@@ -44,25 +45,42 @@ export type DescriptionText = {
     elementClasses:string,
 }
 
-export type FieldUIConfig = {
-    field:FieldDefinition,
-    elementType:UIFieldType,
-    elementAttributes?:Attribute[],
-    elementClasses?:string,
-    label?:FieldLabel,
-    describedBy?:DescriptionText,
-    containedBy?:BasicElement,
-    validator?: {
-        validator:FieldValidator, // on blur
-        messageDisplay:BasicElement,
-        validClasses?:string,
-        invalidClasses?:string,
-    }
-    renderer?:FieldRenderer, // on change
-    editor?:FieldEditor, // on focus
-    formatter?:FieldFormatter // used by form when saving
-    conditionalDisplay?:ConditionalField // used to determine if the is visible
+export interface FieldValueOptionsListener {
+    optionsChanged(newOptions:ValueOption[]):void;
+}
 
+export interface FieldValueOptions {
+    addListener(listener:FieldValueOptionsListener):void;
+    getOptions():ValueOption[];
+}
+
+
+
+export type FieldUIConfig = {
+    field: FieldDefinition,
+    elementType: UIFieldType,
+    elementAttributes?: Attribute[],
+    elementClasses?: string,
+    subElementAttributes?:Attribute[], // for radio and selection options
+    subElementClasses?:string,// for radio and selection options
+    label?: FieldLabel,
+    describedBy?: DescriptionText,
+    containedBy?: BasicElement,
+    textarea?: {
+        rows: number,
+        cols: number
+    },
+    validator?: {
+        validator: FieldValidator, // on blur
+        messageDisplay: BasicElement,
+        validClasses?: string,
+        invalidClasses?: string,
+    }
+    renderer?: FieldRenderer, // on change
+    editor?: FieldEditor, // on focus
+    formatter?: FieldFormatter // used by form when saving
+    conditionalDisplay?: ConditionalField // used to determine if the is visible
+    datasource?: FieldValueOptions
 }
 
 export type FieldGroup = {

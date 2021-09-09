@@ -4,10 +4,12 @@ import browserUtil from "../../../util/BrowserUtil";
 import {FieldListener} from "../FieldListener";
 
 export class RenderingEventListener {
+    private formId:string;
     private fieldConfig:FieldUIConfig;
     private listeners:FieldListener[];
 
-    constructor(fieldConfig:FieldUIConfig,listeners:FieldListener[]) {
+    constructor(formId:string, fieldConfig:FieldUIConfig,listeners:FieldListener[]) {
+        this.formId = formId;
         this.fieldConfig = fieldConfig;
         this.listeners = listeners;
         this.handleEvent = this.handleEvent.bind(this);
