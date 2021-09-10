@@ -1,10 +1,10 @@
-import browserUtil from "../../util/BrowserUtil";
+import browserUtil from "../../../util/BrowserUtil";
 import {FieldInputElementFactory} from "./FieldInputElementFactory";
-import {BasicButtonElement} from "../ConfigurationTypes";
-import {Form} from "./Form";
-import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "./FormUITypeDefs";
-import {FormEvent, FormEventType, FormListener} from "./FormListener";
-import {FieldListener} from "./FieldListener";
+import {BasicButtonElement} from "../../ConfigurationTypes";
+import {Form} from "../Form";
+import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../FormUITypeDefs";
+import {FormEvent, FormEventType, FormListener} from "../FormListener";
+import {FieldListener} from "../field/FieldListener";
 
 export type FormFactoryResponse = {
     form: HTMLFormElement,

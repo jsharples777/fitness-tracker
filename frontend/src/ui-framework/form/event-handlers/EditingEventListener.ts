@@ -1,6 +1,6 @@
 import {FieldDefinition} from "../DataObjectTypeDefs";
 import {FieldUIConfig} from "../FormUITypeDefs";
-import {FieldListener} from "../FieldListener";
+import {FieldListener} from "../field/FieldListener";
 
 export class EditingEventListener {
     private formId:string;
@@ -26,7 +26,7 @@ export class EditingEventListener {
             const newValue: string = this.fieldConfig.editor.editValue(field, value);
             if (newValue) {
                 fieldElement.value = newValue;
-                this.listeners.forEach((listener) => listener.valueChanged(field, newValue));
+                this.listeners.forEach((listener) => listener.valueChanged(this.formId,field, newValue));
 
             }
         }

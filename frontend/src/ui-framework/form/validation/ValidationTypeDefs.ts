@@ -1,4 +1,4 @@
-export enum ConditionType {
+export enum ComparisonType {
     equals,
     lessThan,
     lessThanEqual,
@@ -17,16 +17,13 @@ export enum ConditionResponse {
 }
 
 export type ValidationCondition = {
-    dataFieldId:string,
-    type: ConditionType,
-    comparedWith: {
-        dataFieldId?:string,
-        static?:string
-    }
+    comparison: ComparisonType,
+    sourceDataFieldId?:string,
+    values?:string
 }
 
 export type ValidationRule = {
-    dataFieldId:string,
+    targetDataFieldId:string,
     response: ConditionResponse,
     conditions: ValidationCondition[]
 }

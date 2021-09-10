@@ -30,7 +30,8 @@ import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory
 import {Form} from "./ui-framework/form/Form";
 import {BasicFormImplementation} from "./ui-framework/form/BasicFormImplementation";
 import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
-import {FieldValueOptions} from "./ui-framework/form/CommonTypes";
+import {ComparisonType, ConditionResponse, ValidationRule} from "./ui-framework/form/validation/ValidationTypeDefs";
+import {ValidationManager} from "./ui-framework/form/validation/ValidationManager";
 
 
 const logger = debug('app');
@@ -321,7 +322,8 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         // now lets break things with a new form
         let dataObjDef:DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObject("test","Test", true, true);
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"email","Email",FieldType.email,true,"We totally won't message with this...");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"float","Float",FieldType.float,true,"A number yo....");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"float1","Float",FieldType.float,true,"A number yo....");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"float2","Float",FieldType.float,true,"A number 2");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"checkbox","Checkbox?",FieldType.boolean,true,"Yes or No?");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"date","Date",FieldType.date,true,"Date yep");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"time","Time",FieldType.shortTime,true,"How long till we get there?");
@@ -350,6 +352,43 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
 
         // change the select options
         dataSource.addValueOption('X-Men','xmen');
+
+        // add a simple validation rule to the two numbers
+        let rule:ValidationRule = {
+            targetDataFieldId:'float1',
+            response:ConditionResponse.invalid,
+            conditions: [
+                {
+                    sourceDataFieldId:'float2',
+                    comparison:ComparisonType.lessThanEqual,
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form,rule);
+        rule = {
+            targetDataFieldId:'select',
+            response:ConditionResponse.hide,
+            conditions: [
+                {
+                    sourceDataFieldId:'rbg',
+                    comparison:ComparisonType.hasValue,
+                    values:'other'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form,rule);
+        rule = {
+            targetDataFieldId:'select',
+            response:ConditionResponse.show,
+            conditions: [
+                {
+                    sourceDataFieldId:'rbg',
+                    comparison:ComparisonType.hasValue,
+                    values:'jl,marvel'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form,rule);
 
     }
 
@@ -489,7 +528,8 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
 }
 
 //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
-localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
+//localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
+localStorage.debug = 'validation-manager abstract-field';
 debug.log = console.info.bind(console);
 
 // @ts-ignore

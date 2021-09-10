@@ -1,9 +1,9 @@
 import {Form} from "./Form";
 import {FormEvent, FormEventType, FormListener} from "./FormListener";
-import {FieldListener} from "./FieldListener";
+import {FieldListener} from "./field/FieldListener";
 import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypeDefs";
 import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITypeDefs";
-import {Field} from "./Field";
+import {Field} from "./field/Field";
 import {KeyType} from "../ConfigurationTypes";
 
 import debug from 'debug';
@@ -21,6 +21,7 @@ export abstract class AbstractForm implements Form,FormListener{
     protected isVisible: boolean = false;
     protected fields:Field[] = [];
     protected map:AttributeFieldMapItem[];
+    protected isInitialised:boolean = false;
 
 
     protected constructor(containerId: string, dataObjDef: DataObjectDefinition) {
@@ -42,7 +43,14 @@ export abstract class AbstractForm implements Form,FormListener{
     protected abstract _reset():void;
     protected abstract _visible():void;
     protected abstract _hidden():void;
-    public abstract initialise(): void;
+    protected abstract _initialise():void;
+
+
+    public initialise(): void {
+        if (this.isInitialised) return;
+        this.isInitialised = true;
+        this._initialise();
+    }
 
 
     public addFieldListener(listener: FieldListener): void {

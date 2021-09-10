@@ -1,6 +1,6 @@
 import {FieldDefinition} from "../DataObjectTypeDefs";
 import {FieldUIConfig} from "../FormUITypeDefs";
-import {FieldListener} from "../FieldListener";
+import {FieldListener} from "../field/FieldListener";
 
 export class RenderingEventListener {
     private formId:string;

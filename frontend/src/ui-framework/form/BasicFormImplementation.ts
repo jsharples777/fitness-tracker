@@ -2,11 +2,15 @@ import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} fr
 import {AbstractForm} from "./AbstractForm";
 import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
 import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypeDefs";
-import {Field} from "./Field";
-import {FormElementFactory, FormFactoryResponse} from "./FormElementFactory";
-import {InputField, RadioButtonGroupField, SelectField, TextAreaField} from "./InputField";
+import {Field} from "./field/Field";
+import {FormElementFactory, FormFactoryResponse} from "./factory/FormElementFactory";
+import {AbstractField} from "./field/AbstractField";
 import debug from 'debug';
 import browserUtil from "../../util/BrowserUtil";
+import {TextAreaField} from "./field/TextAreaField";
+import {RadioButtonGroupField} from "./field/RadioButtonGroupField";
+import {SelectField} from "./field/SelectField";
+import {InputField} from "./field/InputField";
 
 const logger = debug('basic-form');
 const dlogger = debug('basic-form-detail');
@@ -74,7 +78,7 @@ export class BasicFormImplementation extends AbstractForm {
 
     }
 
-    public initialise(): void {
+    protected _initialise(): void {
         logger(`Initialising`);
 
         // ok, so given a Data Object definition we are going to create the form ui config

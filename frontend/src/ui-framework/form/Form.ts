@@ -1,7 +1,7 @@
 import {FormUIDefinition} from "./FormUITypeDefs";
 import {FormListener} from "./FormListener";
-import {FieldListener} from "./FieldListener";
-import {Field} from "./Field";
+import {FieldListener} from "./field/FieldListener";
+import {Field} from "./field/Field";
 
 export interface Form {
     getId():string;
