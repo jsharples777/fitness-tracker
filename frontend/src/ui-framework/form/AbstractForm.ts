@@ -4,7 +4,6 @@ import {FieldListener} from "./field/FieldListener";
 import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypeDefs";
 import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITypeDefs";
 import {Field} from "./field/Field";
-import {KeyType} from "../ConfigurationTypes";
 
 import debug from 'debug';
 

@@ -354,18 +354,18 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         dataSource.addValueOption('X-Men','xmen');
 
         // add a simple validation rule to the two numbers
-        let rule:ValidationRule = {
-            targetDataFieldId:'float1',
-            response:ConditionResponse.invalid,
-            conditions: [
-                {
-                    sourceDataFieldId:'float2',
-                    comparison:ComparisonType.lessThanEqual,
-                }
-            ]
-        }
-        ValidationManager.getInstance().addRuleToForm(form,rule);
-        rule = {
+        // let rule:ValidationRule = {
+        //     targetDataFieldId:'float1',
+        //     response:ConditionResponse.invalid,
+        //     conditions: [
+        //         {
+        //             sourceDataFieldId:'float2',
+        //             comparison:ComparisonType.lessThanEqual,
+        //         }
+        //     ]
+        // }
+        // ValidationManager.getInstance().addRuleToForm(form,rule);
+        let rule = {
             targetDataFieldId:'select',
             response:ConditionResponse.hide,
             conditions: [

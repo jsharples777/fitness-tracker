@@ -66,6 +66,7 @@ export class ValidationManager implements FieldListener {
     }
 
     public addRuleToForm(form: Form, rule: ValidationRule): boolean { // returns whether the rule was added
+        logger(`Adding rule on form ${form.getId()} for target field ${rule.targetDataFieldId}`);
         /*
          validate the rule
          1. does the rule have a comparison field or static for each condition?
@@ -94,6 +95,7 @@ export class ValidationManager implements FieldListener {
             }
             // is this a target field value comparison?
             if ((condition.values) && (condition.sourceDataFieldId)) {
+                logger(`Rule adding for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} with values ${condition.values}`);
                 let sourceField: Field | undefined = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
                 if (!sourceField) {
                     logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} NOT FOUND`);
@@ -106,11 +108,13 @@ export class ValidationManager implements FieldListener {
                 });
                 sourceField.addFieldListener(this);
             } else if (condition.values) { // is this a value comparison?
+                logger(`Rule adding for form ${form.getId()} for target field ${rule.targetDataFieldId} - values ${condition.values}`);
                 // add a new value rule to the internal structure
                 convertedRule.valueConditions.push({values: condition.values, comparison: condition.comparison});
                 // @ts-ignore
                 targetField.addFieldListener(this);
             } else if (condition.sourceDataFieldId) { // is this a field vs field comparison
+                logger(`Rule adding for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId}`);
                 let sourceField: Field | undefined = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
                 if (!sourceField) {
                     logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} NOT FOUND`);
@@ -173,17 +177,20 @@ export class ValidationManager implements FieldListener {
         logger(convertedRule);
 
         let index = this.formRules.findIndex((formRule) => formRule.form.getId() === form.getId());
-        let formRules: FormRuleSet;
+        let formRuleSet: FormRuleSet;
         // store the rules for later execution
         if (index < 0) {
-            formRules = {
+            formRuleSet = {
                 form: form,
                 rules: [convertedRule]
             }
+            this.formRules.push(formRuleSet)
         } else {
-            formRules = this.formRules[index];
-            formRules.rules.push(convertedRule);
+            formRuleSet = this.formRules[index];
+            formRuleSet.rules.push(convertedRule);
         }
+        logger(`Current set of rules for form ${form.getId()}`);
+        logger(formRuleSet);
 
         return true;
     }
@@ -297,40 +304,42 @@ export class ValidationManager implements FieldListener {
         return {ruleFailed: false};
     }
 
-    private isTargetNull(targetField: Field): RuleCheck {
-        let targetValue = targetField.getValue();
+    private isSourceNull(sourceField: Field): RuleCheck {
+        let targetValue = sourceField.getValue();
         // @ts-ignore
         if ((targetValue) && (targetValue.trim().length > 0)) {
             return {
                 ruleFailed: true,
-                message: `${targetField.getName()} must be empty`,
+                message: `${sourceField.getName()} must be empty`,
             };
         }
         return {ruleFailed: false};
 
     }
 
-    private isTargetNotNull(targetField: Field): RuleCheck {
-        let targetValue = targetField.getValue();
+    private isSourceNotNull(sourceField: Field): RuleCheck {
+        let targetValue = sourceField.getValue();
         // @ts-ignore
         if ((!targetValue) || (targetValue.trim().length > 0)) {
             return {
                 ruleFailed: true,
-                message: `${targetField.getName()} must not be empty`,
+                message: `${sourceField.getName()} must not be empty`,
             };
         }
         return {ruleFailed: false};
 
     }
 
-    private doesTargetHaveValue(targetField: Field, values: string): RuleCheck {
-        let targetValue = targetField.getValue();
+    private doesFieldHaveValue(field: Field, values: string): RuleCheck {
+        let targetValue = field.getValue();
+        logger(`does field ${field.getId()} have value from ${values} - current value is ${field.getValue()}`);
         if (targetValue) {
             // split the values by commas
             let splits:string[] = values.split(',');
             let foundInValue:boolean = false;
             splits.forEach((split) => {
                 if (targetValue === split) {
+                    logger(`does field ${field.getId()} have value from ${values} - current value is ${field.getValue()} - found in value(s)`);
                     foundInValue = true;
                 }
             });
@@ -340,8 +349,16 @@ export class ValidationManager implements FieldListener {
         }
         return {
             ruleFailed: true,
-            message: `${targetField.getName()} must be have a value in ${values}`,
+            message: `${field.getName()} must be have a value in ${values}`,
         };
+    }
+
+    private doesTargetFieldHaveValue(field: Field, values: string): RuleCheck {
+        return this.doesFieldHaveValue(field,values);
+    }
+
+    private doesSourceFieldHaveValue(field: Field, values: string): RuleCheck {
+        return this.doesFieldHaveValue(field,values);
     }
 
     private isSourceGreaterThanEqualTarget(targetField: Field, sourceField: Field): RuleCheck {
@@ -382,15 +399,15 @@ export class ValidationManager implements FieldListener {
                 break;
             }
             case ComparisonType.isNull: {
-                return this.isTargetNull(targetField);
+                return this.isSourceNull(sourceField);
                 break;
             }
             case ComparisonType.isNotNull: {
-                return this.isTargetNotNull(targetField);
+                return this.isSourceNotNull(sourceField);
                 break;
             }
             case ComparisonType.hasValue: {
-                return this.doesTargetHaveValue(targetField, value);
+                return this.doesSourceFieldHaveValue(sourceField, value);
                 break;
             }
         }
@@ -403,25 +420,35 @@ export class ValidationManager implements FieldListener {
             response: rule.response,
         }
         // run each field comparison
+        logger(`Executing rule for target ${rule.targetField.getId()}`);
+        logger(rule);
         rule.fieldConditions.every((condition) => {
+            logger('field condition rule');
+            logger(condition);
             let values = (condition.values) ? condition.values : '';
             let ruleCheck: RuleCheck = this.compareFields(rule.targetField, condition.sourceField, condition.comparison, values);
             if (ruleCheck.ruleFailed) {
+                logger('field condition rule FAILED');
                 response.ruleFailed = true;
                 response.message = ruleCheck.message;
                 return false;
             }
+            logger('field condition rule PASSED');
             return true;
         });
         // run each value comparison if we haven't already failed
         if (!response.ruleFailed) {
             rule.valueConditions.forEach((condition) => {
+                logger('value condition rule');
+                logger(condition);
                 let ruleCheck: RuleCheck = this.compareFields(rule.targetField, rule.targetField, ComparisonType.hasValue, condition.values);
                 if (ruleCheck.ruleFailed) {
+                    logger('value condition rule FAILED');
                     response.ruleFailed = true;
                     response.message = ruleCheck.message;
                     return false;
                 }
+                logger('value condition rule PASSED');
                 return true;
             });
         }
@@ -433,7 +460,7 @@ export class ValidationManager implements FieldListener {
         // lets go through the rules for the form
         logger(`Finding rules for form ${formId} and data field ${dataFieldId}`);
         let index = this.formRules.findIndex((formRule) => formRule.form.getId() === formId);
-        if (index > 0) {
+        if (index >= 0) {
             const ruleSet: FormRuleSet = this.formRules[index];
 
             // the dataFieldId could be the target or one of the sources
@@ -484,22 +511,27 @@ export class ValidationManager implements FieldListener {
             }
         });
 
+        logger(`Have ${failedResponses.length} failed rules - applying each`);
         // for each failed response let the target field know based on the response type
         failedResponses.forEach((response) => {
             switch (response.response) {
                 case ConditionResponse.hide: {
+                    logger(`Apply hide ${response.field.getId()}`);
                     response.field.hide();
                     break;
                 }
                 case ConditionResponse.show: {
+                    logger(`Apply show ${response.field.getId()}`);
                     response.field.show();
                     break;
                 }
                 case ConditionResponse.invalid: {
+                    logger(`Apply invalid ${response.field.getId()}`);
                     if (response.message) response.field.setInvalid(response.message);
                     break;
                 }
                 case ConditionResponse.valid: {
+                    logger(`Apply valid ${response.field.getId()}`);
                     response.field.setValid();
                     break;
                 }

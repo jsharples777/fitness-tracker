@@ -10926,10 +10926,6 @@ var AbstractField = /*#__PURE__*/function () {
       this.listeners.forEach(function (listener) {
         return listener.valueChanged(_this2.formId, _this2.definition, value);
       });
-
-      if (!value) {
-        this.reset();
-      }
     }
   };
 
@@ -10958,18 +10954,20 @@ var AbstractField = /*#__PURE__*/function () {
   _proto.initialise = function initialise() {};
 
   _proto.getValue = function getValue() {
+    var _this3 = this;
+
     var result = null;
 
     if (this.config && this.element) {
       switch (this.config.elementType) {
         case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.radioGroup:
           {
-            logger("getting value - rbg");
+            logger(this.definition.id + " - getting value - rbg");
 
             if (this.subElements) {
               this.subElements.forEach(function (subElement) {
                 if (subElement.checked) {
-                  logger("getting value - rbg - checked " + subElement.value);
+                  logger(_this3.definition.id + " - getting value - rbg - checked " + subElement.value);
                   result = subElement.value;
                 }
               });
@@ -10994,7 +10992,7 @@ var AbstractField = /*#__PURE__*/function () {
       }
     }
 
-    logger("getting value - " + result);
+    logger(this.definition.id + " - getting value - " + result);
     return result;
   };
 
@@ -11188,7 +11186,7 @@ var AbstractField = /*#__PURE__*/function () {
         var parentEl = this.element.parentElement;
 
         if (parentEl) {
-          parentEl.setAttribute('style', 'display:block');
+          parentEl.removeAttribute('style');
         }
       } else {
         this.element.removeAttribute('readonly');
@@ -11414,13 +11412,14 @@ var ValidationManager = /*#__PURE__*/function () {
   _proto.addRuleToForm = function addRuleToForm(form, rule) {
     var _this = this; // returns whether the rule was added
 
+
+    logger("Adding rule on form " + form.getId() + " for target field " + rule.targetDataFieldId);
     /*
      validate the rule
      1. does the rule have a comparison field or static for each condition?
      2. do the fields exist?
      3. are the comparisons valid types to compare?
     */
-
 
     var targetField = form.getFieldFromDataFieldId(rule.targetDataFieldId);
 
@@ -11444,6 +11443,7 @@ var ValidationManager = /*#__PURE__*/function () {
 
 
       if (condition.values && condition.sourceDataFieldId) {
+        logger("Rule adding for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - source field " + condition.sourceDataFieldId + " with values " + condition.values);
         var sourceField = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
 
         if (!sourceField) {
@@ -11459,7 +11459,8 @@ var ValidationManager = /*#__PURE__*/function () {
         sourceField.addFieldListener(_this);
       } else if (condition.values) {
         // is this a value comparison?
-        // add a new value rule to the internal structure
+        logger("Rule adding for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - values " + condition.values); // add a new value rule to the internal structure
+
         convertedRule.valueConditions.push({
           values: condition.values,
           comparison: condition.comparison
@@ -11468,6 +11469,8 @@ var ValidationManager = /*#__PURE__*/function () {
         targetField.addFieldListener(_this);
       } else if (condition.sourceDataFieldId) {
         // is this a field vs field comparison
+        logger("Rule adding for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - source field " + condition.sourceDataFieldId);
+
         var _sourceField = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
 
         if (!_sourceField) {
@@ -11548,18 +11551,21 @@ var ValidationManager = /*#__PURE__*/function () {
     var index = this.formRules.findIndex(function (formRule) {
       return formRule.form.getId() === form.getId();
     });
-    var formRules; // store the rules for later execution
+    var formRuleSet; // store the rules for later execution
 
     if (index < 0) {
-      formRules = {
+      formRuleSet = {
         form: form,
         rules: [convertedRule]
       };
+      this.formRules.push(formRuleSet);
     } else {
-      formRules = this.formRules[index];
-      formRules.rules.push(convertedRule);
+      formRuleSet = this.formRules[index];
+      formRuleSet.rules.push(convertedRule);
     }
 
+    logger("Current set of rules for form " + form.getId());
+    logger(formRuleSet);
     return true;
   };
 
@@ -11708,13 +11714,13 @@ var ValidationManager = /*#__PURE__*/function () {
     };
   };
 
-  _proto.isTargetNull = function isTargetNull(targetField) {
-    var targetValue = targetField.getValue(); // @ts-ignore
+  _proto.isSourceNull = function isSourceNull(sourceField) {
+    var targetValue = sourceField.getValue(); // @ts-ignore
 
     if (targetValue && targetValue.trim().length > 0) {
       return {
         ruleFailed: true,
-        message: targetField.getName() + " must be empty"
+        message: sourceField.getName() + " must be empty"
       };
     }
 
@@ -11723,13 +11729,13 @@ var ValidationManager = /*#__PURE__*/function () {
     };
   };
 
-  _proto.isTargetNotNull = function isTargetNotNull(targetField) {
-    var targetValue = targetField.getValue(); // @ts-ignore
+  _proto.isSourceNotNull = function isSourceNotNull(sourceField) {
+    var targetValue = sourceField.getValue(); // @ts-ignore
 
     if (!targetValue || targetValue.trim().length > 0) {
       return {
         ruleFailed: true,
-        message: targetField.getName() + " must not be empty"
+        message: sourceField.getName() + " must not be empty"
       };
     }
 
@@ -11738,8 +11744,9 @@ var ValidationManager = /*#__PURE__*/function () {
     };
   };
 
-  _proto.doesTargetHaveValue = function doesTargetHaveValue(targetField, values) {
-    var targetValue = targetField.getValue();
+  _proto.doesFieldHaveValue = function doesFieldHaveValue(field, values) {
+    var targetValue = field.getValue();
+    logger("does field " + field.getId() + " have value from " + values + " - current value is " + field.getValue());
 
     if (targetValue) {
       // split the values by commas
@@ -11747,6 +11754,7 @@ var ValidationManager = /*#__PURE__*/function () {
       var foundInValue = false;
       splits.forEach(function (split) {
         if (targetValue === split) {
+          logger("does field " + field.getId() + " have value from " + values + " - current value is " + field.getValue() + " - found in value(s)");
           foundInValue = true;
         }
       });
@@ -11760,8 +11768,16 @@ var ValidationManager = /*#__PURE__*/function () {
 
     return {
       ruleFailed: true,
-      message: targetField.getName() + " must be have a value in " + values
+      message: field.getName() + " must be have a value in " + values
     };
+  };
+
+  _proto.doesTargetFieldHaveValue = function doesTargetFieldHaveValue(field, values) {
+    return this.doesFieldHaveValue(field, values);
+  };
+
+  _proto.doesSourceFieldHaveValue = function doesSourceFieldHaveValue(field, values) {
+    return this.doesFieldHaveValue(field, values);
   };
 
   _proto.isSourceGreaterThanEqualTarget = function isSourceGreaterThanEqualTarget(targetField, sourceField) {
@@ -11817,19 +11833,19 @@ var ValidationManager = /*#__PURE__*/function () {
 
       case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.isNull:
         {
-          return this.isTargetNull(targetField);
+          return this.isSourceNull(sourceField);
           break;
         }
 
       case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.isNotNull:
         {
-          return this.isTargetNotNull(targetField);
+          return this.isSourceNotNull(sourceField);
           break;
         }
 
       case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue:
         {
-          return this.doesTargetHaveValue(targetField, value);
+          return this.doesSourceFieldHaveValue(sourceField, value);
           break;
         }
     }
@@ -11844,30 +11860,41 @@ var ValidationManager = /*#__PURE__*/function () {
       response: rule.response
     }; // run each field comparison
 
+    logger("Executing rule for target " + rule.targetField.getId());
+    logger(rule);
     rule.fieldConditions.every(function (condition) {
+      logger('field condition rule');
+      logger(condition);
       var values = condition.values ? condition.values : '';
 
       var ruleCheck = _this2.compareFields(rule.targetField, condition.sourceField, condition.comparison, values);
 
       if (ruleCheck.ruleFailed) {
+        logger('field condition rule FAILED');
         response.ruleFailed = true;
         response.message = ruleCheck.message;
         return false;
       }
 
+      logger('field condition rule PASSED');
       return true;
     }); // run each value comparison if we haven't already failed
 
     if (!response.ruleFailed) {
       rule.valueConditions.forEach(function (condition) {
+        logger('value condition rule');
+        logger(condition);
+
         var ruleCheck = _this2.compareFields(rule.targetField, rule.targetField, _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue, condition.values);
 
         if (ruleCheck.ruleFailed) {
+          logger('value condition rule FAILED');
           response.ruleFailed = true;
           response.message = ruleCheck.message;
           return false;
         }
 
+        logger('value condition rule PASSED');
         return true;
       });
     }
@@ -11883,7 +11910,7 @@ var ValidationManager = /*#__PURE__*/function () {
       return formRule.form.getId() === formId;
     });
 
-    if (index > 0) {
+    if (index >= 0) {
       var ruleSet = this.formRules[index]; // the dataFieldId could be the target or one of the sources
 
       ruleSet.rules.forEach(function (rule) {
@@ -11936,30 +11963,35 @@ var ValidationManager = /*#__PURE__*/function () {
       if (response.ruleFailed) {
         failedResponses.push(response);
       }
-    }); // for each failed response let the target field know based on the response type
+    });
+    logger("Have " + failedResponses.length + " failed rules - applying each"); // for each failed response let the target field know based on the response type
 
     failedResponses.forEach(function (response) {
       switch (response.response) {
         case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.hide:
           {
+            logger("Apply hide " + response.field.getId());
             response.field.hide();
             break;
           }
 
         case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.show:
           {
+            logger("Apply show " + response.field.getId());
             response.field.show();
             break;
           }
 
         case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.invalid:
           {
+            logger("Apply invalid " + response.field.getId());
             if (response.message) response.field.setInvalid(response.message);
             break;
           }
 
         case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.valid:
           {
+            logger("Apply valid " + response.field.getId());
             response.field.setValid();
             break;
           }
@@ -13350,16 +13382,18 @@ var Root = /*#__PURE__*/function (_React$Component) {
               form.setIsVisible(true); // change the select options
 
               dataSource.addValueOption('X-Men', 'xmen'); // add a simple validation rule to the two numbers
+              // let rule:ValidationRule = {
+              //     targetDataFieldId:'float1',
+              //     response:ConditionResponse.invalid,
+              //     conditions: [
+              //         {
+              //             sourceDataFieldId:'float2',
+              //             comparison:ComparisonType.lessThanEqual,
+              //         }
+              //     ]
+              // }
+              // ValidationManager.getInstance().addRuleToForm(form,rule);
 
-              rule = {
-                targetDataFieldId: 'float1',
-                response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_25__.ConditionResponse.invalid,
-                conditions: [{
-                  sourceDataFieldId: 'float2',
-                  comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_25__.ComparisonType.lessThanEqual
-                }]
-              };
-              _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_26__.ValidationManager.getInstance().addRuleToForm(form, rule);
               rule = {
                 targetDataFieldId: 'select',
                 response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_25__.ConditionResponse.hide,
@@ -13381,7 +13415,7 @@ var Root = /*#__PURE__*/function (_React$Component) {
               };
               _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_26__.ValidationManager.getInstance().addRuleToForm(form, rule);
 
-            case 63:
+            case 61:
             case "end":
               return _context.stop();
           }

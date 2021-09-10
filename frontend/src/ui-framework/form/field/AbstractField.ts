@@ -49,10 +49,7 @@ export class AbstractField implements Field, FieldListener {
             let value: string | null = this.getValue();
             logger(`Handling change event - informing listeners`);
             this.listeners.forEach((listener) => listener.valueChanged(this.formId,this.definition, value));
-            if (!value) {
-                this.reset();
             }
-        }
     }
 
     addFieldListener(listener: FieldListener): void {
@@ -84,11 +81,11 @@ export class AbstractField implements Field, FieldListener {
         if (this.config && this.element) {
             switch (this.config.elementType) {
                 case (UIFieldType.radioGroup): {
-                    logger(`getting value - rbg`);
+                    logger(`${this.definition.id} - getting value - rbg`);
                     if (this.subElements) {
                         this.subElements.forEach((subElement) => {
                             if (subElement.checked) {
-                                logger(`getting value - rbg - checked ${subElement.value}`);
+                                logger(`${this.definition.id} - getting value - rbg - checked ${subElement.value}`);
                                 result = subElement.value;
                             }
                         });
@@ -107,7 +104,7 @@ export class AbstractField implements Field, FieldListener {
                 }
             }
         }
-        logger(`getting value - ${result}`);
+        logger(`${this.definition.id} - getting value - ${result}`);
         return result;
     }
 
@@ -273,7 +270,7 @@ export class AbstractField implements Field, FieldListener {
             if (this.config.containedBy) {
                 const parentEl = this.element.parentElement;
                 if (parentEl) {
-                    parentEl.setAttribute('style','display:block');
+                    parentEl.removeAttribute('style');
                 }
 
             }
