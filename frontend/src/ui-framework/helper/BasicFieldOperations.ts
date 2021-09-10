@@ -21,6 +21,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
 
     private static dateRegex: RegExp = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
     private static emailRegex: RegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/;
+    private static shortTimeRegex: RegExp = /^([01]\d|2[0-3]):?([0-5]\d)$/;
     private static timeRegex: RegExp = /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/;
     private static dateTimeRegex: RegExp = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}\s([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/;
     private static basicPasswordRegex: RegExp = /^[a-zA-Z0-9]{8,15}$/;
@@ -159,7 +160,14 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 case (FieldType.time): {
                     response.isValid = BasicFieldOperations.timeRegex.test(currentValue);
                     if (!response.isValid) {
-                        response.message = `${field.displayName} must be 24 hour time format 00:00:00`;
+                        response.message = `${field.displayName} must be 24 hour time format HH:MM:SS`;
+                    }
+                    break;
+                }
+                case (FieldType.shortTime): {
+                    response.isValid = BasicFieldOperations.shortTimeRegex.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be 24 hour time format HH:MM`;
                     }
                     break;
                 }
@@ -273,6 +281,10 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
             }
             case (FieldType.time): {
                 result = '00:00:00';
+                break;
+            }
+            case (FieldType.shortTime): {
+                result = '00:00';
                 break;
             }
             case (FieldType.boolean): {

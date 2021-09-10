@@ -13,52 +13,52 @@ const dlogger = debug('basic-form-detail');
 
 export class BasicFormImplementation extends AbstractForm {
 
-    protected factoryElements:FormFactoryResponse|null = null;
+    protected factoryElements: FormFactoryResponse | null = null;
 
 
     public constructor(containerId: string, dataObjDef: DataObjectDefinition) {
-        super(containerId,dataObjDef);
+        super(containerId, dataObjDef);
     }
 
     protected _hidden(): void {
         if (this.factoryElements) this.containerEl?.removeChild(this.factoryElements.form);
     }
 
-    protected setupFieldObject(fieldEl:HTMLElement,subElements:HTMLInputElement[] = []) {
+    protected setupFieldObject(fieldEl: HTMLElement, subElements: HTMLInputElement[] = []) {
         // get the data-id field from the field element
-        const dataId:string|null = fieldEl.getAttribute(DATA_ID_ATTRIBUTE);
-        const fieldId:string|null = fieldEl.getAttribute('id');
+        const dataId: string | null = fieldEl.getAttribute(DATA_ID_ATTRIBUTE);
+        const fieldId: string | null = fieldEl.getAttribute('id');
         dlogger(`Converting field input element ${fieldId} with data-id of ${dataId}`);
         if (dataId && fieldId) {
             // find the corresponding field definition
             const index = this.dataObjDef.fields.findIndex((value) => value.id === dataId);
-            const fieldDef:FieldDefinition|undefined = this.dataObjDef.fields.find((value) => value.id === dataId);
+            const fieldDef: FieldDefinition | undefined = this.dataObjDef.fields.find((value) => value.id === dataId);
             if (fieldDef) {
                 dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field definition is`);
                 logger(fieldDef);
 
                 // find the corresponding ui definition
-                const fieldUIConfig:FieldUIConfig|null|undefined = this.findFieldUiConfig(fieldDef);
+                const fieldUIConfig: FieldUIConfig | null | undefined = this.findFieldUiConfig(fieldDef);
                 dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field ui config is`);
                 logger(fieldUIConfig);
                 if (fieldUIConfig) {
                     if (this.uiDef) {
-                        let field:Field;
+                        let field: Field;
                         switch (fieldUIConfig.elementType) {
                             case UIFieldType.textarea: {
-                                field = new TextAreaField(this.uiDef.id,fieldUIConfig,fieldDef,<HTMLTextAreaElement>fieldEl);
+                                field = new TextAreaField(this.uiDef.id, fieldUIConfig, fieldDef, <HTMLTextAreaElement>fieldEl);
                                 break;
                             }
                             case UIFieldType.radioGroup: {
-                                field = new RadioButtonGroupField(this.uiDef.id,fieldUIConfig,fieldDef,fieldEl,subElements);
+                                field = new RadioButtonGroupField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl, subElements);
                                 break;
                             }
                             case UIFieldType.select: {
-                                field = new SelectField(this.uiDef.id,fieldUIConfig,fieldDef,<HTMLSelectElement>fieldEl);
+                                field = new SelectField(this.uiDef.id, fieldUIConfig, fieldDef, <HTMLSelectElement>fieldEl);
                                 break;
                             }
                             default: {
-                                field = new InputField(this.uiDef.id,fieldUIConfig,fieldDef,<HTMLInputElement>fieldEl);
+                                field = new InputField(this.uiDef.id, fieldUIConfig, fieldDef, <HTMLInputElement>fieldEl);
                                 break;
                             }
                         }
@@ -66,8 +66,7 @@ export class BasicFormImplementation extends AbstractForm {
                         this.map.push({attributeId: dataId, fieldId: fieldId});
                     }
                 }
-            }
-            else {
+            } else {
                 dlogger(`Converting field input element ${fieldId} with data-id of ${dataId} field definition is NOT FOUND`);
 
             }
@@ -82,7 +81,7 @@ export class BasicFormImplementation extends AbstractForm {
         this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef);
         logger(this.uiDef);
         // now we need to create all the form elements from the ui definition
-        this.factoryElements = FormElementFactory.getInstance().createFormElements(this,this.formListeners,this.uiDef,this.fieldListeners);
+        this.factoryElements = FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
         logger(this.factoryElements);
         // create field elements for each field element, and the basic map
         logger(`Converting field input elements to Field objects`);
@@ -102,7 +101,7 @@ export class BasicFormImplementation extends AbstractForm {
 
         logger(`Converting field rbg elements to Field objects`);
         this.factoryElements.radioButtonGroups.forEach((rbg) => {
-            this.setupFieldObject(rbg.container,rbg.radioButtons);
+            this.setupFieldObject(rbg.container, rbg.radioButtons);
         });
 
 
@@ -112,14 +111,15 @@ export class BasicFormImplementation extends AbstractForm {
         logger(this.fields);
     }
 
-    protected _reset(): void {}
+    protected _reset(): void {
+    }
 
-    protected validateField(fieldDef:FieldDefinition) {
+    protected validateField(fieldDef: FieldDefinition) {
         const field: Field | undefined = this.getFieldFromDataFieldId(fieldDef.id);
         if (field) field.validate();
     }
 
-    protected renderField(fieldDef:FieldDefinition,currentValue:string):string {
+    protected renderField(fieldDef: FieldDefinition, currentValue: string): string {
         let result = currentValue;
         const field: Field | undefined = this.getFieldFromDataFieldId(fieldDef.id);
 
@@ -134,19 +134,22 @@ export class BasicFormImplementation extends AbstractForm {
         // we have a new object, there might be some values to generate
         this.dataObjDef.fields.forEach((fieldDef) => {
             if (fieldDef.generator && fieldDef.generator.onCreation) {
-                let fieldValue = fieldDef.generator.generator.generate(fieldDef,true);
+                let fieldValue = fieldDef.generator.generator.generate(fieldDef, true);
                 dlogger(`Setting default values for ${fieldDef.displayName} to ${fieldValue}`);
                 this.currentDataObj[fieldDef.id] = fieldValue;
             }
             let fieldValue = this.currentDataObj[fieldDef.id];
             if (fieldValue) fieldValue = this.renderField(fieldDef, fieldValue);
-            this.setFieldValueFromDataObject(fieldDef,fieldValue);
+            this.setFieldValueFromDataObject(fieldDef, fieldValue);
             // run the validation to let the user know what is required
             this.validateField(fieldDef);
         });
 
         // delete button can go
-        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton,[{name:'style',value:'display:none'}]);
+        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
+            name: 'style',
+            value: 'display:none'
+        }]);
 
     }
 
@@ -155,64 +158,53 @@ export class BasicFormImplementation extends AbstractForm {
         logger(this.currentDataObj);
         this.dataObjDef.fields.forEach((fieldDef) => {
             if (fieldDef.generator && fieldDef.generator.onModify) {
-                let fieldValue = fieldDef.generator.generator.generate(fieldDef,false);
+                let fieldValue = fieldDef.generator.generator.generate(fieldDef, false);
                 dlogger(`Setting default modified values for ${fieldDef.displayName} to ${fieldValue}`);
                 this.currentDataObj[fieldDef.id] = fieldValue;
             }
             let fieldValue = this.currentDataObj[fieldDef.id];
             if (fieldValue) fieldValue = this.renderField(fieldDef, fieldValue);
-            this.setFieldValueFromDataObject(fieldDef,this.currentDataObj[fieldDef.id]);
+            this.setFieldValueFromDataObject(fieldDef, this.currentDataObj[fieldDef.id]);
             this.validateField(fieldDef);
         });
         // delete button make visible again
-        if (this.factoryElements) browserUtil.removeAttributes(this.factoryElements.deleteButton,['style']);
-        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton,[{name:'style',value:'display:block'}]);
+        if (this.factoryElements) browserUtil.removeAttributes(this.factoryElements.deleteButton, ['style']);
+        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
+            name: 'style',
+            value: 'display:block'
+        }]);
     }
 
     protected _visible(): void {
         if (this.factoryElements) this.containerEl?.appendChild(this.factoryElements.form);
     }
 
-    protected setFieldValueToDataObject(dataObj: any, field: Field, currentValue:string|null): void {
+    protected setFieldValueToDataObject(dataObj: any, field: Field, currentValue: string | null): void {
         // find the attribute id from the map
-        const mapItem:AttributeFieldMapItem|undefined = this.map.find((mapItem) => mapItem.attributeId === field.getId());
+        const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === field.getId());
         if (mapItem) {
             dlogger(`Mapped field ${mapItem.fieldId} to attribute ${mapItem.attributeId} with value ${currentValue}`);
             this.currentDataObj[mapItem.attributeId] = currentValue;
-        }
-        else {
+        } else {
             logger(`Mapped field ${field.getId()} to attribute NOT FOUND`);
 
         }
     }
 
-    protected setFieldValueFromDataObject(fieldDef:FieldDefinition, currentValue:string|null): void {
+    protected setFieldValueFromDataObject(fieldDef: FieldDefinition, currentValue: string | null): void {
+        const field: Field | undefined = this.getFieldFromDataFieldId(fieldDef.id);
         // find the field id from the map
-        const mapItem:AttributeFieldMapItem|undefined = this.map.find((mapItem) => mapItem.attributeId === fieldDef.id);
-        if (mapItem) {
-            dlogger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId} with value ${currentValue}`);
-            // find the field with that id
-XXXXX            const field:Field|undefined = this.fields.find((field) => field.getId() === mapItem.attributeId);
-            if (field) {
-                if (currentValue) {
-                    field.setValue(currentValue);
-                }
-                else {
-                    field.clearValue();
-                }
-            }
-            else {
-                logger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId} with value ${currentValue} - MISSING field object`);
+        if (field) {
+            if (currentValue) {
+                field.setValue(currentValue);
+            } else {
+                field.clearValue();
             }
         }
-        else {
-            logger(`Mapped attribute ${fieldDef.displayName} to field NOT FOUND`);
-        }
-
     }
 
-    protected getFormattedFieldValue(fieldDef:FieldDefinition):any|null{
-        let result:any|null = null;
+    protected getFormattedFieldValue(fieldDef: FieldDefinition): any | null {
+        let result: any | null = null;
 
         const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === fieldDef.id);
         if (mapItem) {
@@ -228,7 +220,7 @@ XXXXX            const field:Field|undefined = this.fields.find((field) => field
 
     getFormattedDataObject(): any {
         logger(`Getting current formatted data`);
-        let formattedResult:any = {};
+        let formattedResult: any = {};
         this.dataObjDef.fields.forEach((fieldDef) => {
             let fieldValue = this.currentDataObj[fieldDef.id];
             formattedResult[fieldDef.id] = this.getFormattedFieldValue(fieldDef)

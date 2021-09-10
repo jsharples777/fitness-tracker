@@ -5,7 +5,8 @@ export enum ConditionType {
     greaterThan,
     greaterThanEqual,
     isNull,
-    isNotNull
+    isNotNull,
+    hasValue
 };
 
 export enum ConditionResponse {

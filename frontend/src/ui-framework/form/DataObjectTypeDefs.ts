@@ -10,6 +10,7 @@ export enum FieldType {
     float = 'Number',
     date = 'Date',
     time = 'Time',
+    shortTime = 'Short Time',
     datetime = 'Datetime',
     email = 'Email',
     password = 'Password',

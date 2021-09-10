@@ -34,7 +34,8 @@ export class BootstrapFormConfigHelper {
                 case (FieldType.time):
                 case (FieldType.text):
                 case (FieldType.datetime):
-                case (FieldType.date): {
+                case (FieldType.date):
+                case (FieldType.shortTime):{
                     break;
                 }
                 case (FieldType.uuid):

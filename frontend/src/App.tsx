@@ -324,7 +324,7 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"float","Float",FieldType.float,true,"A number yo....");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"checkbox","Checkbox?",FieldType.boolean,true,"Yes or No?");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"date","Date",FieldType.date,true,"Date yep");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"time","Time",FieldType.time,true,"How long till we get there?");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"time","Time",FieldType.shortTime,true,"How long till we get there?");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"textarea","TextArea",FieldType.largeText,true,"An essay");
 
         let dataSource:SimpleValueDataSource = new SimpleValueDataSource([
