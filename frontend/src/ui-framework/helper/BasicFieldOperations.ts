@@ -98,6 +98,15 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - is valid is ${response.isValid} with message ${response.message}`);
                 return response;
             }
+            // boolean is a special case, and must be true
+            if (field.type === FieldType.boolean) {
+                if (currentValue.trim().toLowerCase() !== 'true') {
+                    response.isValid = false;
+                    response.message = `${field.displayName} is required and must be selected.`;
+                    vlogger(`Handling is valid value for field ${field.displayName} with value ${currentValue} - is valid is ${response.isValid} with message ${response.message}`);
+                    return response;
+                }
+            }
         }
 
         // ok, so we have some content, we need to check if the value is a valid format with regular expressions
@@ -210,15 +219,15 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
         rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue}`);
         // ensure we don't end up in an endless loop
         // if the value hasn't changed return null
-        let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
-        if (index >= 0) {
-            //we have a previous value
-            let fieldValue: FieldNameValue = this.previousFieldValues[index];
-            rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue} - previous value ${fieldValue.value}`);
-            if (fieldValue.value === currentValue) return null;
-        }
+        // let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
+        // if (index >= 0) {
+        //     //we have a previous value
+        //     let fieldValue: FieldNameValue = this.previousFieldValues[index];
+        //     rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue} - previous value ${fieldValue.value}`);
+        //     if (fieldValue.value === currentValue) return null;
+        // }
         // either not yet seen or value has changed from previous
-        if (currentValue.trim().length > 0) { // only attempt to render non-empty dates
+        if (currentValue) { // only attempt to render non-empty dates
             let newValue: string = currentValue;
 
             switch (field.type) {

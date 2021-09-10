@@ -142,6 +142,7 @@ export class AbstractField implements Field, FieldListener {
     }
 
     setValue(newValue: string): void {
+        newValue = ''+newValue;
         if (this.element && this.config) {
             // @ts-ignore
             switch (this.config.elementType) {
@@ -160,7 +161,26 @@ export class AbstractField implements Field, FieldListener {
                     this.element.checked = (newValue.toLowerCase() === 'true');
                     break;
                 }
+                case (UIFieldType.select): {
+                    console.log(`${this.definition.id} - setting value - ${newValue}`);
+                    const selectEl:HTMLSelectElement = <HTMLSelectElement>this.element;
+                    let selectedIndex = -1;
+                    for (let index = 0;index < selectEl.options.length;index++) {
+                        // @ts-ignore
+                        const option:HTMLOptionElement = selectEl.options.item(index);
+                        console.log(`${this.definition.id} - option value - ${option.value}`);
+                        if (option.value === newValue) {
+                            console.log(`${this.definition.id} - option value - ${option.value} - SELECTED`);
+                            option.selected = true;
+                            selectedIndex = index;
+                        }
+                    }
+                    console.log(`${this.definition.id} - selected index ${selectedIndex}`);
+                    selectEl.selectedIndex = selectedIndex;
+                    break;
+                }
                 default: {
+                    logger(`${this.definition.id} - setting value - ${newValue}`);
                     // @ts-ignore
                     this.element.value = newValue;
                     break;

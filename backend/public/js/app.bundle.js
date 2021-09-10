@@ -4388,7 +4388,7 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
 
   var _proto = BasicObjectDefinitionFactory.prototype;
 
-  _proto.createBasicObject = function createBasicObject(id, displayName, hasDataId, dataIdIsUUID) {
+  _proto.createBasicObjectDefinition = function createBasicObjectDefinition(id, displayName, hasDataId, dataIdIsUUID) {
     var objDef = {
       id: id,
       displayName: displayName,
@@ -9392,6 +9392,106 @@ var ViewListenerForwarder = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/ui-framework/alert/AlertListener.ts":
+/*!*************************************************!*\
+  !*** ./src/ui-framework/alert/AlertListener.ts ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AlertType": () => (/* binding */ AlertType)
+/* harmony export */ });
+var AlertType;
+
+(function (AlertType) {
+  AlertType[AlertType["cancelled"] = 0] = "cancelled";
+  AlertType[AlertType["confirmed"] = 1] = "confirmed";
+})(AlertType || (AlertType = {}));
+
+/***/ }),
+
+/***/ "./src/ui-framework/alert/AlertManager.ts":
+/*!************************************************!*\
+  !*** ./src/ui-framework/alert/AlertManager.ts ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "AlertManager": () => (/* binding */ AlertManager)
+/* harmony export */ });
+/* harmony import */ var _AlertListener__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AlertListener */ "./src/ui-framework/alert/AlertListener.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
+
+
+var ALERT_MODAL_ID = 'alert';
+var ALERT_TITLE = 'alert-title';
+var ALERT_CONTENT = 'alert-content';
+var ALERT_CANCEL = 'alert-cancel';
+var ALERT_CONFRIM = 'alert-confirm';
+var ALERT_hideClass = "d-none";
+var ALERT_showClass = "d-block";
+var logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('alert');
+var AlertManager = /*#__PURE__*/function () {
+  AlertManager.getInstance = function getInstance() {
+    if (!AlertManager._instance) {
+      AlertManager._instance = new AlertManager();
+    }
+
+    return AlertManager._instance;
+  };
+
+  function AlertManager() {
+    this.alertDiv = document.getElementById(ALERT_MODAL_ID);
+    this.alertTitle = document.getElementById(ALERT_TITLE);
+    this.alertContent = document.getElementById(ALERT_CONTENT);
+    this.cancelButton = document.getElementById(ALERT_CANCEL);
+    this.confirmButton = document.getElementById(ALERT_CONFRIM);
+  }
+
+  var _proto = AlertManager.prototype;
+
+  _proto.startAlert = function startAlert(listener, title, content, context) {
+    this.alertTitle.innerHTML = title;
+    this.alertContent.innerHTML = content; // @ts-ignore
+
+    this.alertDiv.classList.remove(ALERT_hideClass); // @ts-ignore
+
+    this.alertDiv.classList.add(ALERT_showClass);
+
+    var confirmHandler = function confirmHandler(event) {
+      logger("Handling confirm event from alert");
+      listener.completed({
+        outcome: _AlertListener__WEBPACK_IMPORTED_MODULE_0__.AlertType.confirmed,
+        context: context
+      }); // @ts-ignore
+
+      event.target.removeEventListener('click', confirmHandler);
+    };
+
+    var cancelHandler = function cancelHandler(event) {
+      logger("Handling cancel event from alert");
+      listener.completed({
+        outcome: _AlertListener__WEBPACK_IMPORTED_MODULE_0__.AlertType.cancelled,
+        context: context
+      }); // @ts-ignore
+
+      event.target.removeEventListener('click', cancelHandler);
+    };
+
+    this.confirmButton.addEventListener('click', confirmHandler);
+    this.cancelButton.addEventListener('click', cancelHandler);
+  };
+
+  return AlertManager;
+}();
+
+/***/ }),
+
 /***/ "./src/ui-framework/form/AbstractForm.ts":
 /*!***********************************************!*\
   !*** ./src/ui-framework/form/AbstractForm.ts ***!
@@ -9406,6 +9506,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FormListener__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FormListener */ "./src/ui-framework/form/FormListener.ts");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./validation/ValidationManager */ "./src/ui-framework/form/validation/ValidationManager.ts");
+/* harmony import */ var _alert_AlertListener__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../alert/AlertListener */ "./src/ui-framework/alert/AlertListener.ts");
+/* harmony import */ var _alert_AlertManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
 function _extends() {
   _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -9426,7 +9529,11 @@ function _extends() {
 
 
 
+
+
+
 var logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form');
+var dlogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form-detail');
 var AbstractForm = /*#__PURE__*/function () {
   function AbstractForm(containerId, dataObjDef) {
     this.formListeners = [];
@@ -9471,7 +9578,7 @@ var AbstractForm = /*#__PURE__*/function () {
   };
 
   _proto.findFieldUiConfig = function findFieldUiConfig(fieldDef) {
-    logger("Finding field UI Config for field " + fieldDef.displayName);
+    dlogger("Finding field UI Config for field " + fieldDef.displayName);
     var result = null;
 
     if (this.uiDef) {
@@ -9484,7 +9591,7 @@ var AbstractForm = /*#__PURE__*/function () {
         });
 
         if (result) {
-          logger("Finding field UI Config for field " + fieldDef.displayName + " - Found");
+          dlogger("Finding field UI Config for field " + fieldDef.displayName + " - Found");
           break;
         }
 
@@ -9499,15 +9606,11 @@ var AbstractForm = /*#__PURE__*/function () {
     logger("Resetting form"); // inform the listeners
 
     if (this.uiDef) {
-      var _this$containerEl, _this$containerEl$par;
-
       var formEvent = {
         formId: this.uiDef.id,
         target: this,
         eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.RESETTING
-      }; // remove the form from it's parent node
-
-      (_this$containerEl = this.containerEl) == null ? void 0 : (_this$containerEl$par = _this$containerEl.parentNode) == null ? void 0 : _this$containerEl$par.removeChild(this.containerEl);
+      };
       this.informFormListeners(formEvent, this.currentDataObj);
     }
 
@@ -9594,47 +9697,122 @@ var AbstractForm = /*#__PURE__*/function () {
     switch (event.eventType) {
       case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLING:
         {
-          logger("Form is cancelling - resetting"); // user cancelled the form, will become invisible
+          logger("Form is cancelling");
 
-          this._reset(); // reset the form state
+          if (this.uiDef) {
+            _alert_AlertManager__WEBPACK_IMPORTED_MODULE_4__.AlertManager.getInstance().startAlert(this, this.uiDef.displayName, "Lose any unsaved changes?", _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLING);
+          }
 
+          break;
+        }
+
+      case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLING_ABORTED:
+        {
+          logger("Form is cancelling - aborted");
+          break;
+        }
+
+      case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLED:
+        {
+          logger("Form is cancelled - resetting"); // user cancelled the form, will become invisible
+
+          this.reset(); // reset the form state
 
           break;
         }
 
       case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETING:
         {
-          logger("Form is deleting - resetting"); // user is deleting the object, will become invisible
+          logger("Form is deleting");
 
-          this._reset();
+          if (this.uiDef) {
+            _alert_AlertManager__WEBPACK_IMPORTED_MODULE_4__.AlertManager.getInstance().startAlert(this, this.uiDef.displayName, "Are you sure you want to delete this information?", _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETING);
+          }
 
+          break;
+        }
+
+      case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETE_ABORTED:
+        {
+          logger("Form is deleting - aborted");
+          break;
+        }
+
+      case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETED:
+        {
+          logger("Form is deleted - resetting"); // user is deleting the object, will become invisible
+
+          this.reset();
+          break;
+        }
+
+      case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVE_ABORTED:
+        {
+          logger("Form save cancelled");
+          break;
+        }
+
+      case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVED:
+        {
+          logger("Form is saved with data");
+          logger(formValues); // user is deleting the object, will become invisible
+
+          this.reset();
           break;
         }
 
       case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVING:
         {
           logger("Form is saving, checking validation and storing values");
-          var allFieldsValid = true; // user attempting to save the form, lets check the field validation
 
-          this.fields.forEach(function (field) {
-            var currentValue = field.getValue();
+          if (this.uiDef) {
+            var allFieldsValid = true; // user attempting to save the form, lets check the field validation
 
-            if (!field.isValid()) {
-              allFieldsValid = false;
+            this.fields.forEach(function (field) {
+              var currentValue = field.getValue();
+
+              if (!field.isValid()) {
+                logger("Field " + field.getId() + " is invalid");
+                field.setInvalid(field.getName() + " has an invalid format or is required.");
+                allFieldsValid = false;
+              } else {
+                // does the field fulfil any rules from the Validation manager
+                // @ts-ignore
+                var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition());
+
+                if (response.ruleFailed) {
+                  // @ts-ignore
+                  field.setInvalid(response.message);
+                  logger("Field " + field.getId() + " is invalid from validation manager with message " + response.message);
+                  allFieldsValid = false;
+                } else {
+                  _this.setFieldValueToDataObject(_this.currentDataObj, field, currentValue);
+                }
+              }
+            }); // is every field valid?
+
+            if (!allFieldsValid) {
+              logger("Form is saving, checking validation - FAILED");
+              var formEvent = {
+                formId: this.uiDef.id,
+                target: this,
+                eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVE_ABORTED
+              };
+              this.informFormListeners(formEvent, this.currentDataObj);
+              shouldCancelChange = true;
             } else {
-              _this.setFieldValueToDataObject(_this.currentDataObj, field, currentValue);
+              logger("formatted data object is");
+              var formattedDataObject = this.getFormattedDataObject();
+              var _formEvent = {
+                formId: this.uiDef.id,
+                target: this,
+                eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVED
+              };
+              this.informFormListeners(_formEvent, formattedDataObject);
             }
-          }); // is every field valid?
 
-          if (!allFieldsValid) {
-            logger("Form is saving, checking validation - FAILED");
-            shouldCancelChange = true;
-          } else {
-            logger("formatted data object is");
-            logger(this.getFormattedDataObject());
+            break;
           }
-
-          break;
         }
     }
 
@@ -9653,13 +9831,13 @@ var AbstractForm = /*#__PURE__*/function () {
 
   _proto.getFieldFromDataFieldId = function getFieldFromDataFieldId(dataFieldId) {
     var result = undefined;
-    logger("Finding field for attribute " + dataFieldId + " ");
+    dlogger("Finding field for attribute " + dataFieldId + " ");
     var mapItem = this.map.find(function (mapItem) {
       return mapItem.attributeId === dataFieldId;
     });
 
     if (mapItem) {
-      logger("Mapped attribute " + mapItem.attributeId + " to field " + mapItem.fieldId); // find the field with that id
+      dlogger("Mapped attribute " + mapItem.attributeId + " to field " + mapItem.fieldId); // find the field with that id
 
       result = this.fields.find(function (field) {
         return field.getId() === mapItem.attributeId;
@@ -9667,6 +9845,57 @@ var AbstractForm = /*#__PURE__*/function () {
     }
 
     return result;
+  };
+
+  _proto.completed = function completed(event) {
+    logger("Handling alert completed");
+    logger(event);
+
+    if (event.context && this.uiDef) {
+      switch (event.context) {
+        case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLING:
+          {
+            if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_3__.AlertType.confirmed) {
+              var formEvent = {
+                formId: this.uiDef.id,
+                target: this,
+                eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLED
+              };
+              this.informFormListeners(formEvent, this.currentDataObj);
+            } else {
+              var _formEvent2 = {
+                formId: this.uiDef.id,
+                target: this,
+                eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLING_ABORTED
+              };
+              this.informFormListeners(_formEvent2, this.currentDataObj);
+            }
+
+            break;
+          }
+
+        case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETING:
+          {
+            if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_3__.AlertType.confirmed) {
+              var _formEvent3 = {
+                formId: this.uiDef.id,
+                target: this,
+                eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETED
+              };
+              this.informFormListeners(_formEvent3, this.currentDataObj);
+            } else {
+              var _formEvent4 = {
+                formId: this.uiDef.id,
+                target: this,
+                eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETE_ABORTED
+              };
+              this.informFormListeners(_formEvent4, this.currentDataObj);
+            }
+
+            break;
+          }
+      }
+    }
   };
 
   return AbstractForm;
@@ -9858,7 +10087,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     var field = this.getFieldFromDataFieldId(fieldDef.id);
 
     if (field) {
-      result = field.render(currentValue);
+      result = field.render(result);
     }
 
     return result;
@@ -9877,9 +10106,12 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       }
 
       var fieldValue = _this3.currentDataObj[fieldDef.id];
-      if (fieldValue) fieldValue = _this3.renderField(fieldDef, fieldValue);
 
-      _this3.setFieldValueFromDataObject(fieldDef, fieldValue); // run the validation to let the user know what is required
+      if (fieldValue) {
+        fieldValue = _this3.renderField(fieldDef, fieldValue);
+
+        _this3.setFieldValueFromDataObject(fieldDef, fieldValue);
+      } // run the validation to let the user know what is required
 
 
       _this3.validateField(fieldDef);
@@ -9907,16 +10139,12 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       var fieldValue = _this4.currentDataObj[fieldDef.id];
       if (fieldValue) fieldValue = _this4.renderField(fieldDef, fieldValue);
 
-      _this4.setFieldValueFromDataObject(fieldDef, _this4.currentDataObj[fieldDef.id]);
+      _this4.setFieldValueFromDataObject(fieldDef, fieldValue);
 
       _this4.validateField(fieldDef);
     }); // delete button make visible again
 
     if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].removeAttributes(this.factoryElements.deleteButton, ['style']);
-    if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].addAttributes(this.factoryElements.deleteButton, [{
-      name: 'style',
-      value: 'display:block'
-    }]);
   };
 
   _proto._visible = function _visible() {
@@ -10041,10 +10269,14 @@ var FormEventType;
   FormEventType["SHOWN"] = "shown";
   FormEventType["HIDDEN"] = "hidden";
   FormEventType["CANCELLING"] = "cancelling";
+  FormEventType["CANCELLING_ABORTED"] = "cancelling-aborted";
+  FormEventType["CANCELLED"] = "cancelled";
   FormEventType["SAVING"] = "saving";
-  FormEventType["SAVE_CANCELLED"] = "save-cancelled";
+  FormEventType["SAVE_ABORTED"] = "save-aborted";
+  FormEventType["SAVED"] = "saved";
   FormEventType["DELETING"] = "deleting";
-  FormEventType["DELETE_CANCELLED"] = "delete-cancelled";
+  FormEventType["DELETE_ABORTED"] = "delete-aborted";
+  FormEventType["DELETED"] = "deleted";
   FormEventType["CREATING"] = "creating";
   FormEventType["MODIFYING"] = "modifying";
   FormEventType["RESETTING"] = "reset";
@@ -11037,6 +11269,8 @@ var AbstractField = /*#__PURE__*/function () {
   };
 
   _proto.setValue = function setValue(newValue) {
+    newValue = '' + newValue;
+
     if (this.element && this.config) {
       // @ts-ignore
       switch (this.config.elementType) {
@@ -11060,9 +11294,33 @@ var AbstractField = /*#__PURE__*/function () {
             break;
           }
 
+        case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.select:
+          {
+            console.log(this.definition.id + " - setting value - " + newValue);
+            var selectEl = this.element;
+            var selectedIndex = -1;
+
+            for (var index = 0; index < selectEl.options.length; index++) {
+              // @ts-ignore
+              var option = selectEl.options.item(index);
+              console.log(this.definition.id + " - option value - " + option.value);
+
+              if (option.value === newValue) {
+                console.log(this.definition.id + " - option value - " + option.value + " - SELECTED");
+                option.selected = true;
+                selectedIndex = index;
+              }
+            }
+
+            console.log(this.definition.id + " - selected index " + selectedIndex);
+            selectEl.selectedIndex = selectedIndex;
+            break;
+          }
+
         default:
           {
-            // @ts-ignore
+            logger(this.definition.id + " - setting value - " + newValue); // @ts-ignore
+
             this.element.value = newValue;
             break;
           }
@@ -11390,6 +11648,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('validation-manager');
+var flogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('validation-manager-rule-failure');
 var ValidationManager = /*#__PURE__*/function () {
   ValidationManager.getInstance = function getInstance() {
     if (!ValidationManager._instance) {
@@ -11424,7 +11683,7 @@ var ValidationManager = /*#__PURE__*/function () {
     var targetField = form.getFieldFromDataFieldId(rule.targetDataFieldId);
 
     if (!targetField) {
-      logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - NOT FOUND in form");
+      flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - NOT FOUND in form");
       return false;
     }
 
@@ -11437,7 +11696,7 @@ var ValidationManager = /*#__PURE__*/function () {
     rule.conditions.forEach(function (condition) {
       // do we have one of values or source field?
       if (!condition.values && !condition.sourceDataFieldId) {
-        logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - a condition is missing both values and source field");
+        flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - a condition is missing both values and source field");
         return false;
       } // is this a target field value comparison?
 
@@ -11447,7 +11706,7 @@ var ValidationManager = /*#__PURE__*/function () {
         var sourceField = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
 
         if (!sourceField) {
-          logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - source field " + condition.sourceDataFieldId + " NOT FOUND");
+          flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - source field " + condition.sourceDataFieldId + " NOT FOUND");
           return false;
         }
 
@@ -11474,7 +11733,7 @@ var ValidationManager = /*#__PURE__*/function () {
         var _sourceField = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
 
         if (!_sourceField) {
-          logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - source field " + condition.sourceDataFieldId + " NOT FOUND");
+          flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - source field " + condition.sourceDataFieldId + " NOT FOUND");
           return false;
         }
         /*
@@ -11498,7 +11757,7 @@ var ValidationManager = /*#__PURE__*/function () {
           case _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime:
             {
               if (sourceType !== _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime && sourceType !== _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.date) {
-                logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is date(time), source is NOT");
+                flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is date(time), source is NOT");
                 return false;
               }
 
@@ -11509,7 +11768,7 @@ var ValidationManager = /*#__PURE__*/function () {
           case _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.shortTime:
             {
               if (sourceType !== _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.time && sourceType !== _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.shortTime) {
-                logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is time, source is NOT");
+                flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is time, source is NOT");
                 return false;
               }
 
@@ -11519,7 +11778,7 @@ var ValidationManager = /*#__PURE__*/function () {
           case _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean:
             {
               if (sourceType !== _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean) {
-                logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is boolean, source is NOT");
+                flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is boolean, source is NOT");
                 return false;
               }
 
@@ -11530,7 +11789,7 @@ var ValidationManager = /*#__PURE__*/function () {
           case _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.float:
             {
               if (sourceType !== _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.integer && sourceType !== _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.float) {
-                logger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is number, source is NOT");
+                flogger("Rule not added for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - target is number, source is NOT");
                 return false;
               }
 
@@ -11659,16 +11918,16 @@ var ValidationManager = /*#__PURE__*/function () {
     return false;
   };
 
-  _proto.isSourceLessThanTarget = function isSourceLessThanTarget(targetField, sourceField) {
+  _proto.isTargetLessThanSource = function isTargetLessThanSource(targetField, sourceField) {
     var sourceType = sourceField.getFieldDefinition().type;
     var targetType = targetField.getFieldDefinition().type;
     var sourceValue = sourceField.getValue();
     var targetValue = targetField.getValue();
 
-    if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.lessThanEqual)) {
+    if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.lessThan)) {
       return {
         ruleFailed: true,
-        message: targetField.getName() + " must be greater than " + sourceField.getName()
+        message: targetField.getName() + " must be less than " + sourceField.getName()
       };
     }
 
@@ -11677,16 +11936,16 @@ var ValidationManager = /*#__PURE__*/function () {
     };
   };
 
-  _proto.isSourceLessThanEqualTarget = function isSourceLessThanEqualTarget(targetField, sourceField) {
+  _proto.isTargetLessThanEqualSource = function isTargetLessThanEqualSource(targetField, sourceField) {
     var check = this.areTwoFieldsEqual(targetField, sourceField);
 
     if (check.ruleFailed) {
-      check = this.isSourceLessThanTarget(targetField, sourceField);
+      check = this.isTargetLessThanSource(targetField, sourceField);
 
       if (check.ruleFailed) {
         return {
           ruleFailed: true,
-          message: targetField.getName() + " must be greater than or equal to " + sourceField.getName()
+          message: targetField.getName() + " must be less than or equal to " + sourceField.getName()
         };
       }
     }
@@ -11696,16 +11955,16 @@ var ValidationManager = /*#__PURE__*/function () {
     };
   };
 
-  _proto.isSourceGreaterThanTarget = function isSourceGreaterThanTarget(targetField, sourceField) {
+  _proto.isTargetGreaterThan = function isTargetGreaterThan(targetField, sourceField) {
     var sourceType = sourceField.getFieldDefinition().type;
     var targetType = targetField.getFieldDefinition().type;
     var sourceValue = sourceField.getValue();
     var targetValue = targetField.getValue();
 
-    if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.greaterThanEqual)) {
+    if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.greaterThan)) {
       return {
         ruleFailed: true,
-        message: targetField.getName() + " must be less than " + sourceField.getName()
+        message: targetField.getName() + " must be greater than " + sourceField.getName()
       };
     }
 
@@ -11780,16 +12039,16 @@ var ValidationManager = /*#__PURE__*/function () {
     return this.doesFieldHaveValue(field, values);
   };
 
-  _proto.isSourceGreaterThanEqualTarget = function isSourceGreaterThanEqualTarget(targetField, sourceField) {
+  _proto.isTargetGreaterThanEqualSource = function isTargetGreaterThanEqualSource(targetField, sourceField) {
     var check = this.areTwoFieldsEqual(targetField, sourceField);
 
     if (check.ruleFailed) {
-      check = this.isSourceGreaterThanTarget(targetField, sourceField);
+      check = this.isTargetGreaterThan(targetField, sourceField);
 
       if (check.ruleFailed) {
         return {
           ruleFailed: true,
-          message: targetField.getName() + " must be less than or equal to " + sourceField.getName()
+          message: targetField.getName() + " must be greater than or equal to " + sourceField.getName()
         };
       }
     }
@@ -11809,25 +12068,25 @@ var ValidationManager = /*#__PURE__*/function () {
 
       case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.lessThan:
         {
-          return this.isSourceLessThanTarget(targetField, sourceField);
+          return this.isTargetLessThanSource(targetField, sourceField);
           break;
         }
 
       case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.lessThanEqual:
         {
-          return this.isSourceLessThanEqualTarget(targetField, sourceField);
+          return this.isTargetLessThanEqualSource(targetField, sourceField);
           break;
         }
 
       case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.greaterThan:
         {
-          return this.isSourceGreaterThanTarget(targetField, sourceField);
+          return this.isTargetGreaterThan(targetField, sourceField);
           break;
         }
 
       case _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.greaterThanEqual:
         {
-          return this.isSourceGreaterThanEqualTarget(targetField, sourceField);
+          return this.isTargetGreaterThanEqualSource(targetField, sourceField);
           break;
         }
 
@@ -11870,7 +12129,7 @@ var ValidationManager = /*#__PURE__*/function () {
       var ruleCheck = _this2.compareFields(rule.targetField, condition.sourceField, condition.comparison, values);
 
       if (ruleCheck.ruleFailed) {
-        logger('field condition rule FAILED');
+        flogger('field condition rule FAILED');
         response.ruleFailed = true;
         response.message = ruleCheck.message;
         return false;
@@ -11888,7 +12147,7 @@ var ValidationManager = /*#__PURE__*/function () {
         var ruleCheck = _this2.compareFields(rule.targetField, rule.targetField, _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue, condition.values);
 
         if (ruleCheck.ruleFailed) {
-          logger('value condition rule FAILED');
+          flogger('value condition rule FAILED');
           response.ruleFailed = true;
           response.message = ruleCheck.message;
           return false;
@@ -11902,7 +12161,7 @@ var ValidationManager = /*#__PURE__*/function () {
     return response;
   };
 
-  _proto.getRulesForFieldChange = function getRulesForFieldChange(formId, dataFieldId) {
+  _proto.getRulesForFieldChange = function getRulesForFieldChange(formId, dataFieldId, includeSourceFields) {
     var rules = []; // lets go through the rules for the form
 
     logger("Finding rules for form " + formId + " and data field " + dataFieldId);
@@ -11920,24 +12179,26 @@ var ValidationManager = /*#__PURE__*/function () {
           if (rule.targetField.isValid()) {
             rules.push(rule);
           } else {
-            logger("Found rule where data field " + dataFieldId + " is target but value is not currently valid");
+            flogger("Found rule where data field " + dataFieldId + " is target but value is not currently valid");
           }
         } else {
-          rule.fieldConditions.every(function (value) {
-            if (value.sourceField.getId() === dataFieldId) {
-              logger("Found rule where data field " + dataFieldId + " is source");
+          if (includeSourceFields) {
+            rule.fieldConditions.every(function (value) {
+              if (value.sourceField.getId() === dataFieldId) {
+                logger("Found rule where data field " + dataFieldId + " is source");
 
-              if (value.sourceField.isValid()) {
-                rules.push(rule);
-              } else {
-                logger("Found rule where data field " + dataFieldId + " is source but value is not currently valid");
+                if (value.sourceField.isValid()) {
+                  rules.push(rule);
+                } else {
+                  flogger("Found rule where data field " + dataFieldId + " is source but value is not currently valid");
+                }
+
+                return false;
               }
 
-              return false;
-            }
-
-            return true;
-          });
+              return true;
+            });
+          }
         }
       });
     }
@@ -11948,17 +12209,44 @@ var ValidationManager = /*#__PURE__*/function () {
   _proto.failedValidation = function failedValidation(formId, field, currentValue, message) {} // ignored, we might be causing
   ;
 
-  _proto.valueChanged = function valueChanged(formId, field, newValue) {
+  _proto.applyRulesToTargetField = function applyRulesToTargetField(formId, field) {
     var _this3 = this;
+
+    logger("Checking invalidation only rules for form " + formId + ", data field " + field.id); // which rules apply?
+
+    var rules = this.getRulesForFieldChange(formId, field.id, false);
+    var result = {
+      ruleFailed: false
+    };
+    rules.every(function (rule) {
+      // we only want rules that make a field invalid
+      if (rule.response === _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.invalid) {
+        var response = _this3.executeRule(rule);
+
+        if (response.ruleFailed) {
+          flogger("Rule failed with message " + response.message);
+          result.ruleFailed = true;
+          result.message = response.message;
+          return false;
+        }
+      }
+
+      return true;
+    });
+    return result;
+  };
+
+  _proto.valueChanged = function valueChanged(formId, field, newValue) {
+    var _this4 = this;
 
     logger("Handling field change - form " + formId + ", data field " + field.id + ", value " + newValue); // a field we are listening to has changed
     // which rules apply?
 
-    var rules = this.getRulesForFieldChange(formId, field.id); // execute each rule and collect the responses
+    var rules = this.getRulesForFieldChange(formId, field.id, true); // execute each rule and collect the responses
 
     var failedResponses = [];
     rules.forEach(function (rule) {
-      var response = _this3.executeRule(rule);
+      var response = _this4.executeRule(rule);
 
       if (response.ruleFailed) {
         failedResponses.push(response);
@@ -12156,6 +12444,16 @@ var BasicFieldOperations = /*#__PURE__*/function () {
         response.message = field.displayName + " is required. Please enter a valid value.";
         vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - is valid is " + response.isValid + " with message " + response.message);
         return response;
+      } // boolean is a special case, and must be true
+
+
+      if (field.type === _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean) {
+        if (currentValue.trim().toLowerCase() !== 'true') {
+          response.isValid = false;
+          response.message = field.displayName + " is required and must be selected.";
+          vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - is valid is " + response.isValid + " with message " + response.message);
+          return response;
+        }
       }
     } // ok, so we have some content, we need to check if the value is a valid format with regular expressions
 
@@ -12309,20 +12607,16 @@ var BasicFieldOperations = /*#__PURE__*/function () {
   _proto.renderValue = function renderValue(field, currentValue) {
     rlogger("Rendering value for field " + field.displayName + " with new value " + currentValue); // ensure we don't end up in an endless loop
     // if the value hasn't changed return null
+    // let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
+    // if (index >= 0) {
+    //     //we have a previous value
+    //     let fieldValue: FieldNameValue = this.previousFieldValues[index];
+    //     rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue} - previous value ${fieldValue.value}`);
+    //     if (fieldValue.value === currentValue) return null;
+    // }
+    // either not yet seen or value has changed from previous
 
-    var index = this.previousFieldValues.findIndex(function (fieldValue) {
-      return fieldValue.id === field.id;
-    });
-
-    if (index >= 0) {
-      //we have a previous value
-      var fieldValue = this.previousFieldValues[index];
-      rlogger("Rendering value for field " + field.displayName + " with new value " + currentValue + " - previous value " + fieldValue.value);
-      if (fieldValue.value === currentValue) return null;
-    } // either not yet seen or value has changed from previous
-
-
-    if (currentValue.trim().length > 0) {
+    if (currentValue) {
       // only attempt to render non-empty dates
       var newValue = currentValue;
 
@@ -13246,7 +13540,7 @@ var Root = /*#__PURE__*/function (_React$Component) {
 
   _proto.componentDidMount = /*#__PURE__*/function () {
     var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var chatLogView, recentSearches, favouriteUsers, blockedUsers, bggSearch, dataObjDef, dataSource, form, rule;
+      var chatLogView, recentSearches, favouriteUsers, blockedUsers, bggSearch, dataObjDef, dataSource, form, dataObj, rule;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -13343,10 +13637,10 @@ var Root = /*#__PURE__*/function (_React$Component) {
               _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_9__.ScoreSheetController.getInstance().initialise(this);
               _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().initialise(); // now lets break things with a new form
 
-              dataObjDef = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().createBasicObject("test", "Test", true, true);
+              dataObjDef = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().createBasicObjectDefinition("test", "Test", true, true);
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "email", "Email", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_21__.FieldType.email, true, "We totally won't message with this...");
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float1", "Float", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_21__.FieldType.float, true, "A number yo....");
-              _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float2", "Float", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_21__.FieldType.float, true, "A number 2");
+              _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float2", "Float2", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_21__.FieldType.float, true, "A number 2");
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "checkbox", "Checkbox?", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_21__.FieldType.boolean, true, "Yes or No?");
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "date", "Date", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_21__.FieldType.date, true, "Date yep");
               _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "time", "Time", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_21__.FieldType.shortTime, true, "How long till we get there?");
@@ -13377,23 +13671,40 @@ var Root = /*#__PURE__*/function (_React$Component) {
               }])); // okay lets make a form
 
               form = new _ui_framework_form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_23__.BasicFormImplementation("testForm", dataObjDef);
-              form.initialise();
-              form.startCreateNew();
+              form.initialise(); // create a test object
+
+              dataObj = {
+                email: 'jamie.sharples@gmail.com',
+                float1: 0.1,
+                float2: 2.3,
+                checkbox: true,
+                date: '20210910',
+                time: '12:32',
+                textarea: 'Test',
+                select: 'jl',
+                rbg: 'marvel'
+              }; // @ts-ignore
+
+              dataObj[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.FIELD_ID] = '2'; // @ts-ignore
+
+              dataObj[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.FIELD_CreatedOn] = '20201009000000'; // @ts-ignore
+
+              dataObj[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_22__.FIELD_CreatedBy] = 'Jim'; //form.startCreateNew();
+
+              form.startUpdate(dataObj);
               form.setIsVisible(true); // change the select options
 
               dataSource.addValueOption('X-Men', 'xmen'); // add a simple validation rule to the two numbers
-              // let rule:ValidationRule = {
-              //     targetDataFieldId:'float1',
-              //     response:ConditionResponse.invalid,
-              //     conditions: [
-              //         {
-              //             sourceDataFieldId:'float2',
-              //             comparison:ComparisonType.lessThanEqual,
-              //         }
-              //     ]
-              // }
-              // ValidationManager.getInstance().addRuleToForm(form,rule);
 
+              rule = {
+                targetDataFieldId: 'float1',
+                response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_25__.ConditionResponse.invalid,
+                conditions: [{
+                  sourceDataFieldId: 'float2',
+                  comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_25__.ComparisonType.lessThanEqual
+                }]
+              };
+              _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_26__.ValidationManager.getInstance().addRuleToForm(form, rule);
               rule = {
                 targetDataFieldId: 'select',
                 response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_25__.ConditionResponse.hide,
@@ -13415,7 +13726,7 @@ var Root = /*#__PURE__*/function (_React$Component) {
               };
               _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_26__.ValidationManager.getInstance().addRuleToForm(form, rule);
 
-            case 61:
+            case 67:
             case "end":
               return _context.stop();
           }
@@ -13580,9 +13891,10 @@ var Root = /*#__PURE__*/function (_React$Component) {
   return Root;
 }(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
 //localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
+//localStorage.debug = 'basic-form basic-form-detail validation-manager abstract-field';
 
 
-localStorage.debug = 'validation-manager abstract-field';
+localStorage.debug = 'validation-manager-rule-failure abstract-form';
 (debug__WEBPACK_IMPORTED_MODULE_2___default().log) = console.info.bind(console); // @ts-ignore
 
 var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Root, {

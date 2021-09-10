@@ -1,16 +1,20 @@
 import {Form} from "./Form";
 import {FormEvent, FormEventType, FormListener} from "./FormListener";
 import {FieldListener} from "./field/FieldListener";
-import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypeDefs";
+import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypeDefs";
 import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITypeDefs";
 import {Field} from "./field/Field";
 
 import debug from 'debug';
+import {RuleCheck, ValidationManager} from "./validation/ValidationManager";
+import {AlertEvent, AlertListener, AlertType} from "../alert/AlertListener";
+import {AlertManager} from "../alert/AlertManager";
 
 const logger = debug('abstract-form');
+const dlogger = debug('abstract-form-detail');
 
 
-export abstract class AbstractForm implements Form,FormListener{
+export abstract class AbstractForm implements Form,FormListener,AlertListener{
     protected formListeners: FormListener[] = [];
     protected fieldListeners: FieldListener[] = [];
     protected currentDataObj: any;
@@ -67,7 +71,7 @@ export abstract class AbstractForm implements Form,FormListener{
     }
 
     protected findFieldUiConfig(fieldDef:FieldDefinition):FieldUIConfig|null|undefined {
-        logger(`Finding field UI Config for field ${fieldDef.displayName}`);
+        dlogger(`Finding field UI Config for field ${fieldDef.displayName}`);
         let result:FieldUIConfig|null|undefined = null;
         if (this.uiDef) {
             let index = 0;
@@ -75,7 +79,7 @@ export abstract class AbstractForm implements Form,FormListener{
                 const fieldGroup = this.uiDef.fieldGroups[index];
                 result = fieldGroup.fields.find((uiConfig) => uiConfig.field.id === fieldDef.id);
                 if (result) {
-                    logger(`Finding field UI Config for field ${fieldDef.displayName} - Found`);
+                    dlogger(`Finding field UI Config for field ${fieldDef.displayName} - Found`);
                     break;
                 }
                 index ++;
@@ -95,8 +99,6 @@ export abstract class AbstractForm implements Form,FormListener{
                 target: this,
                 eventType: FormEventType.RESETTING
             }
-            // remove the form from it's parent node
-            this.containerEl?.parentNode?.removeChild(this.containerEl);
             this.informFormListeners(formEvent, this.currentDataObj);
         }
         this.currentDataObj = {};
@@ -171,43 +173,99 @@ export abstract class AbstractForm implements Form,FormListener{
         let shouldCancelChange = false;
         switch (event.eventType) {
             case (FormEventType.CANCELLING): {
-                logger(`Form is cancelling - resetting`);
-
+                logger(`Form is cancelling`);
+                if (this.uiDef) {
+                    AlertManager.getInstance().startAlert(this, this.uiDef.displayName,`Lose any unsaved changes?`,FormEventType.CANCELLING);
+                }
+                break;
+            }
+            case (FormEventType.CANCELLING_ABORTED): {
+                logger(`Form is cancelling - aborted`);
+                break;
+            }
+            case (FormEventType.CANCELLED): {
+                logger(`Form is cancelled - resetting`);
                 // user cancelled the form, will become invisible
-                this._reset(); // reset the form state
+                this.reset(); // reset the form state
                 break;
             }
             case (FormEventType.DELETING): {
-                logger(`Form is deleting - resetting`);
+                logger(`Form is deleting`);
+                if (this.uiDef) {
+                    AlertManager.getInstance().startAlert(this, this.uiDef.displayName,`Are you sure you want to delete this information?`,FormEventType.DELETING);
+                }
+                break;
+            }
+            case (FormEventType.DELETE_ABORTED): {
+                logger(`Form is deleting - aborted`);
+                break;
+            }
+            case (FormEventType.DELETED): {
+                logger(`Form is deleted - resetting`);
                 // user is deleting the object, will become invisible
-                this._reset();
+                this.reset();
+                break;
+            }
+            case (FormEventType.SAVE_ABORTED): {
+                logger(`Form save cancelled`);
+                break;
+            }
+            case (FormEventType.SAVED): {
+                logger(`Form is saved with data`);
+                logger(formValues);
+                // user is deleting the object, will become invisible
+                this.reset();
                 break;
             }
             case (FormEventType.SAVING): {
                 logger(`Form is saving, checking validation and storing values`);
-                let allFieldsValid:boolean = true;
+                if (this.uiDef) {
+                    let allFieldsValid: boolean = true;
 
-                // user attempting to save the form, lets check the field validation
-                this.fields.forEach((field) => {
-                    const currentValue = field.getValue();
-                    if (!field.isValid()) {
-                        allFieldsValid = false;
-                    }
-                    else {
-                        this.setFieldValueToDataObject(this.currentDataObj,field,currentValue);
-                    }
-                });
+                    // user attempting to save the form, lets check the field validation
+                    this.fields.forEach((field) => {
+                        const currentValue = field.getValue();
+                        if (!field.isValid()) {
+                            logger(`Field ${field.getId()} is invalid`);
+                            field.setInvalid(`${field.getName()} has an invalid format or is required.`);
+                            allFieldsValid = false;
+                        } else {
+                            // does the field fulfil any rules from the Validation manager
+                            // @ts-ignore
+                            const response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition());
+                            if (response.ruleFailed) {
+                                // @ts-ignore
+                                field.setInvalid(response.message);
+                                logger(`Field ${field.getId()} is invalid from validation manager with message ${response.message}`);
+                                allFieldsValid = false;
+                            } else {
+                                this.setFieldValueToDataObject(this.currentDataObj, field, currentValue);
+                            }
+                        }
+                    });
 
-                // is every field valid?
-                if (!allFieldsValid) {
-                    logger(`Form is saving, checking validation - FAILED`);
-                    shouldCancelChange = true;
+                    // is every field valid?
+                    if (!allFieldsValid) {
+                        logger(`Form is saving, checking validation - FAILED`);
+                        let formEvent: FormEvent = {
+                            formId: this.uiDef.id,
+                            target: this,
+                            eventType: FormEventType.SAVE_ABORTED
+                        }
+                        this.informFormListeners(formEvent,this.currentDataObj);
+                        shouldCancelChange = true;
+                    } else {
+                        logger(`formatted data object is`);
+                        const formattedDataObject = this.getFormattedDataObject();
+                        let formEvent: FormEvent = {
+                            formId: this.uiDef.id,
+                            target: this,
+                            eventType: FormEventType.SAVED
+                        }
+                        this.informFormListeners(formEvent, formattedDataObject);
+                    }
+                    break;
                 }
-                else {
-                    logger(`formatted data object is`);
-                    logger(this.getFormattedDataObject());
-                }
-                break;
             }
         }
         return shouldCancelChange;
@@ -225,15 +283,63 @@ export abstract class AbstractForm implements Form,FormListener{
 
     getFieldFromDataFieldId(dataFieldId:string): Field | undefined {
         let result:Field|undefined = undefined;
-        logger(`Finding field for attribute ${dataFieldId} `);
+        dlogger(`Finding field for attribute ${dataFieldId} `);
 
         const mapItem: AttributeFieldMapItem | undefined = this.map.find((mapItem) => mapItem.attributeId === dataFieldId);
         if (mapItem) {
-            logger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId}`);
+            dlogger(`Mapped attribute ${mapItem.attributeId} to field ${mapItem.fieldId}`);
             // find the field with that id
            result = this.fields.find((field) => field.getId() === mapItem.attributeId);
         }
 
         return result;
+    }
+
+    completed(event:AlertEvent): void {
+        logger(`Handling alert completed`);
+        logger(event);
+        if (event.context && this.uiDef) {
+            switch(event.context) {
+                case (FormEventType.CANCELLING): {
+                    if (event.outcome === AlertType.confirmed) {
+                        let formEvent: FormEvent = {
+                            formId: this.uiDef.id,
+                            target: this,
+                            eventType: FormEventType.CANCELLED
+                        }
+                        this.informFormListeners(formEvent,this.currentDataObj);
+                    }
+                    else {
+                        let formEvent: FormEvent = {
+                            formId: this.uiDef.id,
+                            target: this,
+                            eventType: FormEventType.CANCELLING_ABORTED
+                        }
+                        this.informFormListeners(formEvent,this.currentDataObj);
+                    }
+                    break;
+                }
+                case (FormEventType.DELETING): {
+                    if (event.outcome === AlertType.confirmed) {
+                        let formEvent: FormEvent = {
+                            formId: this.uiDef.id,
+                            target: this,
+                            eventType: FormEventType.DELETED
+                        }
+                        this.informFormListeners(formEvent,this.currentDataObj);
+                    }
+                    else {
+                        let formEvent: FormEvent = {
+                            formId: this.uiDef.id,
+                            target: this,
+                            eventType: FormEventType.DELETE_ABORTED
+                        }
+                        this.informFormListeners(formEvent,this.currentDataObj);
+                    }
+                    break;
+                }
+            }
+
+        }
     }
 }

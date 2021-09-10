@@ -26,7 +26,12 @@ import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "./ui-framework/ConfigurationType
 import {ViewListener} from "./ui-framework/ViewListener";
 import {View} from "./ui-framework/View";
 import {DataObjectDefinition, FieldType} from "./ui-framework/form/DataObjectTypeDefs";
-import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
+import {
+    BasicObjectDefinitionFactory,
+    FIELD_CreatedBy,
+    FIELD_CreatedOn,
+    FIELD_ID
+} from "./model/BasicObjectDefinitionFactory";
 import {Form} from "./ui-framework/form/Form";
 import {BasicFormImplementation} from "./ui-framework/form/BasicFormImplementation";
 import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
@@ -36,7 +41,7 @@ import {ValidationManager} from "./ui-framework/form/validation/ValidationManage
 
 const logger = debug('app');
 
-class Root extends React.Component implements UnreadMessageCountListener,ViewListener {
+class Root extends React.Component implements UnreadMessageCountListener, ViewListener {
     private titleEl: any;
     private contentEl: any;
     private modalEl: any;
@@ -236,10 +241,10 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         this.chatSidebar = new ChatRoomsSidebar();
         // add the views to the chat side bar
         this.chatView = new ChatLogsView();
-        this.chatSidebar.addView(this.chatView,{containerId: ChatRoomsSidebar.SidebarContainers.chatLogs});
+        this.chatSidebar.addView(this.chatView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLogs});
 
         const chatLogView = new ChatLogDetailView(Controller.getInstance().getStateManager());
-        this.chatSidebar.addView(chatLogView,{containerId: ChatRoomsSidebar.SidebarContainers.chatLog});
+        this.chatSidebar.addView(chatLogView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLog});
         this.chatView.addEventListener(chatLogView);
 
         this.chatSidebar.onDocumentLoaded();
@@ -248,23 +253,23 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         this.userSearchSidebar = new UserSearchSidebar();
         // add the subviews for the user search
         const recentSearches = new UserSearchView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(recentSearches,{containerId: UserSearchSidebar.SidebarContainers.recentSearches});
+        this.userSearchSidebar.addView(recentSearches, {containerId: UserSearchSidebar.SidebarContainers.recentSearches});
         const favouriteUsers = new FavouriteUserView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(favouriteUsers,{containerId: UserSearchSidebar.SidebarContainers.favourites});
+        this.userSearchSidebar.addView(favouriteUsers, {containerId: UserSearchSidebar.SidebarContainers.favourites});
         const blockedUsers = new BlockedUserView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(blockedUsers,{containerId: UserSearchSidebar.SidebarContainers.blocked});
+        this.userSearchSidebar.addView(blockedUsers, {containerId: UserSearchSidebar.SidebarContainers.blocked});
         this.userSearchSidebar.onDocumentLoaded();
 
 
         this.bggSearchSidebar = new BoardGameSearchSidebar();
         const bggSearch = new BGGSearchView();
-        this.bggSearchSidebar.addView(bggSearch,{containerId:BoardGameSearchSidebar.bggSearchResults})
+        this.bggSearchSidebar.addView(bggSearch, {containerId: BoardGameSearchSidebar.bggSearchResults})
         this.bggSearchSidebar.onDocumentLoaded();
         bggSearch.addEventListener(this);
 
         this.scoreSheetSidebar = new ScoreSheetsSidebar();
         this.scoresView = new ScoreSheetsView();
-        this.scoreSheetSidebar.addView(this.scoresView,{containerId:ScoreSheetsSidebar.scoreSheets});
+        this.scoreSheetSidebar.addView(this.scoresView, {containerId: ScoreSheetsSidebar.scoreSheets});
         this.scoreSheetSidebar.onDocumentLoaded();
 
 
@@ -311,7 +316,9 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         // @ts-ignore
         this.scoreSheetEl = document.getElementById('scoreSheetZone');
         if (this.thisEl) {
-            this.thisEl.addEventListener('dragover', (event) => {event.preventDefault();});
+            this.thisEl.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
             this.thisEl.addEventListener('drop', this.handleDrop);
         }
 
@@ -320,75 +327,97 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         Controller.getInstance().initialise();
 
         // now lets break things with a new form
-        let dataObjDef:DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObject("test","Test", true, true);
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"email","Email",FieldType.email,true,"We totally won't message with this...");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"float1","Float",FieldType.float,true,"A number yo....");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"float2","Float",FieldType.float,true,"A number 2");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"checkbox","Checkbox?",FieldType.boolean,true,"Yes or No?");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"date","Date",FieldType.date,true,"Date yep");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"time","Time",FieldType.shortTime,true,"How long till we get there?");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"textarea","TextArea",FieldType.largeText,true,"An essay");
+        let dataObjDef: DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObjectDefinition("test", "Test", true, true);
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "email", "Email", FieldType.email, true, "We totally won't message with this...");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float1", "Float", FieldType.float, true, "A number yo....");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float2", "Float2", FieldType.float, true, "A number 2");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "checkbox", "Checkbox?", FieldType.boolean, true, "Yes or No?");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "date", "Date", FieldType.date, true, "Date yep");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "time", "Time", FieldType.shortTime, true, "How long till we get there?");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "textarea", "TextArea", FieldType.largeText, true, "An essay");
 
-        let dataSource:SimpleValueDataSource = new SimpleValueDataSource([
-            {name:' ',value:' '},
-            {name:'Justice League',value:'jl'},
-            {name:'Marvel',value:'marvel'},
-            {name:'Other',value:'other'},
+        let dataSource: SimpleValueDataSource = new SimpleValueDataSource([
+            {name: ' ', value: ' '},
+            {name: 'Justice League', value: 'jl'},
+            {name: 'Marvel', value: 'marvel'},
+            {name: 'Other', value: 'other'},
 
         ]);
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"select","Select",FieldType.choice,true,"Some choices",dataSource);
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef,"rbg","RBG",FieldType.limitedChoice,true,"Some similar choices",
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "select", "Select", FieldType.choice, true, "Some choices", dataSource);
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "rbg", "RBG", FieldType.limitedChoice, true, "Some similar choices",
             new SimpleValueDataSource([
-                {name:'Justice League',value:'jl'},
-                {name:'Marvel',value:'marvel'},
-                {name:'Other',value:'other'},
+                {name: 'Justice League', value: 'jl'},
+                {name: 'Marvel', value: 'marvel'},
+                {name: 'Other', value: 'other'},
 
             ]));
         // okay lets make a form
-        let form:Form = new BasicFormImplementation("testForm",dataObjDef);
+        let form: Form = new BasicFormImplementation("testForm", dataObjDef);
         form.initialise();
-        form.startCreateNew();
+
+        // create a test object
+        let dataObj = {
+            email: 'jamie.sharples@gmail.com',
+            float1: 0.1,
+            float2: 2.3,
+            checkbox: true,
+            date: '20210910',
+            time: '12:32',
+            textarea: 'Test',
+            select: 'jl',
+            rbg: 'marvel'
+        };
+        // @ts-ignore
+        dataObj[FIELD_ID] = '2';
+        // @ts-ignore
+        dataObj[FIELD_CreatedOn] = '20201009000000';
+        // @ts-ignore
+        dataObj[FIELD_CreatedBy] = 'Jim';
+
+
+        //form.startCreateNew();
+        form.startUpdate(dataObj);
         form.setIsVisible(true);
 
         // change the select options
-        dataSource.addValueOption('X-Men','xmen');
+        dataSource.addValueOption('X-Men', 'xmen');
 
         // add a simple validation rule to the two numbers
-        // let rule:ValidationRule = {
-        //     targetDataFieldId:'float1',
-        //     response:ConditionResponse.invalid,
-        //     conditions: [
-        //         {
-        //             sourceDataFieldId:'float2',
-        //             comparison:ComparisonType.lessThanEqual,
-        //         }
-        //     ]
-        // }
-        // ValidationManager.getInstance().addRuleToForm(form,rule);
-        let rule = {
-            targetDataFieldId:'select',
-            response:ConditionResponse.hide,
+        let rule: ValidationRule = {
+            targetDataFieldId: 'float1',
+            response: ConditionResponse.invalid,
             conditions: [
                 {
-                    sourceDataFieldId:'rbg',
-                    comparison:ComparisonType.hasValue,
-                    values:'other'
+                    sourceDataFieldId: 'float2',
+                    comparison: ComparisonType.lessThanEqual,
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form,rule);
+        ValidationManager.getInstance().addRuleToForm(form, rule);
         rule = {
-            targetDataFieldId:'select',
-            response:ConditionResponse.show,
+            targetDataFieldId: 'select',
+            response: ConditionResponse.hide,
             conditions: [
                 {
-                    sourceDataFieldId:'rbg',
-                    comparison:ComparisonType.hasValue,
-                    values:'jl,marvel'
+                    sourceDataFieldId: 'rbg',
+                    comparison: ComparisonType.hasValue,
+                    values: 'other'
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form,rule);
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'select',
+            response: ConditionResponse.show,
+            conditions: [
+                {
+                    sourceDataFieldId: 'rbg',
+                    comparison: ComparisonType.hasValue,
+                    values: 'jl,marvel'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form, rule);
 
     }
 
@@ -505,18 +534,33 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
         }
     }
 
-    documentLoaded(view: View): void {}
-    hideRequested(view: View): void {}
-    showRequested(view: View): void {}
-    itemAction(view: View, actionName: string, selectedItem: any): void {}
+    documentLoaded(view: View): void {
+    }
+
+    hideRequested(view: View): void {
+    }
+
+    showRequested(view: View): void {
+    }
+
+    itemAction(view: View, actionName: string, selectedItem: any): void {
+    }
+
     canDeleteItem(view: View, selectedItem: any): boolean {
         return true;
     }
 
-    itemDeleted(view: View, selectedItem: any): void {}
-    itemDeselected(view: View, selectedItem: any): void {}
-    itemDragStarted(view: View, selectedItem: any): void {}
-    itemDropped(view: View, droppedItem: any): void {}
+    itemDeleted(view: View, selectedItem: any): void {
+    }
+
+    itemDeselected(view: View, selectedItem: any): void {
+    }
+
+    itemDragStarted(view: View, selectedItem: any): void {
+    }
+
+    itemDropped(view: View, droppedItem: any): void {
+    }
 
     itemSelected(view: View, selectedItem: any): void {
         // add a new board game to the display
@@ -529,7 +573,8 @@ class Root extends React.Component implements UnreadMessageCountListener,ViewLis
 
 //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
 //localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
-localStorage.debug = 'validation-manager abstract-field';
+//localStorage.debug = 'basic-form basic-form-detail validation-manager abstract-field';
+localStorage.debug = 'validation-manager-rule-failure abstract-form';
 debug.log = console.info.bind(console);
 
 // @ts-ignore

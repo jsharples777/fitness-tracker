@@ -6,14 +6,15 @@ import {FieldDefinition, FieldType} from "../DataObjectTypeDefs";
 import {FieldListener} from "../field/FieldListener";
 
 const logger = debug('validation-manager');
+const flogger = debug('validation-manager-rule-failure');
 
 
-type RuleCheck = {
+export type RuleCheck = {
     ruleFailed: boolean,
     message?: string
 }
 
-type RuleResponse = {
+export type RuleResponse = {
     field: Field,
     ruleFailed: boolean,
     response: ConditionResponse,
@@ -75,7 +76,7 @@ export class ValidationManager implements FieldListener {
         */
         let targetField: Field | undefined = form.getFieldFromDataFieldId(rule.targetDataFieldId);
         if (!targetField) {
-            logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - NOT FOUND in form`);
+            flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - NOT FOUND in form`);
             return false;
         }
 
@@ -90,7 +91,7 @@ export class ValidationManager implements FieldListener {
         rule.conditions.forEach((condition) => {
             // do we have one of values or source field?
             if (!(condition.values) && !(condition.sourceDataFieldId)) {
-                logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - a condition is missing both values and source field`);
+                flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - a condition is missing both values and source field`);
                 return false;
             }
             // is this a target field value comparison?
@@ -98,7 +99,7 @@ export class ValidationManager implements FieldListener {
                 logger(`Rule adding for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} with values ${condition.values}`);
                 let sourceField: Field | undefined = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
                 if (!sourceField) {
-                    logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} NOT FOUND`);
+                    flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} NOT FOUND`);
                     return false;
                 }
                 convertedRule.fieldConditions.push({
@@ -117,7 +118,7 @@ export class ValidationManager implements FieldListener {
                 logger(`Rule adding for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId}`);
                 let sourceField: Field | undefined = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
                 if (!sourceField) {
-                    logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} NOT FOUND`);
+                    flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId} NOT FOUND`);
                     return false;
                 }
                 /*
@@ -138,7 +139,7 @@ export class ValidationManager implements FieldListener {
                     case (FieldType.datetime): {
                         if ((sourceType !== FieldType.datetime) &&
                             (sourceType !== FieldType.date)) {
-                            logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is date(time), source is NOT`);
+                            flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is date(time), source is NOT`);
                             return false;
                         }
                         break;
@@ -147,14 +148,14 @@ export class ValidationManager implements FieldListener {
                     case (FieldType.shortTime): {
                         if ((sourceType !== FieldType.time) &&
                             (sourceType !== FieldType.shortTime)) {
-                            logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is time, source is NOT`);
+                            flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is time, source is NOT`);
                             return false;
                         }
                         break;
                     }
                     case (FieldType.boolean): {
                         if ((sourceType !== FieldType.boolean)) {
-                            logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is boolean, source is NOT`);
+                            flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is boolean, source is NOT`);
                             return false;
                         }
                         break;
@@ -163,7 +164,7 @@ export class ValidationManager implements FieldListener {
                     case (FieldType.float): {
                         if ((sourceType !== FieldType.integer) &&
                             (sourceType !== FieldType.float)) {
-                            logger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is number, source is NOT`);
+                            flogger(`Rule not added for form ${form.getId()} for target field ${rule.targetDataFieldId} - target is number, source is NOT`);
                             return false;
                         }
                         break;
@@ -259,29 +260,29 @@ export class ValidationManager implements FieldListener {
         return false;
     }
 
-    private isSourceLessThanTarget(targetField: Field, sourceField: Field): RuleCheck {
+    private isTargetLessThanSource(targetField: Field, sourceField: Field): RuleCheck {
         let sourceType: FieldType = sourceField.getFieldDefinition().type;
         let targetType: FieldType = targetField.getFieldDefinition().type;
         let sourceValue = sourceField.getValue();
         let targetValue = targetField.getValue();
 
-        if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, ComparisonType.lessThanEqual)) {
+        if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, ComparisonType.lessThan)) {
             return {
                 ruleFailed: true,
-                message: `${targetField.getName()} must be greater than ${sourceField.getName()}`,
+                message: `${targetField.getName()} must be less than ${sourceField.getName()}`,
             };
         }
         return {ruleFailed: false};
     }
 
-    private isSourceLessThanEqualTarget(targetField: Field, sourceField: Field): RuleCheck {
+    private isTargetLessThanEqualSource(targetField: Field, sourceField: Field): RuleCheck {
         let check: RuleCheck = this.areTwoFieldsEqual(targetField, sourceField);
         if (check.ruleFailed) {
-            check = this.isSourceLessThanTarget(targetField, sourceField);
+            check = this.isTargetLessThanSource(targetField, sourceField);
             if (check.ruleFailed) {
                 return {
                     ruleFailed: true,
-                    message: `${targetField.getName()} must be greater than or equal to ${sourceField.getName()}`,
+                    message: `${targetField.getName()} must be less than or equal to ${sourceField.getName()}`,
                 };
 
             }
@@ -289,16 +290,16 @@ export class ValidationManager implements FieldListener {
         return {ruleFailed: false};
     }
 
-    private isSourceGreaterThanTarget(targetField: Field, sourceField: Field): RuleCheck {
+    private isTargetGreaterThan(targetField: Field, sourceField: Field): RuleCheck {
         let sourceType: FieldType = sourceField.getFieldDefinition().type;
         let targetType: FieldType = targetField.getFieldDefinition().type;
         let sourceValue = sourceField.getValue();
         let targetValue = targetField.getValue();
 
-        if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, ComparisonType.greaterThanEqual)) {
+        if (!this.compareTwoValuesWithTypes(targetType, targetValue, sourceType, sourceValue, ComparisonType.greaterThan)) {
             return {
                 ruleFailed: true,
-                message: `${targetField.getName()} must be less than ${sourceField.getName()}`,
+                message: `${targetField.getName()} must be greater than ${sourceField.getName()}`,
             };
         }
         return {ruleFailed: false};
@@ -361,14 +362,14 @@ export class ValidationManager implements FieldListener {
         return this.doesFieldHaveValue(field,values);
     }
 
-    private isSourceGreaterThanEqualTarget(targetField: Field, sourceField: Field): RuleCheck {
+    private isTargetGreaterThanEqualSource(targetField: Field, sourceField: Field): RuleCheck {
         let check: RuleCheck = this.areTwoFieldsEqual(targetField, sourceField);
         if (check.ruleFailed) {
-            check = this.isSourceGreaterThanTarget(targetField, sourceField);
+            check = this.isTargetGreaterThan(targetField, sourceField);
             if (check.ruleFailed) {
                 return {
                     ruleFailed: true,
-                    message: `${targetField.getName()} must be less than or equal to ${sourceField.getName()}`,
+                    message: `${targetField.getName()} must be greater than or equal to ${sourceField.getName()}`,
                 };
             }
         }
@@ -383,19 +384,19 @@ export class ValidationManager implements FieldListener {
                 break;
             }
             case ComparisonType.lessThan: {
-                return this.isSourceLessThanTarget(targetField, sourceField);
+                return this.isTargetLessThanSource(targetField, sourceField);
                 break;
             }
             case ComparisonType.lessThanEqual: {
-                return this.isSourceLessThanEqualTarget(targetField, sourceField);
+                return this.isTargetLessThanEqualSource(targetField, sourceField);
                 break;
             }
             case ComparisonType.greaterThan: {
-                return this.isSourceGreaterThanTarget(targetField, sourceField);
+                return this.isTargetGreaterThan(targetField, sourceField);
                 break;
             }
             case ComparisonType.greaterThanEqual: {
-                return this.isSourceGreaterThanEqualTarget(targetField, sourceField);
+                return this.isTargetGreaterThanEqualSource(targetField, sourceField);
                 break;
             }
             case ComparisonType.isNull: {
@@ -428,7 +429,7 @@ export class ValidationManager implements FieldListener {
             let values = (condition.values) ? condition.values : '';
             let ruleCheck: RuleCheck = this.compareFields(rule.targetField, condition.sourceField, condition.comparison, values);
             if (ruleCheck.ruleFailed) {
-                logger('field condition rule FAILED');
+                flogger('field condition rule FAILED');
                 response.ruleFailed = true;
                 response.message = ruleCheck.message;
                 return false;
@@ -443,7 +444,7 @@ export class ValidationManager implements FieldListener {
                 logger(condition);
                 let ruleCheck: RuleCheck = this.compareFields(rule.targetField, rule.targetField, ComparisonType.hasValue, condition.values);
                 if (ruleCheck.ruleFailed) {
-                    logger('value condition rule FAILED');
+                    flogger('value condition rule FAILED');
                     response.ruleFailed = true;
                     response.message = ruleCheck.message;
                     return false;
@@ -455,7 +456,7 @@ export class ValidationManager implements FieldListener {
         return response;
     }
 
-    private getRulesForFieldChange(formId: string, dataFieldId: string): _ValidationRule[] {
+    private getRulesForFieldChange(formId: string, dataFieldId: string,includeSourceFields:boolean): _ValidationRule[] {
         let rules: _ValidationRule[] = [];
         // lets go through the rules for the form
         logger(`Finding rules for form ${formId} and data field ${dataFieldId}`);
@@ -471,22 +472,23 @@ export class ValidationManager implements FieldListener {
                         rules.push(rule);
                     }
                     else {
-                        logger(`Found rule where data field ${dataFieldId} is target but value is not currently valid`);
+                        flogger(`Found rule where data field ${dataFieldId} is target but value is not currently valid`);
                     }
                 } else {
-                    rule.fieldConditions.every((value: { sourceField: Field, comparison: ComparisonType }) => {
-                        if (value.sourceField.getId() === dataFieldId) {
-                            logger(`Found rule where data field ${dataFieldId} is source`);
-                            if (value.sourceField.isValid()) {
-                                rules.push(rule);
+                    if (includeSourceFields) {
+                        rule.fieldConditions.every((value: { sourceField: Field, comparison: ComparisonType }) => {
+                            if (value.sourceField.getId() === dataFieldId) {
+                                logger(`Found rule where data field ${dataFieldId} is source`);
+                                if (value.sourceField.isValid()) {
+                                    rules.push(rule);
+                                } else {
+                                    flogger(`Found rule where data field ${dataFieldId} is source but value is not currently valid`);
+                                }
+                                return false;
                             }
-                            else {
-                                logger(`Found rule where data field ${dataFieldId} is source but value is not currently valid`);
-                            }
-                            return false;
-                        }
-                        return true;
-                    });
+                            return true;
+                        });
+                    }
                 }
             });
         }
@@ -496,11 +498,35 @@ export class ValidationManager implements FieldListener {
     public failedValidation(formId: string, field: FieldDefinition, currentValue: string, message: string): void {
     } // ignored, we might be causing
 
+    public applyRulesToTargetField(formId:string, field:FieldDefinition) : RuleCheck {
+        logger(`Checking invalidation only rules for form ${formId}, data field ${field.id}`);
+        // which rules apply?
+        const rules: _ValidationRule[] = this.getRulesForFieldChange(formId, field.id,false);
+
+        let result:RuleCheck = {
+            ruleFailed:false
+        }
+
+        rules.every((rule) => { // we only want rules that make a field invalid
+            if (rule.response === ConditionResponse.invalid) {
+                let response: RuleResponse = this.executeRule(rule);
+                if (response.ruleFailed) {
+                    flogger(`Rule failed with message ${response.message}`);
+                    result.ruleFailed = true;
+                    result.message = response.message;
+                    return false;
+                }
+            }
+            return true;
+        });
+        return result;
+    }
+
     public valueChanged(formId: string, field: FieldDefinition, newValue: string | null): void {
         logger(`Handling field change - form ${formId}, data field ${field.id}, value ${newValue}`);
         // a field we are listening to has changed
         // which rules apply?
-        const rules: _ValidationRule[] = this.getRulesForFieldChange(formId, field.id);
+        const rules: _ValidationRule[] = this.getRulesForFieldChange(formId, field.id,true);
         // execute each rule and collect the responses
         let failedResponses: RuleResponse[] = [];
 

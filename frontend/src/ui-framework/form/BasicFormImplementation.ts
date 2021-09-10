@@ -124,11 +124,11 @@ export class BasicFormImplementation extends AbstractForm {
     }
 
     protected renderField(fieldDef: FieldDefinition, currentValue: string): string {
-        let result = currentValue;
+        let result:string = currentValue;
         const field: Field | undefined = this.getFieldFromDataFieldId(fieldDef.id);
 
         if (field) {
-            result = field.render(currentValue);
+            result = field.render(result);
         }
         return result;
     }
@@ -143,8 +143,11 @@ export class BasicFormImplementation extends AbstractForm {
                 this.currentDataObj[fieldDef.id] = fieldValue;
             }
             let fieldValue = this.currentDataObj[fieldDef.id];
-            if (fieldValue) fieldValue = this.renderField(fieldDef, fieldValue);
-            this.setFieldValueFromDataObject(fieldDef, fieldValue);
+            if (fieldValue) {
+                fieldValue = this.renderField(fieldDef, fieldValue);
+                this.setFieldValueFromDataObject(fieldDef, fieldValue);
+            }
+
             // run the validation to let the user know what is required
             this.validateField(fieldDef);
         });
@@ -168,15 +171,11 @@ export class BasicFormImplementation extends AbstractForm {
             }
             let fieldValue = this.currentDataObj[fieldDef.id];
             if (fieldValue) fieldValue = this.renderField(fieldDef, fieldValue);
-            this.setFieldValueFromDataObject(fieldDef, this.currentDataObj[fieldDef.id]);
+            this.setFieldValueFromDataObject(fieldDef, fieldValue);
             this.validateField(fieldDef);
         });
         // delete button make visible again
         if (this.factoryElements) browserUtil.removeAttributes(this.factoryElements.deleteButton, ['style']);
-        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
-            name: 'style',
-            value: 'display:block'
-        }]);
     }
 
     protected _visible(): void {

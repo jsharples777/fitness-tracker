@@ -27,7 +27,7 @@ export class BasicObjectDefinitionFactory {
 
     private constructor() {}
 
-    public createBasicObject(id:string, displayName:string, hasDataId:boolean, dataIdIsUUID:boolean):DataObjectDefinition {
+    public createBasicObjectDefinition(id:string, displayName:string, hasDataId:boolean, dataIdIsUUID:boolean):DataObjectDefinition {
         let objDef:DataObjectDefinition = {
             id:id,
             displayName:displayName,
