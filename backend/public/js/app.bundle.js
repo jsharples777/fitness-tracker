@@ -118,23 +118,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
-/* harmony import */ var _socket_SocketManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./socket/SocketManager */ "./src/socket/SocketManager.ts");
-/* harmony import */ var _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./state/AsyncStateManagerWrapper */ "./src/state/AsyncStateManagerWrapper.ts");
-/* harmony import */ var _state_AggregateStateManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./state/AggregateStateManager */ "./src/state/AggregateStateManager.ts");
-/* harmony import */ var _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./SocketListenerDelegate */ "./src/SocketListenerDelegate.ts");
-/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./socket/ChatManager */ "./src/socket/ChatManager.ts");
-/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./socket/NotificationController */ "./src/socket/NotificationController.ts");
-/* harmony import */ var _state_GraphQLApiStateManager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./state/GraphQLApiStateManager */ "./src/state/GraphQLApiStateManager.ts");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./network/DownloadManager */ "./src/network/DownloadManager.ts");
-/* harmony import */ var _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./state/BrowserStorageStateManager */ "./src/state/BrowserStorageStateManager.ts");
-/* harmony import */ var _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/controller/ScoreSheetController */ "./src/component/controller/ScoreSheetController.ts");
-/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
-
-
-
-
+/* harmony import */ var _socket_SocketManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./socket/SocketManager */ "./src/socket/SocketManager.ts");
+/* harmony import */ var _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SocketListenerDelegate */ "./src/SocketListenerDelegate.ts");
+/* harmony import */ var _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./socket/ChatManager */ "./src/socket/ChatManager.ts");
+/* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./socket/NotificationController */ "./src/socket/NotificationController.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./network/DownloadManager */ "./src/network/DownloadManager.ts");
+/* harmony import */ var _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./state/BrowserStorageStateManager */ "./src/state/BrowserStorageStateManager.ts");
+/* harmony import */ var _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./component/controller/ScoreSheetController */ "./src/component/controller/ScoreSheetController.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
 
 
 
@@ -164,33 +156,7 @@ var Controller = /*#__PURE__*/function () {
   _proto.connectToApplication = function connectToApplication(applicationView, clientSideStorage) {
     this.applicationView = applicationView;
     this.clientSideStorage = clientSideStorage; // setup the API calls
-
-    var graphSM = new _state_GraphQLApiStateManager__WEBPACK_IMPORTED_MODULE_8__.GraphQLApiStateManager();
-    graphSM.initialise([{
-      stateName: _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.users,
-      apiURL: this.getServerAPIURL() + _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL,
-      apis: {
-        find: '',
-        create: '',
-        destroy: '',
-        update: '',
-        findAll: _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.findUsers.queryString
-      },
-      data: {
-        find: '',
-        create: '',
-        destroy: '',
-        update: '',
-        findAll: _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.findUsers.resultName
-      },
-      isActive: true
-    }]);
-    var aggregateSM = _state_AggregateStateManager__WEBPACK_IMPORTED_MODULE_4__.AggregateStateManager.getInstance();
-    var memorySM = _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance();
-    var asyncSM = new _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_3__["default"](aggregateSM, graphSM);
-    aggregateSM.addStateManager(memorySM, [], false);
-    aggregateSM.addStateManager(asyncSM, [_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.recentUserSearches, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scores], false);
-    this.stateManager = aggregateSM; // state listener
+    // state listener
 
     this.stateChanged = this.stateChanged.bind(this);
     this.stateChangedItemAdded = this.stateChangedItemAdded.bind(this);
@@ -206,7 +172,7 @@ var Controller = /*#__PURE__*/function () {
     this.removeBoardGameFromCollection = this.removeBoardGameFromCollection.bind(this);
     this.removeBoardGameFromDisplay = this.removeBoardGameFromDisplay.bind(this); // further state management
 
-    this.displayedBoardGamesStateManager = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_11__["default"](true);
+    this.displayedBoardGamesStateManager = new _state_BrowserStorageStateManager__WEBPACK_IMPORTED_MODULE_7__["default"](true);
     return this;
   }
   /*
@@ -217,34 +183,22 @@ var Controller = /*#__PURE__*/function () {
   _proto.initialise = function initialise() {
     cLogger('Initialising data state'); // listen for socket events
 
-    var socketListerDelegate = new _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_5__["default"]();
-    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().setListener(socketListerDelegate); // now that we have all the user we can setup the chat system but only if we are logged in
+    var socketListerDelegate = new _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_2__["default"]();
+    _socket_SocketManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().setListener(socketListerDelegate); // now that we have all the user we can setup the chat system but only if we are logged in
 
     cLogger("Setting up chat system for user " + this.getLoggedInUserId() + ": " + this.getLoggedInUsername());
 
-    if (this.getLoggedInUserId() > 0) {
+    if (this.getLoggedInUserId().trim().length > 0) {
       // setup the chat system
-      var chatManager = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_6__.ChatManager.getInstance(); // this connects the manager to the socket system
+      var chatManager = _socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance(); // this connects the manager to the socket system
       // setup the chat notification system
 
-      _socket_NotificationController__WEBPACK_IMPORTED_MODULE_7__.NotificationController.getInstance();
+      _socket_NotificationController__WEBPACK_IMPORTED_MODULE_4__.NotificationController.getInstance();
       chatManager.setCurrentUser(this.getLoggedInUsername());
-      _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_12__.ScoreSheetController.getInstance().setCurrentUser(this.getLoggedInUsername()); // let the application view know about message counts
+      _component_controller_ScoreSheetController__WEBPACK_IMPORTED_MODULE_8__.ScoreSheetController.getInstance().setCurrentUser(this.getLoggedInUsername()); // let the application view know about message counts
 
-      chatManager.setUnreadCountListener(this.applicationView);
-      chatManager.login(); // load the users
-
-      this.getStateManager().getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.users);
+      chatManager.setUnreadCountListener(this.applicationView); //chatManager.login();
     }
-
-    var currentGameList = this.displayedBoardGamesStateManager.getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames);
-    currentGameList = this.cleanupBoardGameState(currentGameList); // load board games from local storage if any
-
-    this.applicationView.setState({
-      boardGames: currentGameList
-    }); // download the current board game collection
-
-    this.downloadAndSyncSavedBoardGameCollection();
   };
 
   _proto.getStateManager = function getStateManager() {
@@ -256,7 +210,7 @@ var Controller = /*#__PURE__*/function () {
 
     try {
       // @ts-ignore
-      if (loggedInUserId) {
+      if (loggedInUser) {
         isLoggedIn = true;
       }
     } catch (error) {}
@@ -265,13 +219,13 @@ var Controller = /*#__PURE__*/function () {
   };
 
   _proto.getLoggedInUserId = function getLoggedInUserId() {
-    var result = -1;
+    var result = '';
 
     try {
       // @ts-ignore
-      if (loggedInUserId) {
+      if (loggedInUser) {
         // @ts-ignore
-        result = loggedInUserId;
+        result = loggedInUser.id;
       }
     } catch (error) {}
 
@@ -284,9 +238,9 @@ var Controller = /*#__PURE__*/function () {
 
     try {
       // @ts-ignore
-      if (loggedInUsername) {
+      if (loggedInUser) {
         // @ts-ignore
-        result = loggedInUsername;
+        result = loggedInUser.username;
       }
     } catch (error) {}
 
@@ -327,18 +281,18 @@ var Controller = /*#__PURE__*/function () {
     } // start with what we have and let the main view know, but mark it incomplete for partial rendering with user information
 
 
-    boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete;
+    boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Incomplete;
     currentListOfGames.push(boardGame);
     cLogger("Adding received board game to application");
     cLogger(boardGame);
-    this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
+    this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, currentListOfGames, false);
     this.applicationView.setState({
       boardGames: currentListOfGames
     }); // now we need an API call to fill in the details
 
-    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.bggSearchCallById.queryString, {
+    _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.bggSearchCallById.queryString, {
       gameId: boardGame.gameId
-    }, this.callbackBoardGameDetails, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, false);
+    }, this.callbackBoardGameDetails, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, false);
   };
 
   _proto.callbackBoardGameDetails = function callbackBoardGameDetails(data, status, associatedStateName) {
@@ -347,7 +301,7 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var boardGameDetails = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.bggSearchCallById.resultName];
+      var boardGameDetails = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.bggSearchCallById.resultName];
       cLogger(boardGameDetails);
       var regex = /&#10;/g;
       boardGameDetails.description = boardGameDetails.description.replace(regex, '\r\n');
@@ -368,8 +322,8 @@ var Controller = /*#__PURE__*/function () {
         cLogger("Updating application state");
         currentListOfGames.splice(index, 1, boardGameDetails);
         cLogger(currentListOfGames);
-        boardGameDetails.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
-        this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
+        boardGameDetails.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.PersistedLocally;
+        this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, currentListOfGames, false);
         this.applicationView.setState({
           boardGames: currentListOfGames
         });
@@ -387,7 +341,7 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var id = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addToMyCollection.resultName];
+      var id = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.addToMyCollection.resultName];
       cLogger(id); // Find and update the board game in the state
 
       var currentGameList = this.applicationView.state.boardGames;
@@ -398,7 +352,7 @@ var Controller = /*#__PURE__*/function () {
       if (index >= 0) {
         var updatingBoardGame = currentGameList[index];
         cLogger("Updating board game " + updatingBoardGame.gameId + " with database id " + id.id + " and new Persisted state");
-        updatingBoardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
+        updatingBoardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted;
         updatingBoardGame.id = id.id;
 
         if (updatingBoardGame.scoresheets) {
@@ -408,22 +362,22 @@ var Controller = /*#__PURE__*/function () {
           updatingBoardGame.scoresheets.forEach(function (scoreSheet) {
             _this.convertScoreSheetToApiCallFormat(scoreSheet);
 
-            _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addScoreSheetToBoardGame.queryString, {
+            _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.addScoreSheetToBoardGame.queryString, {
               userId: _this.getCurrentUser(),
               boardGameId: updatingBoardGame.id,
               sheet: scoreSheet
-            }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scoreSheet, false);
+            }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.scoreSheet, false);
 
             _this.convertScoreSheetToDatabaseFormat(scoreSheet);
 
-            scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
+            scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted;
           });
         }
 
         this.applicationView.setState({
           boardGames: currentGameList
         });
-        this.displayedBoardGamesStateManager.updateItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, updatingBoardGame, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_13__.isSameGame, false);
+        this.displayedBoardGamesStateManager.updateItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, updatingBoardGame, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_9__.isSameGame, false);
       }
     }
   };
@@ -434,7 +388,7 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var id = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.removeFromMyCollection.resultName];
+      var id = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.removeFromMyCollection.resultName];
       cLogger(id);
     }
   };
@@ -447,12 +401,12 @@ var Controller = /*#__PURE__*/function () {
     if (status >= 200 && status <= 299) {
       // do we have any data?
       cLogger(data);
-      var collectionData = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.getMyBoardGameCollection.resultName]; // loop through the collection data and see if it already exists in the state
+      var collectionData = data.data[_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.getMyBoardGameCollection.resultName]; // loop through the collection data and see if it already exists in the state
 
       var currentGameList = this.applicationView.state.boardGames;
       cLoggerDetail("Starting with local state of " + currentGameList.length);
       collectionData.forEach(function (boardGame) {
-        boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
+        boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted;
         cLoggerDetail("Loading board game from collection ");
         cLoggerDetail(boardGame);
 
@@ -481,23 +435,23 @@ var Controller = /*#__PURE__*/function () {
       this.applicationView.setState({
         boardGames: currentGameList
       });
-      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentGameList, false);
+      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, currentGameList, false);
     }
   };
 
   _proto.scoreSheetAddedToBoardGame = function scoreSheetAddedToBoardGame(boardGame, scoreSheet) {
     var cb = function cb(data, status, associatedStateName) {};
 
-    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {
+    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted) {
       //mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addScoreSheetToBoardGame.queryString, {
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.addScoreSheetToBoardGame.queryString, {
         userId: this.getCurrentUser(),
         boardGameId: boardGame.id,
         sheet: scoreSheet
-      }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scoreSheet, false);
-      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
+      }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.scoreSheet, false);
+      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted;
     } else {
-      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
+      scoreSheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.PersistedLocally;
     } // convert the scoresheet into the usual received format from the database
 
 
@@ -513,7 +467,7 @@ var Controller = /*#__PURE__*/function () {
       cLogger("Updating application state");
       currentListOfGames.splice(index, 1, boardGame);
       cLogger(currentListOfGames);
-      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
+      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, currentListOfGames, false);
       this.applicationView.setState({
         boardGames: currentListOfGames
       });
@@ -525,11 +479,11 @@ var Controller = /*#__PURE__*/function () {
   _proto.scoreSheetRemovedFromBoardGame = function scoreSheetRemovedFromBoardGame(boardGame, scoreSheetId) {
     var cb = function cb(data, status, associatedStateName) {};
 
-    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {
+    if (this.isLoggedIn() && boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted) {
       //mutation addScore($userId: Int!, $boardGameId: Int!, $sheet: ScoreSheetInput) {addScoreSheetToBoardGame(userId: $userId, boardGameId: $boardGameId, sheet: $sheet){id}
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.removeScoreSheet.queryString, {
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.removeScoreSheet.queryString, {
         sheetId: scoreSheetId
-      }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.scoreSheet, false);
+      }, cb, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.scoreSheet, false);
     }
 
     var currentListOfGames = this.applicationView.state.boardGames;
@@ -543,7 +497,7 @@ var Controller = /*#__PURE__*/function () {
       cLogger("Updating application state");
       currentListOfGames.splice(index, 1, boardGame);
       cLogger(currentListOfGames);
-      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentListOfGames, false);
+      this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, currentListOfGames, false);
       this.applicationView.setState({
         boardGames: currentListOfGames
       });
@@ -559,23 +513,23 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.decorator) {
         switch (boardGame.decorator) {
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted:
             {
               // already in collection, nothing to do
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Incomplete:
             {
               // not ready to add to collection yet, do nothing
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.PersistedLocally:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Complete:
             {
               // loaded and ready to save
-              this.displayedBoardGamesStateManager.addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, boardGame, true); // add the board game to my collection
+              this.displayedBoardGamesStateManager.addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, boardGame, true); // add the board game to my collection
               // now we need an API call to fill in the details
 
               delete boardGame.decorator;
@@ -584,14 +538,14 @@ var Controller = /*#__PURE__*/function () {
               if (this.isLoggedIn()) {
                 var scoreSheets = boardGame.scoresheets;
                 delete boardGame.scoresheets;
-                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addToMyCollection.queryString, {
+                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.addToMyCollection.queryString, {
                   userId: this.getCurrentUser(),
                   boardGame: boardGame
-                }, this.callbackAddToCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, true);
-                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete;
+                }, this.callbackAddToCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, true);
+                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Complete;
                 boardGame.scoresheets = scoreSheets;
               } else {
-                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
+                boardGame.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.PersistedLocally;
               }
 
               break;
@@ -608,29 +562,29 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.decorator) {
         switch (boardGame.decorator) {
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.PersistedLocally:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted:
             {
               // already in collection,
               this.removeBoardGameFromState(boardGame);
 
               if (this.isLoggedIn()) {
-                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.removeFromMyCollection.queryString, {
+                _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.removeFromMyCollection.queryString, {
                   userId: this.getCurrentUser(),
                   boardGameId: boardGame.gameId
-                }, this.callbackRemoveFromCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, false);
+                }, this.callbackRemoveFromCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, false);
               }
 
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Incomplete:
             {
               // not ready to add to collection yet, do nothing
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Complete:
             {
               // loaded and ready to save, but not yet saved, nothing to delete
               break;
@@ -647,15 +601,15 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.decorator) {
         switch (boardGame.decorator) {
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Incomplete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Incomplete:
             {
               // not ready to add to collection yet, do nothing
               break;
             }
 
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally:
-          case _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Complete:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.PersistedLocally:
+          case _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Complete:
             {
               // loaded and ready to save
               this.removeBoardGameFromState(boardGame);
@@ -680,10 +634,10 @@ var Controller = /*#__PURE__*/function () {
         // is this a persisted board game?
         var existingListGame = cleanedUpList[index];
 
-        if (existingListGame.decorator && existingListGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {// leave the persisted version in the cleaned up list
+        if (existingListGame.decorator && existingListGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted) {// leave the persisted version in the cleaned up list
         } else {
           // do we have persisted game to replace the one in the list
-          if (boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted) {
+          if (boardGame.decorator && boardGame.decorator === _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted) {
             // replace the existing one with this one
             cleanedUpList.splice(index, 1, boardGame);
           } else {// just leave the one there, neither are persisted to a database
@@ -700,9 +654,9 @@ var Controller = /*#__PURE__*/function () {
   _proto.downloadAndSyncSavedBoardGameCollection = function downloadAndSyncSavedBoardGameCollection() {
     if (this.isLoggedIn()) {
       // start the call to retrieve the saved collection of board games
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.getMyBoardGameCollection.queryString, {
+      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.getMyBoardGameCollection.queryString, {
         userId: this.getLoggedInUserId()
-      }, this.callbackGetCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, false);
+      }, this.callbackGetCollection, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, false);
     }
   }
   /*
@@ -737,7 +691,7 @@ var Controller = /*#__PURE__*/function () {
     } // save locally
 
 
-    this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.STATE_NAMES.boardGames, currentBoardGamesOnDisplay, false);
+    this.displayedBoardGamesStateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.boardGames, currentBoardGamesOnDisplay, false);
   };
 
   _proto.findBoardGameInStateFromEvent = function findBoardGameInStateFromEvent(event) {
@@ -770,7 +724,7 @@ var Controller = /*#__PURE__*/function () {
     if (boardGame) {
       if (boardGame.scoresheets) {
         boardGame.scoresheets.forEach(function (sheet) {
-          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
+          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted;
         });
       } else {
         boardGame.scoresheets = [];
@@ -790,7 +744,7 @@ var Controller = /*#__PURE__*/function () {
         });
 
         if (index < 0) {
-          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.PersistedLocally;
+          sheet.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.PersistedLocally;
           target.scoresheets.push(sheet);
           toSave.push(sheet);
         }
@@ -802,7 +756,7 @@ var Controller = /*#__PURE__*/function () {
         toSave.forEach(function (sheetToSave) {
           _this3.convertScoreSheetToApiCallFormat(sheetToSave);
 
-          _network_DownloadManager__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_9__.API_Config.addScoreSheetToBoardGame.queryString, {
+          _network_DownloadManager__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().addQLApiRequest(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.graphQL, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.addScoreSheetToBoardGame.queryString, {
             userId: _this3.getCurrentUser(),
             boardGameId: target.id,
             sheet: sheetToSave
@@ -810,7 +764,7 @@ var Controller = /*#__PURE__*/function () {
 
           _this3.convertScoreSheetToDatabaseFormat(sheetToSave);
 
-          sheetToSave.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_9__.Decorator.Persisted;
+          sheetToSave.decorator = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.Decorator.Persisted;
         });
       }
     }
@@ -6874,339 +6828,6 @@ var AbstractStateManager = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/state/AggregateStateManager.ts":
-/*!********************************************!*\
-  !*** ./src/state/AggregateStateManager.ts ***!
-  \********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AggregateStateManager": () => (/* binding */ AggregateStateManager)
-/* harmony export */ });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractStateManager */ "./src/state/AbstractStateManager.ts");
-function _inheritsLoose(subClass, superClass) {
-  subClass.prototype = Object.create(superClass.prototype);
-  subClass.prototype.constructor = subClass;
-
-  _setPrototypeOf(subClass, superClass);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-
-
-var aggLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('state-manager-aggregate');
-var AggregateStateManager = /*#__PURE__*/function (_AbstractStateManager) {
-  _inheritsLoose(AggregateStateManager, _AbstractStateManager);
-
-  function AggregateStateManager() {
-    var _this;
-
-    _this = _AbstractStateManager.call(this, 'aggregate') || this;
-    _this.stateManagers = [];
-
-    _this.emitEvents();
-
-    return _this;
-  }
-
-  AggregateStateManager.getInstance = function getInstance() {
-    if (!AggregateStateManager._instance) {
-      AggregateStateManager._instance = new AggregateStateManager();
-    }
-
-    return AggregateStateManager._instance;
-  };
-
-  var _proto = AggregateStateManager.prototype;
-
-  _proto.addStateManager = function addStateManager(stateManager, filters, emitEvents) {
-    if (filters === void 0) {
-      filters = [];
-    }
-
-    var mWF = {
-      manager: stateManager,
-      filters: filters
-    };
-    this.stateManagers.push(mWF);
-    if (!emitEvents) stateManager.suppressEvents();
-    aggLogger('adding state manager with/without filters');
-  };
-
-  _proto._addNewNamedStateToStorage = function _addNewNamedStateToStorage(state) {
-    var _this2 = this;
-
-    this.stateManagers.forEach(function (managerWithFilters) {
-      if (!_this2.stateNameInFilters(state.name, managerWithFilters.filters)) {
-        managerWithFilters.manager._addNewNamedStateToStorage(state);
-      }
-    });
-  };
-
-  _proto._getState = function _getState(name) {
-    var _this3 = this;
-
-    var state = {
-      name: name,
-      value: []
-    };
-    this.stateManagers.forEach(function (sm) {
-      if (!_this3.stateNameInFilters(state.name, sm.filters)) {
-        aggLogger("get state from state manager for state " + name);
-        aggLogger(sm.manager);
-
-        sm.manager._getState(name);
-      }
-    }); // assuming the state manager is holding all the values
-
-    if (this.stateManagers.length > 0) {
-      state = this.stateManagers[0].manager._getState(name);
-    }
-
-    return state;
-  };
-
-  _proto._ensureStatePresent = function _ensureStatePresent(name) {
-    var _this4 = this;
-
-    this.stateManagers.forEach(function (managerWithFilters) {
-      if (!_this4.stateNameInFilters(name, managerWithFilters.filters)) {
-        managerWithFilters.manager._ensureStatePresent(name);
-      }
-    });
-  };
-
-  _proto._replaceNamedStateInStorage = function _replaceNamedStateInStorage(state) {
-    var _this5 = this;
-
-    this.stateManagers.forEach(function (managerWithFilters) {
-      if (!_this5.stateNameInFilters(state.name, managerWithFilters.filters)) {
-        managerWithFilters.manager._replaceNamedStateInStorage(state);
-      }
-    });
-  };
-
-  _proto._saveState = function _saveState(name, stateObj) {
-    var _this6 = this;
-
-    this.stateManagers.forEach(function (managerWithFilters) {
-      if (!_this6.stateNameInFilters(name, managerWithFilters.filters)) {
-        aggLogger("saving state in state manager for state " + name);
-        aggLogger(managerWithFilters.manager);
-        aggLogger(stateObj);
-
-        managerWithFilters.manager._saveState(name, stateObj);
-      }
-    });
-  };
-
-  _proto._addItemToState = function _addItemToState(name, stateObj, isPersisted) {
-    var _this7 = this;
-
-    if (isPersisted === void 0) {
-      isPersisted = false;
-    }
-
-    this.stateManagers.forEach(function (managerWithFilters) {
-      if (!_this7.stateNameInFilters(name, managerWithFilters.filters)) {
-        aggLogger("adding item to state in  state manager for state " + name + ", is persisted = " + isPersisted);
-        aggLogger(managerWithFilters.manager);
-        aggLogger(stateObj);
-
-        managerWithFilters.manager._addItemToState(name, stateObj, isPersisted);
-      }
-    });
-  };
-
-  _proto._removeItemFromState = function _removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted) {
-    var _this8 = this;
-
-    this.stateManagers.forEach(function (managerWithFilters) {
-      if (!_this8.stateNameInFilters(name, managerWithFilters.filters)) {
-        aggLogger("removing item from state in state manager for state " + name);
-        aggLogger(managerWithFilters.manager);
-        aggLogger(stateObj);
-
-        managerWithFilters.manager._removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted);
-      }
-    });
-  };
-
-  _proto._updateItemInState = function _updateItemInState(name, stateObj, testForEqualityFunction, isPersisted) {
-    var _this9 = this;
-
-    this.stateManagers.forEach(function (managerWithFilters) {
-      if (!_this9.stateNameInFilters(name, managerWithFilters.filters)) {
-        aggLogger("updating item in state in  state manager for state " + name);
-        aggLogger(managerWithFilters.manager);
-        aggLogger(stateObj);
-
-        managerWithFilters.manager._updateItemInState(name, stateObj, testForEqualityFunction, isPersisted);
-      }
-    });
-  };
-
-  _proto.stateNameInFilters = function stateNameInFilters(name, filters) {
-    var foundIndex = filters.findIndex(function (filter) {
-      return filter === name;
-    });
-    return foundIndex >= 0;
-  };
-
-  return AggregateStateManager;
-}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__.AbstractStateManager);
-
-/***/ }),
-
-/***/ "./src/state/AsyncStateManagerWrapper.ts":
-/*!***********************************************!*\
-  !*** ./src/state/AsyncStateManagerWrapper.ts ***!
-  \***********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ AsyncStateManagerWrapper)
-/* harmony export */ });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractStateManager */ "./src/state/AbstractStateManager.ts");
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _inheritsLoose(subClass, superClass) {
-  subClass.prototype = Object.create(superClass.prototype);
-  subClass.prototype.constructor = subClass;
-
-  _setPrototypeOf(subClass, superClass);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-
-
-var asyncLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('state-manager-async');
-
-var AsyncStateManagerWrapper = /*#__PURE__*/function (_AbstractStateManager) {
-  _inheritsLoose(AsyncStateManagerWrapper, _AbstractStateManager);
-
-  function AsyncStateManagerWrapper(topLevelSM, wrappedSM) {
-    var _this;
-
-    _this = _AbstractStateManager.call(this, 'async') || this;
-    _this.topLevelSM = topLevelSM;
-    _this.wrappedSM = wrappedSM;
-    _this.forceSaves = false;
-
-    _this.wrappedSM.emitEvents();
-
-    var stateNamesToMonitor = _this.wrappedSM.getConfiguredStateNames();
-
-    _this.stateChanged = _this.stateChanged.bind(_assertThisInitialized(_this));
-    _this.stateChangedItemAdded = _this.stateChangedItemAdded.bind(_assertThisInitialized(_this));
-    _this.stateChangedItemRemoved = _this.stateChangedItemRemoved.bind(_assertThisInitialized(_this));
-    _this.stateChangedItemUpdated = _this.stateChangedItemUpdated.bind(_assertThisInitialized(_this));
-    stateNamesToMonitor.forEach(function (stateName) {
-      _this.wrappedSM.addChangeListenerForName(stateName, _assertThisInitialized(_this));
-    });
-    return _this;
-  }
-
-  var _proto = AsyncStateManagerWrapper.prototype;
-
-  _proto._addItemToState = function _addItemToState(name, stateObj, isPersisted) {
-    if (isPersisted === void 0) {
-      isPersisted = false;
-    }
-
-    asyncLogger("adding item to state " + name + " - is persisted " + isPersisted);
-    this.wrappedSM.addNewItemToState(name, stateObj, isPersisted);
-  };
-
-  _proto._getState = function _getState(name) {
-    // assume wrapped SM is asynchronous
-    // make the call to get state but supply the caller with an empty state for now
-    asyncLogger("getting state " + name);
-    this.wrappedSM.getStateByName(name);
-    return {
-      name: name,
-      value: []
-    };
-  };
-
-  _proto._removeItemFromState = function _removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted) {
-    asyncLogger("removing item from state " + name);
-    this.wrappedSM.removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted);
-  };
-
-  _proto._updateItemInState = function _updateItemInState(name, stateObj, testForEqualityFunction, isPersisted) {
-    asyncLogger("updating item in state " + name);
-    this.wrappedSM.updateItemInState(name, stateObj, testForEqualityFunction, isPersisted);
-  };
-
-  _proto._ensureStatePresent = function _ensureStatePresent(name) {} // assume already present
-  ;
-
-  _proto._addNewNamedStateToStorage = function _addNewNamedStateToStorage(state) {} // assume already present
-  ;
-
-  _proto._replaceNamedStateInStorage = function _replaceNamedStateInStorage(state) {} // not implemented, not replacing state wholesale
-  ;
-
-  _proto._saveState = function _saveState(name, stateObj) {} // not implemented, not replacing state wholesale
-  ;
-
-  _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {} // not implemented, assumes called to wrapped SM worked
-  ;
-
-  _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {} // not implemented, assumes called to wrapped SM worked
-  ;
-
-  _proto.stateChanged = function stateChanged(managerName, name, newValue) {
-    // received new state from the wrapped SM
-    // pass the received state to the top level SM
-    asyncLogger("Wrapped SM has supplied new state " + name + " passing to top level SM");
-    asyncLogger(newValue);
-    this.topLevelSM.setStateByName(name, newValue);
-  };
-
-  _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {
-    asyncLogger("Wrapped SM has supplied new completed item for state " + name + " passing to top level SM");
-    this.topLevelSM.addNewItemToState(name, itemAdded, true);
-  };
-
-  return AsyncStateManagerWrapper;
-}(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__.AbstractStateManager);
-
-
-
-/***/ }),
-
 /***/ "./src/state/BrowserStorageStateManager.ts":
 /*!*************************************************!*\
   !*** ./src/state/BrowserStorageStateManager.ts ***!
@@ -7384,350 +7005,6 @@ var BrowserStorageStateManager = /*#__PURE__*/function (_AbstractStateManager) {
 }(_AbstractStateManager__WEBPACK_IMPORTED_MODULE_1__.AbstractStateManager);
 
 
-
-/***/ }),
-
-/***/ "./src/state/GraphQLApiStateManager.ts":
-/*!*********************************************!*\
-  !*** ./src/state/GraphQLApiStateManager.ts ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "GraphQLApiStateManager": () => (/* binding */ GraphQLApiStateManager)
-/* harmony export */ });
-/* harmony import */ var _StateManager__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./StateManager */ "./src/state/StateManager.ts");
-/* harmony import */ var _network_Types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../network/Types */ "./src/network/Types.ts");
-/* harmony import */ var _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../network/DownloadManager */ "./src/network/DownloadManager.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _StateChangedDelegate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./StateChangedDelegate */ "./src/state/StateChangedDelegate.ts");
-
-
-
-
-
-/*
-*
-*   WORK IN PROGRESS
-*
- */
-
-var graphSMLogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('state-manager-graphql');
-var GraphQLApiStateManager = /*#__PURE__*/function () {
-  function GraphQLApiStateManager() {
-    this.configuration = [];
-    this.delegate = new _StateChangedDelegate__WEBPACK_IMPORTED_MODULE_4__["default"]('graphql');
-    this.emitEvents();
-    this.bHasCompletedRun = [];
-    this.callbackForAddItem = this.callbackForAddItem.bind(this);
-    this.callbackForRemoveItem = this.callbackForRemoveItem.bind(this);
-    this.callbackForUpdateItem = this.callbackForUpdateItem.bind(this);
-    this.callbackForGetItems = this.callbackForGetItems.bind(this);
-  }
-
-  var _proto = GraphQLApiStateManager.prototype;
-
-  _proto.getConfiguredStateNames = function getConfiguredStateNames() {
-    var results = [];
-    this.configuration.forEach(function (config) {
-      results.push(config.stateName);
-    });
-    return results;
-  };
-
-  _proto.hasCompletedRun = function hasCompletedRun(stateName) {
-    var result = false;
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === stateName;
-    });
-
-    if (foundIndex >= 0) {
-      result = this.bHasCompletedRun[foundIndex];
-    }
-
-    return result;
-  };
-
-  _proto.setCompletedRun = function setCompletedRun(stateName) {
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === stateName;
-    });
-
-    if (foundIndex >= 0) {
-      this.bHasCompletedRun[foundIndex] = true;
-    }
-  };
-
-  _proto.forceResetForGet = function forceResetForGet(stateName) {
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === stateName;
-    });
-
-    if (foundIndex >= 0) {
-      this.bHasCompletedRun[foundIndex] = false;
-    }
-  };
-
-  _proto.initialise = function initialise(config) {
-    this.configuration = config;
-    var runsComplete = [];
-    this.configuration.forEach(function (configItem) {
-      runsComplete.push(false);
-    });
-    this.bHasCompletedRun = runsComplete;
-  };
-
-  _proto._addNewNamedStateToStorage = function _addNewNamedStateToStorage(state) {
-    /* assume model on the other end exists */
-  };
-
-  _proto._getState = function _getState(name) {
-    graphSMLogger("Getting All " + name);
-
-    if (this.hasCompletedRun(name)) {
-      graphSMLogger("Getting All " + name + " - not done - previously retrieved");
-    } else {
-      var config = this.getConfigurationForStateName(name);
-
-      if (config.isActive) {
-        var query = config.apis.findAll;
-        var jsonRequest = {
-          url: config.apiURL,
-          type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
-          params: {
-            query: query
-          },
-          callback: this.callbackForGetItems,
-          associatedStateName: name
-        };
-        graphSMLogger("Getting All " + name + " with query \"" + query + "\"");
-        _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
-      } else {
-        graphSMLogger("No configuration for state " + name);
-      }
-    }
-
-    var state = {
-      name: name,
-      value: []
-    };
-    return state;
-  };
-
-  _proto._ensureStatePresent = function _ensureStatePresent(name) {
-    /* assume state exists */
-  };
-
-  _proto._replaceNamedStateInStorage = function _replaceNamedStateInStorage(state) {
-    /* not going to replace all state */
-  };
-
-  _proto._saveState = function _saveState(name, stateObj) {
-    /* not going to replace all state */
-  };
-
-  _proto._addItemToState = function _addItemToState(name, stateObj, isPersisted) {
-    if (isPersisted === void 0) {
-      isPersisted = false;
-    }
-
-    if (isPersisted) return; // dont add complete objects to the state - they are already processed
-
-    graphSMLogger("Adding item to " + name);
-    graphSMLogger(stateObj);
-    var config = this.getConfigurationForStateName(name);
-
-    if (config.isActive) {
-      var mutation = {};
-      mutation[config.apis.create] = {};
-      var jsonRequest = {
-        url: config.apiURL,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
-        params: {
-          mutation: mutation
-        },
-        callback: this.callbackForAddItem,
-        associatedStateName: name
-      };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
-    } else {
-      graphSMLogger("No configuration for state " + name);
-    }
-  };
-
-  _proto._removeItemFromState = function _removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted) {
-    if (isPersisted) return; // dont remove complete objects to the state - they are already processed
-
-    graphSMLogger("Removing item to " + name);
-    graphSMLogger(stateObj);
-    var config = this.getConfigurationForStateName(name);
-
-    if (config.isActive) {
-      var mutation = {};
-      mutation[config.apis.destroy] = {};
-      var jsonRequest = {
-        url: config.apiURL,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
-        params: {
-          mutation: mutation
-        },
-        callback: this.callbackForRemoveItem,
-        associatedStateName: name
-      };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
-    } else {
-      graphSMLogger("No configuration for state " + name);
-    }
-  };
-
-  _proto._updateItemInState = function _updateItemInState(name, stateObj, testForEqualityFunction, isPersisted) {
-    if (isPersisted) return; // dont update complete objects to the state - they are already processed
-
-    graphSMLogger("Updating item in " + name);
-    graphSMLogger(stateObj);
-    var config = this.getConfigurationForStateName(name);
-
-    if (config.isActive) {
-      var mutation = {};
-      mutation[config.apis.destroy] = {};
-      var jsonRequest = {
-        url: config.apiURL,
-        type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.POST,
-        params: {
-          mutation: mutation
-        },
-        callback: this.callbackForUpdateItem,
-        associatedStateName: name
-      };
-      _network_DownloadManager__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().addApiRequest(jsonRequest, true);
-    } else {
-      graphSMLogger("No configuration for state " + name);
-    }
-  };
-
-  _proto.addChangeListenerForName = function addChangeListenerForName(name, listener) {
-    this.delegate.addChangeListenerForName(name, listener);
-  };
-
-  _proto.addNewItemToState = function addNewItemToState(name, item, isPersisted) {
-    this._addItemToState(name, item, isPersisted);
-  };
-
-  _proto.emitEvents = function emitEvents() {
-    this.delegate.emitEvents();
-  };
-
-  _proto.findItemInState = function findItemInState(name, item, testForEqualityFunction) {
-    throw Error("not implemented");
-  };
-
-  _proto.getStateByName = function getStateByName(name) {
-    this._getState(name);
-  };
-
-  _proto.informChangeListenersForStateWithName = function informChangeListenersForStateWithName(name, stateObjValue, eventType, previousObjValue) {
-    this.delegate.informChangeListenersForStateWithName(name, stateObjValue, eventType, previousObjValue);
-  };
-
-  _proto.isItemInState = function isItemInState(name, item, testForEqualityFunction) {
-    return true;
-  };
-
-  _proto.removeItemFromState = function removeItemFromState(name, item, testForEqualityFunction, isPersisted) {
-    this._removeItemFromState(name, item, testForEqualityFunction, isPersisted);
-
-    return true;
-  };
-
-  _proto.setStateByName = function setStateByName(name, stateObjectForName, informListeners) {};
-
-  _proto.suppressEvents = function suppressEvents() {
-    this.delegate.suppressEvents();
-  };
-
-  _proto.updateItemInState = function updateItemInState(name, item, testForEqualityFunction, isPersisted) {
-    this._updateItemInState(name, item, testForEqualityFunction, isPersisted);
-
-    return true;
-  };
-
-  _proto.getConfigurationForStateName = function getConfigurationForStateName(name) {
-    var config = {
-      stateName: name,
-      apiURL: '/graphql',
-      apis: {
-        findAll: '',
-        create: '',
-        destroy: '',
-        update: '',
-        find: ''
-      },
-      data: {
-        findAll: '',
-        create: '',
-        destroy: '',
-        update: '',
-        find: ''
-      },
-      isActive: false
-    };
-    var foundIndex = this.configuration.findIndex(function (config) {
-      return config.stateName === name;
-    });
-
-    if (foundIndex >= 0) {
-      config = this.configuration[foundIndex];
-    }
-
-    return config;
-  };
-
-  _proto.callbackForRemoveItem = function callbackForRemoveItem(data, status, associatedStateName) {
-    graphSMLogger("callback for remove item for state " + associatedStateName + " with status " + status + " - not forwarded");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      graphSMLogger(data);
-    }
-  };
-
-  _proto.callbackForUpdateItem = function callbackForUpdateItem(data, status, associatedStateName) {
-    graphSMLogger("callback for update item for state " + associatedStateName + " with status " + status + " - not forwarded");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      graphSMLogger(data);
-    }
-  };
-
-  _proto.callbackForGetItems = function callbackForGetItems(data, status, associatedStateName) {
-    graphSMLogger("callback for get items for state " + associatedStateName + " with status " + status + " - FORWARDING");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      graphSMLogger(data);
-      var config = this.getConfigurationForStateName(associatedStateName);
-      var dataAttribute = config.data.findAll;
-      this.setCompletedRun(associatedStateName);
-      this.delegate.informChangeListenersForStateWithName(associatedStateName, data.data[dataAttribute], _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.StateChanged, null);
-    }
-  };
-
-  _proto.callbackForAddItem = function callbackForAddItem(data, status, associatedStateName) {
-    graphSMLogger("callback for add item for state " + associatedStateName + " with status " + status + " - FORWARDING");
-
-    if (status >= 200 && status <= 299) {
-      // do we have any data?
-      graphSMLogger(data);
-      this.delegate.informChangeListenersForStateWithName(associatedStateName, data, _StateManager__WEBPACK_IMPORTED_MODULE_0__.stateEventType.ItemAdded, null);
-    }
-  };
-
-  return GraphQLApiStateManager;
-}();
 
 /***/ }),
 

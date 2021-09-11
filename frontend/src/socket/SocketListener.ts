@@ -3,6 +3,6 @@ export default interface SocketListener {
 
     handleMessage(message: string): void;
 
-    getCurrentUser(): number;
+    getCurrentUser(): string;
 }
 

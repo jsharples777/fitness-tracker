@@ -1,9 +1,10 @@
 // Configuration and Logging handlers
 /* eslint-disable import/first */
-import fs from "fs";
-import DataSource from "./graphql/DataSource";
+//@ts-ignore
+import {MongoDataSource} from "./db/MongoDataSource";
 
 require('dotenv').config();
+
 import morgan from 'morgan';
 import debug from 'debug';
 
@@ -14,6 +15,8 @@ import path from 'path';
 
 // Express framework and additional middleware
 import express from 'express';
+import Handlebars from 'handlebars';
+import {allowInsecurePrototypeAccess}  from '@handlebars/allow-prototype-access';
 import expressHandlebars from 'express-handlebars';
 import bodyParser from 'body-parser';
 import session from 'express-session';
@@ -24,24 +27,22 @@ import connectFlash from 'connect-flash';
 import socketManager from './socket/SocketManager';
 
 // Authentication middleware
+import mongoose from 'mongoose';
 import passport from 'passport';
+import passportLocal from 'passport-local';
+const LocalStrategy = passportLocal.Strategy;
+import MongoAccount from './models/MongoAccount';
 
-//Passport and User model
-import setupPassport from './passport/passport';
-import sequelize from './db/connection';
-import {Account} from './models';
+
 
 // WebRTC
 import { ExpressPeerServer } from 'peer';
 
 // HTTPS config
-const key = fs.readFileSync('./config/key.pem');
-const cert = fs.readFileSync('./config/cert.pem');
+//const key = fs.readFileSync('./config/key.pem');
+//const cert = fs.readFileSync('./config/cert.pem');
 
 
-// routes
-import routes from './routes';
-//import apiRoutes from './routes/api';
 
 const serverDebug = debug('server');
 
@@ -62,6 +63,7 @@ app.engine('handlebars', expressHandlebars({
     defaultLayout: 'default',
     partialsDir: path.join(app.get('views'), 'partials'),
     layoutsDir: path.join(app.get('views'), 'layouts'),
+    handlebars: allowInsecurePrototypeAccess(Handlebars)
 }));
 
 serverDebug('setting up templating engine - handlebars');
@@ -69,15 +71,6 @@ app.set('view engine', 'handlebars');
 app.set('view cache', !isDevelopment); // view caching in production
 
 serverDebug('Installing middlewares');
-
-serverDebug('Sequelizing database');
-//Sync Database
-sequelize.sync().then(function () {
-    serverDebug('Database sync successful');
-}).catch(function (err) {
-    serverDebug(err, "Something went wrong with the Database Update!");
-});
-
 if (isDevelopment  && (process.env.ENABLE_HMR === "true")) {
   /* eslint "global_require":"off" */
   /* eslint "import/no-extraneous-dependencies":"off" */
@@ -95,8 +88,6 @@ if (isDevelopment  && (process.env.ENABLE_HMR === "true")) {
   app.use(devMiddleware(compiler));
   app.use(hotMiddleware(compiler));
 }
-
-
 
 // Express middlewares
 app.use('/', express.static('./public')); // root directory of static content
@@ -142,35 +133,26 @@ if (isDevelopment) {
 // ensure the user is logged in with a path
 
 serverDebug('Installing routes');
-
-// if (!isDevelopment) {
-//   serverDebug(`Setting up re-routing for HTTP connections to HTTPS in production`);
-//   app.use((req,resp,next) => {
-//       if (!req.secure && !isDevelopment) {
-//           const host:string|undefined = req.get('Host');
-//           if (host) {
-//               resp.set('location',['https://',host,req.url].join(''));
-//               resp.status(301).send();
-//
-//           }
-//           return;
-//       }
-//       else {
-//           next();
-//       }
-//   });
-// }
-
+MongoDataSource.getInstance();
+// routes
+import routes from './routes';
 app.use('/', routes);// add the middleware path routing
-
-// setup the QL server for the Board Game Geek Data retrieval (just for fun, don't need Graph QL, but good practise)
-serverDebug('Setting up Board Game Geek API interface via Graph QL');
-new DataSource(app);
+import apiRoutes from './routes/api';
+app.use('/api',apiRoutes);
 
 // Setup authentication
-serverDebug('Setting up User model and authentication with Passport');
+serverDebug('Setting up Account model and authentication with Passport');
 // @ts-ignore
-setupPassport(passport, Account);
+passport.use(new LocalStrategy(MongoAccount.authenticate()));
+// @ts-ignore
+passport.serializeUser(MongoAccount.serializeUser());
+// @ts-ignore
+passport.deserializeUser(MongoAccount.deserializeUser());
+
+// database connection
+serverDebug('Establishing database connection with Mongoose');
+// @ts-ignore
+mongoose.connect(process.env.DB_URL);
 
 // route for the env.js file being served to the client
 serverDebug('Setting the environment variables for the browser to access');
@@ -183,6 +165,9 @@ app.get('/js/env.js', (req, res) => {
     if (session.id) {
         env.sessionId = session.id;
     }
+    if (req.user) {
+        env.user = req.user;
+    }
     res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
 
@@ -190,7 +175,6 @@ app.get('/js/env.js', (req, res) => {
 serverDebug('Create HTTP Server');
 //const httpServer = new https.Server({key: key, cert: cert },app);
 const httpServer = new http.Server(app);
-
 
 // setup the sockets manager with the server
 serverDebug('Setting up Socket manager');
@@ -235,10 +219,6 @@ if (isDevelopment) {
         });
     });
 }
-
-
-
-
 
 httpServer.listen(port, () => {
     serverDebug(`Server started on port ${port}`);

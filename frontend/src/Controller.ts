@@ -46,42 +46,7 @@ class Controller implements StateChangeListener {
         this.clientSideStorage = clientSideStorage;
         // setup the API calls
 
-        let graphSM = new GraphQLApiStateManager();
-        graphSM.initialise([
-            {
-                stateName: STATE_NAMES.users,
-                apiURL: this.getServerAPIURL() + API_Config.graphQL,
-                apis: {
-                    find: '',
-                    create: '',
-                    destroy: '',
-                    update: '',
-                    findAll: API_Config.findUsers.queryString,
-                },
-                data: {
-                    find: '',
-                    create: '',
-                    destroy: '',
-                    update: '',
-                    findAll: API_Config.findUsers.resultName,
-                },
-                isActive: true
 
-            }
-
-        ]);
-
-
-        let aggregateSM = AggregateStateManager.getInstance();
-        let memorySM = MemoryBufferStateManager.getInstance();
-
-        let asyncSM = new AsyncStateManagerWrapper(aggregateSM, graphSM);
-
-
-        aggregateSM.addStateManager(memorySM, [], false);
-        aggregateSM.addStateManager(asyncSM, [STATE_NAMES.recentUserSearches, STATE_NAMES.boardGames, STATE_NAMES.scores], false);
-
-        this.stateManager = aggregateSM;
 
         // state listener
         this.stateChanged = this.stateChanged.bind(this);
@@ -117,7 +82,7 @@ class Controller implements StateChangeListener {
 
         // now that we have all the user we can setup the chat system but only if we are logged in
         cLogger(`Setting up chat system for user ${this.getLoggedInUserId()}: ${this.getLoggedInUsername()}`);
-        if (this.getLoggedInUserId() > 0) {
+        if (this.getLoggedInUserId().trim().length > 0) {
             // setup the chat system
             let chatManager = ChatManager.getInstance(); // this connects the manager to the socket system
 
@@ -129,19 +94,8 @@ class Controller implements StateChangeListener {
             // let the application view know about message counts
             chatManager.setUnreadCountListener(this.applicationView);
 
-            chatManager.login();
-            // load the users
-            this.getStateManager().getStateByName(STATE_NAMES.users);
+            //chatManager.login();
         }
-        let currentGameList: any[] = this.displayedBoardGamesStateManager.getStateByName(STATE_NAMES.boardGames);
-        currentGameList = this.cleanupBoardGameState(currentGameList);
-
-
-        // load board games from local storage if any
-        this.applicationView.setState({boardGames: currentGameList});
-
-        // download the current board game collection
-        this.downloadAndSyncSavedBoardGameCollection();
     }
 
     public getStateManager(): StateManager {
@@ -152,7 +106,7 @@ class Controller implements StateChangeListener {
         let isLoggedIn = false;
         try {
             // @ts-ignore
-            if (loggedInUserId) {
+            if (loggedInUser) {
                 isLoggedIn = true;
             }
         } catch (error) {
@@ -160,13 +114,13 @@ class Controller implements StateChangeListener {
         return isLoggedIn;
     }
 
-    public getLoggedInUserId(): number {
-        let result = -1;
+    public getLoggedInUserId(): string {
+        let result = '';
         try {
             // @ts-ignore
-            if (loggedInUserId) {
-                // @ts-ignore
-                result = loggedInUserId;
+            if (loggedInUser) {
+              // @ts-ignore
+                result = loggedInUser.id;
             }
         } catch (error) {
         }
@@ -178,9 +132,9 @@ class Controller implements StateChangeListener {
         let result = '';
         try {
             // @ts-ignore
-            if (loggedInUsername) {
+            if (loggedInUser) {
                 // @ts-ignore
-                result = loggedInUsername;
+                result = loggedInUser.username;
             }
         } catch (error) {
         }
@@ -192,7 +146,7 @@ class Controller implements StateChangeListener {
         cLogger(message);
     }
 
-    public getCurrentUser(): number {
+    public getCurrentUser(): string {
         return this.getLoggedInUserId();
     }
 

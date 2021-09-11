@@ -10,10 +10,19 @@
 <div id="root">
 </div>
 {{> footers/footer-main }}
+{{#if user}}
+    <script>
+        const loggedInUser = {
+            id: '{{user._id}}',
+            username: '{{user.username}}'
+        };
+    </script>
+{{else}}
+    <script>
+        const loggedInUser = null;
+    </script>
+{{/if}}
 </body>
 {{> jsincludes/js-vendors}}
 {{> jsincludes/js-popovers-tooltips}}
-<script>
-    let loggedInUserId = -1;
-</script>
 </html>

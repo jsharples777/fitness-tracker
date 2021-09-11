@@ -3,28 +3,31 @@
 {{> headers/header-main }}
 <body>
 {{> navigation/navigation }}
+{{#if user}}
+    <script>
+        const loggedInUser = {
+            id: '{{user._id}}',
+            username: '{{user.username}}'
+        };
+    </script>
+{{else}}
+    <script>
+        const loggedInUser = null;
+    </script>
+{{/if}}
+{{#if session}}
+    <div id="session">{{session}}</div>
+{{/if}}
 {{#if error}}
     <div class="alert alert-danger">{{error}}</div>
 {{/if}}
 {{{body}}}
-{{> sidebars/score-sheet-sb }}
-{{> sidebars/user-search-sb }}
-{{> sidebars/chat-sb }}
-{{> sidebars/board-game-search-sb }}
 {{> modals/alert }}
 <div id="root">
 </div>
 <div id="testForm">
 </div>
-{{> scoresheet }}
-{{> footers/footer-main }}
 </body>
-{{#if user}}
-    <script>
-        let loggedInUserId = {{user.id}};
-        let loggedInUsername = "{{user.username}}";
-    </script>
-{{/if}}
 {{> jsincludes/js-vendors}}
 {{> jsincludes/js-popovers-tooltips}}
 {{> jsincludes/js-app}}

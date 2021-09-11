@@ -48,7 +48,7 @@ export default class SocketListenerDelegate implements SocketListener {
         slLogger(`Received message: ${message}`);
     }
 
-    getCurrentUser(): number {
+    getCurrentUser(): string {
         return Controller.getInstance().getLoggedInUserId();
     }
 
