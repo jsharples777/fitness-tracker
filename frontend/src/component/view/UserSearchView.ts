@@ -8,14 +8,14 @@ import BrowserStorageStateManager from "../../state/BrowserStorageStateManager";
 import {ChatManager} from "../../socket/ChatManager";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import AbstractListView from "../../ui-framework/AbstractListView";
+import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
 
 const vLogger = debug('user-search');
 const vLoggerDetail = debug('user-search-detail');
 
-class UserSearchView extends AbstractListView implements ChatUserEventListener,ViewListener {
+class UserSearchView extends AbstractStatefulView implements ChatUserEventListener,ViewListener {
     protected loggedInUsers: string[];
     protected localisedSM: StateManager;
 
@@ -77,7 +77,7 @@ class UserSearchView extends AbstractListView implements ChatUserEventListener,V
         this.loggedInUsers = [];
 
         // handler binding
-        this.updateView = this.updateView.bind(this);
+        this.updateViewForNamedCollection = this.updateViewForNamedCollection.bind(this);
         this.eventUserSelected = this.eventUserSelected.bind(this);
         this.handleLoggedInUsersUpdated = this.handleLoggedInUsersUpdated.bind(this);
         this.handleFavouriteUserLoggedIn = this.handleFavouriteUserLoggedIn.bind(this);
@@ -102,27 +102,27 @@ class UserSearchView extends AbstractListView implements ChatUserEventListener,V
         vLogger(`Received new list of users who are logged in `);
         vLogger(usernames);
         this.loggedInUsers = usernames;
-        this.updateView(STATE_NAMES.recentUserSearches,{});
+        this.updateViewForNamedCollection(STATE_NAMES.recentUserSearches,{});
     }
 
     handleFavouriteUserLoggedIn(username: string): void {
         vLogger(`Handle Favourite User ${username} logged in`);
-        this.updateView(STATE_NAMES.recentUserSearches,{});
+        this.updateViewForNamedCollection(STATE_NAMES.recentUserSearches,{});
     }
 
     handleFavouriteUserLoggedOut(username: string): void {
         vLogger(`Handle Favourite User ${username} logged in`);
-        this.updateView(STATE_NAMES.recentUserSearches,{});
+        this.updateViewForNamedCollection(STATE_NAMES.recentUserSearches,{});
     }
 
     handleFavouriteUsersChanged(usernames: string[]): void {
         vLogger(`Handle Favourite Users changed to ${usernames}`);
-        this.updateView(STATE_NAMES.recentUserSearches,{});
+        this.updateViewForNamedCollection(STATE_NAMES.recentUserSearches,{});
     }
 
     handleBlockedUsersChanged(usernames: string[]): void {
         vLogger(`Handle Blocked Users changed to ${usernames}`);
-        this.updateView(STATE_NAMES.recentUserSearches,{});
+        this.updateViewForNamedCollection(STATE_NAMES.recentUserSearches,{});
     }
 
     onDocumentLoaded() {
@@ -134,16 +134,16 @@ class UserSearchView extends AbstractListView implements ChatUserEventListener,V
         this.addEventListener(this);
     }
 
-    getIdForStateItem(name: string, item: any) {
+    getIdForItemInNamedCollection(name: string, item: any) {
         return item.id;
     }
 
 
-    getDisplayValueForStateItem(name: string, item: any) {
+    getDisplayValueForItemInNamedCollection(name: string, item: any) {
         return item.username;
     }
 
-    getModifierForStateItem(name: string, item: any) {
+    getModifierForItemInNamedCollection(name: string, item: any) {
         let result = Modifier.normal;
         vLoggerDetail(`Checking for item modifiers`);
         vLoggerDetail(item);
@@ -154,7 +154,7 @@ class UserSearchView extends AbstractListView implements ChatUserEventListener,V
         return result;
     }
 
-    getSecondaryModifierForStateItem(name: string, item: any) {
+    getSecondaryModifierForItemInNamedCollection(name: string, item: any) {
         let result = Modifier.normal;
         vLoggerDetail(`Checking for item secondary modifiers ${item.username}`);
         // if the user is in the black list then show warning and a favourite user is highlighted
@@ -196,7 +196,7 @@ class UserSearchView extends AbstractListView implements ChatUserEventListener,V
     }
 
 
-    updateView(name: string, newState: any) {
+    updateViewForNamedCollection(name: string, newState: any) {
         if (name === STATE_NAMES.recentUserSearches) {
             vLogger(`Updating for recent searches`);
             newState = this.localisedSM.getStateByName(STATE_NAMES.recentUserSearches);

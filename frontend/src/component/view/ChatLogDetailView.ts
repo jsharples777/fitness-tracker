@@ -62,34 +62,44 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
         this.eventUserSelected = this.eventUserSelected.bind(this);
 
         NotificationController.getInstance().addListener(this);
-        stateManager.addChangeListenerForName(STATE_NAMES.users, this);
+        this.stateManager.addChangeListenerForName(STATE_NAMES.users, this);
+    }
+
+    hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
+        throw new Error('Method not implemented.');
+    }
+    hasPermissionToUpdateItemInNamedCollection(name: string, item: any): boolean {
+        throw new Error('Method not implemented.');
+    }
+    hasChanged(): boolean {
+        throw new Error('Method not implemented.');
     }
 
     setContainedBy(container: HTMLElement): void {}
     addEventListener(listener: ViewListener): void {}
 
-    getIdForStateItem(name: string, item: any): string {
+    getIdForItemInNamedCollection(name: string, item: any): string {
         throw new Error('Method not implemented.');
     }
-    getDisplayValueForStateItem(name: string, item: any): string {
+    getDisplayValueForItemInNamedCollection(name: string, item: any): string {
         throw new Error('Method not implemented.');
     }
-    compareStateItemsForEquality(item1: any, item2: any): boolean {
+    compareItemsForEquality(item1: any, item2: any): boolean {
         throw new Error('Method not implemented.');
     }
-    getModifierForStateItem(name: string, item: any): Modifier {
+    getModifierForItemInNamedCollection(name: string, item: any): Modifier {
         throw new Error('Method not implemented.');
     }
-    getSecondaryModifierForStateItem(name: string, item: any): Modifier {
+    getSecondaryModifierForItemInNamedCollection(name: string, item: any): Modifier {
         throw new Error('Method not implemented.');
     }
-    getBadgeValue(name: string, item: any): number {
+    getBadgeValueForItemInNamedCollection(name: string, item: any): number {
         throw new Error('Method not implemented.');
     }
-    getBackgroundImage(name: string, item: any): string {
+    getBackgroundImageForItemInNamedCollection(name: string, item: any): string {
         throw new Error('Method not implemented.');
     }
-    updateView(name: string, newState: any): void {
+    updateViewForNamedCollection(name: string, newState: any): void {
         throw new Error('Method not implemented.');
     }
 
@@ -206,6 +216,7 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
         // fast user search
         // @ts-ignore
         const fastSearchEl = $(`#${ChatLogDetailView.chatFastSearchUserNames}`);
+        // @ts-ignore
         fastSearchEl.on('autocompleteselect', this.eventUserSelected);
     }
 

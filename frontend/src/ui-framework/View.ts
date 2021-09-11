@@ -1,5 +1,5 @@
 import {ViewListener} from "./ViewListener";
-import {Modifier} from "./ConfigurationTypes";
+import {Modifier, ViewDOMConfig} from "./ConfigurationTypes";
 
 export interface View {
     getName():string;
@@ -12,20 +12,29 @@ export interface View {
 
     onDocumentLoaded(): void;
 
-    getIdForStateItem(name: string, item: any): string;
+    getIdForItemInNamedCollection(name: string, item: any): string;
 
-    getDisplayValueForStateItem(name: string, item: any): string;
+    getDisplayValueForItemInNamedCollection(name: string, item: any): string;
 
-    compareStateItemsForEquality(item1:any, item2: any): boolean;
+    compareItemsForEquality(item1:any, item2: any): boolean;
 
-    getModifierForStateItem(name: string, item: any): Modifier;
+    getModifierForItemInNamedCollection(name: string, item: any): Modifier;
 
-    getSecondaryModifierForStateItem(name: string, item: any): Modifier;
+    getSecondaryModifierForItemInNamedCollection(name: string, item: any): Modifier;
 
-    getBadgeValue(name: string, item: any): number;
+    getBadgeValueForItemInNamedCollection(name: string, item: any): number;
 
-    getBackgroundImage(name: string, item: any): string;
+    getBackgroundImageForItemInNamedCollection(name: string, item: any): string;
 
-    updateView(name: string, newState: any): void;
+    hasPermissionToDeleteItemInNamedCollection(name:string, item:any):boolean;
+    hasPermissionToUpdateItemInNamedCollection(name:string, item:any):boolean;
+
+    updateViewForNamedCollection(name: string, collection: any): void;
+
+    hasChanged():boolean;
+
+    getUIConfig():ViewDOMConfig;
+
+    getDataSourceKeyId():string;
 
 }

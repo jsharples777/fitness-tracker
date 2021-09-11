@@ -4,7 +4,7 @@ import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import Controller from "../../Controller";
 import {ChatManager} from "../../socket/ChatManager";
-import AbstractListView from "../../ui-framework/AbstractListView";
+import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
@@ -13,7 +13,7 @@ import {View} from "../../ui-framework/View";
 const vLogger = debug('user-search-sidebar');
 const vLoggerDetail = debug('user-search-sidebar:detail');
 
-class FavouriteUserView extends AbstractListView implements ChatUserEventListener,ViewListener {
+class FavouriteUserView extends AbstractStatefulView implements ChatUserEventListener,ViewListener {
     static DOMConfig: ViewDOMConfig = {
         resultsContainerId: 'favouriteUsers',
         resultsElementType: 'a',
@@ -65,7 +65,7 @@ class FavouriteUserView extends AbstractListView implements ChatUserEventListene
         super(FavouriteUserView.DOMConfig, stateManager, STATE_NAMES.users);
 
         // handler binding
-        this.updateView = this.updateView.bind(this);
+        this.updateViewForNamedCollection = this.updateViewForNamedCollection.bind(this);
         this.eventClickItem = this.eventClickItem.bind(this);
         this.handleLoggedInUsersUpdated = this.handleLoggedInUsersUpdated.bind(this);
         this.handleFavouriteUserLoggedIn = this.handleFavouriteUserLoggedIn.bind(this);
@@ -86,35 +86,35 @@ class FavouriteUserView extends AbstractListView implements ChatUserEventListene
 
     handleLoggedInUsersUpdated(usernames: string[]): void {
         vLogger(`Received new list of users who are logged in `);
-        this.updateView('',{});
+        this.updateViewForNamedCollection('',{});
     }
 
     handleFavouriteUserLoggedIn(username: string): void {
         vLogger(`Handle Favourite User ${username} logged in`);
-        this.updateView('',{});
+        this.updateViewForNamedCollection('',{});
     }
 
     handleFavouriteUserLoggedOut(username: string): void {
         vLogger(`Handle Favourite User ${username} logged in`);
-        this.updateView('',{});
+        this.updateViewForNamedCollection('',{});
     }
 
     handleFavouriteUsersChanged(usernames: string[]): void {
         vLogger(`Handle Favourite Users changed to ${usernames}`);
-        this.updateView('',{});
+        this.updateViewForNamedCollection('',{});
     }
 
 
-    getIdForStateItem(name: string, item: any) {
+    getIdForItemInNamedCollection(name: string, item: any) {
         return item.id;
     }
 
 
-    getDisplayValueForStateItem(name: string, item: any) {
+    getDisplayValueForItemInNamedCollection(name: string, item: any) {
         return item.username;
     }
 
-    getModifierForStateItem(name: string, item: any) {
+    getModifierForItemInNamedCollection(name: string, item: any) {
         let result = Modifier.normal;
         // if the user is currently logged out make the item inactive
         if (!ChatManager.getInstance().isUserLoggedIn(item.username)) {
@@ -123,7 +123,7 @@ class FavouriteUserView extends AbstractListView implements ChatUserEventListene
         return result;
     }
 
-    getSecondaryModifierForStateItem(name: string, item: any) {
+    getSecondaryModifierForItemInNamedCollection(name: string, item: any) {
         let result = Modifier.normal;
         vLoggerDetail(`Checking for item secondary modifiers ${item.username}`);
         // if the user is in the black list then show warning and a favourite user is highlighted
@@ -141,7 +141,7 @@ class FavouriteUserView extends AbstractListView implements ChatUserEventListene
 
 
 
-    updateView(name: string, newState: any) {
+    updateViewForNamedCollection(name: string, newState: any) {
         // find the blocked users in the user list
         let favUsers:any[] = [];
         const users:any[] = this.stateManager?.getStateByName(STATE_NAMES.users);
@@ -153,7 +153,7 @@ class FavouriteUserView extends AbstractListView implements ChatUserEventListene
             })
         }
 
-        super.updateView(name, favUsers);
+        super.updateViewForNamedCollection(name, favUsers);
 
     }
 
@@ -161,7 +161,7 @@ class FavouriteUserView extends AbstractListView implements ChatUserEventListene
     documentLoaded(view: View): void {}
 
     handleBlockedUsersChanged(usernames: string[]): void {
-        this.updateView('',{})
+        this.updateViewForNamedCollection('',{})
     }
 
     hideRequested(view: View): void {}

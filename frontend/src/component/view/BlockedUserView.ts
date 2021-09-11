@@ -3,7 +3,7 @@ import {StateManager} from '../../state/StateManager';
 import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import {ChatManager} from "../../socket/ChatManager";
-import AbstractListView from "../../ui-framework/AbstractListView";
+import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
@@ -11,7 +11,7 @@ import {View} from '../../ui-framework/View';
 
 const vLogger = debug('user-search-sidebar');
 
-class BlockedUserView extends AbstractListView implements ChatUserEventListener, ViewListener {
+class BlockedUserView extends AbstractStatefulView implements ChatUserEventListener, ViewListener {
     private static DOMConfig: ViewDOMConfig = {
         resultsContainerId: 'blockedUsers',
         resultsElementType: 'a',
@@ -53,7 +53,7 @@ class BlockedUserView extends AbstractListView implements ChatUserEventListener,
         super(BlockedUserView.DOMConfig, stateManager, STATE_NAMES.users);
 
         // handler binding
-        this.updateView = this.updateView.bind(this);
+        this.updateViewForNamedCollection = this.updateViewForNamedCollection.bind(this);
         this.eventClickItem = this.eventClickItem.bind(this);
         this.handleLoggedInUsersUpdated = this.handleLoggedInUsersUpdated.bind(this);
         this.handleFavouriteUserLoggedIn = this.handleFavouriteUserLoggedIn.bind(this);
@@ -107,23 +107,23 @@ class BlockedUserView extends AbstractListView implements ChatUserEventListener,
 
     handleBlockedUsersChanged(usernames: string[]): void {
         vLogger(`Handle Blocked Users changed to ${usernames}`);
-        this.updateView('',{});
+        this.updateViewForNamedCollection('',{});
     }
 
-    getDisplayValueForStateItem(name: string, item: any) {
+    getDisplayValueForItemInNamedCollection(name: string, item: any) {
         return item.username;
     }
 
-    getSecondaryModifierForStateItem(name: string, item: any):Modifier{
+    getSecondaryModifierForItemInNamedCollection(name: string, item: any):Modifier{
         return Modifier.warning;
     }
 
 
-    getIdForStateItem(name: string, item: any): string {
+    getIdForItemInNamedCollection(name: string, item: any): string {
         return item.id;
     }
 
-    updateView(name: string, newState: any) {
+    updateViewForNamedCollection(name: string, newState: any) {
         // find the blocked users in the user list
         let blockedUsers:any[] = [];
         const users:any[] = this.stateManager?.getStateByName(STATE_NAMES.users);
@@ -135,7 +135,7 @@ class BlockedUserView extends AbstractListView implements ChatUserEventListener,
             })
         }
 
-        super.updateView(name, blockedUsers);
+        super.updateViewForNamedCollection(name, blockedUsers);
     }
 
     itemDropped(view: View, droppedItem: any): void {

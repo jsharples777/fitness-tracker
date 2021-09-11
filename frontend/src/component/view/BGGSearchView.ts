@@ -3,7 +3,7 @@ import browserUtil from "../../util/BrowserUtil";
 import DownloadManager from "../../network/DownloadManager";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import AbstractListView from "../../ui-framework/AbstractListView";
+import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
 import {API_Config, DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
@@ -11,7 +11,7 @@ import {View} from "../../ui-framework/View";
 const vLogger = debug('board-game-search-sidebar');
 const vLoggerDetail = debug('board-game-search-sidebar:detail');
 
-class BGGSearchView extends AbstractListView implements ViewListener{
+class BGGSearchView extends AbstractStatefulView implements ViewListener{
     // @ts-ignore
     private formEl: HTMLElement;
     // @ts-ignore
@@ -64,7 +64,7 @@ class BGGSearchView extends AbstractListView implements ViewListener{
         if (status >= 200 && status <= 299) { // do we have any data?
             vLoggerDetail(data);
             vLoggerDetail(data.data.findBoardGames);
-            if (this.stateManager && this.stateName) this.stateManager.setStateByName(this.stateName, data.data.findBoardGames, true);
+            if (this.stateManager && this.collectionName) this.stateManager.setStateByName(this.collectionName, data.data.findBoardGames, true);
         }
     }
 
@@ -84,15 +84,15 @@ class BGGSearchView extends AbstractListView implements ViewListener{
         super.onDocumentLoaded();
     }
 
-    getIdForStateItem(name: string, item: any) {
+    getIdForItemInNamedCollection(name: string, item: any) {
         return item.gameId;
     }
 
-    getDisplayValueForStateItem(name: string, item: any) {
+    getDisplayValueForItemInNamedCollection(name: string, item: any) {
         return `${item.name} (${item.year})     `;
     }
 
-    compareStateItemsForEquality(item1: any, item2: any): boolean {
+    compareItemsForEquality(item1: any, item2: any): boolean {
         let result = false;
         if (item1.gameId && item2.gameId) {
             const parsed1 = parseInt(item1.gameId);
@@ -149,7 +149,7 @@ class BGGSearchView extends AbstractListView implements ViewListener{
     itemDeleted(view: View, selectedItem: any): void {
         /* listen for our own deletes as we are expected to implement them */
         vLoggerDetail(`Handling delete of board game search result for game ${selectedItem.gameId}`);
-        this.stateManager?.removeItemFromState(STATE_NAMES.bggSearchResults,selectedItem,this.compareStateItemsForEquality,true);
+        this.stateManager?.removeItemFromState(STATE_NAMES.bggSearchResults,selectedItem,this.compareItemsForEquality,true);
     }
 
     itemDragStarted(view: View, selectedItem: any): void {}

@@ -46,7 +46,42 @@ class Controller implements StateChangeListener {
         this.clientSideStorage = clientSideStorage;
         // setup the API calls
 
+        let graphSM = new GraphQLApiStateManager();
+        graphSM.initialise([
+            {
+                stateName: STATE_NAMES.users,
+                apiURL: this.getServerAPIURL() + API_Config.graphQL,
+                apis: {
+                    find: '',
+                    create: '',
+                    destroy: '',
+                    update: '',
+                    findAll: API_Config.findUsers.queryString,
+                },
+                data: {
+                    find: '',
+                    create: '',
+                    destroy: '',
+                    update: '',
+                    findAll: API_Config.findUsers.resultName,
+                },
+                isActive: true
 
+            }
+
+        ]);
+
+
+        let aggregateSM = AggregateStateManager.getInstance();
+        let memorySM = MemoryBufferStateManager.getInstance();
+
+        let asyncSM = new AsyncStateManagerWrapper(aggregateSM, graphSM);
+
+
+        aggregateSM.addStateManager(memorySM, [], false);
+        aggregateSM.addStateManager(asyncSM, [STATE_NAMES.recentUserSearches, STATE_NAMES.boardGames, STATE_NAMES.scores], false);
+
+        this.stateManager = aggregateSM;
 
         // state listener
         this.stateChanged = this.stateChanged.bind(this);
@@ -94,8 +129,19 @@ class Controller implements StateChangeListener {
             // let the application view know about message counts
             chatManager.setUnreadCountListener(this.applicationView);
 
-            //chatManager.login();
+            chatManager.login();
+            // load the users
+            this.getStateManager().getStateByName(STATE_NAMES.users);
         }
+        let currentGameList: any[] = this.displayedBoardGamesStateManager.getStateByName(STATE_NAMES.boardGames);
+        currentGameList = this.cleanupBoardGameState(currentGameList);
+
+
+        // load board games from local storage if any
+        this.applicationView.setState({boardGames: currentGameList});
+
+        // download the current board game collection
+        this.downloadAndSyncSavedBoardGameCollection();
     }
 
     public getStateManager(): StateManager {
@@ -119,8 +165,8 @@ class Controller implements StateChangeListener {
         try {
             // @ts-ignore
             if (loggedInUser) {
-              // @ts-ignore
-                result = loggedInUser.id;
+                // @ts-ignore
+                result = loggedInUser._id;
             }
         } catch (error) {
         }

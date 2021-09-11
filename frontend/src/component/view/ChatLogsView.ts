@@ -4,7 +4,7 @@ import {NotificationController} from "../../socket/NotificationController";
 import {ChatManager} from "../../socket/ChatManager";
 import {ChatLog, Invitation, Message} from "../../socket/Types";
 import {ViewListener} from "../../ui-framework/ViewListener";
-import AbstractListView from "../../ui-framework/AbstractListView";
+import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {View} from "../../ui-framework/View";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
@@ -14,7 +14,7 @@ import {isSame, isSameRoom} from "../../util/EqualityFunctions";
 
 const csLogger = debug('chat-sidebar');
 
-class ChatLogsView extends AbstractListView implements ChatEventListener,ViewListener {
+class ChatLogsView extends AbstractStatefulView implements ChatEventListener,ViewListener {
     protected selectedChatLog:ChatLog|null = null;
 
     private static DOMConfig: ViewDOMConfig = {
@@ -59,7 +59,7 @@ class ChatLogsView extends AbstractListView implements ChatEventListener,ViewLis
         NotificationController.getInstance().addListener(this);
     }
 
-    compareStateItemsForEquality(item1:any, item2:any) :boolean {
+    compareItemsForEquality(item1:any, item2:any) :boolean {
         return isSameRoom(item1,item2);
     }
 
@@ -84,15 +84,15 @@ class ChatLogsView extends AbstractListView implements ChatEventListener,ViewLis
         this.updateStateManager();
     }
 
-    getIdForStateItem(name: string, item: any) {
+    getIdForItemInNamedCollection(name: string, item: any) {
         return item.roomName;
     }
 
-    getDisplayValueForStateItem(name: string, item: any) {
+    getDisplayValueForItemInNamedCollection(name: string, item: any) {
         return item.users.join(',');
     }
 
-    getModifierForStateItem(name: string, item: any) {
+    getModifierForItemInNamedCollection(name: string, item: any) {
         let result = Modifier.inactive;
         if (this.selectedChatLog) {
             if (this.selectedChatLog.roomName === item.roomName) {
@@ -103,8 +103,8 @@ class ChatLogsView extends AbstractListView implements ChatEventListener,ViewLis
         return result;
     }
 
-    getSecondaryModifierForStateItem(name: string, item: any) {
-        return this.getModifierForStateItem(name, item);
+    getSecondaryModifierForItemInNamedCollection(name: string, item: any) {
+        return this.getModifierForItemInNamedCollection(name, item);
     }
 
 
@@ -129,7 +129,7 @@ class ChatLogsView extends AbstractListView implements ChatEventListener,ViewLis
         this.updateStateManager();
     }
 
-    getBadgeValue(name: string, item: any): number {
+    getBadgeValueForItemInNamedCollection(name: string, item: any): number {
         return item.numOfNewMessages;
     }
 

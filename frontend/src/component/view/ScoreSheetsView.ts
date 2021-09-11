@@ -1,7 +1,7 @@
 import debug from 'debug';
 import moment from "moment";
 import Controller from "../../Controller";
-import AbstractListView from "../../ui-framework/AbstractListView";
+import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
 import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {ViewListener} from "../../ui-framework/ViewListener";
 import {View} from "../../ui-framework/View";
@@ -12,7 +12,7 @@ import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 const csLogger = debug('score-sheet-sidebar');
 const csLoggerDetail = debug('score-sheet-sidebar:detail');
 
-class ScoreSheetsView extends AbstractListView implements ViewListener{
+class ScoreSheetsView extends AbstractStatefulView implements ViewListener{
     protected selectedBoardGame: any | null = null;
     static SCORESHEETS_ViewConfig:ViewDOMConfig = {
         resultsContainerId:'scoreSheets',
@@ -59,7 +59,7 @@ class ScoreSheetsView extends AbstractListView implements ViewListener{
         }
     }
 
-    getDisplayValueForStateItem(name: string, item: any) {
+    getDisplayValueForItemInNamedCollection(name: string, item: any) {
         let buffer = '';
         buffer += `<h5 class="card-title">${this.selectedBoardGame.name} (${this.selectedBoardGame.year})</h5>`;
         buffer += `<p class="card-text">Played On: ${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</p>`;
@@ -103,11 +103,11 @@ class ScoreSheetsView extends AbstractListView implements ViewListener{
         return buffer;
     }
 
-    getBackgroundImage(name: string, item: any): string {
+    getBackgroundImageForItemInNamedCollection(name: string, item: any): string {
         return './img/scorecard-vertical.jpg';
     }
 
-    getIdForStateItem(name: string, item: any): string {
+    getIdForItemInNamedCollection(name: string, item: any): string {
         return item.id;
     }
 
