@@ -184,7 +184,15 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
             const shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
             avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource} - ${shouldDelete}`);
             if (shouldDelete) {
-               AlertManager.getInstance().startAlert(this, this.getName(),`Are you sure you want to delete this information?`,selectedItem);
+               // do we need to confirm?
+               if (this.uiConfig.detail.quickDelete) {
+                   this.selectedItem = null;
+                   this.eventForwarder.itemDeleted(this, selectedItem);
+               }
+               else {
+                   AlertManager.getInstance().startAlert(this, this.getName(),`Are you sure you want to delete this information?`,selectedItem);
+               }
+
             }
         }
     }

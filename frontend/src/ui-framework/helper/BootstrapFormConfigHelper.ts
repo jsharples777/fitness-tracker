@@ -4,6 +4,7 @@ import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/
 
 import debug from 'debug';
 import {RBGFieldOperations} from "./RBGFieldOperations";
+import {FIELD_CreatedOn, FIELD_ModifiedOn} from "../../model/BasicObjectDefinitionFactory";
 
 const logger = debug('bootstrap-form-config-helper');
 
@@ -21,7 +22,7 @@ export class BootstrapFormConfigHelper {
     private constructor() {
     }
 
-    public generateFormConfig(dataObjDef: DataObjectDefinition): FormUIDefinition {
+    public generateFormConfig(dataObjDef: DataObjectDefinition,hideModifierFields:boolean = false): FormUIDefinition {
         let fieldOperations: BasicFieldOperations = new BasicFieldOperations();
         let rbgFieldOperation:RBGFieldOperations = new RBGFieldOperations();
 
@@ -33,9 +34,29 @@ export class BootstrapFormConfigHelper {
             switch (fieldDef.type) {
                 case (FieldType.time):
                 case (FieldType.text):
-                case (FieldType.datetime):
                 case (FieldType.date):
                 case (FieldType.shortTime):{
+                    break;
+                }
+                case (FieldType.datetime): {
+                    // is this the created or modified date
+                    if (hideModifierFields) {
+                        if (fieldDef.id === FIELD_CreatedOn) {
+                            fieldType = UIFieldType.hidden;
+                        }
+                        if (fieldDef.id === FIELD_ModifiedOn) {
+                            fieldType = UIFieldType.hidden;
+                        }
+                    }
+                    break;
+                }
+                case (FieldType.userId): {
+                    if (hideModifierFields) {
+                        fieldType = UIFieldType.hidden;
+                    }
+                    else {
+                        fieldType = UIFieldType.text;
+                    }
                     break;
                 }
                 case (FieldType.uuid):

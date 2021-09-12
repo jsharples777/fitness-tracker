@@ -1,7 +1,5 @@
 /* eslint "react/react-in-jsx-scope":"off" */
 /* eslint "react/jsx-no-undef":"off" */
-import React from 'react';
-import ReactDOM from 'react-dom';
 import debug from 'debug';
 
 import Controller from './Controller';
@@ -20,7 +18,7 @@ import {ExerciseTypesView} from "./component/view/ExerciseTypesView";
 
 const logger = debug('app');
 
-class Root extends React.Component implements UnreadMessageCountListener {
+class Root implements UnreadMessageCountListener {
 
     // @ts-ignore
     private exerciseTypesSidebar: ExerciseTypesSidebar;
@@ -37,11 +35,9 @@ class Root extends React.Component implements UnreadMessageCountListener {
     private chatNavigationItem: HTMLAnchorElement | null;
 
     constructor() {
-        // @ts-ignore
-        super();
-        this.state = {};
         // event handlers
         this.handleShowUserSearch = this.handleShowUserSearch.bind(this);
+        this.handleShowExerciseTypes = this.handleShowExerciseTypes.bind(this);
         this.handleShowChat = this.handleShowChat.bind(this);
 
         Controller.getInstance().connectToApplication(this, window.localStorage);
@@ -51,22 +47,8 @@ class Root extends React.Component implements UnreadMessageCountListener {
         return Controller.getInstance().getLoggedInUserId();
     }
 
-    render() {
-        logger("Rendering App");
-        // @ts-ignore
-
-
-        return (
-            <div className="root container-fluid">
-                <div className="card-group">
-
-                </div>
-            </div>
-        );
-    }
-
-    async componentDidMount() {
-        logger('component Did Mount');
+    onDocumentLoad() {
+        logger('document loaded');
 
         this.chatSidebar = new ChatRoomsSidebar();
         // add the views to the chat side bar
@@ -100,6 +82,8 @@ class Root extends React.Component implements UnreadMessageCountListener {
             // @ts-ignore
             document.getElementById(NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch);
             // @ts-ignore
+            document.getElementById(NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes);
+            // @ts-ignore
             this.chatNavigationItem = document.getElementById(NAVIGATION.chatId);
 
             // @ts-ignore
@@ -111,34 +95,11 @@ class Root extends React.Component implements UnreadMessageCountListener {
         // a reference to the div containing ourselves
         // @ts-ignore
         this.thisEl = document.getElementById('root');
+
         Controller.getInstance().initialise();
 
         // // now lets break things with a new form
         // let dataObjDef: DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObjectDefinition("test", "Test", true, true);
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "email", "Email", FieldType.email, true, "We totally won't message with this...");
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float1", "Float", FieldType.float, true, "A number yo....");
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float2", "Float2", FieldType.float, true, "A number 2");
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "checkbox", "Checkbox?", FieldType.boolean, true, "Yes or No?");
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "date", "Date", FieldType.date, true, "Date yep");
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "time", "Time", FieldType.shortTime, true, "How long till we get there?");
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "textarea", "TextArea", FieldType.largeText, true, "An essay");
-        //
-        // let dataSource: SimpleValueDataSource = new SimpleValueDataSource([
-        //     {name: ' ', value: ' '},
-        //     {name: 'Justice League', value: 'jl'},
-        //     {name: 'Marvel', value: 'marvel'},
-        //     {name: 'Other', value: 'other'},
-        //
-        // ]);
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "select", "Select", FieldType.choice, true, "Some choices", dataSource);
-        // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "rbg", "RBG", FieldType.limitedChoice, true, "Some similar choices",
-        //     new SimpleValueDataSource([
-        //         {name: 'Justice League', value: 'jl'},
-        //         {name: 'Marvel', value: 'marvel'},
-        //         {name: 'Other', value: 'other'},
-        //
-        //     ]));
-        // // okay lets make a form
         // let renderer = new FormDetailViewRenderer("testForm",dataObjDef);
         // let view = new DetailViewImplementation({},renderer);
         //
@@ -228,6 +189,19 @@ class Root extends React.Component implements UnreadMessageCountListener {
         this.userSearchSidebar.eventShow(event);
     }
 
+    handleShowExerciseTypes(event: Event) {
+        logger('Handling Show Exercise Types');
+        event.preventDefault();
+        //this.hideAllSideBars();
+        // prevent anything from happening if we are not logged in
+        if (!Controller.getInstance().isLoggedIn()) {
+            // @ts-ignore
+            window.location.href = API_Config.login;
+            return;
+        }
+        this.exerciseTypesSidebar.eventShow(event);
+    }
+
     handleShowChat(roomName: string | null) {
         logger('Handling Show Chat');
         //event.preventDefault();
@@ -261,7 +235,8 @@ class Root extends React.Component implements UnreadMessageCountListener {
 localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 debug.log = console.info.bind(console);
 
-// @ts-ignore
-const element = <Root className="container-fluid justify-content-around"/>;
-
-ReactDOM.render(element, document.getElementById('root'));
+$(function() {
+    console.log("Hello")
+    const root = new Root();
+    root.onDocumentLoad();
+});

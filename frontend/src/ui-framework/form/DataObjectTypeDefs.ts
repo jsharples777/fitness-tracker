@@ -18,7 +18,8 @@ export enum FieldType {
     userId = 'User',
     choice = 'Choice',
     limitedChoice = 'Limited Choice',
-    largeText = 'TextArea'
+    largeText = 'TextArea',
+    collection = 'Collection'
 }
 
 export interface FieldValueGenerator {
@@ -37,6 +38,7 @@ export type FieldDefinition = {
     mandatory:boolean,
     displayOnly?:boolean,
     description?:string,
+    collectionOfDataObjectId?:string,
     generator?:{
         onCreation:boolean,
         onModify:boolean,

@@ -55,9 +55,6 @@ export type DescriptionText = {
     elementClasses:string,
 }
 
-
-
-
 export type FieldUIConfig = {
     field: FieldDefinition,
     elementType: UIFieldType,

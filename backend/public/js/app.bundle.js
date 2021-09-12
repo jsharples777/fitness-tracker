@@ -1,6 +1,266 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/App.ts":
+/*!********************!*\
+  !*** ./src/App.ts ***!
+  \********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
+/* harmony import */ var _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component/view/UserSearchView */ "./src/component/view/UserSearchView.ts");
+/* harmony import */ var _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./component/view/ChatLogsView */ "./src/component/view/ChatLogsView.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component/sidebar/UserSearchSidebar */ "./src/component/sidebar/UserSearchSidebar.ts");
+/* harmony import */ var _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component/sidebar/ChatRoomsSidebar */ "./src/component/sidebar/ChatRoomsSidebar.ts");
+/* harmony import */ var _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component/sidebar/ExerciseTypesSidebar */ "./src/component/sidebar/ExerciseTypesSidebar.ts");
+/* harmony import */ var _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./component/view/ChatLogDetailView */ "./src/component/view/ChatLogDetailView.ts");
+/* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
+/* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
+/* harmony import */ var _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/ExerciseTypesView */ "./src/component/view/ExerciseTypesView.ts");
+/* eslint "react/react-in-jsx-scope":"off" */
+
+/* eslint "react/jsx-no-undef":"off" */
+
+
+
+
+
+
+
+
+
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_0___default()('app');
+
+var Root = /*#__PURE__*/function () {
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  // @ts-ignore
+  function Root() {
+    // event handlers
+    this.handleShowUserSearch = this.handleShowUserSearch.bind(this);
+    this.handleShowExerciseTypes = this.handleShowExerciseTypes.bind(this);
+    this.handleShowChat = this.handleShowChat.bind(this);
+    _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().connectToApplication(this, window.localStorage);
+  }
+
+  var _proto = Root.prototype;
+
+  _proto.getCurrentUser = function getCurrentUser() {
+    return _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getLoggedInUserId();
+  };
+
+  _proto.onDocumentLoad = function onDocumentLoad() {
+    logger('document loaded');
+    this.chatSidebar = new _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"](); // add the views to the chat side bar
+
+    this.chatView = new _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_3__["default"]();
+    this.chatSidebar.addView(this.chatView, {
+      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLogs
+    });
+    var chatLogView = new _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.chatSidebar.addView(chatLogView, {
+      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLog
+    });
+    this.chatView.addEventListener(chatLogView);
+    this.chatSidebar.onDocumentLoaded();
+    this.userSearchSidebar = new _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"](); // add the subviews for the user search
+
+    var recentSearches = new _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_2__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.userSearchSidebar.addView(recentSearches, {
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.recentSearches
+    });
+    var favouriteUsers = new _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.userSearchSidebar.addView(favouriteUsers, {
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.favourites
+    });
+    var blockedUsers = new _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.userSearchSidebar.addView(blockedUsers, {
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.blocked
+    });
+    this.userSearchSidebar.onDocumentLoaded();
+    this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"]();
+    var exerciseTypes = new _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_11__.ExerciseTypesView();
+    this.exerciseTypesSidebar.addView(exerciseTypes, {
+      containerId: _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"].SidebarContainers.container
+    });
+    this.exerciseTypesSidebar.onDocumentLoaded(); // navigation item handlers
+
+    if (document) {
+      // @ts-ignore
+      document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
+
+      document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes); // @ts-ignore
+
+      this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.chatId); // @ts-ignore
+
+      this.chatNavigationItem.addEventListener('click', this.handleShowChat); // @ts-ignore
+      //document.getElementById(NAVIGATION.showMyWorkouts).addEventListener('click', this.handleShowWorkouts);
+    } // a reference to the div containing ourselves
+    // @ts-ignore
+
+
+    this.thisEl = document.getElementById('root');
+    _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise(); // // now lets break things with a new form
+    // let dataObjDef: DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObjectDefinition("test", "Test", true, true);
+    // let renderer = new FormDetailViewRenderer("testForm",dataObjDef);
+    // let view = new DetailViewImplementation({},renderer);
+    //
+    // // create a test object
+    // let dataObj = {
+    //     email: 'jamie.sharples@gmail.com',
+    //     float1: 3.1,
+    //     float2: 2.3,
+    //     checkbox: true,
+    //     date: '20210910',
+    //     time: '12:32',
+    //     textarea: 'Test',
+    //     select: 'jl',
+    //     rbg: 'marvel'
+    // };
+    // // @ts-ignore
+    // dataObj[FIELD_ID] = '2';
+    // // @ts-ignore
+    // dataObj[FIELD_CreatedOn] = '20201009000000';
+    // // @ts-ignore
+    // dataObj[FIELD_CreatedBy] = 'Jim';
+    //
+    // view.onDocumentLoaded();
+    // const form = renderer.getForm();
+    //
+    //
+    //
+    // // change the select options
+    // dataSource.addValueOption('X-Men', 'xmen');
+    //
+    // // add a simple validation rule to the two numbers
+    // let rule: ValidationRule = {
+    //     targetDataFieldId: 'float1',
+    //     response: ConditionResponse.invalid,
+    //     conditions: [
+    //         {
+    //             sourceDataFieldId: 'float2',
+    //             comparison: ComparisonType.lessThanEqual,
+    //         }
+    //     ]
+    // }
+    // ValidationManager.getInstance().addRuleToForm(form, rule);
+    // rule = {
+    //     targetDataFieldId: 'select',
+    //     response: ConditionResponse.hide,
+    //     conditions: [
+    //         {
+    //             sourceDataFieldId: 'rbg',
+    //             comparison: ComparisonType.hasValue,
+    //             values: 'other'
+    //         }
+    //     ]
+    // }
+    // ValidationManager.getInstance().addRuleToForm(form, rule);
+    // rule = {
+    //     targetDataFieldId: 'select',
+    //     response: ConditionResponse.show,
+    //     conditions: [
+    //         {
+    //             sourceDataFieldId: 'rbg',
+    //             comparison: ComparisonType.hasValue,
+    //             values: 'jl,marvel'
+    //         }
+    //     ]
+    // }
+    // ValidationManager.getInstance().addRuleToForm(form, rule);
+    // view.displayItem(dataObj);
+    // view.show();
+  };
+
+  _proto.hideAllSideBars = function hideAllSideBars() {
+    this.chatSidebar.eventHide(null);
+    this.userSearchSidebar.eventHide(null);
+  };
+
+  _proto.handleShowUserSearch = function handleShowUserSearch(event) {
+    logger('Handling Show User Search');
+    event.preventDefault(); //this.hideAllSideBars();
+    // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+      // @ts-ignore
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      return;
+    }
+
+    this.userSearchSidebar.eventShow(event);
+  };
+
+  _proto.handleShowExerciseTypes = function handleShowExerciseTypes(event) {
+    logger('Handling Show Exercise Types');
+    event.preventDefault(); //this.hideAllSideBars();
+    // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+      // @ts-ignore
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      return;
+    }
+
+    this.exerciseTypesSidebar.eventShow(event);
+  };
+
+  _proto.handleShowChat = function handleShowChat(roomName) {
+    logger('Handling Show Chat'); //event.preventDefault();
+    //this.hideAllSideBars();
+    // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+      // @ts-ignore
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      return;
+    }
+
+    this.chatSidebar.eventShow(null);
+
+    if (roomName) {
+      this.chatView.selectChatRoom(roomName);
+    }
+  };
+
+  _proto.countChanged = function countChanged(newCount) {
+    //
+    var buffer = 'Chat <i class="fas fa-inbox"></i>';
+
+    if (newCount > 0) {
+      buffer += " <span class=\"badge badge-pill badge-primary\">&nbsp;" + newCount + "&nbsp;</span>";
+    }
+
+    if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = "" + buffer;
+  };
+
+  return Root;
+}(); //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
+//localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
+//localStorage.debug = 'basic-form basic-form-detail validation-manager abstract-field';
+
+
+localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
+(debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
+$(function () {
+  console.log("Hello");
+  var root = new Root();
+  root.onDocumentLoad();
+});
+
+/***/ }),
+
 /***/ "./src/AppTypes.ts":
 /*!*************************!*\
   !*** ./src/AppTypes.ts ***!
@@ -42,12 +302,15 @@ var API_Config = {
 var NAVIGATION = {
   showMyWorkouts: 'navigationItemMyWorkouts',
   userSearchId: 'navigationItemUserSearch',
+  exerciseTypesId: 'navigationItemExerciseTypes',
   chatId: 'navigationItemChat'
 };
 var DRAGGABLE = {
   typeUser: 'user',
+  typeExerciseType: 'exerciseType',
   fromUserSearch: 'userSearch',
-  fromFavourites: 'favourites'
+  fromFavourites: 'favourites',
+  fromExerciseTypes: 'exerciseTypes'
 };
 var VIEW_NAME = {
   blockedUsers: 'blockedUsers',
@@ -82,6 +345,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _socket_NotificationController__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./socket/NotificationController */ "./src/socket/NotificationController.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
 /* harmony import */ var _state_RESTApiStateManager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./state/RESTApiStateManager */ "./src/state/RESTApiStateManager.ts");
+/* harmony import */ var _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./ui-framework/form/DataObjectTypeDefs */ "./src/ui-framework/form/DataObjectTypeDefs.ts");
+/* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+/* harmony import */ var _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./ui-framework/helper/SimpleValueDataSource */ "./src/ui-framework/helper/SimpleValueDataSource.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+
+
+
+
+
 
 
 
@@ -173,7 +446,34 @@ var Controller = /*#__PURE__*/function () {
       chatManager.login(); // load the users
 
       this.getStateManager().getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.users);
-    }
+      this.getStateManager().getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.exerciseTypes);
+    } // create the object definitions for the exercise type and workout
+
+
+    var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().addDefinition('exerciseType', 'Exercise', true, true, true, '_id');
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "type", "Type", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.limitedChoice, true, "Choose cardio or strength", new _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_13__.SimpleValueDataSource([{
+      name: 'Cardio',
+      value: 'cardio'
+    }, {
+      name: 'Strength',
+      value: 'strength'
+    }]));
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "name", "Name", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.text, true, "Exercise name");
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "duration", "Duration", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.shortTime, true, "Exercise time");
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "sets", "Sets", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.integer, false, "Number of sets");
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "reps", "Repetitions", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.integer, false, "Number of reps");
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "weight", "Weight", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.float, false, "Weight used");
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "distance", "Distance", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.float, false, "Distance travelled");
+    cLogger("Exercise type data object definition");
+    cLogger(exerciseTypeDefinition);
+    cLoggerDetail(_model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
+    var workoutDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().addDefinition('workout', 'Workout', true, true, true, '_id');
+    var exercisesFieldDefinition = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.collection, true, "Exercises in this workout");
+    exercisesFieldDefinition.idType = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_14__.KeyType.collection;
+    exercisesFieldDefinition.collectionOfDataObjectId = exerciseTypeDefinition.id;
+    cLogger("Workout data object definition");
+    cLogger(workoutDefinition);
+    cLoggerDetail(_model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().findDefinition('workout'));
   };
 
   _proto.getStateManager = function getStateManager() {
@@ -754,6 +1054,7 @@ BlockedUserView.DOMConfig = {
     textElementType: 'span',
     textElementClasses: 'mb-1',
     select: true,
+    quickDelete: true,
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
       iconClasses: 'fas fa-trash-alt'
@@ -1517,6 +1818,18 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
     return item.name;
   };
 
+  _proto.getSecondaryModifierForItemInNamedCollection = function getSecondaryModifierForItemInNamedCollection(name, item) {
+    if (item.type) {
+      if (item.type === 'cardio') {
+        return _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active;
+      } else {
+        return _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal;
+      }
+    }
+
+    return _AbstractStatefulColl.prototype.getSecondaryModifierForItemInNamedCollection.call(this, name, item);
+  };
+
   return ExerciseTypesView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__["default"]);
 ExerciseTypesView.DOMConfig = {
@@ -1532,8 +1845,14 @@ ExerciseTypesView.DOMConfig = {
   dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.VIEW_NAME.exerciseTypes,
   modifiers: {
     normal: '',
-    inactive: 'list-group-item-dark',
+    inactive: 'list-group-item-light',
     active: 'list-group-item-primary',
+    warning: ''
+  },
+  icons: {
+    normal: 'fas fa-dumbbell',
+    inactive: '',
+    active: 'fas fa-running',
     warning: ''
   },
   detail: {
@@ -1544,6 +1863,10 @@ ExerciseTypesView.DOMConfig = {
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
       iconClasses: 'text-black fas fa-sign-out-alt'
+    },
+    drag: {
+      type: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.typeExerciseType,
+      from: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.fromExerciseTypes
     }
   }
 };
@@ -1792,6 +2115,7 @@ FavouriteUserView.DOMConfig = {
     textElementType: 'span',
     textElementClasses: 'mb-1',
     select: true,
+    quickDelete: true,
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
       iconClasses: 'fas fa-trash-alt'
@@ -2126,6 +2450,7 @@ UserSearchView.DOMConfig = {
     textElementType: 'span',
     textElementClasses: 'mb-1',
     select: true,
+    quickDelete: true,
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
       iconClasses: 'fas fa-trash-alt'
@@ -2146,6 +2471,311 @@ UserSearchView.DOMConfig = {
   }]
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserSearchView);
+
+/***/ }),
+
+/***/ "./src/model/BasicObjectDefinitionFactory.ts":
+/*!***************************************************!*\
+  !*** ./src/model/BasicObjectDefinitionFactory.ts ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "FIELD_ID": () => (/* binding */ FIELD_ID),
+/* harmony export */   "FIELD_CreatedBy": () => (/* binding */ FIELD_CreatedBy),
+/* harmony export */   "FIELD_ModifiedBy": () => (/* binding */ FIELD_ModifiedBy),
+/* harmony export */   "FIELD_CreatedOn": () => (/* binding */ FIELD_CreatedOn),
+/* harmony export */   "FIELD_ModifiedOn": () => (/* binding */ FIELD_ModifiedOn),
+/* harmony export */   "FIELD_CreatedBy_Desc": () => (/* binding */ FIELD_CreatedBy_Desc),
+/* harmony export */   "FIELD_ModifiedBy_Desc": () => (/* binding */ FIELD_ModifiedBy_Desc),
+/* harmony export */   "FIELD_CreatedOn_Desc": () => (/* binding */ FIELD_CreatedOn_Desc),
+/* harmony export */   "FIELD_ModifiedOn_Desc": () => (/* binding */ FIELD_ModifiedOn_Desc),
+/* harmony export */   "BasicObjectDefinitionFactory": () => (/* binding */ BasicObjectDefinitionFactory)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _ui_framework_helper_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ui-framework/helper/BasicFieldOperations */ "./src/ui-framework/helper/BasicFieldOperations.ts");
+/* harmony import */ var _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ui-framework/form/DataObjectTypeDefs */ "./src/ui-framework/form/DataObjectTypeDefs.ts");
+
+
+
+var FIELD_ID = 'id';
+var FIELD_CreatedBy = 'createdBy';
+var FIELD_ModifiedBy = 'modifiedBy';
+var FIELD_CreatedOn = 'createdOn';
+var FIELD_ModifiedOn = 'modifiedOn';
+var FIELD_CreatedBy_Desc = 'Created By';
+var FIELD_ModifiedBy_Desc = 'Last Modified By';
+var FIELD_CreatedOn_Desc = 'Created On';
+var FIELD_ModifiedOn_Desc = 'Last Modified On';
+var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
+  BasicObjectDefinitionFactory.getInstance = function getInstance() {
+    if (!BasicObjectDefinitionFactory._instance) {
+      BasicObjectDefinitionFactory._instance = new BasicObjectDefinitionFactory();
+    }
+
+    return BasicObjectDefinitionFactory._instance;
+  };
+
+  function BasicObjectDefinitionFactory() {}
+
+  var _proto = BasicObjectDefinitionFactory.prototype;
+
+  _proto.createBasicObjectDefinition = function createBasicObjectDefinition(id, displayName, hasDataId, dataIdIsUUID, createModifierFields, idFieldName) {
+    if (createModifierFields === void 0) {
+      createModifierFields = true;
+    }
+
+    if (idFieldName === void 0) {
+      idFieldName = FIELD_ID;
+    }
+
+    var objDef = {
+      id: id,
+      displayName: displayName,
+      fields: []
+    };
+    var ops = new _ui_framework_helper_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_1__.BasicFieldOperations(); // do we need an id field?
+
+    if (hasDataId) {
+      var fieldType = _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.id;
+
+      if (dataIdIsUUID) {
+        fieldType = _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.uuid;
+      }
+
+      var fieldDef = {
+        id: idFieldName,
+        isKey: true,
+        idType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.number,
+        type: fieldType,
+        displayName: 'Id',
+        mandatory: true,
+        generator: {
+          generator: ops,
+          onModify: false,
+          onCreation: true
+        }
+      };
+      objDef.fields.push(fieldDef);
+    } // add fields for created and modified
+
+
+    if (createModifierFields) {
+      this.addCreatedDateToArray(objDef.fields);
+      this.addCreatedByToArray(objDef.fields);
+      this.addModifiedByToArray(objDef.fields);
+      this.addModifiedDateToArray(objDef.fields);
+    }
+
+    return objDef;
+  };
+
+  _proto.addCreatedDateToArray = function addCreatedDateToArray(fields) {
+    var fieldDef = this.addStringFieldToArray(fields, FIELD_CreatedOn, FIELD_CreatedOn_Desc, _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime, true, FIELD_CreatedOn_Desc); // add generator
+
+    fieldDef.generator = {
+      generator: new _ui_framework_helper_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_1__.BasicFieldOperations(),
+      onCreation: true,
+      onModify: false
+    };
+    fieldDef.displayOnly = true;
+  };
+
+  _proto.addModifiedDateToArray = function addModifiedDateToArray(fields) {
+    var fieldDef = this.addStringFieldToArray(fields, FIELD_ModifiedOn, FIELD_ModifiedOn_Desc, _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime, true, FIELD_ModifiedOn_Desc); // add generator
+
+    fieldDef.generator = {
+      generator: new _ui_framework_helper_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_1__.BasicFieldOperations(),
+      onCreation: true,
+      onModify: true
+    };
+    fieldDef.displayOnly = true;
+  };
+
+  _proto.addCreatedByToArray = function addCreatedByToArray(fields) {
+    var fieldDef = this.addNumericFieldToArray(fields, FIELD_CreatedBy, FIELD_CreatedBy_Desc, _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.userId, true, FIELD_CreatedBy_Desc); // add generator
+
+    fieldDef.generator = {
+      generator: new _ui_framework_helper_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_1__.BasicFieldOperations(),
+      onCreation: true,
+      onModify: false
+    };
+    fieldDef.displayOnly = true;
+  };
+
+  _proto.addModifiedByToArray = function addModifiedByToArray(fields) {
+    var fieldDef = this.addStringFieldToArray(fields, FIELD_ModifiedBy, FIELD_ModifiedBy_Desc, _ui_framework_form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.userId, true, FIELD_ModifiedBy_Desc); // add generator
+
+    fieldDef.generator = {
+      generator: new _ui_framework_helper_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_1__.BasicFieldOperations(),
+      onCreation: true,
+      onModify: true
+    };
+    fieldDef.displayOnly = true;
+  };
+
+  _proto.addFieldToArray = function addFieldToArray(fields, keyType, id, displayName, type, isMandatory, description, datasource) {
+    if (isMandatory === void 0) {
+      isMandatory = false;
+    }
+
+    if (description === void 0) {
+      description = null;
+    }
+
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    var fieldDef = {
+      id: id,
+      isKey: false,
+      idType: keyType,
+      type: type,
+      displayName: displayName,
+      mandatory: isMandatory,
+      displayOnly: false
+    };
+    if (description) fieldDef.description = description;
+    if (datasource) fieldDef.dataSource = datasource;
+    fields.push(fieldDef);
+    return fieldDef;
+  };
+
+  _proto.addStringFieldToArray = function addStringFieldToArray(fields, id, displayName, type, isMandatory, description, datasource) {
+    if (isMandatory === void 0) {
+      isMandatory = false;
+    }
+
+    if (description === void 0) {
+      description = null;
+    }
+
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    return this.addFieldToArray(fields, _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.string, id, displayName, type, isMandatory, description, datasource);
+  };
+
+  _proto.addNumericFieldToArray = function addNumericFieldToArray(fields, id, displayName, type, isMandatory, description, datasource) {
+    if (isMandatory === void 0) {
+      isMandatory = false;
+    }
+
+    if (description === void 0) {
+      description = null;
+    }
+
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    return this.addFieldToArray(fields, _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.string, id, displayName, type, isMandatory, description, datasource);
+  };
+
+  _proto.addStringFieldToObjDefinition = function addStringFieldToObjDefinition(objDef, id, displayName, type, isMandatory, description, datasource) {
+    if (isMandatory === void 0) {
+      isMandatory = false;
+    }
+
+    if (description === void 0) {
+      description = null;
+    }
+
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    return this.addStringFieldToArray(objDef.fields, id, displayName, type, isMandatory, description, datasource);
+  };
+
+  _proto.addNumericFieldToObjDefinition = function addNumericFieldToObjDefinition(objDef, id, displayName, type, isMandatory, description, datasource) {
+    if (isMandatory === void 0) {
+      isMandatory = false;
+    }
+
+    if (description === void 0) {
+      description = null;
+    }
+
+    if (datasource === void 0) {
+      datasource = null;
+    }
+
+    return this.addNumericFieldToArray(objDef.fields, id, displayName, type, isMandatory, description, datasource);
+  };
+
+  return BasicObjectDefinitionFactory;
+}();
+
+/***/ }),
+
+/***/ "./src/model/ObjectDefinitionRegistry.ts":
+/*!***********************************************!*\
+  !*** ./src/model/ObjectDefinitionRegistry.ts ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ObjectDefinitionRegistry": () => (/* binding */ ObjectDefinitionRegistry)
+/* harmony export */ });
+/* harmony import */ var _BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+
+var ObjectDefinitionRegistry = /*#__PURE__*/function () {
+  ObjectDefinitionRegistry.getInstance = function getInstance() {
+    if (!ObjectDefinitionRegistry._instance) {
+      ObjectDefinitionRegistry._instance = new ObjectDefinitionRegistry();
+    }
+
+    return ObjectDefinitionRegistry._instance;
+  };
+
+  function ObjectDefinitionRegistry() {
+    this.definitions = [];
+  }
+
+  var _proto = ObjectDefinitionRegistry.prototype;
+
+  _proto.findDefinition = function findDefinition(id) {
+    var result = null;
+    var index = this.definitions.findIndex(function (definition) {
+      return definition.id === id;
+    });
+
+    if (index >= 0) {
+      result = this.definitions[index];
+    }
+
+    return result;
+  };
+
+  _proto.addDefinition = function addDefinition(id, displayName, hasDataId, dataIdIsUUID, createModifierFields, idFieldName) {
+    if (createModifierFields === void 0) {
+      createModifierFields = true;
+    }
+
+    if (idFieldName === void 0) {
+      idFieldName = _BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_0__.FIELD_ID;
+    }
+
+    var result = this.findDefinition(id);
+
+    if (result) {
+      return result;
+    } else {
+      var definition = _BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_0__.BasicObjectDefinitionFactory.getInstance().createBasicObjectDefinition(id, displayName, hasDataId, dataIdIsUUID, createModifierFields, idFieldName);
+      this.definitions.push(definition);
+      return definition;
+    }
+  };
+
+  return ObjectDefinitionRegistry;
+}();
 
 /***/ }),
 
@@ -5658,6 +6288,7 @@ var KeyType;
   KeyType[KeyType["number"] = 0] = "number";
   KeyType[KeyType["string"] = 1] = "string";
   KeyType[KeyType["boolean"] = 2] = "boolean";
+  KeyType[KeyType["collection"] = 3] = "collection";
 })(KeyType || (KeyType = {}));
 
 var SidebarLocation;
@@ -5937,6 +6568,522 @@ var SidebarViewContainer = /*#__PURE__*/function () {
 }();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SidebarViewContainer);
+
+/***/ }),
+
+/***/ "./src/ui-framework/form/DataObjectTypeDefs.ts":
+/*!*****************************************************!*\
+  !*** ./src/ui-framework/form/DataObjectTypeDefs.ts ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "FieldType": () => (/* binding */ FieldType)
+/* harmony export */ });
+var FieldType;
+
+(function (FieldType) {
+  FieldType["id"] = "Id";
+  FieldType["uuid"] = "UUID";
+  FieldType["text"] = "Text";
+  FieldType["integer"] = "Integer";
+  FieldType["float"] = "Number";
+  FieldType["date"] = "Date";
+  FieldType["time"] = "Time";
+  FieldType["shortTime"] = "Short Time";
+  FieldType["datetime"] = "Datetime";
+  FieldType["email"] = "Email";
+  FieldType["password"] = "Password";
+  FieldType["boolean"] = "True/False";
+  FieldType["userId"] = "User";
+  FieldType["choice"] = "Choice";
+  FieldType["limitedChoice"] = "Limited Choice";
+  FieldType["largeText"] = "TextArea";
+  FieldType["collection"] = "Collection";
+})(FieldType || (FieldType = {}));
+
+/***/ }),
+
+/***/ "./src/ui-framework/helper/BasicFieldOperations.ts":
+/*!*********************************************************!*\
+  !*** ./src/ui-framework/helper/BasicFieldOperations.ts ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BasicFieldOperations": () => (/* binding */ BasicFieldOperations)
+/* harmony export */ });
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../form/DataObjectTypeDefs */ "./src/ui-framework/form/DataObjectTypeDefs.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+
+
+
+
+
+
+var flogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-field-operations-formatter');
+var vlogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-field-operations-validator');
+var glogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-field-operations-generator');
+var rlogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-field-operations-renderer');
+var BasicFieldOperations = /*#__PURE__*/function () {
+  function BasicFieldOperations() {
+    this.previousFieldValues = [];
+  }
+
+  var _proto = BasicFieldOperations.prototype;
+
+  _proto.setSubElements = function setSubElements(elements) {} // called when saving, change to final values
+  ;
+
+  _proto.formatValue = function formatValue(field, currentValue) {
+    flogger("Handling format value for field " + field.displayName + " with value " + currentValue);
+    var result = currentValue;
+
+    switch (field.type) {
+      // only need to change dates
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.date:
+        {
+          //convert to underlying number format
+          result = moment__WEBPACK_IMPORTED_MODULE_0___default()(currentValue, 'DD/MM/YYYY').format('YYYYMMDD');
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime:
+        {
+          //convert to underlying number format
+          result = moment__WEBPACK_IMPORTED_MODULE_0___default()(currentValue, 'DD/MM/YYYY HH:mm:ss').format('YYYYMMDDHHmmss');
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean:
+        {
+          result = currentValue.toLowerCase() === 'true';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.id:
+        {
+          if (field.idType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__.KeyType.number) {
+            result = parseInt(currentValue);
+          }
+
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.float:
+        {
+          var parsed = parseFloat(currentValue);
+
+          if (!isNaN(parsed)) {
+            result = parsed;
+          }
+
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.integer:
+        {
+          var _parsed = parseFloat(currentValue);
+
+          if (!isNaN(_parsed)) {
+            result = _parsed;
+          }
+
+          break;
+        }
+    }
+
+    flogger("Handling format value for field " + field.displayName + " with value " + currentValue + " - result is " + result);
+    return result;
+  };
+
+  _proto.isValidValue = function isValidValue(field, currentValue) {
+    vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue);
+    var response = {
+      isValid: true,
+      resetOnFailure: false
+    }; // basics first, is the field mandatory?
+
+    if (field.mandatory) {
+      // do we have any content?
+      if (!currentValue || currentValue.trim().length === 0) {
+        response.isValid = false;
+        response.message = field.displayName + " is required. Please enter a valid value.";
+        vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - is valid is " + response.isValid + " with message " + response.message);
+        return response;
+      } // boolean is a special case, and must be true
+
+
+      if (field.type === _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean) {
+        if (currentValue.trim().toLowerCase() !== 'true') {
+          response.isValid = false;
+          response.message = field.displayName + " is required and must be selected.";
+          vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - is valid is " + response.isValid + " with message " + response.message);
+          return response;
+        }
+      }
+    } // ok, so we have some content, we need to check if the value is a valid format with regular expressions
+
+
+    if (currentValue) {
+      switch (field.type) {
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime:
+          {
+            response.isValid = BasicFieldOperations.dateTimeRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be DD/MM/YYYY hh:mm";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.date:
+          {
+            response.isValid = BasicFieldOperations.dateRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be DD/MM/YYYY";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.float:
+          {
+            response.isValid = BasicFieldOperations.floatRegexp.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be 00.00";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.id:
+          {
+            response.isValid = BasicFieldOperations.integerRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be an integer";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.email:
+          {
+            response.isValid = BasicFieldOperations.emailRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be an email address";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.integer:
+          {
+            response.isValid = BasicFieldOperations.integerRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be an integer";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.text:
+          {
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.password:
+          {
+            response.isValid = BasicFieldOperations.basicPasswordRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be 8 to 15 letters and digits only";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.time:
+          {
+            response.isValid = BasicFieldOperations.timeRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be 24 hour time format HH:MM:SS";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.shortTime:
+          {
+            response.isValid = BasicFieldOperations.shortTimeRegex.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be 24 hour time format HH:MM";
+            }
+
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean:
+          {
+            response.isValid = BasicFieldOperations.booleanRegexp.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be true or false";
+            }
+
+            break;
+          }
+      }
+    }
+
+    vlogger("Handling is valid value for field " + field.displayName + " with value " + currentValue + " - is valid is " + response.isValid + " with message " + response.message);
+    return response;
+  };
+
+  _proto.setPreviousValue = function setPreviousValue(field, newValue) {
+    rlogger("Storing previous value for field " + field.displayName + " with  new value " + newValue);
+    var fieldValue;
+    var index = this.previousFieldValues.findIndex(function (fieldValue) {
+      return fieldValue.id === field.id;
+    });
+
+    if (index >= 0) {
+      //we have a previous value
+      fieldValue = this.previousFieldValues[index];
+      rlogger("Storing previous value for field " + field.displayName + " with new value " + newValue + " - old value was " + fieldValue);
+      fieldValue.value = newValue;
+    } else {
+      // create a new record of the value
+      fieldValue = {
+        id: field.id,
+        value: newValue
+      };
+      rlogger("Storing previous value for field " + field.displayName + " with new value " + newValue + " - NO previous");
+      this.previousFieldValues.push(fieldValue);
+    }
+  };
+
+  _proto.renderValue = function renderValue(field, currentValue) {
+    rlogger("Rendering value for field " + field.displayName + " with new value " + currentValue); // ensure we don't end up in an endless loop
+    // if the value hasn't changed return null
+    // let index = this.previousFieldValues.findIndex((fieldValue) => fieldValue.id === field.id);
+    // if (index >= 0) {
+    //     //we have a previous value
+    //     let fieldValue: FieldNameValue = this.previousFieldValues[index];
+    //     rlogger(`Rendering value for field ${field.displayName} with new value ${currentValue} - previous value ${fieldValue.value}`);
+    //     if (fieldValue.value === currentValue) return null;
+    // }
+    // either not yet seen or value has changed from previous
+
+    if (currentValue) {
+      // only attempt to render non-empty dates
+      var newValue = currentValue;
+
+      switch (field.type) {
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.date:
+          {
+            newValue = moment__WEBPACK_IMPORTED_MODULE_0___default()(currentValue, 'YYYYMMDD').format('DD/MM/YYYY');
+            break;
+          }
+
+        case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime:
+          {
+            newValue = moment__WEBPACK_IMPORTED_MODULE_0___default()(currentValue, 'YYYYMMDDHHmmss').format('DD/MM/YYYY HH:mm:ss');
+            break;
+          }
+      } // store the previous value
+
+
+      this.setPreviousValue(field, newValue);
+      rlogger("Rendering value for field " + field.displayName + " with new value " + currentValue + " - rendered to " + newValue);
+      return newValue;
+    } else {
+      // empty value, no rendering required
+      rlogger("Rendering value for field " + field.displayName + " with new value is empty - no rendering required");
+      return null;
+    }
+  };
+
+  _proto.generateValue = function generateValue(field) {
+    var result = '';
+
+    switch (field.type) {
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.datetime:
+        {
+          result = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('YYYYMMDDHHmmss');
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.date:
+        {
+          result = moment__WEBPACK_IMPORTED_MODULE_0___default()().format('YYYYMMDD');
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.float:
+        {
+          result = '0.0';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.id:
+        {
+          result = '-1';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.email:
+        {
+          result = 'me@me.com';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.integer:
+        {
+          result = '0';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.text:
+        {
+          result = '';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.password:
+        {
+          result = '';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.time:
+        {
+          result = '00:00:00';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.shortTime:
+        {
+          result = '00:00';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean:
+        {
+          result = 'false';
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.uuid:
+        {
+          result = (0,uuid__WEBPACK_IMPORTED_MODULE_5__["default"])();
+          break;
+        }
+
+      case _form_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.userId:
+        {
+          result = "" + _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getLoggedInUsername();
+          break;
+        }
+    }
+
+    return result;
+  };
+
+  _proto.generate = function generate(field, isCreate) {
+    var result = ''; // are we generating the field?
+
+    if (field.generator) {
+      // are we only generating on create
+      if (field.generator.onCreation && isCreate) {
+        result = this.generateValue(field);
+        glogger("Generating value for field " + field.displayName + " with on creation " + result);
+      } // or if we are modifying and should also be modifying the value
+
+
+      if (field.generator.onModify && !isCreate) {
+        result = this.generateValue(field);
+        glogger("Generating value for field " + field.displayName + " with on modify " + result);
+      }
+    }
+
+    return result;
+  };
+
+  return BasicFieldOperations;
+}();
+BasicFieldOperations.dateRegex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
+BasicFieldOperations.emailRegex = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/;
+BasicFieldOperations.shortTimeRegex = /^([01]\d|2[0-3]):?([0-5]\d)$/;
+BasicFieldOperations.timeRegex = /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/;
+BasicFieldOperations.dateTimeRegex = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}\s([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/;
+BasicFieldOperations.basicPasswordRegex = /^[a-zA-Z0-9]{8,15}$/;
+BasicFieldOperations.integerRegex = /^[+-]?\d+$/;
+BasicFieldOperations.floatRegexp = /^[+-]?\d+(\.\d+)?$/;
+BasicFieldOperations.booleanRegexp = /^true|false$/;
+
+/***/ }),
+
+/***/ "./src/ui-framework/helper/SimpleValueDataSource.ts":
+/*!**********************************************************!*\
+  !*** ./src/ui-framework/helper/SimpleValueDataSource.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "SimpleValueDataSource": () => (/* binding */ SimpleValueDataSource)
+/* harmony export */ });
+var SimpleValueDataSource = /*#__PURE__*/function () {
+  // static value list
+  function SimpleValueDataSource(options) {
+    this.options = options;
+    this.listeners = [];
+  }
+
+  var _proto = SimpleValueDataSource.prototype;
+
+  _proto.addValueOption = function addValueOption(name, value) {
+    var _this = this;
+
+    this.options.push({
+      name: name,
+      value: value
+    });
+    this.listeners.forEach(function (listener) {
+      return listener.optionsChanged(_this.options);
+    });
+  };
+
+  _proto.addListener = function addListener(listener) {
+    this.listeners.push(listener);
+  };
+
+  _proto.getOptions = function getOptions() {
+    return this.options;
+  };
+
+  return SimpleValueDataSource;
+}();
 
 /***/ }),
 
@@ -6686,7 +7833,13 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
       avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource + " - " + shouldDelete);
 
       if (shouldDelete) {
-        _alert_AlertManager__WEBPACK_IMPORTED_MODULE_5__.AlertManager.getInstance().startAlert(this, this.getName(), "Are you sure you want to delete this information?", selectedItem);
+        // do we need to confirm?
+        if (this.uiConfig.detail.quickDelete) {
+          this.selectedItem = null;
+          this.eventForwarder.itemDeleted(this, selectedItem);
+        } else {
+          _alert_AlertManager__WEBPACK_IMPORTED_MODULE_5__.AlertManager.getInstance().startAlert(this, this.getName(), "Are you sure you want to delete this information?", selectedItem);
+        }
       }
     }
   };
@@ -7064,325 +8217,6 @@ function isSameUsername(item1, item2) {
 function isSameRoom(item1, item2) {
   return item1.roomName === item2.roomName;
 }
-
-/***/ }),
-
-/***/ "./src/App.tsx":
-/*!*********************!*\
-  !*** ./src/App.tsx ***!
-  \*********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
-/* harmony import */ var _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component/view/UserSearchView */ "./src/component/view/UserSearchView.ts");
-/* harmony import */ var _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component/view/ChatLogsView */ "./src/component/view/ChatLogsView.ts");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component/sidebar/UserSearchSidebar */ "./src/component/sidebar/UserSearchSidebar.ts");
-/* harmony import */ var _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./component/sidebar/ChatRoomsSidebar */ "./src/component/sidebar/ChatRoomsSidebar.ts");
-/* harmony import */ var _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/sidebar/ExerciseTypesSidebar */ "./src/component/sidebar/ExerciseTypesSidebar.ts");
-/* harmony import */ var _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/ChatLogDetailView */ "./src/component/view/ChatLogDetailView.ts");
-/* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
-/* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
-/* harmony import */ var _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/view/ExerciseTypesView */ "./src/component/view/ExerciseTypesView.ts");
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-/* eslint "react/react-in-jsx-scope":"off" */
-
-/* eslint "react/jsx-no-undef":"off" */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('app');
-
-var Root = /*#__PURE__*/function (_React$Component) {
-  _inheritsLoose(Root, _React$Component);
-
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  // @ts-ignore
-  function Root() {
-    var _this;
-
-    // @ts-ignore
-    _this = _React$Component.call(this) || this;
-    _this.state = {}; // event handlers
-
-    _this.handleShowUserSearch = _this.handleShowUserSearch.bind(_assertThisInitialized(_this));
-    _this.handleShowChat = _this.handleShowChat.bind(_assertThisInitialized(_this));
-    _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().connectToApplication(_assertThisInitialized(_this), window.localStorage);
-    return _this;
-  }
-
-  var _proto = Root.prototype;
-
-  _proto.getCurrentUser = function getCurrentUser() {
-    return _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getLoggedInUserId();
-  };
-
-  _proto.render = function render() {
-    logger("Rendering App"); // @ts-ignore
-
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-      className: "root container-fluid"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-      className: "card-group"
-    }));
-  };
-
-  _proto.componentDidMount = /*#__PURE__*/function () {
-    var _componentDidMount = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-      var chatLogView, recentSearches, favouriteUsers, blockedUsers, exerciseTypes;
-      return regeneratorRuntime.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              logger('component Did Mount');
-              this.chatSidebar = new _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_8__["default"](); // add the views to the chat side bar
-
-              this.chatView = new _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_5__["default"]();
-              this.chatSidebar.addView(this.chatView, {
-                containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_8__["default"].SidebarContainers.chatLogs
-              });
-              chatLogView = new _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_10__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
-              this.chatSidebar.addView(chatLogView, {
-                containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_8__["default"].SidebarContainers.chatLog
-              });
-              this.chatView.addEventListener(chatLogView);
-              this.chatSidebar.onDocumentLoaded();
-              this.userSearchSidebar = new _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_7__["default"](); // add the subviews for the user search
-
-              recentSearches = new _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_4__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
-              this.userSearchSidebar.addView(recentSearches, {
-                containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_7__["default"].SidebarContainers.recentSearches
-              });
-              favouriteUsers = new _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_11__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
-              this.userSearchSidebar.addView(favouriteUsers, {
-                containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_7__["default"].SidebarContainers.favourites
-              });
-              blockedUsers = new _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_12__["default"](_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager());
-              this.userSearchSidebar.addView(blockedUsers, {
-                containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_7__["default"].SidebarContainers.blocked
-              });
-              this.userSearchSidebar.onDocumentLoaded();
-              this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_9__["default"]();
-              exerciseTypes = new _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_13__.ExerciseTypesView();
-              this.exerciseTypesSidebar.addView(exerciseTypes, {
-                containerId: _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_9__["default"].SidebarContainers.container
-              });
-              this.exerciseTypesSidebar.onDocumentLoaded(); // navigation item handlers
-
-              if (document) {
-                // @ts-ignore
-                document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
-
-                this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_6__.NAVIGATION.chatId); // @ts-ignore
-
-                this.chatNavigationItem.addEventListener('click', this.handleShowChat); // @ts-ignore
-                //document.getElementById(NAVIGATION.showMyWorkouts).addEventListener('click', this.handleShowWorkouts);
-              } // a reference to the div containing ourselves
-              // @ts-ignore
-
-
-              this.thisEl = document.getElementById('root');
-              _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().initialise(); // // now lets break things with a new form
-              // let dataObjDef: DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObjectDefinition("test", "Test", true, true);
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "email", "Email", FieldType.email, true, "We totally won't message with this...");
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float1", "Float", FieldType.float, true, "A number yo....");
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "float2", "Float2", FieldType.float, true, "A number 2");
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "checkbox", "Checkbox?", FieldType.boolean, true, "Yes or No?");
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "date", "Date", FieldType.date, true, "Date yep");
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "time", "Time", FieldType.shortTime, true, "How long till we get there?");
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "textarea", "TextArea", FieldType.largeText, true, "An essay");
-              //
-              // let dataSource: SimpleValueDataSource = new SimpleValueDataSource([
-              //     {name: ' ', value: ' '},
-              //     {name: 'Justice League', value: 'jl'},
-              //     {name: 'Marvel', value: 'marvel'},
-              //     {name: 'Other', value: 'other'},
-              //
-              // ]);
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "select", "Select", FieldType.choice, true, "Some choices", dataSource);
-              // BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(dataObjDef, "rbg", "RBG", FieldType.limitedChoice, true, "Some similar choices",
-              //     new SimpleValueDataSource([
-              //         {name: 'Justice League', value: 'jl'},
-              //         {name: 'Marvel', value: 'marvel'},
-              //         {name: 'Other', value: 'other'},
-              //
-              //     ]));
-              // // okay lets make a form
-              // let renderer = new FormDetailViewRenderer("testForm",dataObjDef);
-              // let view = new DetailViewImplementation({},renderer);
-              //
-              // // create a test object
-              // let dataObj = {
-              //     email: 'jamie.sharples@gmail.com',
-              //     float1: 3.1,
-              //     float2: 2.3,
-              //     checkbox: true,
-              //     date: '20210910',
-              //     time: '12:32',
-              //     textarea: 'Test',
-              //     select: 'jl',
-              //     rbg: 'marvel'
-              // };
-              // // @ts-ignore
-              // dataObj[FIELD_ID] = '2';
-              // // @ts-ignore
-              // dataObj[FIELD_CreatedOn] = '20201009000000';
-              // // @ts-ignore
-              // dataObj[FIELD_CreatedBy] = 'Jim';
-              //
-              // view.onDocumentLoaded();
-              // const form = renderer.getForm();
-              //
-              //
-              //
-              // // change the select options
-              // dataSource.addValueOption('X-Men', 'xmen');
-              //
-              // // add a simple validation rule to the two numbers
-              // let rule: ValidationRule = {
-              //     targetDataFieldId: 'float1',
-              //     response: ConditionResponse.invalid,
-              //     conditions: [
-              //         {
-              //             sourceDataFieldId: 'float2',
-              //             comparison: ComparisonType.lessThanEqual,
-              //         }
-              //     ]
-              // }
-              // ValidationManager.getInstance().addRuleToForm(form, rule);
-              // rule = {
-              //     targetDataFieldId: 'select',
-              //     response: ConditionResponse.hide,
-              //     conditions: [
-              //         {
-              //             sourceDataFieldId: 'rbg',
-              //             comparison: ComparisonType.hasValue,
-              //             values: 'other'
-              //         }
-              //     ]
-              // }
-              // ValidationManager.getInstance().addRuleToForm(form, rule);
-              // rule = {
-              //     targetDataFieldId: 'select',
-              //     response: ConditionResponse.show,
-              //     conditions: [
-              //         {
-              //             sourceDataFieldId: 'rbg',
-              //             comparison: ComparisonType.hasValue,
-              //             values: 'jl,marvel'
-              //         }
-              //     ]
-              // }
-              // ValidationManager.getInstance().addRuleToForm(form, rule);
-              // view.displayItem(dataObj);
-              // view.show();
-
-            case 23:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee, this);
-    }));
-
-    function componentDidMount() {
-      return _componentDidMount.apply(this, arguments);
-    }
-
-    return componentDidMount;
-  }();
-
-  _proto.hideAllSideBars = function hideAllSideBars() {
-    this.chatSidebar.eventHide(null);
-    this.userSearchSidebar.eventHide(null);
-  };
-
-  _proto.handleShowUserSearch = function handleShowUserSearch(event) {
-    logger('Handling Show User Search');
-    event.preventDefault(); //this.hideAllSideBars();
-    // prevent anything from happening if we are not logged in
-
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().isLoggedIn()) {
-      // @ts-ignore
-      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_6__.API_Config.login;
-      return;
-    }
-
-    this.userSearchSidebar.eventShow(event);
-  };
-
-  _proto.handleShowChat = function handleShowChat(roomName) {
-    logger('Handling Show Chat'); //event.preventDefault();
-    //this.hideAllSideBars();
-    // prevent anything from happening if we are not logged in
-
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().isLoggedIn()) {
-      // @ts-ignore
-      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_6__.API_Config.login;
-      return;
-    }
-
-    this.chatSidebar.eventShow(null);
-
-    if (roomName) {
-      this.chatView.selectChatRoom(roomName);
-    }
-  };
-
-  _proto.countChanged = function countChanged(newCount) {
-    //
-    var buffer = 'Chat <i class="fas fa-inbox"></i>';
-
-    if (newCount > 0) {
-      buffer += " <span class=\"badge badge-pill badge-primary\">&nbsp;" + newCount + "&nbsp;</span>";
-    }
-
-    if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = "" + buffer;
-  };
-
-  return Root;
-}(react__WEBPACK_IMPORTED_MODULE_0__.Component); //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
-//localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
-//localStorage.debug = 'basic-form basic-form-detail validation-manager abstract-field';
-
-
-localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
-(debug__WEBPACK_IMPORTED_MODULE_2___default().log) = console.info.bind(console); // @ts-ignore
-
-var element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Root, {
-  className: "container-fluid justify-content-around"
-});
-react_dom__WEBPACK_IMPORTED_MODULE_1__.render(element, document.getElementById('root'));
 
 /***/ }),
 
@@ -7859,7 +8693,7 @@ webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendor"], () => (__webpack_require__("./src/App.tsx")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendor"], () => (__webpack_require__("./src/App.ts")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

@@ -39,6 +39,7 @@ class BlockedUserView extends AbstractStatefulCollectionView implements ChatUser
             textElementType: 'span',
             textElementClasses: 'mb-1',
             select: true,
+            quickDelete:true,
             delete: {
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
                 iconClasses: 'fas fa-trash-alt',

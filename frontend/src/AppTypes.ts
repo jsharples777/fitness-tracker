@@ -23,13 +23,16 @@ export const API_Config = {
 export const NAVIGATION = {
     showMyWorkouts: 'navigationItemMyWorkouts',
     userSearchId: 'navigationItemUserSearch',
+    exerciseTypesId: 'navigationItemExerciseTypes',
     chatId: 'navigationItemChat',
 }
 
 export const DRAGGABLE = {
     typeUser: 'user',
+    typeExerciseType: 'exerciseType',
     fromUserSearch: 'userSearch',
-    fromFavourites: 'favourites'
+    fromFavourites: 'favourites',
+    fromExerciseTypes: 'exerciseTypes',
 }
 
 export const VIEW_NAME = {

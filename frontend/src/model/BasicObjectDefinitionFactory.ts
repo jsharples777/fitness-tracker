@@ -27,7 +27,7 @@ export class BasicObjectDefinitionFactory {
 
     private constructor() {}
 
-    public createBasicObjectDefinition(id:string, displayName:string, hasDataId:boolean, dataIdIsUUID:boolean):DataObjectDefinition {
+    public createBasicObjectDefinition(id:string, displayName:string, hasDataId:boolean, dataIdIsUUID:boolean,createModifierFields:boolean = true,idFieldName:string = FIELD_ID):DataObjectDefinition {
         let objDef:DataObjectDefinition = {
             id:id,
             displayName:displayName,
@@ -42,7 +42,7 @@ export class BasicObjectDefinitionFactory {
                 fieldType = FieldType.uuid;
             }
             let fieldDef:FieldDefinition = {
-                id:'id',
+                id:idFieldName,
                 isKey:true,
                 idType: KeyType.number,
                 type: fieldType,
@@ -58,10 +58,12 @@ export class BasicObjectDefinitionFactory {
         }
 
         // add fields for created and modified
-        this.addCreatedDateToArray(objDef.fields);
-        this.addCreatedByToArray(objDef.fields);
-        this.addModifiedByToArray(objDef.fields);
-        this.addModifiedDateToArray(objDef.fields);
+        if (createModifierFields) {
+            this.addCreatedDateToArray(objDef.fields);
+            this.addCreatedByToArray(objDef.fields);
+            this.addModifiedByToArray(objDef.fields);
+            this.addModifiedDateToArray(objDef.fields);
+        }
 
         return objDef;
     }
@@ -134,12 +136,12 @@ export class BasicObjectDefinitionFactory {
         return this.addFieldToArray(fields,KeyType.string, id,displayName,type,isMandatory,description,datasource);
     }
 
-    public addStringFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):void {
-        this.addStringFieldToArray(objDef.fields,id,displayName,type,isMandatory,description,datasource);
+    public addStringFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):FieldDefinition {
+        return this.addStringFieldToArray(objDef.fields,id,displayName,type,isMandatory,description,datasource);
     }
 
-    public addNumericFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):void {
-        this.addNumericFieldToArray(objDef.fields,id,displayName,type,isMandatory,description,datasource);
+    public addNumericFieldToObjDefinition(objDef:DataObjectDefinition,id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):FieldDefinition {
+        return this.addNumericFieldToArray(objDef.fields,id,displayName,type,isMandatory,description,datasource);
     }
 
 }

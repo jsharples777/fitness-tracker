@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   mode: 'development',
   entry: {
-    app: ['./src/App.tsx'],
+    app: ['./src/App.ts'],
   },
   output: {
     filename: '[name].bundle.js',
@@ -37,8 +37,5 @@ module.exports = {
       chunks: 'all',
     },
   },
-  //node: {
-  //  fs: 'empty',
-  //},
   devtool: "source-map"
 };

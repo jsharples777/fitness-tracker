@@ -1,8 +1,7 @@
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {KeyType, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
+import {CollectionViewDOMConfig, KeyType, Modifier} from "../../ui-framework/ConfigurationTypes";
+import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
-import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 import Controller from "../../Controller";
 import {isSameMongo} from "../../util/EqualityFunctions";
 
@@ -18,8 +17,14 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView {
         dataSourceId: VIEW_NAME.exerciseTypes,
         modifiers: {
             normal: '',
-            inactive: 'list-group-item-dark',
+            inactive: 'list-group-item-light',
             active: 'list-group-item-primary',
+            warning: ''
+        },
+        icons: {
+            normal: 'fas fa-dumbbell',
+            inactive: '',
+            active: 'fas fa-running',
             warning: ''
         },
         detail: {
@@ -30,6 +35,10 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView {
             delete: {
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
                 iconClasses: 'text-black fas fa-sign-out-alt',
+            },
+            drag: {
+                type: DRAGGABLE.typeExerciseType,
+                from: DRAGGABLE.fromExerciseTypes
             }
         },
     };
@@ -54,6 +63,19 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView {
 
     getDisplayValueForItemInNamedCollection(name: string, item: any) {
         return item.name;
+    }
+
+    getSecondaryModifierForItemInNamedCollection(name: string, item: any): Modifier {
+        if (item.type) {
+            if (item.type === 'cardio') {
+                return Modifier.active;
+            }
+            else {
+                return Modifier.normal;
+            }
+        }
+        return super.getSecondaryModifierForItemInNamedCollection(name,item);
+
     }
 
 }

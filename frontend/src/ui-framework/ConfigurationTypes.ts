@@ -48,6 +48,7 @@ export type ContentDetail = {
     textElementType:string,
     textElementClasses:string,
     select:boolean,
+    quickDelete?:boolean,
     badge?:BasicElement,
     delete?:BasicButtonElement,
     drag?:Draggable,
@@ -74,7 +75,8 @@ export enum Modifier {
 export enum KeyType {
     number,
     string,
-    boolean
+    boolean,
+    collection
 }
 
 export type CollectionViewDOMConfig = {
