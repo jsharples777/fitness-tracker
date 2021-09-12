@@ -66,7 +66,7 @@ class ChatLogDetailView implements View, ChatEventListener, CollectionViewListen
     }
 
     canSelectItem(view: CollectionView, selectedItem: any): boolean {
-        throw new Error('Method not implemented.');
+        return true;
     }
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
@@ -350,7 +350,7 @@ class ChatLogDetailView implements View, ChatEventListener, CollectionViewListen
             newValue.forEach((item: any) => {
                 const searchValue = {
                     label: item.username,
-                    value: item.id,
+                    value: item._id,
                 };
                 // @ts-ignore
                 if (myUsername !== item.username) fastSearchValues.push(searchValue); // don't search for ourselves

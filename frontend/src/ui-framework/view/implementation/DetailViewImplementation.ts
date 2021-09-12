@@ -18,7 +18,7 @@ export class DetailViewImplementation extends AbstractView implements DetailView
         this.renderer.setEventForwarder(forwarder);
     }
 
-    addEventListener(listener: DetailViewListener) {
+    addEventDetailListener(listener: DetailViewListener) {
         this.eventForwarder.addListener(listener);
     }
 

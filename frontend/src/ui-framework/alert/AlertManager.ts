@@ -48,12 +48,20 @@ export class AlertManager {
             logger(`Handling confirm event from alert`);
             listener.completed({outcome: AlertType.confirmed, context: context});
             // @ts-ignore
+            this.alertDiv.classList.add(ALERT_hideClass);
+            // @ts-ignore
+            this.alertDiv.classList.remove(ALERT_showClass);
+            // @ts-ignore
             event.target.removeEventListener('click',confirmHandler);
         }
 
         const cancelHandler = (event:MouseEvent) => {
             logger(`Handling cancel event from alert`);
             listener.completed({outcome: AlertType.cancelled, context: context});
+            // @ts-ignore
+            this.alertDiv.classList.add(ALERT_hideClass);
+            // @ts-ignore
+            this.alertDiv.classList.remove(ALERT_showClass);
             // @ts-ignore
             event.target.removeEventListener('click',cancelHandler);
         }

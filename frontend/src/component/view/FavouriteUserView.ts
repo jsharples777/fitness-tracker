@@ -21,8 +21,8 @@ class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUs
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-        keyId: 'id',
-        keyType: KeyType.number,
+        keyId: '_id',
+        keyType: KeyType.string,
         dataSourceId: VIEW_NAME.favouriteUsers,
         modifiers: {
             normal: 'list-group-item-primary',
@@ -81,7 +81,7 @@ class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUs
 
     onDocumentLoaded() {
         super.onDocumentLoaded();
-        this.addEventListener(this);
+        this.addEventCollectionListener(this);
     }
 
 
@@ -108,7 +108,7 @@ class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUs
 
 
     getIdForItemInNamedCollection(name: string, item: any) {
-        return item.id;
+        return item._id;
     }
 
 

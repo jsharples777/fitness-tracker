@@ -252,7 +252,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
     }
 
     public setDisplayElementsForCollectionInContainer(containerEl:HTMLElement,collectionName:string,newState:any): void {
-        avLogger(`view ${this.view.getName()}: creating Results`, 10);
+        avLogger(`view ${this.view.getName()}: creating Results`);
         avLogger(newState);
         // remove the previous items from list
         browserUtil.removeAllChildren(containerEl);

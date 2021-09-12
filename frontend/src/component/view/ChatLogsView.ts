@@ -85,7 +85,7 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
 
     onDocumentLoaded() {
         super.onDocumentLoaded();
-        this.addEventListener(this);
+        this.addEventCollectionListener(this);
         this.updateStateManager();
     }
 

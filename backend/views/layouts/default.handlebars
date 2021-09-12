@@ -7,22 +7,20 @@
     <div class="alert alert-danger">{{error}}</div>
 {{/if}}
 {{{body}}}
-{{> sidebars/score-sheet-sb }}
+{{> sidebars/exercise-types-sb }}
 {{> sidebars/user-search-sb }}
 {{> sidebars/chat-sb }}
-{{> sidebars/board-game-search-sb }}
 {{> modals/alert }}
 <div id="root">
 </div>
-<div id="testForm">
-</div>
-{{> scoresheet }}
 {{> footers/footer-main }}
 </body>
 {{#if user}}
     <script>
-        let loggedInUserId = {{user.id}};
-        let loggedInUsername = "{{user.username}}";
+        const loggedInUser = {
+            _id: '{{user._id}}',
+            username: '{{user.username}}'
+        };
     </script>
 {{/if}}
 {{> jsincludes/js-vendors}}

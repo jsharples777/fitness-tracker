@@ -2,6 +2,7 @@ import {SidebarLocation, SidebarPrefs, SidebarViewConfig} from "../Configuration
 import {View} from "../view/interface/View";
 import {CollectionViewListener} from "../view/interface/CollectionViewListener";
 import debug from 'debug';
+import {CollectionView} from "../view/interface/CollectionView";
 
 const sbvcLogger = debug('sidebar-container');
 
@@ -108,6 +109,10 @@ class SidebarViewContainer implements CollectionViewListener{
     }
     hideRequested(view: View): void {
         this.eventHide(null);
+    }
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
     }
 
 

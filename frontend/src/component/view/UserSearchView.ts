@@ -1,6 +1,6 @@
 import debug from 'debug';
 import {StateManager} from '../../state/StateManager';
-import {isSame} from '../../util/EqualityFunctions';
+import {isSame, isSameMongo} from '../../util/EqualityFunctions';
 import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import Controller from "../../Controller";
@@ -29,7 +29,7 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-        keyId: 'id',
+        keyId: '_id',
         keyType: KeyType.number,
         dataSourceId: VIEW_NAME.userSearch,
         modifiers: {
@@ -137,11 +137,11 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
         // @ts-ignore
         fastSearchEl.on('autocompleteselect', this.eventUserSelected);
 
-        this.addEventListener(this);
+        this.addEventCollectionListener(this);
     }
 
     getIdForItemInNamedCollection(name: string, item: any) {
-        return item.id;
+        return item._id;
     }
 
 
@@ -184,7 +184,7 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
         event.target.innerText = '';
 
         // add the selected user to the recent user searches
-        if (this.localisedSM.isItemInState(STATE_NAMES.recentUserSearches, {id: ui.item.value}, isSame)) return;
+        if (this.localisedSM.isItemInState(STATE_NAMES.recentUserSearches, {_id: ui.item.value}, isSameMongo)) return;
 
         const recentUserSearches = this.localisedSM.getStateByName(STATE_NAMES.recentUserSearches);
         vLogger(`saved searches too long? ${STATE_NAMES.recentUserSearches}`);
@@ -192,11 +192,11 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
             vLogger('saved searches too long - removing first');
             // remove the first item from recent searches
             const item = recentUserSearches.shift();
-            this.localisedSM.removeItemFromState(STATE_NAMES.recentUserSearches, item, isSame, true);
+            this.localisedSM.removeItemFromState(STATE_NAMES.recentUserSearches, item, isSameMongo, true);
         }
         // save the searches
         this.localisedSM.addNewItemToState(STATE_NAMES.recentUserSearches, {
-            id: ui.item.value,
+            _id: ui.item.value,
             username: ui.item.label
         }, true);
     }
@@ -207,7 +207,7 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
             vLogger(`Updating for recent searches`);
             newState = this.localisedSM.getStateByName(STATE_NAMES.recentUserSearches);
             vLogger(newState);
-            this.renderer?.createDisplayElementForCollectionItem(name, newState);
+            super.updateViewForNamedCollection(name, newState);
         }
         if (name === STATE_NAMES.users) {
             // load the search names into the search field
@@ -220,7 +220,7 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
             newState.forEach((item: any) => {
                 const searchValue = {
                     label: item.username,
-                    value: item.id,
+                    value: item._id,
                 };
                 if (myUsername !== item.username) fastSearchValues.push(searchValue); // don't search for ourselves
             });

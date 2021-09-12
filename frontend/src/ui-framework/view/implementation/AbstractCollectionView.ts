@@ -43,7 +43,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     }
 
-    addEventListener(listener: CollectionViewListener) {
+    addEventCollectionListener(listener: CollectionViewListener) {
         this.eventForwarder.addListener(listener);
     }
 
@@ -66,7 +66,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
         if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
@@ -140,7 +140,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
         if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
@@ -169,7 +169,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
         if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
@@ -197,7 +197,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         // @ts-ignore
         let itemId = event.target.getAttribute(this.uiConfig.keyId);
         // @ts-ignore
-        const dataSource = event.target.getAttribute(AbstractListView.DATA_SOURCE);
+        const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
         // @ts-ignore
         const actionName = event.target.getAttribute(EXTRA_ACTION_ATTRIBUTE_NAME);
 

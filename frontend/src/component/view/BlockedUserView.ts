@@ -19,8 +19,8 @@ class BlockedUserView extends AbstractStatefulCollectionView implements ChatUser
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
-        keyId: 'id',
-        keyType: KeyType.number,
+        keyId: '_id',
+        keyType: KeyType.string,
         dataSourceId: VIEW_NAME.blockedUsers,
         modifiers: {
             normal: 'list-group-item-primary',
@@ -124,7 +124,7 @@ class BlockedUserView extends AbstractStatefulCollectionView implements ChatUser
 
 
     getIdForItemInNamedCollection(name: string, item: any): string {
-        return item.id;
+        return item._id;
     }
 
     updateViewForNamedCollection(name: string, newState: any) {
@@ -154,7 +154,7 @@ class BlockedUserView extends AbstractStatefulCollectionView implements ChatUser
     itemDeselected(view: View, selectedItem: any): void {}
 
     canSelectItem(view: CollectionView, selectedItem: any): boolean {
-        return true;
+        return false;
     }
 
 
