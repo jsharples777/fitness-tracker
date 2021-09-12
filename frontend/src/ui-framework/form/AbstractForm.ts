@@ -69,6 +69,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     protected abstract _hidden():void;
     protected abstract _initialise():void;
     protected abstract _displayOnly():void;
+    protected abstract _isSameObjectAsDisplayed(dataObj:any):boolean;
 
     protected abstract setFieldValueToDataObject(dataObj:any,field:Field,currentValue:string|null):void;
     public abstract getFormattedDataObject(): any;
@@ -115,6 +116,8 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
     public reset(): void {
         logger(`Resetting form`);
+        this.isDisplayOnly = false;
+        this.hasChangedBoolean = false;
 
         // inform the listeners
         if (this.uiDef) {
@@ -293,8 +296,8 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             case (FormEventType.SAVED): {
                 logger(`Form is saved with data`);
                 logger(formValues);
-                // user is deleting the object, will become invisible
-                this.reset();
+                this.isDisplayOnly = false;
+                this.hasChangedBoolean = false;
                 break;
             }
             case (FormEventType.SAVING): {
@@ -433,6 +436,18 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
         this.fields.forEach((field) => {
             field.setReadOnly();
         });
+    }
+
+
+    isDisplayingItem(dataObj: any): boolean {
+        if (this.currentDataObj) {
+            return this._isSameObjectAsDisplayed(dataObj);
+        }
+        return false;
+    }
+
+    isReadOnly(): boolean {
+        return this.isDisplayOnly;
     }
 
 

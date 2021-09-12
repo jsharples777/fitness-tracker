@@ -30,6 +30,7 @@ export interface FieldValueGenerator {
 
 export type FieldDefinition = {
     id:string,
+    isKey:boolean,
     idType: KeyType,
     type: FieldType,
     displayName:string,

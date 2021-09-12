@@ -20,9 +20,13 @@ export interface Field {
 
     show():void;
     hide():void;
+    isHidden():boolean;
+
+
     setInvalid(message:string):void;
     setValid():void;
 
     setReadOnly():void;
     clearReadOnly():void;
+
 }

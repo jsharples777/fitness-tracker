@@ -1,7 +1,6 @@
 import {DRAGGABLE_FROM, DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, ViewDOMConfig} from "../../ConfigurationTypes";
 import {View} from "../interface/View";
 import debug from "debug";
-import {CollectionViewListenerForwarder} from "../delegate/CollectionViewListenerForwarder";
 import {ViewListenerForwarder} from "../delegate/ViewListenerForwarder";
 import {ViewListener} from "../interface/ViewListener";
 
@@ -24,7 +23,7 @@ export abstract class AbstractView implements View {
     protected constructor(uiConfig: ViewDOMConfig) {
         this.uiConfig = uiConfig;
         this.viewEl = null;
-        this.eventForwarder = new CollectionViewListenerForwarder();
+        this.eventForwarder = new ViewListenerForwarder();
 
         this.handleDrop = this.handleDrop.bind(this);
 

@@ -36,4 +36,16 @@ export class CollectionViewListenerForwarder extends ViewListenerForwarder imple
             this.collectionViewListeners.forEach((listener) => listener.itemDeselected(view, deselectedItem));
         }
     }
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        let result = true; // return false if cancelling delete
+        if (!this.suppressEventEmits) {
+            this.collectionViewListeners.forEach((listener) => {
+                if (!(listener.canSelectItem(view, selectedItem))) {
+                    result = false;
+                }
+            });
+        }
+        return result;
+    }
 }

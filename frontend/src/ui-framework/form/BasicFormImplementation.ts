@@ -11,6 +11,7 @@ import {TextAreaField} from "./field/TextAreaField";
 import {RadioButtonGroupField} from "./field/RadioButtonGroupField";
 import {SelectField} from "./field/SelectField";
 import {InputField} from "./field/InputField";
+import {isSame} from "../../util/EqualityFunctions";
 
 const logger = debug('basic-form');
 const dlogger = debug('basic-form-detail');
@@ -246,6 +247,31 @@ export class BasicFormImplementation extends AbstractForm {
         });
         logger(formattedResult);
         return formattedResult;
+    }
+
+    protected _isSameObjectAsDisplayed(dataObj: any): boolean {
+        // we can only be sure for objects with keys
+        let isSameObject = false;
+        dlogger(`is same object as current`);
+        dlogger(dataObj);
+        dlogger(this.currentDataObj);
+
+        this.dataObjDef.fields.every((field) => {
+            if (field.isKey) {
+                const currentObjId = this.getFieldFromDataFieldId(field.id)?.getValue();
+                const suppliedObjId = dataObj[field.id];
+                dlogger(`is same object id ${suppliedObjId} as current ${currentObjId}`);
+                if ((currentObjId && !suppliedObjId)||(currentObjId && !suppliedObjId)){
+                    isSameObject = false;
+                }
+                if ((currentObjId && suppliedObjId) && (currentObjId == suppliedObjId)) {
+                    isSameObject = true;
+                }
+                return false;
+            }
+            return true;
+        });
+        return isSameObject;
     }
 
 

@@ -23,7 +23,6 @@ import BlockedUserView from "./component/view/BlockedUserView";
 import BoardGameSearchSidebar from "./component/sidebar/BoardGameSearchSidebar";
 import BGGSearchView from "./component/view/BGGSearchView";
 import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "./ui-framework/ConfigurationTypes";
-import {CollectionViewListener} from "./ui-framework/view/interface/CollectionViewListener";
 import {View} from "./ui-framework/view/interface/View";
 import {DataObjectDefinition, FieldType} from "./ui-framework/form/DataObjectTypeDefs";
 import {
@@ -39,11 +38,12 @@ import {ComparisonType, ConditionResponse, ValidationRule} from "./ui-framework/
 import {ValidationManager} from "./ui-framework/form/validation/ValidationManager";
 import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
 import {FormDetailViewRenderer} from "./ui-framework/view/delegate/FormDetailViewRenderer";
+import {ViewListener} from "./ui-framework/view/interface/ViewListener";
 
 
 const logger = debug('app');
 
-class Root extends React.Component implements UnreadMessageCountListener, CollectionViewListener {
+class Root extends React.Component implements UnreadMessageCountListener, ViewListener {
     private titleEl: any;
     private contentEl: any;
     private modalEl: any;

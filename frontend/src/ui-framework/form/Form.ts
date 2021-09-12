@@ -14,6 +14,8 @@ export interface Form {
 
     setReadOnly():void;
     clearReadOnly():void;
+    isReadOnly():boolean;
+
     addFormListener(listener:FormListener):void;
     addFieldListener(listener:FieldListener):void;
     getFormattedDataObject():any; // returns the data object with type conversion for numbers and boolean
@@ -21,4 +23,7 @@ export interface Form {
     getFieldFromDataFieldId(dataFieldId:string):Field|undefined;
 
     hasChanged():boolean;
+    isDisplayingItem(dataObj:any):boolean;
+
+
 }

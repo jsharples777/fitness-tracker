@@ -43,6 +43,7 @@ export class BasicObjectDefinitionFactory {
             }
             let fieldDef:FieldDefinition = {
                 id:'id',
+                isKey:true,
                 idType: KeyType.number,
                 type: fieldType,
                 displayName:'Id',
@@ -110,6 +111,7 @@ export class BasicObjectDefinitionFactory {
     private addFieldToArray(fields:FieldDefinition[],keyType:KeyType, id:string, displayName:string, type:FieldType, isMandatory:boolean = false,description:string|null = null,datasource:FieldValueOptions|null = null):FieldDefinition {
         let fieldDef:FieldDefinition = {
             id:id,
+            isKey:false,
             idType: keyType,
             type: type,
             displayName:displayName,

@@ -1,5 +1,5 @@
-import {CollectionViewListener} from "./CollectionViewListener";
 import {ViewDOMConfig} from "../../ConfigurationTypes";
+import {ViewListener} from "./ViewListener";
 
 export interface View {
     getName():string;
@@ -9,7 +9,7 @@ export interface View {
 
     setContainedBy(container:HTMLElement):void;
 
-    addEventListener(listener: CollectionViewListener): void;
+    addEventListener(listener: ViewListener): void;
 
     onDocumentLoaded(): void;
 

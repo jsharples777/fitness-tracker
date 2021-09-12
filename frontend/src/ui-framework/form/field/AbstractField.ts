@@ -19,6 +19,7 @@ export class AbstractField implements Field, FieldListener {
     protected validationHandler: ValidationEventHandler;
     protected renderingHandler: RenderingEventListener;
     protected listeners: FieldListener[] = [];
+    private hidden:boolean = false;
 
     constructor(formId: string, config: FieldUIConfig, fieldDef: FieldDefinition, element: HTMLElement, subElements: HTMLInputElement[] | null = null) {
         this.formId = formId;
@@ -40,6 +41,10 @@ export class AbstractField implements Field, FieldListener {
             this.element.addEventListener('change', this.handleChangeEvent);
         }
 
+    }
+
+    isHidden(): boolean {
+        return this.hidden;
     }
 
 
@@ -224,6 +229,7 @@ export class AbstractField implements Field, FieldListener {
                 }
             }
         }
+        this.show();
     }
 
     clearValue():void {
@@ -269,7 +275,10 @@ export class AbstractField implements Field, FieldListener {
                 this.setReadOnly();
             }
         }
+        this.hidden = true;
     }
+
+
 
     setValid(): void {
         this.validationHandler.setValidationStatusAndMessage(this.element,true,'');
@@ -292,6 +301,7 @@ export class AbstractField implements Field, FieldListener {
                 this.clearReadOnly();
             }
         }
+        this.hidden = true;
     }
 
     clearReadOnly(): void {

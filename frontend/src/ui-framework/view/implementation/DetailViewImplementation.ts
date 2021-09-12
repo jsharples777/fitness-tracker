@@ -2,6 +2,8 @@ import {AbstractView} from "./AbstractView";
 import {DetailView} from "../interface/DetailView";
 import {ViewDOMConfig} from "../../ConfigurationTypes";
 import {DetailViewRenderer} from "../interface/DetailViewRenderer";
+import {DetailViewListenerForwarder} from "../delegate/DetailViewListenerForwarder";
+import {DetailViewListener} from "../interface/DetailViewListener";
 
 export class DetailViewImplementation extends AbstractView implements DetailView {
     protected currentItem:any|null = null;
@@ -10,7 +12,16 @@ export class DetailViewImplementation extends AbstractView implements DetailView
     constructor(uiConfig: ViewDOMConfig,renderer:DetailViewRenderer) {
         super(uiConfig);
         this.renderer = renderer;
+        const forwarder = new DetailViewListenerForwarder();
+        this.eventForwarder = forwarder;
+        this.renderer.setView(this);
+        this.renderer.setEventForwarder(forwarder);
     }
+
+    addEventListener(listener: DetailViewListener) {
+        this.eventForwarder.addListener(listener);
+    }
+
 
     public clearDisplay(): void {
         this.renderer.reset();
@@ -22,6 +33,10 @@ export class DetailViewImplementation extends AbstractView implements DetailView
 
     public setReadOnly(): void {
         this.renderer.setReadOnly();
+    }
+
+    public isReadOnly(): boolean {
+        return this.renderer.isReadOnly();
     }
 
     public createItem(): any {
@@ -52,7 +67,7 @@ export class DetailViewImplementation extends AbstractView implements DetailView
         this.displayItem(this.currentItem);
     }
 
-    onDocumentLoaded() {
+    public onDocumentLoaded() {
         this.renderer.onDocumentLoaded();
         this.renderer.initialise();
         super.onDocumentLoaded();
@@ -65,8 +80,17 @@ export class DetailViewImplementation extends AbstractView implements DetailView
         return this.renderer.hasPermissionToUpdateCurrentItem();
     }
 
-    handleActionItem(actionName: string, selectedItem: any): void {
+    public handleActionItem(actionName: string, selectedItem: any): void {
         this.renderer.handleActionItem(actionName,selectedItem);
     }
+
+    public isDisplayingItem(dataObj: any): boolean {
+        return this.renderer.isDisplayingItem(dataObj);
+    }
+
+    public hasChanged(): boolean {
+        return this.renderer.hasChanged();
+    }
+
 
 }
