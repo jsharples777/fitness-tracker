@@ -1,11 +1,11 @@
-import {SidebarLocation, SidebarPrefs, SidebarViewConfig} from "./ConfigurationTypes";
-import {View} from "./View";
-import {ViewListener} from "./ViewListener";
+import {SidebarLocation, SidebarPrefs, SidebarViewConfig} from "../ConfigurationTypes";
+import {View} from "../view/interface/View";
+import {CollectionViewListener} from "../view/interface/CollectionViewListener";
 import debug from 'debug';
 
 const sbvcLogger = debug('sidebar-container');
 
-class SidebarViewContainer implements ViewListener{
+class SidebarViewContainer implements CollectionViewListener{
     protected prefs:SidebarPrefs;
     protected views:View[];
 
@@ -17,7 +17,7 @@ class SidebarViewContainer implements ViewListener{
         this.eventShow = this.eventShow.bind(this);
     }
 
-    public addView(view:View,config:SidebarViewConfig) {
+    public addView(view:View, config:SidebarViewConfig) {
         sbvcLogger(`Adding view to container, with containing div of ${config.containerId}`);
         const viewContainer = document.getElementById(config.containerId);
         if (viewContainer) {

@@ -9,12 +9,13 @@ import debug from 'debug';
 import {RuleCheck, ValidationManager} from "./validation/ValidationManager";
 import {AlertEvent, AlertListener, AlertType} from "../alert/AlertListener";
 import {AlertManager} from "../alert/AlertManager";
+import {ConditionResponse} from "./validation/ValidationTypeDefs";
 
 const logger = debug('abstract-form');
 const dlogger = debug('abstract-form-detail');
 
 
-export abstract class AbstractForm implements Form,FormListener,AlertListener{
+export abstract class AbstractForm implements Form,FormListener,AlertListener,FieldListener{
     protected formListeners: FormListener[] = [];
     protected fieldListeners: FieldListener[] = [];
     protected currentDataObj: any;
@@ -25,6 +26,8 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
     protected fields:Field[] = [];
     protected map:AttributeFieldMapItem[];
     protected isInitialised:boolean = false;
+    protected hasChangedBoolean:boolean = false;
+    protected isDisplayOnly:boolean = false;
 
 
     protected constructor(containerId: string, dataObjDef: DataObjectDefinition) {
@@ -40,6 +43,24 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
         this.addFormListener(this);
     }
 
+    public hasChanged():boolean {
+        return this.hasChangedBoolean;
+    }
+
+    getName(): string {
+        return  this.dataObjDef.displayName;
+    }
+
+    valueChanged(formId: String, field: FieldDefinition, newValue: string | null): void {
+        this.hasChangedBoolean = true;
+        logger(`Form has changed`);
+    }
+
+    failedValidation(formId: String, field: FieldDefinition, currentValue: string, message: string): void {
+        this.hasChangedBoolean = true;
+        logger(`Form has changed`);
+    }
+
     /* methods to be implemented in the subclass */
     protected abstract _startUpdate():void;
     protected abstract _startCreate():void;
@@ -47,7 +68,10 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
     protected abstract _visible():void;
     protected abstract _hidden():void;
     protected abstract _initialise():void;
+    protected abstract _displayOnly():void;
 
+    protected abstract setFieldValueToDataObject(dataObj:any,field:Field,currentValue:string|null):void;
+    public abstract getFormattedDataObject(): any;
 
     public initialise(): void {
         if (this.isInitialised) return;
@@ -107,6 +131,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
         this.fields.forEach((field) => {
             field.reset();
         });
+        this.hasChangedBoolean = false;
     }
 
     public setIsVisible(isVisible: boolean): void {
@@ -129,11 +154,36 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
             }
             this.informFormListeners(formEvent, this.currentDataObj);
         }
+        if (isVisible && !this.isDisplayOnly) this.checkFormValidationOnDisplay();
+
     }
 
-    public startCreateNew(): void {
+    protected checkFormValidationOnDisplay() {
+        logger(`Checking display validation`);
+        this.fields.forEach((field) => {
+            const currentValue = field.getValue();
+            if (!field.isValid()) {
+                logger(`Field ${field.getId()} is invalid`);
+                field.setInvalid(`${field.getName()} has an invalid format or is required.`);
+            } else {
+                // does the field fulfil any rules from the Validation manager
+                // @ts-ignore
+                const response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),null);
+                if (response.ruleFailed) {
+                    // @ts-ignore
+                    field.setInvalid(response.message);
+                    logger(`Field ${field.getId()} is invalid from validation manager with message ${response.message}`);
+                }
+            }
+        });
+
+    }
+
+    public startCreateNew(): any {
         logger(`Starting create new`);
         this.currentDataObj = {};
+        this.isDisplayOnly = false;
+        this.hasChangedBoolean = false;
         if (this.uiDef) {
             let eventType = FormEventType.CREATING;
             // inform the listeners
@@ -145,11 +195,15 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
             this._startCreate();
             this.informFormListeners(formEvent, this.currentDataObj);
         }
+        this.clearReadOnly();
+        return this.currentDataObj;
     }
 
 
     public startUpdate(objectToEdit: any): void {
         logger(`Starting modify existing on `);
+        this.isDisplayOnly = false;
+        this.hasChangedBoolean = false;
         logger(objectToEdit);
         this.currentDataObj = {...objectToEdit}; // take a copy
 
@@ -164,9 +218,23 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
             this._startUpdate();
             this.informFormListeners(formEvent, this.currentDataObj);
         }
+        this.clearReadOnly();
     }
 
-    protected abstract setFieldValueToDataObject(dataObj:any,field:Field,currentValue:string|null):void;
+    displayOnly(objectToView: any): void {
+        logger(`Starting display only `);
+        logger(objectToView);
+        this.isDisplayOnly = true;
+        this.hasChangedBoolean = false;
+        this.currentDataObj = {...objectToView}; // take a copy
+
+        if (this.uiDef) {
+            this._displayOnly();
+        }
+        this.setReadOnly();
+    }
+
+
 
     public formChanged(event: FormEvent, formValues?: any): boolean {
         // catch form events for user leaving the form
@@ -174,8 +242,20 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
         switch (event.eventType) {
             case (FormEventType.CANCELLING): {
                 logger(`Form is cancelling`);
-                if (this.uiDef) {
-                    AlertManager.getInstance().startAlert(this, this.uiDef.displayName,`Lose any unsaved changes?`,FormEventType.CANCELLING);
+                if (this.hasChangedBoolean && !this.isDisplayOnly) {
+                    if (this.uiDef) {
+                        AlertManager.getInstance().startAlert(this, this.uiDef.displayName, `Lose any unsaved changes?`, FormEventType.CANCELLING);
+                    }
+                }
+                else {
+                    if (this.uiDef) {
+                        let formEvent: FormEvent = {
+                            formId: this.uiDef.id,
+                            target: this,
+                            eventType: FormEventType.CANCELLED
+                        }
+                        this.informFormListeners(formEvent, this.currentDataObj);
+                    }
                 }
                 break;
             }
@@ -232,7 +312,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
                         } else {
                             // does the field fulfil any rules from the Validation manager
                             // @ts-ignore
-                            const response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition());
+                            const response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.invalid);
                             if (response.ruleFailed) {
                                 // @ts-ignore
                                 field.setInvalid(response.message);
@@ -271,7 +351,6 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
         return shouldCancelChange;
     }
 
-    abstract getFormattedDataObject(): any;
 
     getId(): string {
         let result = '';
@@ -342,4 +421,20 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener{
 
         }
     }
+
+    clearReadOnly(): void {
+        this.fields.forEach((field) => {
+           field.clearReadOnly();
+        });
+    }
+
+
+    setReadOnly(): void {
+        this.fields.forEach((field) => {
+            field.setReadOnly();
+        });
+    }
+
+
+
 }

@@ -22,4 +22,7 @@ export interface Field {
     hide():void;
     setInvalid(message:string):void;
     setValid():void;
+
+    setReadOnly():void;
+    clearReadOnly():void;
 }

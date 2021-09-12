@@ -8,17 +8,17 @@ import moment from "moment";
 import {ChatLog, Invitation, Message, Priority} from "../../socket/Types";
 import Controller from "../../Controller";
 import notifier from "../../notification/NotificationManager";
-import {ViewListener} from "../../ui-framework/ViewListener";
+import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import StateChangeListener from "../../state/StateChangeListener";
-import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, Modifier} from "../../ui-framework/ConfigurationTypes";
-import {View} from '../../ui-framework/View';
+import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {View} from '../../ui-framework/view/interface/View';
 import NotificationManager from "../../notification/NotificationManager";
 
 
 const csLoggerDetail = debug('chat-sidebar:detail');
 
-class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateChangeListener {
+class ChatLogDetailView implements View, ChatEventListener, CollectionViewListener, StateChangeListener {
     private static newFormId: string = "newMessage";
     private static commentId: string = "message";
     private static submitCommentId: string = "submitMessage";
@@ -76,7 +76,7 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
     }
 
     setContainedBy(container: HTMLElement): void {}
-    addEventListener(listener: ViewListener): void {}
+    addEventListener(listener: CollectionViewListener): void {}
 
     getIdForItemInNamedCollection(name: string, item: any): string {
         throw new Error('Method not implemented.');
@@ -382,6 +382,20 @@ class ChatLogDetailView implements View, ChatEventListener, ViewListener, StateC
 
     hidden(): void {
         this.hideRequested(this);
+    }
+
+    getDataSourceKeyId(): string {
+        return "";
+    }
+
+    getUIConfig(): ViewDOMConfig {
+        // @ts-ignore
+        return undefined;
+    }
+
+    render(): void {}
+
+    show(): void {
     }
 
 }

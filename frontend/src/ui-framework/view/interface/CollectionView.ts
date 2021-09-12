@@ -1,17 +1,8 @@
-import {ViewListener} from "./ViewListener";
-import {Modifier, ViewDOMConfig} from "./ConfigurationTypes";
+import {Modifier} from "../../ConfigurationTypes";
+import {View} from "./View";
+import {CollectionViewRenderer} from "./CollectionViewRenderer";
 
-export interface View {
-    getName():string;
-
-    hidden():void;
-
-    setContainedBy(container:HTMLElement):void;
-
-    addEventListener(listener: ViewListener): void;
-
-    onDocumentLoaded(): void;
-
+export interface CollectionView extends View {
     getIdForItemInNamedCollection(name: string, item: any): string;
 
     getDisplayValueForItemInNamedCollection(name: string, item: any): string;
@@ -31,10 +22,5 @@ export interface View {
 
     updateViewForNamedCollection(name: string, collection: any): void;
 
-    hasChanged():boolean;
-
-    getUIConfig():ViewDOMConfig;
-
-    getDataSourceKeyId():string;
 
 }

@@ -67,6 +67,7 @@ export class BasicFormImplementation extends AbstractForm {
                             }
                         }
                         this.fields.push(field);
+                        field.addFieldListener(this);
                         this.map.push({attributeId: dataId, fieldId: fieldId});
                     }
                 }
@@ -178,6 +179,21 @@ export class BasicFormImplementation extends AbstractForm {
         if (this.factoryElements) browserUtil.removeAttributes(this.factoryElements.deleteButton, ['style']);
     }
 
+    protected _displayOnly(): void {
+        // we have an existing object, there might be some values to generate
+        logger(this.currentDataObj);
+        this.dataObjDef.fields.forEach((fieldDef) => {
+            let fieldValue = this.currentDataObj[fieldDef.id];
+            if (fieldValue) fieldValue = this.renderField(fieldDef, fieldValue);
+            this.setFieldValueFromDataObject(fieldDef, fieldValue);
+        });
+        // delete button can go
+        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
+            name: 'style',
+            value: 'display:none'
+        }]);
+    }
+
     protected _visible(): void {
         if (this.factoryElements) this.containerEl?.appendChild(this.factoryElements.form);
     }
@@ -231,5 +247,6 @@ export class BasicFormImplementation extends AbstractForm {
         logger(formattedResult);
         return formattedResult;
     }
+
 
 }

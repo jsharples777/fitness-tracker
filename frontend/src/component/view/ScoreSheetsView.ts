@@ -1,10 +1,10 @@
 import debug from 'debug';
 import moment from "moment";
 import Controller from "../../Controller";
-import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
+import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import {ViewListener} from "../../ui-framework/ViewListener";
-import {View} from "../../ui-framework/View";
+import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
+import {View} from "../../ui-framework/view/interface/View";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 
@@ -12,7 +12,7 @@ import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 const csLogger = debug('score-sheet-sidebar');
 const csLoggerDetail = debug('score-sheet-sidebar:detail');
 
-class ScoreSheetsView extends AbstractStatefulView implements ViewListener{
+class ScoreSheetsView extends AbstractStatefulCollectionView implements CollectionViewListener{
     protected selectedBoardGame: any | null = null;
     static SCORESHEETS_ViewConfig:ViewDOMConfig = {
         resultsContainerId:'scoreSheets',

@@ -3,15 +3,16 @@ import {StateManager} from '../../state/StateManager';
 import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import {ChatManager} from "../../socket/ChatManager";
-import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
+import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import {ViewListener} from "../../ui-framework/ViewListener";
-import {View} from '../../ui-framework/View';
+import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
+import {View} from '../../ui-framework/view/interface/View';
+import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
 
 const vLogger = debug('user-search-sidebar');
 
-class BlockedUserView extends AbstractStatefulView implements ChatUserEventListener, ViewListener {
+class BlockedUserView extends AbstractStatefulCollectionView implements ChatUserEventListener, CollectionViewListener {
     private static DOMConfig: ViewDOMConfig = {
         resultsContainerId: 'blockedUsers',
         resultsElementType: 'a',
@@ -52,9 +53,11 @@ class BlockedUserView extends AbstractStatefulView implements ChatUserEventListe
     constructor(stateManager: StateManager) {
         super(BlockedUserView.DOMConfig, stateManager, STATE_NAMES.users);
 
+        // list renderer
+        this.renderer = new ListViewRenderer(this,this);
+
+
         // handler binding
-        this.updateViewForNamedCollection = this.updateViewForNamedCollection.bind(this);
-        this.eventClickItem = this.eventClickItem.bind(this);
         this.handleLoggedInUsersUpdated = this.handleLoggedInUsersUpdated.bind(this);
         this.handleFavouriteUserLoggedIn = this.handleFavouriteUserLoggedIn.bind(this);
         this.handleFavouriteUserLoggedOut = this.handleFavouriteUserLoggedOut.bind(this);

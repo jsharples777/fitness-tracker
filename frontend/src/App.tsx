@@ -23,8 +23,8 @@ import BlockedUserView from "./component/view/BlockedUserView";
 import BoardGameSearchSidebar from "./component/sidebar/BoardGameSearchSidebar";
 import BGGSearchView from "./component/view/BGGSearchView";
 import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE} from "./ui-framework/ConfigurationTypes";
-import {ViewListener} from "./ui-framework/ViewListener";
-import {View} from "./ui-framework/View";
+import {CollectionViewListener} from "./ui-framework/view/interface/CollectionViewListener";
+import {View} from "./ui-framework/view/interface/View";
 import {DataObjectDefinition, FieldType} from "./ui-framework/form/DataObjectTypeDefs";
 import {
     BasicObjectDefinitionFactory,
@@ -37,11 +37,13 @@ import {BasicFormImplementation} from "./ui-framework/form/BasicFormImplementati
 import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
 import {ComparisonType, ConditionResponse, ValidationRule} from "./ui-framework/form/validation/ValidationTypeDefs";
 import {ValidationManager} from "./ui-framework/form/validation/ValidationManager";
+import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
+import {FormDetailViewRenderer} from "./ui-framework/view/delegate/FormDetailViewRenderer";
 
 
 const logger = debug('app');
 
-class Root extends React.Component implements UnreadMessageCountListener, ViewListener {
+class Root extends React.Component implements UnreadMessageCountListener, CollectionViewListener {
     private titleEl: any;
     private contentEl: any;
     private modalEl: any;
@@ -352,13 +354,13 @@ class Root extends React.Component implements UnreadMessageCountListener, ViewLi
 
             ]));
         // okay lets make a form
-        let form: Form = new BasicFormImplementation("testForm", dataObjDef);
-        form.initialise();
+        let renderer = new FormDetailViewRenderer("testForm",dataObjDef);
+        let view = new DetailViewImplementation({},renderer);
 
         // create a test object
         let dataObj = {
             email: 'jamie.sharples@gmail.com',
-            float1: 0.1,
+            float1: 3.1,
             float2: 2.3,
             checkbox: true,
             date: '20210910',
@@ -374,10 +376,10 @@ class Root extends React.Component implements UnreadMessageCountListener, ViewLi
         // @ts-ignore
         dataObj[FIELD_CreatedBy] = 'Jim';
 
+        view.onDocumentLoaded();
+        const form = renderer.getForm();
 
-        //form.startCreateNew();
-        form.startUpdate(dataObj);
-        form.setIsVisible(true);
+
 
         // change the select options
         dataSource.addValueOption('X-Men', 'xmen');
@@ -418,6 +420,8 @@ class Root extends React.Component implements UnreadMessageCountListener, ViewLi
             ]
         }
         ValidationManager.getInstance().addRuleToForm(form, rule);
+        view.displayItem(dataObj);
+        view.show();
 
     }
 

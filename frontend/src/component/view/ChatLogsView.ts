@@ -3,18 +3,19 @@ import {ChatEventListener} from "../../socket/ChatEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import {ChatManager} from "../../socket/ChatManager";
 import {ChatLog, Invitation, Message} from "../../socket/Types";
-import {ViewListener} from "../../ui-framework/ViewListener";
-import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
+import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
+import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import {View} from "../../ui-framework/View";
+import {View} from "../../ui-framework/view/interface/View";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {isSame, isSameRoom} from "../../util/EqualityFunctions";
+import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
 
 
 const csLogger = debug('chat-sidebar');
 
-class ChatLogsView extends AbstractStatefulView implements ChatEventListener,ViewListener {
+class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventListener,CollectionViewListener {
     protected selectedChatLog:ChatLog|null = null;
 
     private static DOMConfig: ViewDOMConfig = {
@@ -49,6 +50,8 @@ class ChatLogsView extends AbstractStatefulView implements ChatEventListener,Vie
 
     constructor() {
         super(ChatLogsView.DOMConfig,new MemoryBufferStateManager(), STATE_NAMES.chatLogs);
+
+        this.renderer = new ListViewRenderer(this,this);
 
 
         // handler binding

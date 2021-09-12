@@ -1,20 +1,31 @@
-import browserUtil from "../util/BrowserUtil";
-import {EXTRA_ACTION_ATTRIBUTE_NAME, Modifier, ViewDOMConfig} from "./ConfigurationTypes";
+import browserUtil from "../../../util/BrowserUtil";
+import {EXTRA_ACTION_ATTRIBUTE_NAME, Modifier, ViewDOMConfig} from "../../ConfigurationTypes";
 import debug from 'debug';
-import {View} from "./View";
+import {View} from "../interface/View";
+import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
+import {CollectionView} from "../interface/CollectionView";
+import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandler";
 
 const avLogger = debug('list-view-renderer');
 
-export class ListViewRenderer {
-    public static createListItemForItem(view:View,collectionName:string, item: any): HTMLElement {
-        const canDeleteItem:boolean = view.hasPermissionToDeleteItemInNamedCollection(collectionName,item);
-        const uiConfig:ViewDOMConfig = view.getUIConfig();
-        const dataSourceKeyId = view.getDataSourceKeyId();
+export class ListViewRenderer implements CollectionViewRenderer{
+    protected view:CollectionView;
+    protected eventHandler:CollectionViewEventHandler;
 
-        avLogger(`view ${view.getName()}: creating List item`);
+    constructor(view:CollectionView,eventHandler:CollectionViewEventHandler) {
+        this.view = view;
+        this.eventHandler = eventHandler;
+    }
+
+    public createDisplayElementForCollectionItem(collectionName:string, item: any): HTMLElement {
+        const canDeleteItem:boolean = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName,item);
+        const uiConfig:ViewDOMConfig = this.view.getUIConfig();
+        const dataSourceKeyId = this.view.getDataSourceKeyId();
+
+        avLogger(`view ${this.view.getName()}: creating List item`);
         avLogger(item);
 
-        const resultDataKeyId = view.getIdForItemInNamedCollection(collectionName, item);
+        const resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
 
         let childEl: HTMLElement = document.createElement(uiConfig.resultsElementType);
         browserUtil.addRemoveClasses(childEl, uiConfig.resultsClasses);
@@ -40,7 +51,7 @@ export class ListViewRenderer {
             if (uiConfig.detail.background) {
                 let imgEl = document.createElement(uiConfig.detail.background.elementType);
                 browserUtil.addRemoveClasses(imgEl, uiConfig.detail.background.elementClasses);
-                imgEl.setAttribute('src', view.getBackgroundImageForItemInNamedCollection(collectionName, item));
+                imgEl.setAttribute('src', this.view.getBackgroundImageForItemInNamedCollection(collectionName, item));
                 childEl.appendChild(imgEl);
             }
 
@@ -48,7 +59,7 @@ export class ListViewRenderer {
             contentEl.appendChild(buttonsEl);
 
             if (uiConfig.detail.badge) {
-                const badgeValue = view.getBadgeValueForItemInNamedCollection(collectionName, item);
+                const badgeValue = this.view.getBadgeValueForItemInNamedCollection(collectionName, item);
                 if (badgeValue > 0) {
                     let badgeEl: HTMLElement = document.createElement(uiConfig.detail.badge.elementType);
                     browserUtil.addRemoveClasses(badgeEl, uiConfig.detail.badge.elementClasses);
@@ -83,7 +94,7 @@ export class ListViewRenderer {
                     action.addEventListener('click', (event) => {
                         event.preventDefault();
                         event.stopPropagation();
-                        view.eventActionClicked(event);
+                        this.eventHandler.eventActionClicked(event);
                     });
                     buttonsEl.appendChild(action);
                 });
@@ -107,7 +118,7 @@ export class ListViewRenderer {
                 deleteButtonEl.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
-                    view.eventDeleteClickItem(event);
+                    this.eventHandler.eventDeleteClickItem(event);
                 });
                 buttonsEl.appendChild(deleteButtonEl);
             }
@@ -115,11 +126,11 @@ export class ListViewRenderer {
 
             if (uiConfig.detail.drag) {
                 childEl.setAttribute('draggable', 'true');
-                childEl.addEventListener('dragstart', view.eventStartDrag);
+                childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
             }
             // add selection actions
             if (uiConfig.detail.select) {
-                childEl.addEventListener('click', view.eventClickItem);
+                childEl.addEventListener('click', this.eventHandler.eventClickItem);
             }
         }
 
@@ -127,15 +138,15 @@ export class ListViewRenderer {
         // add the key ids for selection
         textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
         textEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
-        const displayText = view.getDisplayValueForItemInNamedCollection(collectionName, item);
+        const displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
         textEl.innerHTML = displayText;
         // add modifiers for patient state
         if (uiConfig.modifiers) {
-            const modifier = view.getModifierForItemInNamedCollection(collectionName, item);
-            const secondModifier = view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
+            const modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
+            const secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
             switch (modifier) {
                 case Modifier.normal: {
-                    avLogger(`view ${view.getName()}: normal item`);
+                    avLogger(`view ${this.view.getName()}: normal item`);
                     browserUtil.addRemoveClasses(childEl, uiConfig.modifiers.normal);
                     if (uiConfig.icons && uiConfig.icons.normal) {
                         let iconEl = document.createElement('i');
@@ -172,7 +183,7 @@ export class ListViewRenderer {
                     break;
                 }
                 case Modifier.active: {
-                    avLogger(`view ${view.getName()}: active item`);
+                    avLogger(`view ${this.view.getName()}: active item`);
                     browserUtil.addRemoveClasses(childEl, uiConfig.modifiers.active);
                     if (uiConfig.icons && uiConfig.icons.active) {
                         let iconEl = document.createElement('i');
@@ -199,7 +210,7 @@ export class ListViewRenderer {
                     break;
                 }
                 case Modifier.inactive: {
-                    avLogger(`view ${view.getName()}: inactive item`);
+                    avLogger(`view ${this.view.getName()}: inactive item`);
                     browserUtil.addRemoveClasses(childEl, uiConfig.modifiers.inactive);
                     if (uiConfig.icons && uiConfig.icons.inactive) {
                         let iconEl = document.createElement('i');
@@ -240,19 +251,18 @@ export class ListViewRenderer {
         return childEl;
     }
 
-    protected createResultsForState(name: string, newState: any): void {
-        avLogger(`view ${this.getName()}: creating Results`, 10);
+    public setDisplayElementsForCollectionInContainer(containerEl:HTMLElement,collectionName:string,newState:any): void {
+        avLogger(`view ${this.view.getName()}: creating Results`, 10);
         avLogger(newState);
         // remove the previous items from list
-        const viewEl = document.getElementById(uiConfig.resultsContainerId);
-        if (viewEl) browserUtil.removeAllChildren(viewEl);
+        browserUtil.removeAllChildren(containerEl);
 
         // add the new children
         newState.map((item: any, index: number) => {
-            const childEl = this.createResultForItem(name, item);
+            const childEl = this.createDisplayElementForCollectionItem(collectionName, item);
             // add draggable actions
-            avLogger(`view ${this.getName()}:  Adding child ${this.getIdForItemInNamedCollection(name,item)}`);
-            if (viewEl) viewEl.appendChild(childEl);
+            avLogger(`view ${this.view.getName()}:  Adding child ${this.view.getIdForItemInNamedCollection(collectionName,item)}`);
+            containerEl.appendChild(childEl);
         });
     }
 

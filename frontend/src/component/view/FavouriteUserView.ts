@@ -4,16 +4,17 @@ import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import Controller from "../../Controller";
 import {ChatManager} from "../../socket/ChatManager";
-import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
-import {ViewListener} from "../../ui-framework/ViewListener";
+import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
+import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import {View} from "../../ui-framework/View";
+import {View} from "../../ui-framework/view/interface/View";
+import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
 
 const vLogger = debug('user-search-sidebar');
 const vLoggerDetail = debug('user-search-sidebar:detail');
 
-class FavouriteUserView extends AbstractStatefulView implements ChatUserEventListener,ViewListener {
+class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUserEventListener,CollectionViewListener {
     static DOMConfig: ViewDOMConfig = {
         resultsContainerId: 'favouriteUsers',
         resultsElementType: 'a',
@@ -64,9 +65,9 @@ class FavouriteUserView extends AbstractStatefulView implements ChatUserEventLis
     constructor(stateManager: StateManager) {
         super(FavouriteUserView.DOMConfig, stateManager, STATE_NAMES.users);
 
+        this.renderer = new ListViewRenderer(this,this);
+
         // handler binding
-        this.updateViewForNamedCollection = this.updateViewForNamedCollection.bind(this);
-        this.eventClickItem = this.eventClickItem.bind(this);
         this.handleLoggedInUsersUpdated = this.handleLoggedInUsersUpdated.bind(this);
         this.handleFavouriteUserLoggedIn = this.handleFavouriteUserLoggedIn.bind(this);
         this.handleFavouriteUserLoggedOut = this.handleFavouriteUserLoggedOut.bind(this);

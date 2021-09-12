@@ -49,7 +49,7 @@ export class AbstractField implements Field, FieldListener {
             let value: string | null = this.getValue();
             logger(`Handling change event - informing listeners`);
             this.listeners.forEach((listener) => listener.valueChanged(this.formId,this.definition, value));
-            }
+        }
     }
 
     addFieldListener(listener: FieldListener): void {
@@ -71,6 +71,8 @@ export class AbstractField implements Field, FieldListener {
 
     setInvalid(message: string): void {
         this.validationHandler.setValidationStatusAndMessage(this.element,false,'',message,false);
+        // @ts-ignore
+        this.listeners.forEach((listener) => listener.failedValidation(this.formId,this.definition,this.getValue(),message));
     }
 
     public initialise(): void {
@@ -264,15 +266,7 @@ export class AbstractField implements Field, FieldListener {
 
             }
             else {
-                this.element.setAttribute('readonly','true');
-                this.element.setAttribute('disabled','true');
-                // do the same for subelements
-                if (this.subElements) {
-                    this.subElements.forEach((subElement) => {
-                        subElement.setAttribute('readonly','true');
-                        subElement.setAttribute('disabled','true');
-                    });
-                }
+                this.setReadOnly();
             }
         }
     }
@@ -295,16 +289,34 @@ export class AbstractField implements Field, FieldListener {
 
             }
             else {
-                this.element.removeAttribute('readonly');
-                this.element.removeAttribute('disabled');
-                // do the same for subelements
-                if (this.subElements) {
-                    this.subElements.forEach((subElement) => {
-                        subElement.removeAttribute('readonly');
-                        subElement.removeAttribute('disabled');
-                    });
-                }
+                this.clearReadOnly();
             }
+        }
+    }
+
+    clearReadOnly(): void {
+        if (this.definition.displayOnly) return;
+        this.element.removeAttribute('readonly');
+        this.element.removeAttribute('disabled');
+        // do the same for subelements
+        if (this.subElements) {
+            this.subElements.forEach((subElement) => {
+                subElement.removeAttribute('readonly');
+                subElement.removeAttribute('disabled');
+            });
+        }
+
+    }
+
+    setReadOnly(): void {
+        this.element.setAttribute('readonly','true');
+        this.element.setAttribute('disabled','true');
+        // do the same for subelements
+        if (this.subElements) {
+            this.subElements.forEach((subElement) => {
+                subElement.setAttribute('readonly','true');
+                subElement.setAttribute('disabled','true');
+            });
         }
     }
 }

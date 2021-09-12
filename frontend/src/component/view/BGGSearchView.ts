@@ -3,15 +3,16 @@ import browserUtil from "../../util/BrowserUtil";
 import DownloadManager from "../../network/DownloadManager";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
-import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
+import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {API_Config, DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import {ViewListener} from "../../ui-framework/ViewListener";
-import {View} from "../../ui-framework/View";
+import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
+import {View} from "../../ui-framework/view/interface/View";
+import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
 
 const vLogger = debug('board-game-search-sidebar');
 const vLoggerDetail = debug('board-game-search-sidebar:detail');
 
-class BGGSearchView extends AbstractStatefulView implements ViewListener{
+class BGGSearchView extends AbstractStatefulCollectionView implements CollectionViewListener{
     // @ts-ignore
     private formEl: HTMLElement;
     // @ts-ignore
@@ -55,6 +56,9 @@ class BGGSearchView extends AbstractStatefulView implements ViewListener{
         // handler binding
         this.handleSearch = this.handleSearch.bind(this);
         this.handleSearchResultsCB = this.handleSearchResultsCB.bind(this);
+
+        // list renderer
+        this.renderer = new ListViewRenderer(this,this);
 
     }
 

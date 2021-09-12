@@ -1,4 +1,4 @@
-import SidebarViewContainer from '../../ui-framework/SidebarViewContainer';
+import SidebarViewContainer from '../../ui-framework/container/SidebarViewContainer';
 import {SidebarLocation, SidebarPrefs} from "../../ui-framework/ConfigurationTypes";
 
 class ScoreSheetsSidebar extends SidebarViewContainer {

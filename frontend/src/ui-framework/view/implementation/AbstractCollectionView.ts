@@ -1,5 +1,5 @@
-import debug from 'debug';
-import ViewListenerForwarder from "./ViewListenerForwarder";
+import {CollectionView} from "../interface/CollectionView";
+import {AbstractView} from "./AbstractView";
 import {
     DRAGGABLE_FROM,
     DRAGGABLE_KEY_ID,
@@ -7,50 +7,51 @@ import {
     EXTRA_ACTION_ATTRIBUTE_NAME,
     KeyType,
     Modifier,
-    ViewDOMConfig,
-} from "./ConfigurationTypes";
-import {ViewListener} from "./ViewListener";
-import {View} from "./View";
-import {isSame} from "../util/EqualityFunctions";
-import {StateManager} from "../state/StateManager";
+    ViewDOMConfig
+} from "../../ConfigurationTypes";
+import {isSame} from "../../../util/EqualityFunctions";
+import debug from "debug";
+import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
+import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandler";
+import {CollectionViewListenerForwarder} from "../delegate/CollectionViewListenerForwarder";
 
-const avLogger = debug('view-ts');
-const avLoggerDetails = debug('view-ts-detail');
+const avLogger = debug('collection-view-ts');
+const avLoggerDetails = debug('collection-view-ts-detail');
 
-export abstract class AbstractView implements View {
 
-    public static DATA_SOURCE = 'data-source';
+export abstract class AbstractCollectionView extends AbstractView implements CollectionView,CollectionViewEventHandler{
     protected collectionName: string;
-
-
-    protected uiConfig: ViewDOMConfig;
-
-    protected eventForwarder: ViewListenerForwarder;
-    protected containerEl: HTMLElement | null = null;
+    protected renderer:CollectionViewRenderer|null;
 
     protected constructor(uiConfig: ViewDOMConfig, collectionName:string) {
-        this.uiConfig = uiConfig;
+        super(uiConfig);
         this.collectionName = collectionName;
-        this.eventForwarder = new ViewListenerForwarder();
+        this.renderer = null;
+        this.eventForwarder = new CollectionViewListenerForwarder();
 
         // event handlers
         this.eventStartDrag = this.eventStartDrag.bind(this);
-        this.handleDrop = this.handleDrop.bind(this);
+        this.eventActionClicked = this.eventActionClicked.bind(this);
+        this.eventClickItem = this.eventClickItem.bind(this);
+        this.eventDeleteClickItem = this.eventDeleteClickItem.bind(this);
+        this.updateViewForNamedCollection = this.updateViewForNamedCollection.bind(this);
 
     }
 
-    getUIConfig(): ViewDOMConfig {
-        return this.uiConfig;
+    setContainedBy(container: HTMLElement): void {
+        super.setContainedBy(container);
+        if (this.uiConfig.detail.drop) {
+            avLoggerDetails(`view ${this.getName()}: Adding dragover events to ${this.uiConfig.dataSourceId}`)
+            avLoggerDetails(container);
+            container.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
+            container.addEventListener('drop', this.handleDrop);
+
+        }
+
     }
 
-
-    addEventListener(listener: ViewListener) {
-        this.eventForwarder.addListener(listener);
-    }
-
-    onDocumentLoaded(): void {
-        this.eventForwarder.documentLoaded(this);
-    }
 
 
     protected getDragData(event: DragEvent): any {
@@ -105,78 +106,23 @@ export abstract class AbstractView implements View {
         return '';
     }
 
-    abstract updateViewForNamedCollection(name: string, newState: any): void;
+    updateViewForNamedCollection(name: string, newState: any): void {
+        if (this.viewEl && this.renderer) {
+            this.renderer.setDisplayElementsForCollectionInContainer(this.viewEl,name,newState);
+        }
+    }
 
-    protected eventStartDrag(event: DragEvent) {
+    public eventStartDrag(event: DragEvent):void {
         avLogger(`view ${this.getName()}: drag start`);
         avLoggerDetails(event.target);
         const data = JSON.stringify(this.getDragData(event));
         avLoggerDetails(data);
         // @ts-ignore
         event.dataTransfer.setData(DRAGGABLE_KEY_ID, data);
+        this.eventForwarder.itemDragStarted(this, data);
     }
 
-    setContainedBy(container: HTMLElement): void {
-        this.containerEl = container;
-        if (this.uiConfig.detail.drop) {
-            avLoggerDetails(`view ${this.getName()}: Adding dragover events to ${this.uiConfig.dataSourceId}`)
-            avLoggerDetails(container);
-            container.addEventListener('dragover', (event) => {
-                event.preventDefault();
-            });
-            container.addEventListener('drop', this.handleDrop);
-
-        }
-
-    }
-
-    handleDrop(event: Event) {
-        avLogger(`view ${this.getName()}: drop event`);
-        avLoggerDetails(event.target);
-        // @ts-ignore
-        const draggedObjectJSON = event.dataTransfer.getData(DRAGGABLE_KEY_ID);
-        const draggedObject = JSON.parse(draggedObjectJSON);
-        avLoggerDetails(draggedObject);
-
-        // check to see if we accept the dropped type and source
-        const droppedObjectType = draggedObject[DRAGGABLE_TYPE];
-        const droppedObjectFrom = draggedObject[DRAGGABLE_FROM];
-        avLogger(`view ${this.getName()}: drop event from ${droppedObjectFrom} with type ${droppedObjectType}`);
-        if (this.uiConfig.detail.drop) {
-            const acceptType = (this.uiConfig.detail.drop.acceptTypes.findIndex((objectType) => objectType === droppedObjectType) >= 0);
-            let acceptFrom = true;
-            if (acceptType) {
-                if (this.uiConfig.detail.drop.acceptFrom) {
-                    acceptFrom = (this.uiConfig.detail.drop.acceptFrom.findIndex((from) => from === droppedObjectFrom) >= 0);
-                }
-                avLoggerDetails(`view ${this.getName()}: accepted type? ${acceptType} and from? ${acceptFrom}`);
-                if (acceptType && acceptFrom) {
-                    this.eventForwarder.itemDropped(this, draggedObject);
-                }
-            }
-        }
-    }
-
-    getName(): string {
-        return this.uiConfig.dataSourceId;
-    }
-
-    hidden(): void {
-    }
-
-    hasChanged(): boolean {
-        return false;
-    }
-
-    hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
-        return true;
-    }
-
-    hasPermissionToUpdateItemInNamedCollection(name: string, item: any): boolean {
-        return true;
-    }
-
-    protected eventClickItem(event: MouseEvent): void {
+    public eventClickItem(event: MouseEvent): void {
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
@@ -197,7 +143,7 @@ export abstract class AbstractView implements View {
         if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
     }
 
-    protected eventDeleteClickItem(event: MouseEvent): void {
+    public eventDeleteClickItem(event: MouseEvent): void {
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
@@ -224,7 +170,7 @@ export abstract class AbstractView implements View {
         }
     }
 
-    protected eventActionClicked(event: MouseEvent): void {
+    public eventActionClicked(event: MouseEvent): void {
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
@@ -248,8 +194,16 @@ export abstract class AbstractView implements View {
         }
     }
 
-    getDataSourceKeyId(): string {
-        return AbstractView.DATA_SOURCE;
+    hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
+        return true;
+    }
+
+    hasPermissionToUpdateItemInNamedCollection(name: string, item: any): boolean {
+        return true;
+    }
+
+    setRenderer(renderer:CollectionViewRenderer):void {
+        this.renderer = renderer;
     }
 
 }

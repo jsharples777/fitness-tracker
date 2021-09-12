@@ -498,7 +498,7 @@ export class ValidationManager implements FieldListener {
     public failedValidation(formId: string, field: FieldDefinition, currentValue: string, message: string): void {
     } // ignored, we might be causing
 
-    public applyRulesToTargetField(formId:string, field:FieldDefinition) : RuleCheck {
+    public applyRulesToTargetField(formId:string, field:FieldDefinition,onlyRulesOfType:ConditionResponse|null) : RuleCheck {
         logger(`Checking invalidation only rules for form ${formId}, data field ${field.id}`);
         // which rules apply?
         const rules: _ValidationRule[] = this.getRulesForFieldChange(formId, field.id,false);
@@ -508,7 +508,7 @@ export class ValidationManager implements FieldListener {
         }
 
         rules.every((rule) => { // we only want rules that make a field invalid
-            if (rule.response === ConditionResponse.invalid) {
+            if ((onlyRulesOfType && rule.response === onlyRulesOfType) || !onlyRulesOfType) {
                 let response: RuleResponse = this.executeRule(rule);
                 if (response.ruleFailed) {
                     flogger(`Rule failed with message ${response.message}`);

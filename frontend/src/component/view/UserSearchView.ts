@@ -8,14 +8,15 @@ import BrowserStorageStateManager from "../../state/BrowserStorageStateManager";
 import {ChatManager} from "../../socket/ChatManager";
 import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import AbstractStatefulView from "../../ui-framework/AbstractStatefulView";
-import {ViewListener} from "../../ui-framework/ViewListener";
-import {View} from "../../ui-framework/View";
+import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
+import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
+import {View} from "../../ui-framework/view/interface/View";
+import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
 
 const vLogger = debug('user-search');
 const vLoggerDetail = debug('user-search-detail');
 
-class UserSearchView extends AbstractStatefulView implements ChatUserEventListener,ViewListener {
+class UserSearchView extends AbstractStatefulCollectionView implements ChatUserEventListener,CollectionViewListener {
     protected loggedInUsers: string[];
     protected localisedSM: StateManager;
 
@@ -76,6 +77,9 @@ class UserSearchView extends AbstractStatefulView implements ChatUserEventListen
 
         this.loggedInUsers = [];
 
+        this.renderer = new ListViewRenderer(this,this);
+
+
         // handler binding
         this.updateViewForNamedCollection = this.updateViewForNamedCollection.bind(this);
         this.eventUserSelected = this.eventUserSelected.bind(this);
@@ -129,6 +133,7 @@ class UserSearchView extends AbstractStatefulView implements ChatUserEventListen
         super.onDocumentLoaded();
         // @ts-ignore
         const fastSearchEl = $(`#${UserSearchView.fastSearchInputId}`);
+        // @ts-ignore
         fastSearchEl.on('autocompleteselect', this.eventUserSelected);
 
         this.addEventListener(this);
@@ -201,7 +206,7 @@ class UserSearchView extends AbstractStatefulView implements ChatUserEventListen
             vLogger(`Updating for recent searches`);
             newState = this.localisedSM.getStateByName(STATE_NAMES.recentUserSearches);
             vLogger(newState);
-            this.createResultsForState(name, newState);
+            this.renderer?.createDisplayElementForCollectionItem(name, newState);
         }
         if (name === STATE_NAMES.users) {
             // load the search names into the search field
