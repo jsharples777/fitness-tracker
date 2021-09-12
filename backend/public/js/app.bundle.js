@@ -2316,6 +2316,10 @@ var BGGSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
 
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
+  };
+
   return BGGSearchView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_5__["default"]);
 
@@ -2521,6 +2525,10 @@ var BlockedUserView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
 
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
+  };
+
   return BlockedUserView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
@@ -2618,6 +2626,10 @@ var ChatLogDetailView = /*#__PURE__*/function () {
   }
 
   var _proto = ChatLogDetailView.prototype;
+
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    throw new Error('Method not implemented.');
+  };
 
   _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
     throw new Error('Method not implemented.');
@@ -3192,6 +3204,10 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.handleInvitationDeclined = function handleInvitationDeclined(room, username) {};
 
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
+  };
+
   return ChatLogsView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
@@ -3437,6 +3453,10 @@ var FavouriteUserView = /*#__PURE__*/function (_AbstractStatefulColl) {
   };
 
   _proto.showRequested = function showRequested(view) {};
+
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
+  };
 
   return FavouriteUserView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_4__["default"]);
@@ -4022,6 +4042,10 @@ var ScoreSheetsView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.showRequested = function showRequested(view) {};
 
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
+  };
+
   return ScoreSheetsView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
@@ -4327,6 +4351,10 @@ var UserSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
 
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
+  };
+
   return UserSearchView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_8__["default"]);
 
@@ -4448,6 +4476,7 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
 
       var fieldDef = {
         id: 'id',
+        isKey: true,
         idType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.KeyType.number,
         type: fieldType,
         displayName: 'Id',
@@ -4528,6 +4557,7 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
 
     var fieldDef = {
       id: id,
+      isKey: false,
       idType: keyType,
       type: type,
       displayName: displayName,
@@ -8971,7 +9001,9 @@ var AbstractForm = /*#__PURE__*/function () {
   };
 
   _proto.reset = function reset() {
-    logger("Resetting form"); // inform the listeners
+    logger("Resetting form");
+    this.isDisplayOnly = false;
+    this.hasChangedBoolean = false; // inform the listeners
 
     if (this.uiDef) {
       var formEvent = {
@@ -9184,9 +9216,9 @@ var AbstractForm = /*#__PURE__*/function () {
       case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVED:
         {
           logger("Form is saved with data");
-          logger(formValues); // user is deleting the object, will become invisible
-
-          this.reset();
+          logger(formValues);
+          this.isDisplayOnly = false;
+          this.hasChangedBoolean = false;
           break;
         }
 
@@ -9337,6 +9369,18 @@ var AbstractForm = /*#__PURE__*/function () {
     this.fields.forEach(function (field) {
       field.setReadOnly();
     });
+  };
+
+  _proto.isDisplayingItem = function isDisplayingItem(dataObj) {
+    if (this.currentDataObj) {
+      return this._isSameObjectAsDisplayed(dataObj);
+    }
+
+    return false;
+  };
+
+  _proto.isReadOnly = function isReadOnly() {
+    return this.isDisplayOnly;
   };
 
   return AbstractForm;
@@ -9671,6 +9715,38 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     });
     logger(formattedResult);
     return formattedResult;
+  };
+
+  _proto._isSameObjectAsDisplayed = function _isSameObjectAsDisplayed(dataObj) {
+    var _this7 = this; // we can only be sure for objects with keys
+
+
+    var isSameObject = false;
+    dlogger("is same object as current");
+    dlogger(dataObj);
+    dlogger(this.currentDataObj);
+    this.dataObjDef.fields.every(function (field) {
+      if (field.isKey) {
+        var _this7$getFieldFromDa;
+
+        var currentObjId = (_this7$getFieldFromDa = _this7.getFieldFromDataFieldId(field.id)) == null ? void 0 : _this7$getFieldFromDa.getValue();
+        var suppliedObjId = dataObj[field.id];
+        dlogger("is same object id " + suppliedObjId + " as current " + currentObjId);
+
+        if (currentObjId && !suppliedObjId || currentObjId && !suppliedObjId) {
+          isSameObject = false;
+        }
+
+        if (currentObjId && suppliedObjId && currentObjId == suppliedObjId) {
+          isSameObject = true;
+        }
+
+        return false;
+      }
+
+      return true;
+    });
+    return isSameObject;
   };
 
   return BasicFormImplementation;
@@ -10586,6 +10662,7 @@ var AbstractField = /*#__PURE__*/function () {
     this.config = null;
     this.subElements = [];
     this.listeners = [];
+    this.hidden = false;
     this.formId = formId;
     this.config = config;
     this.definition = fieldDef;
@@ -10606,6 +10683,10 @@ var AbstractField = /*#__PURE__*/function () {
   }
 
   var _proto = AbstractField.prototype;
+
+  _proto.isHidden = function isHidden() {
+    return this.hidden;
+  };
 
   _proto.handleChangeEvent = function handleChangeEvent(event) {
     var _this2 = this;
@@ -10837,6 +10918,8 @@ var AbstractField = /*#__PURE__*/function () {
           }
       }
     }
+
+    this.show();
   };
 
   _proto.clearValue = function clearValue() {
@@ -10886,6 +10969,8 @@ var AbstractField = /*#__PURE__*/function () {
         this.setReadOnly();
       }
     }
+
+    this.hidden = true;
   };
 
   _proto.setValid = function setValid() {
@@ -10908,6 +10993,8 @@ var AbstractField = /*#__PURE__*/function () {
         this.clearReadOnly();
       }
     }
+
+    this.hidden = true;
   };
 
   _proto.clearReadOnly = function clearReadOnly() {
@@ -12688,7 +12775,106 @@ var CollectionViewListenerForwarder = /*#__PURE__*/function (_ViewListenerForwar
     }
   };
 
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    var result = true; // return false if cancelling delete
+
+    if (!this.suppressEventEmits) {
+      this.collectionViewListeners.forEach(function (listener) {
+        if (!listener.canSelectItem(view, selectedItem)) {
+          result = false;
+        }
+      });
+    }
+
+    return result;
+  };
+
   return CollectionViewListenerForwarder;
+}(_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_0__.ViewListenerForwarder);
+
+/***/ }),
+
+/***/ "./src/ui-framework/view/delegate/DetailViewListenerForwarder.ts":
+/*!***********************************************************************!*\
+  !*** ./src/ui-framework/view/delegate/DetailViewListenerForwarder.ts ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DetailViewListenerForwarder": () => (/* binding */ DetailViewListenerForwarder)
+/* harmony export */ });
+/* harmony import */ var _ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ViewListenerForwarder */ "./src/ui-framework/view/delegate/ViewListenerForwarder.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+var DetailViewListenerForwarder = /*#__PURE__*/function (_ViewListenerForwarde) {
+  _inheritsLoose(DetailViewListenerForwarder, _ViewListenerForwarde);
+
+  function DetailViewListenerForwarder() {
+    var _this;
+
+    _this = _ViewListenerForwarde.call(this) || this;
+    _this.detailViewListeners = [];
+    return _this;
+  }
+
+  var _proto = DetailViewListenerForwarder.prototype;
+
+  _proto.addListener = function addListener(listener) {
+    _ViewListenerForwarde.prototype.addListener.call(this, listener);
+
+    this.detailViewListeners.push(listener);
+  };
+
+  _proto.saveNewItem = function saveNewItem(view, dataObj) {
+    if (!this.suppressEventEmits) {
+      this.detailViewListeners.forEach(function (listener) {
+        return listener.saveNewItem(view, dataObj);
+      });
+    }
+  };
+
+  _proto.updateItem = function updateItem(view, dataObj) {
+    if (!this.suppressEventEmits) {
+      this.detailViewListeners.forEach(function (listener) {
+        return listener.updateItem(view, dataObj);
+      });
+    }
+  };
+
+  _proto.deletedItem = function deletedItem(view, dataObj) {
+    if (!this.suppressEventEmits) {
+      this.detailViewListeners.forEach(function (listener) {
+        return listener.deletedItem(view, dataObj);
+      });
+    }
+  };
+
+  _proto.cancelled = function cancelled(view, dataObj) {
+    if (!this.suppressEventEmits) {
+      this.detailViewListeners.forEach(function (listener) {
+        return listener.cancelled(view, dataObj);
+      });
+    }
+  };
+
+  return DetailViewListenerForwarder;
 }(_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_0__.ViewListenerForwarder);
 
 /***/ }),
@@ -12705,19 +12891,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "FormDetailViewRenderer": () => (/* binding */ FormDetailViewRenderer)
 /* harmony export */ });
 /* harmony import */ var _form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../form/BasicFormImplementation */ "./src/ui-framework/form/BasicFormImplementation.ts");
+/* harmony import */ var _form_FormListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../form/FormListener */ "./src/ui-framework/form/FormListener.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
 
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('form-detail-view-renderer');
 var FormDetailViewRenderer = /*#__PURE__*/function () {
   function FormDetailViewRenderer(containerId, objDef) {
     this.form = null;
     this.containerId = containerId;
     this.objDef = objDef;
     this.currentItem = {};
+    this.isNewItem = false;
+    this.forwarder = null;
+    this.view = null;
   }
 
   var _proto = FormDetailViewRenderer.prototype;
 
+  _proto.setEventForwarder = function setEventForwarder(forwarder) {
+    this.forwarder = forwarder;
+  };
+
+  _proto.setView = function setView(view) {
+    this.view = view;
+  };
+
   _proto.onDocumentLoaded = function onDocumentLoaded() {
     this.form = new _form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_0__.BasicFormImplementation(this.containerId, this.objDef);
+    this.form.addFormListener(this);
   };
 
   _proto.reset = function reset() {
@@ -12729,6 +12933,7 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
   };
 
   _proto.displayItemReadonly = function displayItemReadonly(dataObject) {
+    this.isNewItem = false;
     if (this.form) this.form.displayOnly(dataObject);
   };
 
@@ -12759,6 +12964,7 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
   };
 
   _proto.clearDisplay = function clearDisplay() {
+    this.isNewItem = false;
     if (this.form) this.form.reset();
   };
 
@@ -12770,16 +12976,24 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
     if (this.form) this.form.setReadOnly();
   };
 
+  _proto.isReadOnly = function isReadOnly() {
+    var result = false;
+    if (this.form) result = this.form.isReadOnly();
+    return result;
+  };
+
   _proto.createItem = function createItem() {
     this.currentItem = {};
 
     if (this.form) {
+      this.isNewItem = true;
       this.currentItem = this.form.startCreateNew();
     }
   };
 
   _proto.displayItem = function displayItem(dataObj) {
     this.currentItem = dataObj;
+    this.isNewItem = false;
 
     if (this.hasPermissionToUpdateCurrentItem()) {
       if (this.form) this.form.startUpdate(dataObj);
@@ -12815,6 +13029,97 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
 
   _proto.handleActionItem = function handleActionItem(actionName, selectedItem) {
     throw new Error("Handle action item not implemented for " + actionName);
+  };
+
+  _proto.isDisplayingItem = function isDisplayingItem(dataObj) {
+    var result = false;
+
+    if (this.currentItem) {
+      if (this.form) {
+        result = this.form.isDisplayingItem(dataObj);
+      }
+    }
+
+    return result;
+  };
+
+  _proto.formChanged = function formChanged(event, formValues) {
+    // catch form events for user leaving the form
+    switch (event.eventType) {
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLING:
+        {
+          logger("Form is cancelling");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLING_ABORTED:
+        {
+          logger("Form is cancelling - aborted");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLED:
+        {
+          logger("Form is cancelled - resetting");
+          if (this.forwarder && this.view) this.forwarder.cancelled(this.view, this.currentItem);
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETING:
+        {
+          logger("Form is deleting");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETE_ABORTED:
+        {
+          logger("Form is deleting - aborted");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETED:
+        {
+          logger("Form is deleted - resetting");
+          if (this.forwarder && this.view) this.forwarder.deletedItem(this.view, this.currentItem); // user is deleting the object, will become invisible
+
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVE_ABORTED:
+        {
+          logger("Form save cancelled");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVED:
+        {
+          logger("Form is saved with data");
+
+          if (this.form) {
+            var _this$form;
+
+            var formattedObj = (_this$form = this.form) == null ? void 0 : _this$form.getFormattedDataObject();
+
+            if (this.isNewItem) {
+              if (this.forwarder && this.view) this.forwarder.saveNewItem(this.view, this.currentItem);
+            } else {
+              if (this.forwarder && this.view) this.forwarder.updateItem(this.view, this.currentItem);
+            }
+
+            this.isNewItem = false;
+          }
+
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVING:
+        {
+          logger("Form is saving");
+          break;
+        }
+    }
+
+    return false;
   };
 
   return FormDetailViewRenderer;
@@ -13285,6 +13590,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../delegate/CollectionViewListenerForwarder */ "./src/ui-framework/view/delegate/CollectionViewListenerForwarder.ts");
+/* harmony import */ var _alert_AlertManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -13314,6 +13620,7 @@ function _setPrototypeOf(o, p) {
 
 
 
+
 var avLogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('collection-view-ts');
 var avLoggerDetails = debug__WEBPACK_IMPORTED_MODULE_3___default()('collection-view-ts-detail');
 var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
@@ -13325,6 +13632,7 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     _this = _AbstractView.call(this, uiConfig) || this;
     _this.collectionName = collectionName;
     _this.renderer = null;
+    _this.selectedItem = null;
     _this.eventForwarder = new _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_4__.CollectionViewListenerForwarder(); // event handlers
 
     _this.eventStartDrag = _this.eventStartDrag.bind(_assertThisInitialized(_this));
@@ -13336,6 +13644,10 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
   }
 
   var _proto = AbstractCollectionView.prototype;
+
+  _proto.addEventListener = function addEventListener(listener) {
+    this.eventForwarder.addListener(listener);
+  };
 
   _proto.setContainedBy = function setContainedBy(container) {
     _AbstractView.prototype.setContainedBy.call(this, container);
@@ -13381,7 +13693,13 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
   };
 
   _proto.getModifierForItemInNamedCollection = function getModifierForItemInNamedCollection(name, item) {
-    return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal;
+    if (this.selectedItem) {
+      if (this.compareItemsForEquality(item, this.selectedItem)) {
+        return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active;
+      }
+    }
+
+    return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive;
   };
 
   _proto.getSecondaryModifierForItemInNamedCollection = function getSecondaryModifierForItemInNamedCollection(name, item) {
@@ -13428,7 +13746,17 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     avLoggerDetails(compareWith);
     var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
     console.log(selectedItem);
-    if (selectedItem) this.eventForwarder.itemSelected(this, selectedItem);
+
+    if (selectedItem) {
+      var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
+      avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting selected from " + dataSource + " - " + shouldSelect);
+
+      if (shouldSelect) {
+        this.selectedItem = selectedItem;
+        avLoggerDetails(selectedItem);
+        this.eventForwarder.itemSelected(this, selectedItem);
+      }
+    }
   };
 
   _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
@@ -13452,8 +13780,7 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
       avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource + " - " + shouldDelete);
 
       if (shouldDelete) {
-        avLoggerDetails(selectedItem);
-        this.eventForwarder.itemDeleted(this, selectedItem);
+        _alert_AlertManager__WEBPACK_IMPORTED_MODULE_5__.AlertManager.getInstance().startAlert(this, this.getName(), "Are you sure you want to delete this information?", selectedItem);
       }
     }
   };
@@ -13477,7 +13804,14 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
 
     if (selectedItem) {
-      this.eventForwarder.itemAction(this, actionName, selectedItem);
+      var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
+      avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting action " + actionName + " from " + dataSource + " - " + shouldSelect);
+
+      if (shouldSelect) {
+        this.selectedItem = selectedItem;
+        avLoggerDetails(selectedItem);
+        this.eventForwarder.itemAction(this, actionName, selectedItem);
+      }
     }
   };
 
@@ -13491,6 +13825,12 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
 
   _proto.setRenderer = function setRenderer(renderer) {
     this.renderer = renderer;
+  };
+
+  _proto.completed = function completed(event) {
+    avLoggerDetails(event.context);
+    this.selectedItem = null;
+    this.eventForwarder.itemDeleted(this, event.context);
   };
 
   return AbstractCollectionView;
@@ -13603,7 +13943,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../delegate/CollectionViewListenerForwarder */ "./src/ui-framework/view/delegate/CollectionViewListenerForwarder.ts");
+/* harmony import */ var _delegate_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../delegate/ViewListenerForwarder */ "./src/ui-framework/view/delegate/ViewListenerForwarder.ts");
 
 
 
@@ -13614,7 +13954,7 @@ var AbstractView = /*#__PURE__*/function () {
     this.containerEl = null;
     this.uiConfig = uiConfig;
     this.viewEl = null;
-    this.eventForwarder = new _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_2__.CollectionViewListenerForwarder();
+    this.eventForwarder = new _delegate_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_2__.ViewListenerForwarder();
     this.handleDrop = this.handleDrop.bind(this);
   }
 
@@ -13701,6 +14041,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DetailViewImplementation": () => (/* binding */ DetailViewImplementation)
 /* harmony export */ });
 /* harmony import */ var _AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractView */ "./src/ui-framework/view/implementation/AbstractView.ts");
+/* harmony import */ var _delegate_DetailViewListenerForwarder__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../delegate/DetailViewListenerForwarder */ "./src/ui-framework/view/delegate/DetailViewListenerForwarder.ts");
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
@@ -13718,6 +14067,7 @@ function _setPrototypeOf(o, p) {
 }
 
 
+
 var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
   _inheritsLoose(DetailViewImplementation, _AbstractView);
 
@@ -13727,10 +14077,21 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
     _this = _AbstractView.call(this, uiConfig) || this;
     _this.currentItem = null;
     _this.renderer = renderer;
+    var forwarder = new _delegate_DetailViewListenerForwarder__WEBPACK_IMPORTED_MODULE_1__.DetailViewListenerForwarder();
+    _this.eventForwarder = forwarder;
+
+    _this.renderer.setView(_assertThisInitialized(_this));
+
+    _this.renderer.setEventForwarder(forwarder);
+
     return _this;
   }
 
   var _proto = DetailViewImplementation.prototype;
+
+  _proto.addEventListener = function addEventListener(listener) {
+    this.eventForwarder.addListener(listener);
+  };
 
   _proto.clearDisplay = function clearDisplay() {
     this.renderer.reset();
@@ -13742,6 +14103,10 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   _proto.setReadOnly = function setReadOnly() {
     this.renderer.setReadOnly();
+  };
+
+  _proto.isReadOnly = function isReadOnly() {
+    return this.renderer.isReadOnly();
   };
 
   _proto.createItem = function createItem() {
@@ -13789,6 +14154,14 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   _proto.handleActionItem = function handleActionItem(actionName, selectedItem) {
     this.renderer.handleActionItem(actionName, selectedItem);
+  };
+
+  _proto.isDisplayingItem = function isDisplayingItem(dataObj) {
+    return this.renderer.isDisplayingItem(dataObj);
+  };
+
+  _proto.hasChanged = function hasChanged() {
+    return this.renderer.hasChanged();
   };
 
   return DetailViewImplementation;
@@ -14544,6 +14917,10 @@ var Root = /*#__PURE__*/function (_React$Component) {
     // add a new board game to the display
     selectedItem.gameId = parseInt(selectedItem.gameId);
     this.addBoardGameToDisplay(selectedItem);
+  };
+
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
   };
 
   return Root;

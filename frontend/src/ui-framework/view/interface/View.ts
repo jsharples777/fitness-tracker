@@ -1,4 +1,4 @@
-import {ViewDOMConfig} from "../../ConfigurationTypes";
+import {CollectionViewDOMConfig} from "../../ConfigurationTypes";
 import {ViewListener} from "./ViewListener";
 
 export interface View {
@@ -15,7 +15,7 @@ export interface View {
 
     hasChanged():boolean;
 
-    getUIConfig():ViewDOMConfig;
+    getUIConfig():CollectionViewDOMConfig;
 
     getDataSourceKeyId():string;
 

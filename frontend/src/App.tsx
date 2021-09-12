@@ -31,19 +31,19 @@ import {
     FIELD_CreatedOn,
     FIELD_ID
 } from "./model/BasicObjectDefinitionFactory";
-import {Form} from "./ui-framework/form/Form";
-import {BasicFormImplementation} from "./ui-framework/form/BasicFormImplementation";
 import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
 import {ComparisonType, ConditionResponse, ValidationRule} from "./ui-framework/form/validation/ValidationTypeDefs";
 import {ValidationManager} from "./ui-framework/form/validation/ValidationManager";
 import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
 import {FormDetailViewRenderer} from "./ui-framework/view/delegate/FormDetailViewRenderer";
 import {ViewListener} from "./ui-framework/view/interface/ViewListener";
+import {CollectionViewListener} from "./ui-framework/view/interface/CollectionViewListener";
+import {CollectionView} from "./ui-framework/view/interface/CollectionView";
 
 
 const logger = debug('app');
 
-class Root extends React.Component implements UnreadMessageCountListener, ViewListener {
+class Root extends React.Component implements UnreadMessageCountListener, CollectionViewListener {
     private titleEl: any;
     private contentEl: any;
     private modalEl: any;
@@ -570,6 +570,10 @@ class Root extends React.Component implements UnreadMessageCountListener, ViewLi
         // add a new board game to the display
         selectedItem.gameId = parseInt(selectedItem.gameId);
         this.addBoardGameToDisplay(selectedItem);
+    }
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
     }
 
 

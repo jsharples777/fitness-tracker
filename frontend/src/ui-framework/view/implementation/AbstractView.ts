@@ -1,4 +1,4 @@
-import {DRAGGABLE_FROM, DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, ViewDOMConfig} from "../../ConfigurationTypes";
+import {DRAGGABLE_FROM, DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, CollectionViewDOMConfig} from "../../ConfigurationTypes";
 import {View} from "../interface/View";
 import debug from "debug";
 import {ViewListenerForwarder} from "../delegate/ViewListenerForwarder";
@@ -13,14 +13,14 @@ export abstract class AbstractView implements View {
     public static DATA_SOURCE = 'data-source';
 
 
-    protected uiConfig: ViewDOMConfig;
+    protected uiConfig: CollectionViewDOMConfig;
 
     protected eventForwarder: ViewListenerForwarder;
     protected containerEl: HTMLElement | null = null;
     protected viewEl:HTMLElement|null;
 
 
-    protected constructor(uiConfig: ViewDOMConfig) {
+    protected constructor(uiConfig: CollectionViewDOMConfig) {
         this.uiConfig = uiConfig;
         this.viewEl = null;
         this.eventForwarder = new ViewListenerForwarder();
@@ -29,7 +29,7 @@ export abstract class AbstractView implements View {
 
     }
 
-    getUIConfig(): ViewDOMConfig {
+    getUIConfig(): CollectionViewDOMConfig {
         return this.uiConfig;
     }
 

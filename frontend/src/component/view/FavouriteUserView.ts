@@ -6,16 +6,17 @@ import Controller from "../../Controller";
 import {ChatManager} from "../../socket/ChatManager";
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
-import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {KeyType, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {View} from "../../ui-framework/view/interface/View";
 import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 
 const vLogger = debug('user-search-sidebar');
 const vLoggerDetail = debug('user-search-sidebar:detail');
 
 class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUserEventListener,CollectionViewListener {
-    static DOMConfig: ViewDOMConfig = {
+    static DOMConfig: CollectionViewDOMConfig = {
         resultsContainerId: 'favouriteUsers',
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
@@ -206,6 +207,10 @@ class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUs
     }
 
     showRequested(view: View): void {}
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
+    }
 
 }
 

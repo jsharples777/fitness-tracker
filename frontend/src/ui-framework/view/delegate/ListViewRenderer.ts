@@ -1,5 +1,5 @@
 import browserUtil from "../../../util/BrowserUtil";
-import {EXTRA_ACTION_ATTRIBUTE_NAME, Modifier, ViewDOMConfig} from "../../ConfigurationTypes";
+import {EXTRA_ACTION_ATTRIBUTE_NAME, Modifier, CollectionViewDOMConfig} from "../../ConfigurationTypes";
 import debug from 'debug';
 import {View} from "../interface/View";
 import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
@@ -19,7 +19,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
 
     public createDisplayElementForCollectionItem(collectionName:string, item: any): HTMLElement {
         const canDeleteItem:boolean = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName,item);
-        const uiConfig:ViewDOMConfig = this.view.getUIConfig();
+        const uiConfig:CollectionViewDOMConfig = this.view.getUIConfig();
         const dataSourceKeyId = this.view.getDataSourceKeyId();
 
         avLogger(`view ${this.view.getName()}: creating List item`);

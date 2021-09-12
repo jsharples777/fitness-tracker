@@ -77,7 +77,7 @@ export enum KeyType {
     boolean
 }
 
-export type ViewDOMConfig = {
+export type CollectionViewDOMConfig = {
     resultsContainerId:string,
     resultsElementType:string,
     resultsElementAttributes?:[Attribute],

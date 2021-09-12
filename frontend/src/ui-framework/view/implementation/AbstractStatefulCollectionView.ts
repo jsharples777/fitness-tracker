@@ -1,13 +1,13 @@
 import StateChangeListener from "../../../state/StateChangeListener";
 import {StateManager} from "../../../state/StateManager";
-import {ViewDOMConfig} from "../../ConfigurationTypes";
+import {CollectionViewDOMConfig} from "../../ConfigurationTypes";
 import {AbstractCollectionView} from "./AbstractCollectionView";
 
 export default abstract class AbstractStatefulCollectionView extends AbstractCollectionView implements StateChangeListener {
 
     protected stateManager: StateManager;
 
-    protected constructor(uiConfig: ViewDOMConfig, stateManager: StateManager, stateName:string) {
+    protected constructor(uiConfig: CollectionViewDOMConfig, stateManager: StateManager, stateName:string) {
         super(uiConfig,stateName);
         this.stateManager = stateManager;
 

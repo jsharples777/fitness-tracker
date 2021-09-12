@@ -7,13 +7,13 @@ import browserUtil from "../../util/BrowserUtil";
 import moment from "moment";
 import {ChatLog, Invitation, Message, Priority} from "../../socket/Types";
 import Controller from "../../Controller";
-import notifier from "../../notification/NotificationManager";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import StateChangeListener from "../../state/StateChangeListener";
-import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {View} from '../../ui-framework/view/interface/View';
 import NotificationManager from "../../notification/NotificationManager";
+import { CollectionView } from '../../ui-framework/view/interface/CollectionView';
 
 
 const csLoggerDetail = debug('chat-sidebar:detail');
@@ -63,6 +63,10 @@ class ChatLogDetailView implements View, ChatEventListener, CollectionViewListen
 
         NotificationController.getInstance().addListener(this);
         this.stateManager.addChangeListenerForName(STATE_NAMES.users, this);
+    }
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        throw new Error('Method not implemented.');
     }
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
@@ -388,7 +392,7 @@ class ChatLogDetailView implements View, ChatEventListener, CollectionViewListen
         return "";
     }
 
-    getUIConfig(): ViewDOMConfig {
+    getUIConfig(): CollectionViewDOMConfig {
         // @ts-ignore
         return undefined;
     }

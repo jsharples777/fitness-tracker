@@ -2,12 +2,13 @@ import debug from 'debug';
 import browserUtil from "../../util/BrowserUtil";
 import DownloadManager from "../../network/DownloadManager";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
-import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {CollectionViewDOMConfig, KeyType, Modifier} from "../../ui-framework/ConfigurationTypes";
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {API_Config, DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {View} from "../../ui-framework/view/interface/View";
 import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 
 const vLogger = debug('board-game-search-sidebar');
 const vLoggerDetail = debug('board-game-search-sidebar:detail');
@@ -20,7 +21,7 @@ class BGGSearchView extends AbstractStatefulCollectionView implements Collection
     // @ts-ignore
     private buttonEl: HTMLButtonElement;
 
-    private static BGGSEARCH_ViewConfig:ViewDOMConfig = {
+    private static BGGSEARCH_ViewConfig:CollectionViewDOMConfig = {
         resultsContainerId:'bggSearchResults',
         resultsElementType:'a',
         resultsElementAttributes:[{name:'href',value:'#'}],
@@ -161,6 +162,12 @@ class BGGSearchView extends AbstractStatefulCollectionView implements Collection
     showRequested(view: View): void {}
     itemDropped(view: View, droppedItem: any): void {}
     itemDeselected(view: View, selectedItem: any): void {}
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
+    }
+
+
 }
 
 export default BGGSearchView;

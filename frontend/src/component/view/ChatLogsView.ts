@@ -5,12 +5,14 @@ import {ChatManager} from "../../socket/ChatManager";
 import {ChatLog, Invitation, Message} from "../../socket/Types";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {KeyType, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {View} from "../../ui-framework/view/interface/View";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {isSame, isSameRoom} from "../../util/EqualityFunctions";
 import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
+import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
 
 
 const csLogger = debug('chat-sidebar');
@@ -18,7 +20,7 @@ const csLogger = debug('chat-sidebar');
 class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventListener,CollectionViewListener {
     protected selectedChatLog:ChatLog|null = null;
 
-    private static DOMConfig: ViewDOMConfig = {
+    private static DOMConfig: CollectionViewDOMConfig = {
         resultsContainerId: 'chatLogs',
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
@@ -114,7 +116,7 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
     selectChatRoom(roomName:string) {
         let room = ChatManager.getInstance().getChatLog(roomName);
         this.selectedChatLog = room;
-        this.eventForwarder.itemSelected(this,this.selectedChatLog);
+        (<CollectionViewListenerForwarder>this.eventForwarder).itemSelected(this,this.selectedChatLog);
         this.updateStateManager();
     }
 
@@ -128,7 +130,7 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
 
     handleChatStarted(log: ChatLog): void {
         this.selectedChatLog = log;
-        this.eventForwarder.itemSelected(this,this.selectedChatLog);
+        (<CollectionViewListenerForwarder>this.eventForwarder).itemSelected(this,this.selectedChatLog);
         this.updateStateManager();
     }
 
@@ -144,7 +146,7 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
         csLogger(`Deleting chat ${selectedItem.roomName}`);
         ChatManager.getInstance().leaveChat(selectedItem.roomName);
         if (this.selectedChatLog && (this.selectedChatLog.roomName === selectedItem.roomName)) {
-            this.eventForwarder.itemDeselected(this,this.selectedChatLog);
+            (<CollectionViewListenerForwarder>this.eventForwarder).itemDeselected(this,this.selectedChatLog);
             this.selectedChatLog = null;
         }
         this.updateStateManager();
@@ -153,7 +155,7 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
 
     hideRequested(view: View): void {
         if (this.selectedChatLog) {
-            this.eventForwarder.itemDeselected(this,this.selectedChatLog);
+            (<CollectionViewListenerForwarder>this.eventForwarder).itemDeselected(this,this.selectedChatLog);
             this.selectedChatLog = null;
         }
     }
@@ -179,6 +181,10 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
 
     handleOfflineMessagesReceived(messages: Message[]): void {}
     handleInvitationDeclined(room: string, username: string): void {}
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
+    }
 }
 
 export default ChatLogsView;

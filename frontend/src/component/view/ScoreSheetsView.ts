@@ -2,11 +2,12 @@ import debug from 'debug';
 import moment from "moment";
 import Controller from "../../Controller";
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {KeyType, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {CollectionViewDOMConfig, KeyType, Modifier} from "../../ui-framework/ConfigurationTypes";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {View} from "../../ui-framework/view/interface/View";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
+import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 
 
 const csLogger = debug('score-sheet-sidebar');
@@ -14,7 +15,7 @@ const csLoggerDetail = debug('score-sheet-sidebar:detail');
 
 class ScoreSheetsView extends AbstractStatefulCollectionView implements CollectionViewListener{
     protected selectedBoardGame: any | null = null;
-    static SCORESHEETS_ViewConfig:ViewDOMConfig = {
+    static SCORESHEETS_ViewConfig:CollectionViewDOMConfig = {
         resultsContainerId:'scoreSheets',
         resultsElementType:'div',
         resultsClasses:'text-white bg-info col-sm-6 col-md-3 col-lg-2 score-card',
@@ -144,6 +145,10 @@ class ScoreSheetsView extends AbstractStatefulCollectionView implements Collecti
     itemSelected(view: View, selectedItem: any): void {}
     itemDeselected(view: View, selectedItem: any): void {}
     showRequested(view: View): void {}
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
+    }
 
 
 }

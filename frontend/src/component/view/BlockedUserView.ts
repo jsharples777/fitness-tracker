@@ -4,16 +4,17 @@ import {ChatUserEventListener} from "../../socket/ChatUserEventListener";
 import {NotificationController} from "../../socket/NotificationController";
 import {ChatManager} from "../../socket/ChatManager";
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {KeyType, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {View} from '../../ui-framework/view/interface/View';
 import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 
 const vLogger = debug('user-search-sidebar');
 
 class BlockedUserView extends AbstractStatefulCollectionView implements ChatUserEventListener, CollectionViewListener {
-    private static DOMConfig: ViewDOMConfig = {
+    private static DOMConfig: CollectionViewDOMConfig = {
         resultsContainerId: 'blockedUsers',
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
@@ -151,6 +152,11 @@ class BlockedUserView extends AbstractStatefulCollectionView implements ChatUser
     }
 
     itemDeselected(view: View, selectedItem: any): void {}
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
+    }
+
 
 }
 

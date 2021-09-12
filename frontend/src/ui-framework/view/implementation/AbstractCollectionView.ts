@@ -1,13 +1,13 @@
 import {CollectionView} from "../interface/CollectionView";
 import {AbstractView} from "./AbstractView";
 import {
+    CollectionViewDOMConfig,
     DRAGGABLE_FROM,
     DRAGGABLE_KEY_ID,
     DRAGGABLE_TYPE,
     EXTRA_ACTION_ATTRIBUTE_NAME,
     KeyType,
-    Modifier,
-    ViewDOMConfig
+    Modifier
 } from "../../ConfigurationTypes";
 import {isSame} from "../../../util/EqualityFunctions";
 import debug from "debug";
@@ -17,7 +17,6 @@ import {CollectionViewListenerForwarder} from "../delegate/CollectionViewListene
 import {AlertManager} from "../../alert/AlertManager";
 import {AlertEvent, AlertListener} from "../../alert/AlertListener";
 import {CollectionViewListener} from "../interface/CollectionViewListener";
-import {ViewListener} from "../interface/ViewListener";
 
 const avLogger = debug('collection-view-ts');
 const avLoggerDetails = debug('collection-view-ts-detail');
@@ -28,7 +27,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
     protected renderer:CollectionViewRenderer|null;
     protected selectedItem:any|null;
 
-    protected constructor(uiConfig: ViewDOMConfig, collectionName:string) {
+    protected constructor(uiConfig: CollectionViewDOMConfig, collectionName:string) {
         super(uiConfig);
         this.collectionName = collectionName;
         this.renderer = null;
@@ -92,7 +91,6 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     abstract getIdForItemInNamedCollection(name: string, item: any): string;
     abstract getItemInNamedCollection(name:string, compareWith:any):any;
-
     abstract getDisplayValueForItemInNamedCollection(name: string, item: any): string;
 
     compareItemsForEquality(item1: any, item2: any): boolean {
@@ -108,7 +106,9 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         return Modifier.inactive;
     }
 
-    public abstract getSecondaryModifierForItemInNamedCollection(name: string, item: any): Modifier;
+    public getSecondaryModifierForItemInNamedCollection(name: string, item: any): Modifier {
+        return Modifier.normal;
+    }
 
     getBadgeValueForItemInNamedCollection(name: string, item: any): number {
         return 0;

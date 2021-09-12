@@ -6,12 +6,13 @@ import {NotificationController} from "../../socket/NotificationController";
 import Controller from "../../Controller";
 import BrowserStorageStateManager from "../../state/BrowserStorageStateManager";
 import {ChatManager} from "../../socket/ChatManager";
-import {KeyType, Modifier, ViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {KeyType, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {View} from "../../ui-framework/view/interface/View";
 import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 
 const vLogger = debug('user-search');
 const vLoggerDetail = debug('user-search-detail');
@@ -23,7 +24,7 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
     static fastSearchInputId:string = 'fastSearchUserNames';
     static dataLimit:number = 10;
 
-    static DOMConfig: ViewDOMConfig = {
+    static DOMConfig: CollectionViewDOMConfig = {
         resultsContainerId: 'recentUserSearches',
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
@@ -271,6 +272,10 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
     itemDropped(view: View, droppedItem: any): void {}
     showRequested(view: View): void {}
     itemDeselected(view: View, selectedItem: any): void {}
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
+    }
 
 
 

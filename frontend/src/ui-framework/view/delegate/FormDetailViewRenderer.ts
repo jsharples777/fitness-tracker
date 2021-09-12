@@ -1,7 +1,7 @@
 import {DetailViewRenderer} from "../interface/DetailViewRenderer";
 import {DataObjectDefinition} from "../../form/DataObjectTypeDefs";
 import {Form} from "../../form/Form";
-import {ViewDOMConfig} from "../../ConfigurationTypes";
+import {CollectionViewDOMConfig} from "../../ConfigurationTypes";
 import { CollectionViewListener } from "../interface/CollectionViewListener";
 import {BasicFormImplementation} from "../../form/BasicFormImplementation";
 import {FormEvent, FormEventType, FormListener} from "../../form/FormListener";
@@ -73,7 +73,7 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
         return result;
     }
 
-    getUIConfig(): ViewDOMConfig {
+    getUIConfig(): CollectionViewDOMConfig {
         throw new Error("Method not implemented.");
     }
 
