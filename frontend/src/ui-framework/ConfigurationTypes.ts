@@ -43,12 +43,15 @@ export type Droppable = {
     acceptFrom?:string[];
 }
 
+export type getIcons = (name:string,item:any) => string[];
+
 export type ContentDetail = {
     containerClasses:string,
     textElementType:string,
     textElementClasses:string,
     select:boolean,
     quickDelete?:boolean,
+    icons?:getIcons,
     badge?:BasicElement,
     delete?:BasicButtonElement,
     drag?:Draggable,

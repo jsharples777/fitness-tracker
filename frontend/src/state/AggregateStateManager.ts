@@ -109,7 +109,7 @@ export class AggregateStateManager extends AbstractStateManager {
     _removeItemFromState(name: string, stateObj: any, testForEqualityFunction: equalityFunction, isPersisted: boolean): void {
         this.stateManagers.forEach((managerWithFilters) => {
             if (!this.stateNameInFilters(name, managerWithFilters.filters)) {
-                aggLogger(`removing item from state in state manager for state ${name}`);
+                aggLogger(`removing item from state in state manager for state ${name}, is persisted = ${isPersisted}`);
                 aggLogger(managerWithFilters.manager);
                 aggLogger(stateObj);
                 managerWithFilters.manager._removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted);

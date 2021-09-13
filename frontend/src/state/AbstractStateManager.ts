@@ -139,7 +139,7 @@ export abstract class AbstractStateManager implements StateManager {
         let result = true;
         let oldItem = this.findItemInState(name, item, testForEqualityFunction);
         // remove the item from the state
-        smLogger('State Manager: Found item - removing ');
+        smLogger(`State Manager: Found item - removing, is persisted ${isPersisted}`);
         this._removeItemFromState(name, item, testForEqualityFunction, isPersisted);
         //this.setStateByName(name, state, false);
         this.informChangeListenersForStateWithName(name, oldItem, stateEventType.ItemDeleted);

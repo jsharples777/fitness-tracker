@@ -3,10 +3,17 @@
 //@ts-ignore
 import {MongoDataSource} from "./db/MongoDataSource";
 
-require('dotenv').config();
+//require('dotenv').config();
+
+import * as dotenv from 'dotenv';
+//dotenv.config({ path: __dirname+'/.env' });
+dotenv.config();
+
 
 import morgan from 'morgan';
 import debug from 'debug';
+
+debug.enable('server socket db api route message-queue mongo-data-source api-exercise-types api-workouts');
 
 // HTTP handlers
 import http from 'http';

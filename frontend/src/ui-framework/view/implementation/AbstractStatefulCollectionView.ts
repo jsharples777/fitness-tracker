@@ -2,8 +2,11 @@ import StateChangeListener from "../../../state/StateChangeListener";
 import {StateManager} from "../../../state/StateManager";
 import {CollectionViewDOMConfig} from "../../ConfigurationTypes";
 import {AbstractCollectionView} from "./AbstractCollectionView";
+import {CollectionViewListener} from "../interface/CollectionViewListener";
+import {View} from "../interface/View";
+import {CollectionView} from "../interface/CollectionView";
 
-export default abstract class AbstractStatefulCollectionView extends AbstractCollectionView implements StateChangeListener {
+export default abstract class AbstractStatefulCollectionView extends AbstractCollectionView implements StateChangeListener,CollectionViewListener {
 
     protected stateManager: StateManager;
 
@@ -16,6 +19,11 @@ export default abstract class AbstractStatefulCollectionView extends AbstractCol
 
         // setup state listener
         this.stateManager.addChangeListenerForName(this.collectionName,this);
+    }
+
+    public onDocumentLoaded() {
+        super.onDocumentLoaded();
+        this.addEventCollectionListener(this);
     }
 
     public getItemInNamedCollection(name: string, compareWith: any): any {
@@ -44,6 +52,29 @@ export default abstract class AbstractStatefulCollectionView extends AbstractCol
 
     show():void {}
     hidden():void{}
+
+    documentLoaded(view: View): void {}
+    hideRequested(view: View): void {}
+    itemDragStarted(view: View, selectedItem: any): void {}
+    itemDropped(view: View, droppedItem: any): void {}
+    showRequested(view: View): void {}
+    itemDeselected(view: View, selectedItem: any): void {}
+    itemSelected(view: View, selectedItem: any): void {}
+    itemAction(view:View, actionName:string, selectedItem:any):void{}
+
+    itemDeleted(view: View, selectedItem: any): void {
+        this.stateManager.removeItemFromState(this.collectionName, selectedItem, this.compareItemsForEquality, false);
+    }
+
+
+    canSelectItem(view: CollectionView, selectedItem: any): boolean {
+        return true;
+    }
+
+    canDeleteItem(view: View, selectedItem: any): boolean {
+        return true;
+    }
+
 
 
 }

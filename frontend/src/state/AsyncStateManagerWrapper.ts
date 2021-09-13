@@ -49,7 +49,7 @@ export default class AsyncStateManagerWrapper extends AbstractStateManager imple
 
 
     _removeItemFromState(name: string, stateObj: any, testForEqualityFunction: equalityFunction, isPersisted: boolean): void {
-        asyncLogger(`removing item from state ${name}`);
+        asyncLogger(`removing item from state ${name} is persisted ${isPersisted}`);
         this.wrappedSM.removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted);
     }
 

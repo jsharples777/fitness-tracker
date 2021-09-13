@@ -22,10 +22,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
 /* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
 /* harmony import */ var _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/ExerciseTypesView */ "./src/component/view/ExerciseTypesView.ts");
-/* eslint "react/react-in-jsx-scope":"off" */
+localStorage.debug = 'api-ts'; //exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 
-/* eslint "react/jsx-no-undef":"off" */
 
+(debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
 
 
@@ -251,10 +251,7 @@ var Root = /*#__PURE__*/function () {
 //localStorage.debug = 'basic-form basic-form-detail validation-manager abstract-field';
 
 
-localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
-(debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 $(function () {
-  console.log("Hello");
   var root = new Root();
   root.onDocumentLoad();
 });
@@ -395,18 +392,20 @@ var Controller = /*#__PURE__*/function () {
       stateName: _AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.exerciseTypes,
       serverURL: '',
       api: _AppTypes__WEBPACK_IMPORTED_MODULE_8__.API_Config.exerciseTypes,
-      isActive: true
+      isActive: true,
+      idField: '_id'
     }, {
       stateName: _AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.workouts,
       serverURL: '',
       api: _AppTypes__WEBPACK_IMPORTED_MODULE_8__.API_Config.workouts,
-      isActive: true
+      isActive: true,
+      idField: '_id'
     }]);
     var aggregateSM = _state_AggregateStateManager__WEBPACK_IMPORTED_MODULE_4__.AggregateStateManager.getInstance();
     var memorySM = _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance();
     var asyncSM = new _state_AsyncStateManagerWrapper__WEBPACK_IMPORTED_MODULE_3__["default"](aggregateSM, restSM);
     aggregateSM.addStateManager(memorySM, [], false);
-    aggregateSM.addStateManager(asyncSM, [_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.recentUserSearches, _AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.chatLogs], false);
+    aggregateSM.addStateManager(asyncSM, [], false);
     this.stateManager = aggregateSM; // state listener
 
     this.stateChanged = this.stateChanged.bind(this);
@@ -1759,6 +1758,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/view/delegate/ListViewRenderer */ "./src/ui-framework/view/delegate/ListViewRenderer.ts");
 /* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
 /* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_7__);
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -1789,6 +1791,9 @@ function _setPrototypeOf(o, p) {
 
 
 
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_7___default()('exercise-types-view');
 var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
   _inheritsLoose(ExerciseTypesView, _AbstractStatefulColl);
 
@@ -1802,12 +1807,21 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   var _proto = ExerciseTypesView.prototype;
 
-  _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
-    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__.isSameMongo)(item1, item2);
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    logger("Can Delete " + selectedItem);
+    logger(selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]);
+
+    if (selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]) {
+      if (selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy] === _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().getLoggedInUsername()) {
+        return true;
+      }
+    }
+
+    return false;
   };
 
-  _proto.onDocumentLoaded = function onDocumentLoaded() {
-    _AbstractStatefulColl.prototype.onDocumentLoaded.call(this);
+  _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__.isSameMongo)(item1, item2);
   };
 
   _proto.getIdForItemInNamedCollection = function getIdForItemInNamedCollection(name, item) {
@@ -1818,16 +1832,17 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
     return item.name;
   };
 
-  _proto.getSecondaryModifierForItemInNamedCollection = function getSecondaryModifierForItemInNamedCollection(name, item) {
-    if (item.type) {
-      if (item.type === 'cardio') {
-        return _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active;
-      } else {
-        return _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal;
+  _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
+    logger("Has delete permission " + item);
+    logger(item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]);
+
+    if (item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]) {
+      if (item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy] === _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().getLoggedInUsername()) {
+        return true;
       }
     }
 
-    return _AbstractStatefulColl.prototype.getSecondaryModifierForItemInNamedCollection.call(this, name, item);
+    return false;
   };
 
   return ExerciseTypesView;
@@ -1850,9 +1865,9 @@ ExerciseTypesView.DOMConfig = {
     warning: ''
   },
   icons: {
-    normal: 'fas fa-dumbbell',
+    normal: '',
     inactive: '',
-    active: 'fas fa-running',
+    active: '',
     warning: ''
   },
   detail: {
@@ -1860,6 +1875,17 @@ ExerciseTypesView.DOMConfig = {
     textElementType: 'span',
     textElementClasses: 'mb-1',
     select: true,
+    icons: function icons(name, item) {
+      if (item.type) {
+        if (item.type === 'cardio') {
+          return ['fas fa-dumbbell'];
+        } else {
+          return ['fas fa-running'];
+        }
+      }
+
+      return [];
+    },
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
       iconClasses: 'text-black fas fa-sign-out-alt'
@@ -2263,7 +2289,6 @@ var UserSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
     var fastSearchEl = $("#" + UserSearchView.fastSearchInputId); // @ts-ignore
 
     fastSearchEl.on('autocompleteselect', this.eventUserSelected);
-    this.addEventCollectionListener(this);
   };
 
   _proto.getIdForItemInNamedCollection = function getIdForItemInNamedCollection(name, item) {
@@ -2386,35 +2411,19 @@ var UserSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
     }
   };
 
-  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
-    return true;
+  _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_1__.isSame)(item1, item2);
   };
 
   _proto.itemDeleted = function itemDeleted(view, selectedItem) {
     vLoggerDetail(selectedItem);
     vLogger("Recent search user " + selectedItem.username + " with id " + selectedItem.id + " deleted - removing");
-    this.localisedSM.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, selectedItem, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_1__.isSame, true);
+    this.localisedSM.removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.recentUserSearches, selectedItem, this.compareItemsForEquality, true);
   };
 
   _proto.itemSelected = function itemSelected(view, selectedItem) {
     var roomName = _socket_NotificationController__WEBPACK_IMPORTED_MODULE_2__.NotificationController.getInstance().startChatWithUser(selectedItem.username);
     _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().handleShowChat(roomName);
-  };
-
-  _proto.documentLoaded = function documentLoaded(view) {};
-
-  _proto.hideRequested = function hideRequested(view) {};
-
-  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
-
-  _proto.itemDropped = function itemDropped(view, droppedItem) {};
-
-  _proto.showRequested = function showRequested(view) {};
-
-  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
-
-  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
-    return true;
   };
 
   return UserSearchView;
@@ -5059,7 +5068,7 @@ var AbstractStateManager = /*#__PURE__*/function () {
     var result = true;
     var oldItem = this.findItemInState(name, item, testForEqualityFunction); // remove the item from the state
 
-    smLogger('State Manager: Found item - removing ');
+    smLogger("State Manager: Found item - removing, is persisted " + isPersisted);
 
     this._removeItemFromState(name, item, testForEqualityFunction, isPersisted); //this.setStateByName(name, state, false);
 
@@ -5248,7 +5257,7 @@ var AggregateStateManager = /*#__PURE__*/function (_AbstractStateManager) {
 
     this.stateManagers.forEach(function (managerWithFilters) {
       if (!_this8.stateNameInFilters(name, managerWithFilters.filters)) {
-        aggLogger("removing item from state in state manager for state " + name);
+        aggLogger("removing item from state in state manager for state " + name + ", is persisted = " + isPersisted);
         aggLogger(managerWithFilters.manager);
         aggLogger(stateObj);
 
@@ -5373,7 +5382,7 @@ var AsyncStateManagerWrapper = /*#__PURE__*/function (_AbstractStateManager) {
   };
 
   _proto._removeItemFromState = function _removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted) {
-    asyncLogger("removing item from state " + name);
+    asyncLogger("removing item from state " + name + " is persisted " + isPersisted);
     this.wrappedSM.removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted);
   };
 
@@ -5946,16 +5955,21 @@ var RESTApiStateManager = /*#__PURE__*/function () {
   _proto._removeItemFromState = function _removeItemFromState(name, stateObj, testForEqualityFunction, isPersisted) {
     if (isPersisted) return; // dont remove complete objects to the state - they are already processed
 
-    apiSMLogger("Removing item to " + name);
+    apiSMLogger("Removing item from " + name);
     apiSMLogger(stateObj);
     var config = this.getConfigurationForStateName(name);
+    var identifier = stateObj.id;
+
+    if (config.idField) {
+      identifier = stateObj[config.idField];
+    }
 
     if (config.isActive) {
       var jsonRequest = {
         url: config.serverURL + config.api,
         type: _network_Types__WEBPACK_IMPORTED_MODULE_1__.RequestType.DELETE,
         params: {
-          id: stateObj.id
+          id: identifier
         },
         callback: this.callbackForRemoveItem,
         associatedStateName: name
@@ -6016,6 +6030,9 @@ var RESTApiStateManager = /*#__PURE__*/function () {
   };
 
   _proto.removeItemFromState = function removeItemFromState(name, item, testForEqualityFunction, isPersisted) {
+    apiSMLogger("Removing item from state " + name + " is persisted " + isPersisted);
+    apiSMLogger(item);
+
     this._removeItemFromState(name, item, testForEqualityFunction, isPersisted);
 
     return true;
@@ -7336,7 +7353,19 @@ var ListViewRenderer = /*#__PURE__*/function () {
     textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
     textEl.setAttribute(dataSourceKeyId, uiConfig.dataSourceId);
     var displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
-    textEl.innerHTML = displayText; // add modifiers for patient state
+    textEl.innerHTML = displayText; // add icons
+
+    if (uiConfig.detail.icons) {
+      var icons = uiConfig.detail.icons(collectionName, item);
+      icons.forEach(function (icon) {
+        var iconEl = document.createElement('i');
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, icon);
+        iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+        iconEl.setAttribute(dataSourceKeyId, uiConfig.dataSourceId);
+        textEl.appendChild(iconEl);
+      });
+    } // add modifiers for patient state
+
 
     if (uiConfig.modifiers) {
       var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
@@ -7953,6 +7982,12 @@ var AbstractStatefulCollectionView = /*#__PURE__*/function (_AbstractCollectionV
 
   var _proto = AbstractStatefulCollectionView.prototype;
 
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    _AbstractCollectionVi.prototype.onDocumentLoaded.call(this);
+
+    this.addEventCollectionListener(this);
+  };
+
   _proto.getItemInNamedCollection = function getItemInNamedCollection(name, compareWith) {
     return this.stateManager.findItemInState(name, compareWith, this.compareItemsForEquality);
   };
@@ -7980,6 +8015,34 @@ var AbstractStatefulCollectionView = /*#__PURE__*/function (_AbstractCollectionV
   _proto.show = function show() {};
 
   _proto.hidden = function hidden() {};
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.hideRequested = function hideRequested(view) {};
+
+  _proto.itemDragStarted = function itemDragStarted(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  _proto.itemDeselected = function itemDeselected(view, selectedItem) {};
+
+  _proto.itemSelected = function itemSelected(view, selectedItem) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {
+    this.stateManager.removeItemFromState(this.collectionName, selectedItem, this.compareItemsForEquality, false);
+  };
+
+  _proto.canSelectItem = function canSelectItem(view, selectedItem) {
+    return true;
+  };
+
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    return true;
+  };
 
   return AbstractStatefulCollectionView;
 }(_AbstractCollectionView__WEBPACK_IMPORTED_MODULE_0__.AbstractCollectionView);

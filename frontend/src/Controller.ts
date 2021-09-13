@@ -54,13 +54,15 @@ class Controller implements StateChangeListener {
                 stateName:STATE_NAMES.exerciseTypes,
                 serverURL:'',
                 api:API_Config.exerciseTypes,
-                isActive:true
+                isActive:true,
+                idField: '_id'
             },
             {
                 stateName:STATE_NAMES.workouts,
                 serverURL:'',
                 api:API_Config.workouts,
-                isActive:true
+                isActive:true,
+                idField: '_id'
             }
         ]);
 
@@ -72,7 +74,7 @@ class Controller implements StateChangeListener {
 
 
         aggregateSM.addStateManager(memorySM, [], false);
-        aggregateSM.addStateManager(asyncSM, [STATE_NAMES.recentUserSearches,STATE_NAMES.chatLogs], false);
+        aggregateSM.addStateManager(asyncSM, [], false);
 
         this.stateManager = aggregateSM;
 

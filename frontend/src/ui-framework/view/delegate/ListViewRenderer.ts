@@ -140,6 +140,19 @@ export class ListViewRenderer implements CollectionViewRenderer{
         textEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
         const displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
         textEl.innerHTML = displayText;
+        // add icons
+
+        if (uiConfig.detail.icons) {
+            const icons:string[] = uiConfig.detail.icons(collectionName,item);
+            icons.forEach((icon) => {
+                let iconEl = document.createElement('i');
+                browserUtil.addRemoveClasses(iconEl, icon);
+                iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+                iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                textEl.appendChild(iconEl);
+            });
+        }
+
         // add modifiers for patient state
         if (uiConfig.modifiers) {
             const modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);

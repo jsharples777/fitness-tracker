@@ -1,6 +1,7 @@
-/* eslint "react/react-in-jsx-scope":"off" */
-/* eslint "react/jsx-no-undef":"off" */
+localStorage.debug = 'api-ts';//exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
+
 import debug from 'debug';
+debug.log = console.info.bind(console);
 
 import Controller from './Controller';
 import UserSearchView from "./component/view/UserSearchView";
@@ -232,11 +233,8 @@ class Root implements UnreadMessageCountListener {
 //localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
 //localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
 //localStorage.debug = 'basic-form basic-form-detail validation-manager abstract-field';
-localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
-debug.log = console.info.bind(console);
 
 $(function() {
-    console.log("Hello")
     const root = new Root();
     root.onDocumentLoad();
 });

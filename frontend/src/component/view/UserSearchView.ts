@@ -9,7 +9,6 @@ import {ChatManager} from "../../socket/ChatManager";
 import {KeyType, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {View} from "../../ui-framework/view/interface/View";
 import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
 import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
@@ -17,7 +16,7 @@ import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 const vLogger = debug('user-search');
 const vLoggerDetail = debug('user-search-detail');
 
-class UserSearchView extends AbstractStatefulCollectionView implements ChatUserEventListener,CollectionViewListener {
+class UserSearchView extends AbstractStatefulCollectionView implements ChatUserEventListener {
     protected loggedInUsers: string[];
     protected localisedSM: StateManager;
 
@@ -138,7 +137,6 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
         // @ts-ignore
         fastSearchEl.on('autocompleteselect', this.eventUserSelected);
 
-        this.addEventCollectionListener(this);
     }
 
     getIdForItemInNamedCollection(name: string, item: any) {
@@ -251,14 +249,14 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
         }
     }
 
-    canDeleteItem(view: View, selectedItem: any): boolean {
-        return true;
+    compareItemsForEquality(item1:any, item2:any) :boolean {
+        return isSame(item1,item2);
     }
 
     itemDeleted(view: View, selectedItem: any): void {
         vLoggerDetail(selectedItem);
         vLogger(`Recent search user ${selectedItem.username} with id ${selectedItem.id} deleted - removing`);
-        this.localisedSM.removeItemFromState(STATE_NAMES.recentUserSearches, selectedItem, isSame, true);
+        this.localisedSM.removeItemFromState(STATE_NAMES.recentUserSearches, selectedItem, this.compareItemsForEquality, true);
     }
 
 
@@ -267,16 +265,6 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
         Controller.getInstance().handleShowChat(roomName);
     }
 
-    documentLoaded(view: View): void {}
-    hideRequested(view: View): void {}
-    itemDragStarted(view: View, selectedItem: any): void {}
-    itemDropped(view: View, droppedItem: any): void {}
-    showRequested(view: View): void {}
-    itemDeselected(view: View, selectedItem: any): void {}
-
-    canSelectItem(view: CollectionView, selectedItem: any): boolean {
-        return true;
-    }
 
 
 

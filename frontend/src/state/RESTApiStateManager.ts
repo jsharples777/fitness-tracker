@@ -15,7 +15,9 @@ type ApiConfig = {
     stateName: string,
     serverURL: string,
     api: string
-    isActive: boolean
+    isActive: boolean,
+    idField?:string
+
 }
 
 export class RESTApiStateManager implements AsynchronousStateManager {
@@ -141,15 +143,20 @@ export class RESTApiStateManager implements AsynchronousStateManager {
 
     _removeItemFromState(name: string, stateObj: any, testForEqualityFunction: equalityFunction, isPersisted: boolean): void {
         if (isPersisted) return; // dont remove complete objects to the state - they are already processed
-        apiSMLogger(`Removing item to ${name}`);
+        apiSMLogger(`Removing item from ${name}`);
         apiSMLogger(stateObj);
         let config: ApiConfig = this.getConfigurationForStateName(name);
+        let identifier = stateObj.id;
+        if (config.idField) {
+            identifier = stateObj[config.idField];
+        }
+
         if (config.isActive) {
             const jsonRequest: jsonRequest = {
                 url: config.serverURL + config.api,
                 type: RequestType.DELETE,
                 params: {
-                    id: stateObj.id
+                    id: identifier
                 },
                 callback: this.callbackForRemoveItem,
                 associatedStateName: name
@@ -210,6 +217,8 @@ export class RESTApiStateManager implements AsynchronousStateManager {
     }
 
     removeItemFromState(name: string, item: any, testForEqualityFunction: equalityFunction, isPersisted: boolean): boolean {
+        apiSMLogger(`Removing item from state ${name} is persisted ${isPersisted}`);
+        apiSMLogger(item);
         this._removeItemFromState(name, item, testForEqualityFunction, isPersisted);
         return true;
     }
