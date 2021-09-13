@@ -165,6 +165,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     protected checkFormValidationOnDisplay() {
         logger(`Checking display validation`);
         this.fields.forEach((field) => {
+            field.show();
             const currentValue = field.getValue();
             if (!field.isValid()) {
                 logger(`Field ${field.getId()} is invalid`);
@@ -184,13 +185,6 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                     // @ts-ignore
                     field.hide();
                     vlogger(`Field ${field.getId()} is hidden from validation manager with message ${response.message}`);
-                }
-                // @ts-ignore
-                response = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.show);
-                if (response.ruleFailed) {
-                    // @ts-ignore
-                    field.show();
-                    vlogger(`Field ${field.getId()} is showing from validation manager with message ${response.message}`);
                 }
             }
         });

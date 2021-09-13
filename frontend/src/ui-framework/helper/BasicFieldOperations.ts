@@ -28,7 +28,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
     private static integerRegex: RegExp = /^[+-]?\d+$/;
     private static floatRegexp: RegExp = /^[+-]?\d+(\.\d+)?$/;
     private static booleanRegexp: RegExp = /^true|false$/;
-    private static durationRegexp: RegExp = /^(\d+:)?[0-5]\d:[0-5]\d$/;
+    private static durationRegexp: RegExp = /^(\d+:)?[0-5]?\d:[0-5]\d$/;
 
 
     public constructor() {

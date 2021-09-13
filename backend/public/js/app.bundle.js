@@ -32,7 +32,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
-localStorage.debug = 'validation-manager-rule-failure abstract-form-detail-validation';
+localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
@@ -7029,6 +7029,7 @@ var AbstractForm = /*#__PURE__*/function () {
 
     logger("Checking display validation");
     this.fields.forEach(function (field) {
+      field.show();
       var currentValue = field.getValue();
 
       if (!field.isValid()) {
@@ -7052,15 +7053,6 @@ var AbstractForm = /*#__PURE__*/function () {
           // @ts-ignore
           field.hide();
           vlogger("Field " + field.getId() + " is hidden from validation manager with message " + response.message);
-        } // @ts-ignore
-
-
-        response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.show);
-
-        if (response.ruleFailed) {
-          // @ts-ignore
-          field.show();
-          vlogger("Field " + field.getId() + " is showing from validation manager with message " + response.message);
         }
       }
     });
@@ -9747,7 +9739,7 @@ var ValidationManager = /*#__PURE__*/function () {
         var response = _this3.executeRule(rule);
 
         if (response.ruleFailed) {
-          flogger("Rule failed with message " + response.message);
+          flogger("Rule failed for form " + formId + " with field " + field.displayName + " with message " + response.message);
           result.ruleFailed = true;
           result.message = response.message;
           return false;
@@ -10302,7 +10294,7 @@ BasicFieldOperations.basicPasswordRegex = /^[a-zA-Z0-9]{8,15}$/;
 BasicFieldOperations.integerRegex = /^[+-]?\d+$/;
 BasicFieldOperations.floatRegexp = /^[+-]?\d+(\.\d+)?$/;
 BasicFieldOperations.booleanRegexp = /^true|false$/;
-BasicFieldOperations.durationRegexp = /^(\d+:)?[0-5]\d:[0-5]\d$/;
+BasicFieldOperations.durationRegexp = /^(\d+:)?[0-5]?\d:[0-5]\d$/;
 
 /***/ }),
 

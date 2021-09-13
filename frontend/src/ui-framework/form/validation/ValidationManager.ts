@@ -512,7 +512,7 @@ export class ValidationManager implements FieldListener {
             if ((onlyRulesOfType && rule.response === onlyRulesOfType) || !onlyRulesOfType) {
                 let response: RuleResponse = this.executeRule(rule);
                 if (response.ruleFailed) {
-                    flogger(`Rule failed with message ${response.message}`);
+                    flogger(`Rule failed for form ${formId} with field ${field.displayName} with message ${response.message}`);
                     result.ruleFailed = true;
                     result.message = response.message;
                     return false;
