@@ -28,10 +28,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
 /* harmony import */ var _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ui-framework/view/implementation/DetailViewImplementation */ "./src/ui-framework/view/implementation/DetailViewImplementation.ts");
 /* harmony import */ var _ui_framework_view_implementation_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ui-framework/view/implementation/LinkedCollectionDetailController */ "./src/ui-framework/view/implementation/LinkedCollectionDetailController.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+/* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
-localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
+//localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
+localStorage.debug = 'validation-manager-rule-failure abstract-form-detail-validation';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
+
+
 
 
 
@@ -113,7 +118,7 @@ var Root = /*#__PURE__*/function () {
     var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_15__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes);
 
     if (exerciseTypeDefinition) {
-      var exerciseTypeDetailRenderer = new _ui_framework_view_delegate_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition);
+      var exerciseTypeDetailRenderer = new _ui_framework_view_delegate_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition, new _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__.CreatedByPermissionChecker());
       var exerciseTypeDetailView = new _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_16__.DetailViewImplementation({
         resultsContainerId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail,
         dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_NAME.exerciseTypes
@@ -121,6 +126,8 @@ var Root = /*#__PURE__*/function () {
       var viewLinker = new _ui_framework_view_implementation_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__.LinkedCollectionDetailController(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes, exerciseTypes);
       viewLinker.addLinkedDetailView(exerciseTypeDetailView);
       this.exerciseTypesSidebar.onDocumentLoaded();
+      var startingDisplayOrder = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__.BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
+      exerciseTypeDetailView.initialise(startingDisplayOrder, true);
       var detailForm = exerciseTypeDetailRenderer.getForm();
 
       if (detailForm) {
@@ -476,6 +483,7 @@ var Controller = /*#__PURE__*/function () {
   _proto.setupDataObjectDefinitions = function setupDataObjectDefinitions() {
     // create the object definitions for the exercise type and workout
     var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().addDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.exerciseTypes, 'Exercise', true, true, true, '_id');
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "name", "Name", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.text, true, "Exercise name");
     _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "type", "Type", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.limitedChoice, true, "Choose cardio or strength", new _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_13__.SimpleValueDataSource([{
       name: 'Cardio',
       value: 'cardio'
@@ -483,8 +491,7 @@ var Controller = /*#__PURE__*/function () {
       name: 'Strength',
       value: 'strength'
     }]));
-    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "name", "Name", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.text, true, "Exercise name");
-    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "duration", "Duration", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.shortTime, true, "Exercise time");
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "duration", "Duration", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.duration, true, "Exercise time");
     _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "sets", "Sets", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.integer, false, "Number of sets");
     _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "reps", "Repetitions", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.integer, false, "Number of reps");
     _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "weight", "Weight", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.float, false, "Weight used");
@@ -657,6 +664,49 @@ var Controller = /*#__PURE__*/function () {
 }();
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Controller);
+
+/***/ }),
+
+/***/ "./src/CreatedByPermissionChecker.ts":
+/*!*******************************************!*\
+  !*** ./src/CreatedByPermissionChecker.ts ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CreatedByPermissionChecker": () => (/* binding */ CreatedByPermissionChecker)
+/* harmony export */ });
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
+
+var CreatedByPermissionChecker = /*#__PURE__*/function () {
+  function CreatedByPermissionChecker() {}
+
+  var _proto = CreatedByPermissionChecker.prototype;
+
+  _proto.hasPermissionToUpdateItem = function hasPermissionToUpdateItem(item) {
+    var result = false;
+
+    if (item.createdBy) {
+      result = item.createdBy === _Controller__WEBPACK_IMPORTED_MODULE_0__["default"].getInstance().getLoggedInUsername();
+    }
+
+    return result;
+  };
+
+  _proto.hasPermissionToDeleteItem = function hasPermissionToDeleteItem(item) {
+    var result = false;
+
+    if (item.createdBy) {
+      result = item.createdBy === _Controller__WEBPACK_IMPORTED_MODULE_0__["default"].getInstance().getLoggedInUsername();
+    }
+
+    return result;
+  };
+
+  return CreatedByPermissionChecker;
+}();
 
 /***/ }),
 
@@ -2595,6 +2645,31 @@ var BasicObjectDefinitionFactory = /*#__PURE__*/function () {
 
   var _proto = BasicObjectDefinitionFactory.prototype;
 
+  _proto.generateStartingDisplayOrder = function generateStartingDisplayOrder(dataObjDef) {
+    var result = [];
+    dataObjDef.fields.forEach(function (fieldDef, index) {
+      var order = {
+        fieldId: fieldDef.id,
+        displayOrder: index
+      }; // is this the created or modified date
+
+      if (fieldDef.id === FIELD_CreatedOn) {
+        order.displayOrder += 100;
+      }
+
+      if (fieldDef.id === FIELD_ModifiedOn) {
+        order.displayOrder += 101;
+      }
+
+      if (fieldDef.type === _DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.userId) {
+        order.displayOrder += 100;
+      }
+
+      result.push(order);
+    });
+    return result;
+  };
+
   _proto.createBasicObjectDefinition = function createBasicObjectDefinition(id, displayName, hasDataId, dataIdIsUUID, createModifierFields, idFieldName) {
     if (createModifierFields === void 0) {
       createModifierFields = true;
@@ -2889,6 +2964,7 @@ var FieldType;
   FieldType["limitedChoice"] = "Limited Choice";
   FieldType["largeText"] = "TextArea";
   FieldType["collection"] = "Collection";
+  FieldType["duration"] = "Duration";
 })(FieldType || (FieldType = {}));
 
 /***/ }),
@@ -6803,6 +6879,7 @@ function _extends() {
 
 var logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form');
 var dlogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form-detail');
+var vlogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form-detail-validation');
 var AbstractForm = /*#__PURE__*/function () {
   function AbstractForm(containerId, dataObjDef) {
     this.formListeners = [];
@@ -6845,11 +6922,15 @@ var AbstractForm = /*#__PURE__*/function () {
   /* methods to be implemented in the subclass */
   ;
 
-  _proto.initialise = function initialise() {
+  _proto.initialise = function initialise(displayOrder, hideModifierFields) {
+    if (hideModifierFields === void 0) {
+      hideModifierFields = false;
+    }
+
     if (this.isInitialised) return;
     this.isInitialised = true;
 
-    this._initialise();
+    this._initialise(displayOrder, hideModifierFields);
   };
 
   _proto.addFieldListener = function addFieldListener(listener) {
@@ -6956,12 +7037,30 @@ var AbstractForm = /*#__PURE__*/function () {
       } else {
         // does the field fulfil any rules from the Validation manager
         // @ts-ignore
-        var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), null);
+        var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
 
         if (response.ruleFailed) {
           // @ts-ignore
           field.setInvalid(response.message);
-          logger("Field " + field.getId() + " is invalid from validation manager with message " + response.message);
+          vlogger("Field " + field.getId() + " is invalid from validation manager with message " + response.message);
+        } // @ts-ignore
+
+
+        response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
+
+        if (response.ruleFailed) {
+          // @ts-ignore
+          field.hide();
+          vlogger("Field " + field.getId() + " is hidden from validation manager with message " + response.message);
+        } // @ts-ignore
+
+
+        response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.show);
+
+        if (response.ruleFailed) {
+          // @ts-ignore
+          field.show();
+          vlogger("Field " + field.getId() + " is showing from validation manager with message " + response.message);
         }
       }
     });
@@ -7124,7 +7223,7 @@ var AbstractForm = /*#__PURE__*/function () {
               var currentValue = field.getValue();
 
               if (!field.isValid()) {
-                logger("Field " + field.getId() + " is invalid");
+                vlogger("Field " + field.getId() + " is invalid");
                 field.setInvalid(field.getName() + " has an invalid format or is required.");
                 allFieldsValid = false;
               } else {
@@ -7135,7 +7234,7 @@ var AbstractForm = /*#__PURE__*/function () {
                 if (response.ruleFailed) {
                   // @ts-ignore
                   field.setInvalid(response.message);
-                  logger("Field " + field.getId() + " is invalid from validation manager with message " + response.message);
+                  vlogger("Field " + field.getId() + " is invalid from validation manager with message " + response.message);
                   allFieldsValid = false;
                 } else {
                   _this2.setFieldValueToDataObject(_this2.currentDataObj, field, currentValue);
@@ -7419,12 +7518,16 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     }
   };
 
-  _proto._initialise = function _initialise() {
+  _proto._initialise = function _initialise(displayOrder, hideModiferFields) {
     var _this2 = this;
+
+    if (hideModiferFields === void 0) {
+      hideModiferFields = false;
+    }
 
     logger("Initialising"); // ok, so given a Data Object definition we are going to create the form ui config
 
-    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef);
+    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hideModiferFields);
     logger(this.uiDef); // now we need to create all the form elements from the ui definition
 
     this.factoryElements = _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_3__.FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
@@ -9549,8 +9652,9 @@ var ValidationManager = /*#__PURE__*/function () {
 
       if (ruleCheck.ruleFailed) {
         flogger('field condition rule FAILED');
-        response.ruleFailed = true;
-        response.message = ruleCheck.message;
+        response.ruleFailed = true; // only need messages for invalid responses
+
+        if (rule.response === _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.invalid) response.message = ruleCheck.message;
         return false;
       }
 
@@ -9983,6 +10087,17 @@ var BasicFieldOperations = /*#__PURE__*/function () {
             break;
           }
 
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.duration:
+          {
+            response.isValid = BasicFieldOperations.durationRegexp.test(currentValue);
+
+            if (!response.isValid) {
+              response.message = field.displayName + " must be in the format MM:SS or 999:MM:SS";
+            }
+
+            break;
+          }
+
         case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean:
           {
             response.isValid = BasicFieldOperations.booleanRegexp.test(currentValue);
@@ -10128,6 +10243,12 @@ var BasicFieldOperations = /*#__PURE__*/function () {
           break;
         }
 
+      case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.duration:
+        {
+          result = '00:00';
+          break;
+        }
+
       case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_2__.FieldType.boolean:
         {
           result = 'false';
@@ -10181,6 +10302,7 @@ BasicFieldOperations.basicPasswordRegex = /^[a-zA-Z0-9]{8,15}$/;
 BasicFieldOperations.integerRegex = /^[+-]?\d+$/;
 BasicFieldOperations.floatRegexp = /^[+-]?\d+(\.\d+)?$/;
 BasicFieldOperations.booleanRegexp = /^true|false$/;
+BasicFieldOperations.durationRegexp = /^(\d+:)?[0-5]\d:[0-5]\d$/;
 
 /***/ }),
 
@@ -10222,7 +10344,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
 
   var _proto = BootstrapFormConfigHelper.prototype;
 
-  _proto.generateFormConfig = function generateFormConfig(dataObjDef, hideModifierFields) {
+  _proto.generateFormConfig = function generateFormConfig(dataObjDef, displayOrders, hideModifierFields) {
     if (hideModifierFields === void 0) {
       hideModifierFields = false;
     }
@@ -10231,7 +10353,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
     var rbgFieldOperation = new _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__.RBGFieldOperations(); // create the Field UI config for each field
 
     var fieldUIConfigs = [];
-    dataObjDef.fields.forEach(function (fieldDef) {
+    dataObjDef.fields.forEach(function (fieldDef, index) {
       var fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.text;
 
       switch (fieldDef.type) {
@@ -10239,6 +10361,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
         case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.text:
         case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.date:
         case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.shortTime:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.duration:
           {
             break;
           }
@@ -10319,18 +10442,29 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
             fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.radioGroup;
             break;
           }
+      } // see if the field was supplied with a display order
+
+
+      var displayOrder = displayOrders.find(function (value) {
+        return value.fieldId === fieldDef.id;
+      });
+      var displayOrderValue = index;
+
+      if (displayOrder) {
+        displayOrderValue = displayOrder.displayOrder;
       } // construct the field ui config
 
 
       var fieldUIConfig = {
         field: fieldDef,
+        displayOrder: displayOrderValue,
         elementType: fieldType,
         elementClasses: 'form-control col-sm-9',
         renderer: fieldOperations,
         formatter: fieldOperations
       };
 
-      if (fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id && fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid) {
+      if (fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id && fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid && fieldType !== _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden) {
         // no labels, descriptions, container for id,uuid
         fieldUIConfig.containedBy = {
           elementType: 'div',
@@ -10338,7 +10472,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
         };
         fieldUIConfig.label = {
           label: fieldDef.displayName,
-          classes: 'col-sm-3 col-form-label'
+          classes: 'col-sm-12 col-md-3 col-form-label'
         };
 
         if (fieldDef.description) {
@@ -10346,7 +10480,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
           fieldUIConfig.describedBy = {
             message: fieldDef.description,
             elementType: 'small',
-            elementClasses: 'text-muted col-sm-9 offset-sm-3 mt-1'
+            elementClasses: 'text-muted col-sm-12 col-md-9 offset-md-3 mt-1'
           };
         }
 
@@ -10356,7 +10490,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
             validator: fieldOperations,
             messageDisplay: {
               elementType: 'div',
-              elementClasses: 'invalid-feedback col-sm-9 offset-sm-3'
+              elementClasses: 'invalid-feedback col-sm-12 col-md-9 offset-md-3'
             },
             validClasses: 'is-valid',
             invalidClasses: 'is-invalid'
@@ -10443,7 +10577,13 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
         buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
         iconClasses: 'fas fa-save'
       }
-    };
+    }; // sort the fields into display order
+
+    formConfig.fieldGroups.forEach(function (group) {
+      group.fields.sort(function (a, b) {
+        return a.displayOrder - b.displayOrder;
+      });
+    });
     logger(formConfig);
     return formConfig;
   };
@@ -10790,7 +10930,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('form-detail-view-renderer');
 var FormDetailViewRenderer = /*#__PURE__*/function () {
-  function FormDetailViewRenderer(containerId, objDef) {
+  function FormDetailViewRenderer(containerId, objDef, permissionChecker) {
     this.form = null;
     this.containerId = containerId;
     this.objDef = objDef;
@@ -10798,6 +10938,7 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
     this.isNewItem = false;
     this.forwarder = null;
     this.view = null;
+    this.permissionChecker = permissionChecker;
   }
 
   var _proto = FormDetailViewRenderer.prototype;
@@ -10813,15 +10954,14 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
   _proto.onDocumentLoaded = function onDocumentLoaded() {
     this.form = new _form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_0__.BasicFormImplementation(this.containerId, this.objDef);
     this.form.addFormListener(this);
-    this.initialise();
   };
 
   _proto.reset = function reset() {
     if (this.form) this.form.reset();
   };
 
-  _proto.initialise = function initialise() {
-    if (this.form) this.form.initialise();
+  _proto.initialise = function initialise(displayOrder, hideModifierFields) {
+    if (this.form) this.form.initialise(displayOrder, hideModifierFields);
   };
 
   _proto.displayItemReadonly = function displayItemReadonly(dataObject) {
@@ -10887,7 +11027,7 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
     this.currentItem = dataObj;
     this.isNewItem = false;
 
-    if (this.hasPermissionToUpdateCurrentItem()) {
+    if (this.hasPermissionToUpdateItem(dataObj)) {
       if (this.form) this.form.startUpdate(dataObj);
     } else {
       if (this.form) this.form.displayOnly(dataObj);
@@ -10907,12 +11047,12 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
     this.show();
   };
 
-  _proto.hasPermissionToDeleteCurrentItem = function hasPermissionToDeleteCurrentItem() {
-    return true;
+  _proto.hasPermissionToDeleteItem = function hasPermissionToDeleteItem(item) {
+    return this.permissionChecker.hasPermissionToDeleteItem(item);
   };
 
-  _proto.hasPermissionToUpdateCurrentItem = function hasPermissionToUpdateCurrentItem() {
-    return true;
+  _proto.hasPermissionToUpdateItem = function hasPermissionToUpdateItem(item) {
+    return this.permissionChecker.hasPermissionToUpdateItem(item);
   };
 
   _proto.getForm = function getForm() {
@@ -12065,7 +12205,7 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
   _proto.displayItem = function displayItem(dataObj) {
     this.currentItem = dataObj;
 
-    if (this.renderer.hasPermissionToUpdateCurrentItem()) {
+    if (this.renderer.hasPermissionToUpdateItem(dataObj)) {
       this.renderer.displayItem(dataObj);
     } else {
       this.renderer.displayItemReadonly(dataObj);
@@ -12088,17 +12228,16 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   _proto.onDocumentLoaded = function onDocumentLoaded() {
     this.renderer.onDocumentLoaded();
-    this.renderer.initialise();
 
     _AbstractView.prototype.onDocumentLoaded.call(this);
   };
 
-  _proto.hasPermissionToDeleteCurrentItem = function hasPermissionToDeleteCurrentItem() {
-    return this.renderer.hasPermissionToDeleteCurrentItem();
+  _proto.hasPermissionToDeleteItem = function hasPermissionToDeleteItem(item) {
+    return this.renderer.hasPermissionToDeleteItem(item);
   };
 
-  _proto.hasPermissionToUpdateCurrentItem = function hasPermissionToUpdateCurrentItem() {
-    return this.renderer.hasPermissionToUpdateCurrentItem();
+  _proto.hasPermissionToUpdateItem = function hasPermissionToUpdateItem(item) {
+    return this.renderer.hasPermissionToUpdateItem(item);
   };
 
   _proto.handleActionItem = function handleActionItem(actionName, selectedItem) {
@@ -12111,6 +12250,14 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   _proto.hasChanged = function hasChanged() {
     return this.renderer.hasChanged();
+  };
+
+  _proto.initialise = function initialise(displayOrder, hideModifierFields) {
+    if (hideModifierFields === void 0) {
+      hideModifierFields = false;
+    }
+
+    this.renderer.initialise(displayOrder, hideModifierFields);
   };
 
   return DetailViewImplementation;

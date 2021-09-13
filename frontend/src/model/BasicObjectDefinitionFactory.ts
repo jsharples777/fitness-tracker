@@ -2,6 +2,7 @@ import {KeyType} from "../ui-framework/ConfigurationTypes";
 import {BasicFieldOperations} from "../ui-framework/helper/BasicFieldOperations";
 import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypeDefs";
 import {FieldValueOptions} from "./CommonTypes";
+import {DisplayOrder} from "../ui-framework/form/FormUITypeDefs";
 
 export const FIELD_ID:string = 'id';
 export const FIELD_CreatedBy:string = 'createdBy';
@@ -26,6 +27,29 @@ export class BasicObjectDefinitionFactory {
     }
 
     private constructor() {}
+
+    public generateStartingDisplayOrder(dataObjDef: DataObjectDefinition):DisplayOrder[] {
+        let result:DisplayOrder[] = [];
+
+        dataObjDef.fields.forEach((fieldDef,index) => {
+            let order: DisplayOrder = {
+                fieldId: fieldDef.id,
+                displayOrder: index
+            }
+            // is this the created or modified date
+            if (fieldDef.id === FIELD_CreatedOn) {
+                order.displayOrder += 100;
+            }
+            if (fieldDef.id === FIELD_ModifiedOn) {
+                order.displayOrder += 101;
+            }
+            if (fieldDef.type === FieldType.userId) {
+                order.displayOrder += 100;
+            }
+            result.push(order);
+        });
+        return result;
+    }
 
     public createBasicObjectDefinition(id:string, displayName:string, hasDataId:boolean, dataIdIsUUID:boolean,createModifierFields:boolean = true,idFieldName:string = FIELD_ID):DataObjectDefinition {
         let objDef:DataObjectDefinition = {

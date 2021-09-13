@@ -1,12 +1,13 @@
 import {View} from "./View";
+import {DisplayOrder} from "../../form/FormUITypeDefs";
 
 export interface DetailView extends View {
     clearDisplay():void;
     createItem():any;
     displayItem(dataObj:any):void;
 
-    hasPermissionToDeleteCurrentItem():boolean;
-    hasPermissionToUpdateCurrentItem():boolean;
+    hasPermissionToDeleteItem(dataObj:any):boolean;
+    hasPermissionToUpdateItem(dataObj:any):boolean;
 
     setReadOnly():void;
     clearReadOnly():void;
@@ -14,4 +15,7 @@ export interface DetailView extends View {
 
     handleActionItem(actionName: string, selectedItem: any):void;
     isDisplayingItem(dataObj:any):boolean;
+
+    initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean):void;
+
 }

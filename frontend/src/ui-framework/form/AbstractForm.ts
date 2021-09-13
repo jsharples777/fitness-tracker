@@ -2,7 +2,7 @@ import {Form} from "./Form";
 import {FormEvent, FormEventType, FormListener} from "./FormListener";
 import {FieldListener} from "./field/FieldListener";
 import {DataObjectDefinition, FieldDefinition} from "../../model/DataObjectTypeDefs";
-import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITypeDefs";
+import {AttributeFieldMapItem, DisplayOrder, FieldUIConfig, FormUIDefinition} from "./FormUITypeDefs";
 import {Field} from "./field/Field";
 
 import debug from 'debug';
@@ -13,6 +13,7 @@ import {ConditionResponse} from "./validation/ValidationTypeDefs";
 
 const logger = debug('abstract-form');
 const dlogger = debug('abstract-form-detail');
+const vlogger = debug('abstract-form-detail-validation');
 
 
 export abstract class AbstractForm implements Form,FormListener,AlertListener,FieldListener{
@@ -67,17 +68,17 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     protected abstract _reset():void;
     protected abstract _visible():void;
     protected abstract _hidden():void;
-    protected abstract _initialise():void;
+    protected abstract _initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean):void;
     protected abstract _displayOnly():void;
     protected abstract _isSameObjectAsDisplayed(dataObj:any):boolean;
 
     protected abstract setFieldValueToDataObject(dataObj:any,field:Field,currentValue:string|null):void;
     public abstract getFormattedDataObject(): any;
 
-    public initialise(): void {
+    public initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean = false): void {
         if (this.isInitialised) return;
         this.isInitialised = true;
-        this._initialise();
+        this._initialise(displayOrder,hideModifierFields);
     }
 
 
@@ -171,11 +172,25 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             } else {
                 // does the field fulfil any rules from the Validation manager
                 // @ts-ignore
-                const response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),null);
+                let response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.invalid);
                 if (response.ruleFailed) {
                     // @ts-ignore
                     field.setInvalid(response.message);
-                    logger(`Field ${field.getId()} is invalid from validation manager with message ${response.message}`);
+                    vlogger(`Field ${field.getId()} is invalid from validation manager with message ${response.message}`);
+                }
+                // @ts-ignore
+                response = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.hide);
+                if (response.ruleFailed) {
+                    // @ts-ignore
+                    field.hide();
+                    vlogger(`Field ${field.getId()} is hidden from validation manager with message ${response.message}`);
+                }
+                // @ts-ignore
+                response = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.show);
+                if (response.ruleFailed) {
+                    // @ts-ignore
+                    field.show();
+                    vlogger(`Field ${field.getId()} is showing from validation manager with message ${response.message}`);
                 }
             }
         });
@@ -309,7 +324,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                     this.fields.forEach((field) => {
                         const currentValue = field.getValue();
                         if (!field.isValid()) {
-                            logger(`Field ${field.getId()} is invalid`);
+                            vlogger(`Field ${field.getId()} is invalid`);
                             field.setInvalid(`${field.getName()} has an invalid format or is required.`);
                             allFieldsValid = false;
                         } else {
@@ -319,7 +334,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                             if (response.ruleFailed) {
                                 // @ts-ignore
                                 field.setInvalid(response.message);
-                                logger(`Field ${field.getId()} is invalid from validation manager with message ${response.message}`);
+                                vlogger(`Field ${field.getId()} is invalid from validation manager with message ${response.message}`);
                                 allFieldsValid = false;
                             } else {
                                 this.setFieldValueToDataObject(this.currentDataObj, field, currentValue);
@@ -449,6 +464,8 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     isReadOnly(): boolean {
         return this.isDisplayOnly;
     }
+
+
 
 
 

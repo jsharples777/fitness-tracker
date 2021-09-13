@@ -1,11 +1,11 @@
-import {FormUIDefinition} from "./FormUITypeDefs";
+import {DisplayOrder, FormUIDefinition} from "./FormUITypeDefs";
 import {FormListener} from "./FormListener";
 import {FieldListener} from "./field/FieldListener";
 import {Field} from "./field/Field";
 
 export interface Form {
     getId():string;
-    initialise():void;
+    initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean):void;
     setIsVisible(isVisible:boolean):void;
     reset():void;
     startCreateNew():any;

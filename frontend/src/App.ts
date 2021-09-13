@@ -1,7 +1,8 @@
 import {Form} from "./ui-framework/form/Form";
 
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
-localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
+//localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
+localStorage.debug = 'validation-manager-rule-failure abstract-form-detail-validation';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -27,6 +28,8 @@ import {DetailViewRenderer} from "./ui-framework/view/interface/DetailViewRender
 import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
 import {DetailView} from "./ui-framework/view/interface/DetailView";
 import {LinkedCollectionDetailController} from "./ui-framework/view/implementation/LinkedCollectionDetailController";
+import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
+import {CreatedByPermissionChecker} from "./CreatedByPermissionChecker";
 
 
 const logger = debug('app');
@@ -94,7 +97,7 @@ class Root implements UnreadMessageCountListener {
         const exerciseTypeDefinition:DataObjectDefinition|null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exerciseTypes);
 
         if (exerciseTypeDefinition) {
-            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.exerciseTypeDetail,exerciseTypeDefinition);
+            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.exerciseTypeDetail,exerciseTypeDefinition,new CreatedByPermissionChecker());
 
             let exerciseTypeDetailView:DetailView = new DetailViewImplementation(
                 {
@@ -104,6 +107,8 @@ class Root implements UnreadMessageCountListener {
             let viewLinker:LinkedCollectionDetailController = new LinkedCollectionDetailController(STATE_NAMES.exerciseTypes,exerciseTypes);
             viewLinker.addLinkedDetailView(exerciseTypeDetailView);
             this.exerciseTypesSidebar.onDocumentLoaded();
+            let startingDisplayOrder = BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
+            exerciseTypeDetailView.initialise(startingDisplayOrder,true);
 
             const detailForm:Form|null = exerciseTypeDetailRenderer.getForm();
 

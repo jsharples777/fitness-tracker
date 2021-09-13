@@ -55,8 +55,14 @@ export type DescriptionText = {
     elementClasses:string,
 }
 
+export type DisplayOrder = {
+    fieldId:string,
+    displayOrder:number
+}
+
 export type FieldUIConfig = {
     field: FieldDefinition,
+    displayOrder:number,
     elementType: UIFieldType,
     elementAttributes?: Attribute[],
     elementClasses?: string,

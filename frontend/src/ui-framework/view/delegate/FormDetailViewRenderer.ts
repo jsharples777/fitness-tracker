@@ -8,6 +8,8 @@ import debug from 'debug';
 import {DetailViewListenerForwarder} from "./DetailViewListenerForwarder";
 import {DetailView} from "../interface/DetailView";
 import {ViewListener} from "../interface/ViewListener";
+import {ObjectPermissionChecker} from "../interface/ObjectPermissionChecker";
+import {DisplayOrder} from "../../form/FormUITypeDefs";
 
 const logger = debug('form-detail-view-renderer')
 
@@ -19,14 +21,16 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
     protected containerId: string;
     protected forwarder:DetailViewListenerForwarder|null;
     protected view:DetailView|null;
+    protected permissionChecker:ObjectPermissionChecker;
 
-    constructor(containerId: string, objDef: DataObjectDefinition) {
+    constructor(containerId: string, objDef: DataObjectDefinition, permissionChecker:ObjectPermissionChecker) {
         this.containerId = containerId;
         this.objDef = objDef;
         this.currentItem = {};
         this.isNewItem = false;
         this.forwarder = null;
         this.view = null;
+        this.permissionChecker = permissionChecker;
     }
 
     setEventForwarder(forwarder: DetailViewListenerForwarder): void {
@@ -40,15 +44,14 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
     onDocumentLoaded(): void {
         this.form = new BasicFormImplementation(this.containerId, this.objDef);
         this.form.addFormListener(this);
-        this.initialise();
     }
 
     reset(): void {
         if (this.form) this.form.reset();
     }
 
-    initialise(): void {
-        if (this.form) this.form.initialise();
+    initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean): void {
+        if (this.form) this.form.initialise(displayOrder,hideModifierFields);
     }
 
     displayItemReadonly(dataObject: any): void {
@@ -113,7 +116,7 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
         this.currentItem = dataObj;
         this.isNewItem = false;
 
-        if (this.hasPermissionToUpdateCurrentItem()) {
+        if (this.hasPermissionToUpdateItem(dataObj)) {
             if (this.form) this.form.startUpdate(dataObj);
         } else {
             if (this.form) this.form.displayOnly(dataObj);
@@ -135,12 +138,12 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
     }
 
 
-    public hasPermissionToDeleteCurrentItem(): boolean {
-        return true;
+    public hasPermissionToDeleteItem(item:any): boolean {
+        return this.permissionChecker.hasPermissionToDeleteItem(item);
     }
 
-    public hasPermissionToUpdateCurrentItem(): boolean {
-        return true;
+    public hasPermissionToUpdateItem(item:any): boolean {
+        return this.permissionChecker.hasPermissionToUpdateItem(item);
     }
 
     public getForm() {
@@ -217,4 +220,5 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
         }
         return false;
     }
+
 }

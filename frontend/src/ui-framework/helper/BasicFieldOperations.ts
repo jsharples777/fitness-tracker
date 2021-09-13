@@ -28,6 +28,7 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
     private static integerRegex: RegExp = /^[+-]?\d+$/;
     private static floatRegexp: RegExp = /^[+-]?\d+(\.\d+)?$/;
     private static booleanRegexp: RegExp = /^true|false$/;
+    private static durationRegexp: RegExp = /^(\d+:)?[0-5]\d:[0-5]\d$/;
 
 
     public constructor() {
@@ -180,6 +181,13 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                     }
                     break;
                 }
+                case (FieldType.duration): {
+                    response.isValid = BasicFieldOperations.durationRegexp.test(currentValue);
+                    if (!response.isValid) {
+                        response.message = `${field.displayName} must be in the format MM:SS or 999:MM:SS`;
+                    }
+                    break;
+                }
                 case (FieldType.boolean): {
                     response.isValid = BasicFieldOperations.booleanRegexp.test(currentValue);
                     if (!response.isValid) {
@@ -293,6 +301,10 @@ export class BasicFieldOperations implements FieldFormatter, FieldRenderer, Fiel
                 break;
             }
             case (FieldType.shortTime): {
+                result = '00:00';
+                break;
+            }
+            case (FieldType.duration): {
                 result = '00:00';
                 break;
             }

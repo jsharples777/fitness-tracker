@@ -1,4 +1,4 @@
-import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypeDefs";
+import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, DisplayOrder, FieldUIConfig, UIFieldType} from "./FormUITypeDefs";
 import {AbstractForm} from "./AbstractForm";
 import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
 import {DataObjectDefinition, FieldDefinition} from "../../model/DataObjectTypeDefs";
@@ -80,11 +80,11 @@ export class BasicFormImplementation extends AbstractForm {
 
     }
 
-    protected _initialise(): void {
+    protected _initialise(displayOrder:DisplayOrder[],hideModiferFields:boolean = false): void {
         logger(`Initialising`);
 
         // ok, so given a Data Object definition we are going to create the form ui config
-        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef);
+        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hideModiferFields);
         logger(this.uiDef);
         // now we need to create all the form elements from the ui definition
         this.factoryElements = FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);

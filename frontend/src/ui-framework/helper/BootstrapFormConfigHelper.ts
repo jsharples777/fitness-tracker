@@ -1,6 +1,6 @@
 import {BasicFieldOperations} from "./BasicFieldOperations";
 import {DataObjectDefinition, FieldType} from "../../model/DataObjectTypeDefs";
-import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypeDefs";
+import {DisplayOrder, FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypeDefs";
 
 import debug from 'debug';
 import {RBGFieldOperations} from "./RBGFieldOperations";
@@ -22,20 +22,23 @@ export class BootstrapFormConfigHelper {
     private constructor() {
     }
 
-    public generateFormConfig(dataObjDef: DataObjectDefinition,hideModifierFields:boolean = false): FormUIDefinition {
+
+
+    public generateFormConfig(dataObjDef: DataObjectDefinition,displayOrders:DisplayOrder[],hideModifierFields:boolean = false): FormUIDefinition {
         let fieldOperations: BasicFieldOperations = new BasicFieldOperations();
         let rbgFieldOperation:RBGFieldOperations = new RBGFieldOperations();
 
         // create the Field UI config for each field
         let fieldUIConfigs: FieldUIConfig[] = [];
-        dataObjDef.fields.forEach((fieldDef) => {
+        dataObjDef.fields.forEach((fieldDef,index) => {
 
             let fieldType: UIFieldType = UIFieldType.text;
             switch (fieldDef.type) {
                 case (FieldType.time):
                 case (FieldType.text):
                 case (FieldType.date):
-                case (FieldType.shortTime):{
+                case (FieldType.shortTime):
+                case (FieldType.duration):{
                     break;
                 }
                 case (FieldType.datetime): {
@@ -95,16 +98,24 @@ export class BootstrapFormConfigHelper {
                 }
             }
 
+            // see if the field was supplied with a display order
+            const displayOrder:DisplayOrder|undefined = displayOrders.find((value) => value.fieldId === fieldDef.id);
+            let displayOrderValue:number = index;
+            if (displayOrder) {
+                displayOrderValue = displayOrder.displayOrder;
+            }
+
             // construct the field ui config
             let fieldUIConfig: FieldUIConfig = {
                 field: fieldDef,
+                displayOrder:displayOrderValue,
                 elementType: fieldType,
                 elementClasses: 'form-control col-sm-9',
                 renderer: fieldOperations,
                 formatter: fieldOperations,
             }
 
-            if ((fieldDef.type !== FieldType.id) && (fieldDef.type !== FieldType.uuid)) { // no labels, descriptions, container for id,uuid
+            if ((fieldDef.type !== FieldType.id) && (fieldDef.type !== FieldType.uuid) && (fieldType !== UIFieldType.hidden)) { // no labels, descriptions, container for id,uuid
                 fieldUIConfig.containedBy = {
                     elementType: 'div',
                     elementClasses: 'form-group row'
@@ -112,13 +123,13 @@ export class BootstrapFormConfigHelper {
 
                 fieldUIConfig.label = {
                     label: fieldDef.displayName,
-                    classes: 'col-sm-3 col-form-label'
+                    classes: 'col-sm-12 col-md-3 col-form-label'
                 };
                 if (fieldDef.description) { // descriptions if the field has one
                     fieldUIConfig.describedBy = {
                         message: fieldDef.description,
                         elementType: 'small',
-                        elementClasses: 'text-muted col-sm-9 offset-sm-3 mt-1'
+                        elementClasses: 'text-muted col-sm-12 col-md-9 offset-md-3 mt-1'
                     }
                 }
                 if (!fieldDef.displayOnly) { // no validator for readonly items
@@ -126,7 +137,7 @@ export class BootstrapFormConfigHelper {
                             validator: fieldOperations,
                             messageDisplay: {
                             elementType: 'div',
-                            elementClasses: 'invalid-feedback col-sm-9 offset-sm-3'
+                            elementClasses: 'invalid-feedback col-sm-12 col-md-9 offset-md-3'
                         },
                         validClasses: 'is-valid',
                         invalidClasses: 'is-invalid',
@@ -208,6 +219,14 @@ export class BootstrapFormConfigHelper {
                 iconClasses: 'fas fa-save'
             }
         }
+        // sort the fields into display order
+
+        formConfig.fieldGroups.forEach((group) => {
+            group.fields.sort((a,b) => { return (a.displayOrder - b.displayOrder);})
+
+        });
+
+
         logger(formConfig);
         return formConfig;
     }

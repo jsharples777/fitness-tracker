@@ -19,7 +19,8 @@ export enum FieldType {
     choice = 'Choice',
     limitedChoice = 'Limited Choice',
     largeText = 'TextArea',
-    collection = 'Collection'
+    collection = 'Collection',
+    duration = 'Duration'
 }
 
 export interface FieldValueGenerator {

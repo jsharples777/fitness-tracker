@@ -4,6 +4,7 @@ import {ViewDOMConfig} from "../../ConfigurationTypes";
 import {DetailViewRenderer} from "../interface/DetailViewRenderer";
 import {DetailViewListenerForwarder} from "../delegate/DetailViewListenerForwarder";
 import {DetailViewListener} from "../interface/DetailViewListener";
+import {DisplayOrder} from "../../form/FormUITypeDefs";
 
 export class DetailViewImplementation extends AbstractView implements DetailView {
     protected currentItem:any|null = null;
@@ -46,7 +47,7 @@ export class DetailViewImplementation extends AbstractView implements DetailView
     public displayItem(dataObj: any): void {
         this.currentItem = dataObj;
 
-        if (this.renderer.hasPermissionToUpdateCurrentItem()) {
+        if (this.renderer.hasPermissionToUpdateItem(dataObj)) {
             this.renderer.displayItem(dataObj);
         }
         else {
@@ -69,15 +70,14 @@ export class DetailViewImplementation extends AbstractView implements DetailView
 
     public onDocumentLoaded() {
         this.renderer.onDocumentLoaded();
-        this.renderer.initialise();
         super.onDocumentLoaded();
     }
 
-    public hasPermissionToDeleteCurrentItem(): boolean {
-        return this.renderer.hasPermissionToDeleteCurrentItem();
+    public hasPermissionToDeleteItem(item:any): boolean {
+        return this.renderer.hasPermissionToDeleteItem(item);
     }
-    public hasPermissionToUpdateCurrentItem(): boolean {
-        return this.renderer.hasPermissionToUpdateCurrentItem();
+    public hasPermissionToUpdateItem(item:any): boolean {
+        return this.renderer.hasPermissionToUpdateItem(item);
     }
 
     public handleActionItem(actionName: string, selectedItem: any): void {
@@ -92,5 +92,7 @@ export class DetailViewImplementation extends AbstractView implements DetailView
         return this.renderer.hasChanged();
     }
 
-
+    initialise(displayOrder: DisplayOrder[], hideModifierFields: boolean = false): void {
+        this.renderer.initialise(displayOrder,hideModifierFields)
+    }
 }

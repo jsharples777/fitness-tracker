@@ -431,7 +431,8 @@ export class ValidationManager implements FieldListener {
             if (ruleCheck.ruleFailed) {
                 flogger('field condition rule FAILED');
                 response.ruleFailed = true;
-                response.message = ruleCheck.message;
+                // only need messages for invalid responses
+                if (rule.response === ConditionResponse.invalid) response.message = ruleCheck.message;
                 return false;
             }
             logger('field condition rule PASSED');
