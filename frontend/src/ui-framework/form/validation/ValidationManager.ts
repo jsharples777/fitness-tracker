@@ -2,7 +2,7 @@ import {ComparisonType, ConditionResponse, ValidationRule} from "./ValidationTyp
 import {Form} from "../Form";
 import {Field} from "../field/Field";
 import debug from 'debug';
-import {FieldDefinition, FieldType} from "../DataObjectTypeDefs";
+import {FieldDefinition, FieldType} from "../../../model/DataObjectTypeDefs";
 import {FieldListener} from "../field/FieldListener";
 
 const logger = debug('validation-manager');

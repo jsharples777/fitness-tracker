@@ -1,4 +1,4 @@
-<div id="exerciseTypesSidebar" class="sidebar-left bg-info">
+<div id="exerciseTypesSidebar" class="sidebar-left bg-dark">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12 pb-3 align-items-end">
@@ -6,8 +6,26 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="container-fluid" id="exerciseTypesContainer">
-                <div id="exerciseTypes" class="row scroll"></div>
+            <div class="col-12">
+                <div class="card" id="exerciseTypesContainer">
+                    <div class="card-header">Exercise Types</div>
+                    <div class="card-body scroll">
+                        <div id="exerciseTypes" class="list-group list-group-flush">
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary" id="addNewExerciseType">Add New Exercise Type&nbsp;<i class="fas fa-dumbbell" aria-hidden="true"></i>&nbsp;<i class="fas fa-running" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3" id="exerciseTypeContainer">
+                    <div class="card-body scroll">
+                        <div id="exerciseTypeDetail">
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

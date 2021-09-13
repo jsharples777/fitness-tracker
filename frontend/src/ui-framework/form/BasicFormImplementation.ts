@@ -1,7 +1,7 @@
 import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "./FormUITypeDefs";
 import {AbstractForm} from "./AbstractForm";
 import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
-import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypeDefs";
+import {DataObjectDefinition, FieldDefinition} from "../../model/DataObjectTypeDefs";
 import {Field} from "./field/Field";
 import {FormElementFactory, FormFactoryResponse} from "./factory/FormElementFactory";
 import {AbstractField} from "./field/AbstractField";

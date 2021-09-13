@@ -26,9 +26,11 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
     protected collectionName: string;
     protected renderer:CollectionViewRenderer|null;
     protected selectedItem:any|null;
+    protected collectionUIConfig:CollectionViewDOMConfig;
 
     protected constructor(uiConfig: CollectionViewDOMConfig, collectionName:string) {
-        super(uiConfig);
+        super(uiConfig.viewConfig);
+        this.collectionUIConfig = uiConfig;
         this.collectionName = collectionName;
         this.renderer = null;
         this.selectedItem = null;
@@ -43,6 +45,10 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     }
 
+    getCollectionUIConfig(): CollectionViewDOMConfig {
+        return this.collectionUIConfig;
+    }
+
     addEventCollectionListener(listener: CollectionViewListener) {
         this.eventForwarder.addListener(listener);
     }
@@ -50,7 +56,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     setContainedBy(container: HTMLElement): void {
         super.setContainedBy(container);
-        if (this.uiConfig.detail.drop) {
+        if (this.uiConfig.drop) {
             avLoggerDetails(`view ${this.getName()}: Adding dragover events to ${this.uiConfig.dataSourceId}`)
             avLoggerDetails(container);
             container.addEventListener('dragover', (event) => {
@@ -64,17 +70,17 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     protected getDragData(event: DragEvent): any {
         // @ts-ignore
-        let itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.collectionUIConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
-        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
+        if (this.collectionUIConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
         avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} getting drag data from ${dataSource}`);
 
         let compareWith = {};
         // @ts-ignore
-        compareWith[this.uiConfig.keyId] = itemId;
+        compareWith[this.collectionUIConfig.keyId] = itemId;
 
         let selectedItem = {};
 
@@ -82,9 +88,9 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
         if (selectedItem) {
             // @ts-ignore
-            selectedItem[DRAGGABLE_TYPE] = this.uiConfig.detail.drag?.type;
+            selectedItem[DRAGGABLE_TYPE] = this.collectionUIConfig.detail.drag?.type;
             // @ts-ignore
-            selectedItem[DRAGGABLE_FROM] = this.uiConfig.detail.drag?.from;
+            selectedItem[DRAGGABLE_FROM] = this.collectionUIConfig.detail.drag?.from;
         }
         return selectedItem;
     }
@@ -138,16 +144,16 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
-        let itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.collectionUIConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
-        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
+        if (this.collectionUIConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
         avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} clicked from ${dataSource}`);
         let compareWith = {};
         // @ts-ignore
-        compareWith[this.uiConfig.keyId] = itemId;
+        compareWith[this.collectionUIConfig.keyId] = itemId;
         avLoggerDetails(compareWith);
 
         let selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
@@ -167,16 +173,16 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
-        let itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.collectionUIConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
 
-        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
+        if (this.collectionUIConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
         avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource}`);
         let compareWith = {};
         // @ts-ignore
-        compareWith[this.uiConfig.keyId] = itemId;
+        compareWith[this.collectionUIConfig.keyId] = itemId;
         avLoggerDetails(compareWith);
 
         let selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
@@ -185,7 +191,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
             avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource} - ${shouldDelete}`);
             if (shouldDelete) {
                // do we need to confirm?
-               if (this.uiConfig.detail.quickDelete) {
+               if (this.collectionUIConfig.detail.quickDelete) {
                    this.selectedItem = null;
                    this.eventForwarder.itemDeleted(this, selectedItem);
                }
@@ -203,18 +209,18 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         event.preventDefault();
         event.stopPropagation();
         // @ts-ignore
-        let itemId = event.target.getAttribute(this.uiConfig.keyId);
+        let itemId = event.target.getAttribute(this.collectionUIConfig.keyId);
         // @ts-ignore
         const dataSource = event.target.getAttribute(AbstractView.DATA_SOURCE);
         // @ts-ignore
         const actionName = event.target.getAttribute(EXTRA_ACTION_ATTRIBUTE_NAME);
 
-        if (this.uiConfig.keyType === KeyType.number) itemId = parseInt(itemId);
+        if (this.collectionUIConfig.keyType === KeyType.number) itemId = parseInt(itemId);
         // @ts-ignore
         avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource}`);
         let compareWith = {};
         // @ts-ignore
-        compareWith[this.uiConfig.keyId] = itemId;
+        compareWith[this.collectionUIConfig.keyId] = itemId;
         avLoggerDetails(compareWith);
 
         let selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);

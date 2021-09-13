@@ -21,13 +21,15 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
     protected selectedChatLog:ChatLog|null = null;
 
     private static DOMConfig: CollectionViewDOMConfig = {
-        resultsContainerId: 'chatLogs',
+        viewConfig: {
+            resultsContainerId: 'chatLogs',
+            dataSourceId: VIEW_NAME.chatLogs,
+        },
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
         keyId: 'roomName',
         keyType: KeyType.string,
-        dataSourceId: VIEW_NAME.chatLogs,
         modifiers: {
             normal: '',
             inactive: 'list-group-item-dark',

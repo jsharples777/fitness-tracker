@@ -6,11 +6,11 @@ export enum Decorator {
 }
 
 export const STATE_NAMES = {
-    users: 'users',
-    chatLogs: 'chatLogs',
-    exerciseTypes: 'exerciseTypes',
-    workouts: 'workouts',
-    recentUserSearches: 'recentUserSearches'
+    users: 'user',
+    chatLogs: 'chatLog',
+    exerciseTypes: 'exerciseType',
+    workouts: 'workout',
+    recentUserSearches: 'recentUserSearch'
 }
 
 export const API_Config = {
@@ -42,6 +42,10 @@ export const VIEW_NAME = {
     favouriteUsers: 'favouriteUsers',
     exerciseTypes: 'exerciseTypes',
     userSearch: 'userSearch'
+}
+
+export const VIEW_CONTAINER = {
+    exerciseTypeDetail:"exerciseTypeDetail",
 }
 
 

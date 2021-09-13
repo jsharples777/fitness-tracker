@@ -1,6 +1,6 @@
 import {AbstractField} from "./AbstractField";
 import {FieldUIConfig} from "../FormUITypeDefs";
-import {FieldDefinition} from "../DataObjectTypeDefs";
+import {FieldDefinition} from "../../../model/DataObjectTypeDefs";
 
 
 

@@ -1,4 +1,7 @@
-localStorage.debug = 'api-ts';//exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
+import {Form} from "./ui-framework/form/Form";
+
+//localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
+localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -6,7 +9,7 @@ debug.log = console.info.bind(console);
 import Controller from './Controller';
 import UserSearchView from "./component/view/UserSearchView";
 import ChatLogsView from "./component/view/ChatLogsView";
-import {API_Config, NAVIGATION} from "./AppTypes";
+import {API_Config, NAVIGATION, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "./AppTypes";
 import {UnreadMessageCountListener} from "./socket/UnreadMessageCountListener";
 import UserSearchSidebar from "./component/sidebar/UserSearchSidebar";
 import ChatRoomsSidebar from "./component/sidebar/ChatRoomsSidebar";
@@ -15,6 +18,15 @@ import ChatLogDetailView from "./component/view/ChatLogDetailView";
 import FavouriteUserView from "./component/view/FavouriteUserView";
 import BlockedUserView from "./component/view/BlockedUserView";
 import {ExerciseTypesView} from "./component/view/ExerciseTypesView";
+import {ComparisonType, ConditionResponse, ValidationRule} from "./ui-framework/form/validation/ValidationTypeDefs";
+import {ValidationManager} from "./ui-framework/form/validation/ValidationManager";
+import {FormDetailViewRenderer} from "./ui-framework/view/delegate/FormDetailViewRenderer";
+import {ObjectDefinitionRegistry} from "./model/ObjectDefinitionRegistry";
+import {DataObjectDefinition} from "./model/DataObjectTypeDefs";
+import {DetailViewRenderer} from "./ui-framework/view/interface/DetailViewRenderer";
+import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
+import {DetailView} from "./ui-framework/view/interface/DetailView";
+import {LinkedCollectionDetailController} from "./ui-framework/view/implementation/LinkedCollectionDetailController";
 
 
 const logger = debug('app');
@@ -72,10 +84,37 @@ class Root implements UnreadMessageCountListener {
         this.userSearchSidebar.addView(blockedUsers, {containerId: UserSearchSidebar.SidebarContainers.blocked});
         this.userSearchSidebar.onDocumentLoaded();
 
+        /*
+          Exercise Types - sidebar, list view and linked detail view
+        */
         this.exerciseTypesSidebar = new ExerciseTypesSidebar();
         const exerciseTypes = new ExerciseTypesView();
         this.exerciseTypesSidebar.addView(exerciseTypes,{containerId:ExerciseTypesSidebar.SidebarContainers.container});
-        this.exerciseTypesSidebar.onDocumentLoaded();
+
+        const exerciseTypeDefinition:DataObjectDefinition|null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exerciseTypes);
+
+        if (exerciseTypeDefinition) {
+            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.exerciseTypeDetail,exerciseTypeDefinition);
+
+            let exerciseTypeDetailView:DetailView = new DetailViewImplementation(
+                {
+                    resultsContainerId: VIEW_CONTAINER.exerciseTypeDetail,
+                    dataSourceId: VIEW_NAME.exerciseTypes
+                },exerciseTypeDetailRenderer);
+            let viewLinker:LinkedCollectionDetailController = new LinkedCollectionDetailController(STATE_NAMES.exerciseTypes,exerciseTypes);
+            viewLinker.addLinkedDetailView(exerciseTypeDetailView);
+            this.exerciseTypesSidebar.onDocumentLoaded();
+
+            const detailForm:Form|null = exerciseTypeDetailRenderer.getForm();
+
+            if (detailForm) {
+                logger(`Setting up validation rules for ${detailForm.getId()}`);
+                logger(detailForm);
+                this.setupValidationForExerciseTypeDetailsForm(detailForm);
+            }
+
+        }
+
 
 
         // navigation item handlers
@@ -99,77 +138,107 @@ class Root implements UnreadMessageCountListener {
 
         Controller.getInstance().initialise();
 
-        // // now lets break things with a new form
-        // let dataObjDef: DataObjectDefinition = BasicObjectDefinitionFactory.getInstance().createBasicObjectDefinition("test", "Test", true, true);
-        // let renderer = new FormDetailViewRenderer("testForm",dataObjDef);
-        // let view = new DetailViewImplementation({},renderer);
-        //
-        // // create a test object
-        // let dataObj = {
-        //     email: 'jamie.sharples@gmail.com',
-        //     float1: 3.1,
-        //     float2: 2.3,
-        //     checkbox: true,
-        //     date: '20210910',
-        //     time: '12:32',
-        //     textarea: 'Test',
-        //     select: 'jl',
-        //     rbg: 'marvel'
-        // };
-        // // @ts-ignore
-        // dataObj[FIELD_ID] = '2';
-        // // @ts-ignore
-        // dataObj[FIELD_CreatedOn] = '20201009000000';
-        // // @ts-ignore
-        // dataObj[FIELD_CreatedBy] = 'Jim';
-        //
-        // view.onDocumentLoaded();
-        // const form = renderer.getForm();
-        //
-        //
-        //
-        // // change the select options
-        // dataSource.addValueOption('X-Men', 'xmen');
-        //
-        // // add a simple validation rule to the two numbers
-        // let rule: ValidationRule = {
-        //     targetDataFieldId: 'float1',
-        //     response: ConditionResponse.invalid,
-        //     conditions: [
-        //         {
-        //             sourceDataFieldId: 'float2',
-        //             comparison: ComparisonType.lessThanEqual,
-        //         }
-        //     ]
-        // }
-        // ValidationManager.getInstance().addRuleToForm(form, rule);
-        // rule = {
-        //     targetDataFieldId: 'select',
-        //     response: ConditionResponse.hide,
-        //     conditions: [
-        //         {
-        //             sourceDataFieldId: 'rbg',
-        //             comparison: ComparisonType.hasValue,
-        //             values: 'other'
-        //         }
-        //     ]
-        // }
-        // ValidationManager.getInstance().addRuleToForm(form, rule);
-        // rule = {
-        //     targetDataFieldId: 'select',
-        //     response: ConditionResponse.show,
-        //     conditions: [
-        //         {
-        //             sourceDataFieldId: 'rbg',
-        //             comparison: ComparisonType.hasValue,
-        //             values: 'jl,marvel'
-        //         }
-        //     ]
-        // }
-        // ValidationManager.getInstance().addRuleToForm(form, rule);
-        // view.displayItem(dataObj);
-        // view.show();
+    }
 
+    private setupValidationForExerciseTypeDetailsForm(form:Form) {
+        let rule: ValidationRule = {
+            targetDataFieldId: 'sets',
+            response: ConditionResponse.show,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values:'cardio'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'reps',
+            response: ConditionResponse.show,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values:'cardio'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'weight',
+            response: ConditionResponse.show,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values:'cardio'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'reps',
+            response: ConditionResponse.hide,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values:'strength'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'sets',
+            response: ConditionResponse.hide,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values:'strength'
+                }
+            ]
+        }
+
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'weight',
+            response: ConditionResponse.hide,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values:'strength'
+                }
+            ]
+        }
+
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'distance',
+            response: ConditionResponse.show,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values: 'strength'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form, rule);
+        rule = {
+            targetDataFieldId: 'distance',
+            response: ConditionResponse.hide,
+            conditions: [
+                {
+                    sourceDataFieldId: 'type',
+                    comparison: ComparisonType.hasValue,
+                    values: 'cardio'
+                }
+            ]
+        }
+        ValidationManager.getInstance().addRuleToForm(form, rule);
     }
 
     hideAllSideBars() {
@@ -230,9 +299,6 @@ class Root implements UnreadMessageCountListener {
     }
 }
 
-//localStorage.debug = 'app controller-ts controller-ts-detail api-ts socket-ts abstract-form bootstrap-form-config-helper basic-form basic-form-detail chat-sidebar chat-sidebar:detail socket-listener notification-controller chat-manager board-game-search-sidebar board-game-search-sidebar:detail score-sheet-controller score-sheet-view score-sheet-sidebar score-sheet-sidebar:detail view-ts view-ts-detail user-search user-search-detail template-manager sidebar-container' ;
-//localStorage.debug = 'basic-field-operations-generator basic-field-operations-renderer basic-field-operations-validator basic-field-operations-formatter' ;
-//localStorage.debug = 'basic-form basic-form-detail validation-manager abstract-field';
 
 $(function() {
     const root = new Root();

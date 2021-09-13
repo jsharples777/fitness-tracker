@@ -24,13 +24,15 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
     static dataLimit:number = 10;
 
     static DOMConfig: CollectionViewDOMConfig = {
-        resultsContainerId: 'recentUserSearches',
+        viewConfig: {
+            resultsContainerId: 'recentUserSearches',
+            dataSourceId: VIEW_NAME.userSearch,
+        },
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
         keyId: '_id',
         keyType: KeyType.number,
-        dataSourceId: VIEW_NAME.userSearch,
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',

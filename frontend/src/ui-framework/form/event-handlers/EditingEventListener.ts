@@ -1,4 +1,4 @@
-import {FieldDefinition} from "../DataObjectTypeDefs";
+import {FieldDefinition} from "../../../model/DataObjectTypeDefs";
 import {FieldUIConfig} from "../FormUITypeDefs";
 import {FieldListener} from "../field/FieldListener";
 

@@ -1,8 +1,7 @@
-import {FieldDefinition, FieldType} from "../DataObjectTypeDefs";
+import {FieldDefinition, FieldType} from "../../../model/DataObjectTypeDefs";
 import {FieldUIConfig, UIFieldType, ValidationResponse} from "../FormUITypeDefs";
 import browserUtil from "../../../util/BrowserUtil";
 import {FieldListener} from "../field/FieldListener";
-import {isValidElement} from "react";
 
 export class ValidationEventHandler {
     private formId:string;

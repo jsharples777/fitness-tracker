@@ -1,5 +1,5 @@
 import {BasicFieldOperations} from "./BasicFieldOperations";
-import {DataObjectDefinition, FieldType} from "../form/DataObjectTypeDefs";
+import {DataObjectDefinition, FieldType} from "../../model/DataObjectTypeDefs";
 import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypeDefs";
 
 import debug from 'debug';

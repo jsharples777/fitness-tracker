@@ -17,13 +17,19 @@ const vLoggerDetail = debug('user-search-sidebar:detail');
 
 class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUserEventListener,CollectionViewListener {
     static DOMConfig: CollectionViewDOMConfig = {
-        resultsContainerId: 'favouriteUsers',
+        viewConfig: {
+            resultsContainerId: 'favouriteUsers',
+            drop: {
+                acceptFrom:[DRAGGABLE.fromUserSearch],
+                acceptTypes:[DRAGGABLE.typeUser],
+            },
+            dataSourceId: VIEW_NAME.favouriteUsers,
+        },
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
         keyId: '_id',
         keyType: KeyType.string,
-        dataSourceId: VIEW_NAME.favouriteUsers,
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',
@@ -45,10 +51,6 @@ class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUs
             delete: {
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
                 iconClasses: 'fas fa-trash-alt',
-            },
-            drop: {
-                acceptFrom:[DRAGGABLE.fromUserSearch],
-                acceptTypes:[DRAGGABLE.typeUser],
             },
             drag: {
                 type: DRAGGABLE.typeUser,

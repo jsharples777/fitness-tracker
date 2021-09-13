@@ -1,3 +1,5 @@
+import {View} from "./view/interface/View";
+
 export type Attribute = {
     name:string,
     value:string
@@ -56,7 +58,6 @@ export type ContentDetail = {
     delete?:BasicButtonElement,
     drag?:Draggable,
     background?:BasicElement,
-    drop?:Droppable
 }
 
 export const EXTRA_ACTION_ATTRIBUTE_NAME:string = 'view-extra-action';
@@ -82,19 +83,25 @@ export enum KeyType {
     collection
 }
 
-export type CollectionViewDOMConfig = {
+export type ViewDOMConfig = {
     resultsContainerId:string,
+    dataSourceId:string,
+    drop?:Droppable
+}
+
+export type CollectionViewDOMConfig = {
+    viewConfig:ViewDOMConfig,
     resultsElementType:string,
     resultsElementAttributes?:[Attribute],
     resultsClasses:string,
     keyId:string,
     keyType: KeyType,
-    dataSourceId:string,
     modifiers?:ModifierClasses,
     icons?:IconClasses,
     detail:ContentDetail,
     extraActions?:ExtraAction[],
 }
+
 
 export enum SidebarLocation {
     top,

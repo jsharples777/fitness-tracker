@@ -1,4 +1,4 @@
-import {FieldDefinition} from "../DataObjectTypeDefs";
+import {FieldDefinition} from "../../../model/DataObjectTypeDefs";
 import {FieldListener} from "./FieldListener";
 
 export interface Field {

@@ -1,6 +1,6 @@
 import {Attribute, BasicButtonElement, BasicElement} from "../ConfigurationTypes";
-import {FieldDefinition} from "./DataObjectTypeDefs";
-import {FieldValueOptions} from "./CommonTypes";
+import {FieldDefinition} from "../../model/DataObjectTypeDefs";
+import {FieldValueOptions} from "../../model/CommonTypes";
 
 export type ValidationResponse = {
     isValid:boolean,

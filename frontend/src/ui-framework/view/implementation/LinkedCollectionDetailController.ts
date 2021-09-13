@@ -5,31 +5,68 @@ import {View} from "../interface/View";
 import {DetailViewListener} from "../interface/DetailViewListener";
 
 import debug from 'debug';
+import {DataObjectController} from "../../../model/DataObjectController";
 
 const logger = debug('linked-controller');
-const dlogger = debug('linked-controller-detail')
+const dlogger = debug('linked-controller-detail');
 
-export class LinkedCollectionDetailController implements CollectionViewListener,DetailViewListener{
-    protected parentView:CollectionView;
-    protected children:DetailView[] = [];
-    protected isCreatingNew:boolean = false;
-    protected listeners:DetailViewListener[];
+class ChildViewListenerDelegate implements DetailViewListener {
+    protected controller:DetailViewListener;
 
-    constructor(parentView:CollectionView) {
-        this.listeners = [];
-        logger(`Starting with parent view ${parentView.getName()}`);
-        this.parentView = parentView;
-        this.parentView.addEventListener(this);
+    constructor(controller:DetailViewListener) {
+        this.controller = controller;
     }
 
-    public addListener(listener:DetailViewListener) {
-        this.listeners.push(listener);
+    addView(view:DetailView) {
+        view.addEventListener(this);
+    }
+
+    canDeleteItem(view: View, selectedItem: any): boolean {
+        return true;
+    }
+
+    documentLoaded(view: View): void {}
+    hideRequested(view: View): void {}
+    itemAction(view: View, actionName: string, selectedItem: any): void {}
+    itemDeleted(view: View, selectedItem: any): void {}
+    itemDropped(view: View, droppedItem: any): void {}
+    showRequested(view: View): void {}
+
+    cancelled(view: DetailView, dataObj: any): void {
+        this.controller.cancelled(view,dataObj);
+    }
+    deletedItem(view: DetailView, dataObj: any): void {
+        this.controller.deletedItem(view,dataObj);
+    }
+
+    saveNewItem(view: DetailView, dataObj: any): void {
+        this.controller.saveNewItem(view,dataObj);
+    }
+
+
+    updateItem(view: DetailView, dataObj: any): void {
+        this.controller.updateItem(view,dataObj);
+    }
+
+}
+
+export class LinkedCollectionDetailController extends DataObjectController implements CollectionViewListener,DetailViewListener{
+    protected parentView:CollectionView;
+    protected children:DetailView[] = [];
+    protected delegate:ChildViewListenerDelegate;
+
+    constructor(typeName:string, parentView:CollectionView) {
+        super(typeName);
+        logger(`Starting with parent view ${parentView.getName()}`);
+        this.parentView = parentView;
+        this.delegate = new ChildViewListenerDelegate(this);
+        this.parentView.addEventListener(this);
     }
 
     public addLinkedDetailView(childView:DetailView) {
         logger(`Adding child view ${childView.getName()}`);
         this.children.push(childView);
-        childView.addEventListener(this);
+        this.delegate.addView(childView); // this delegate will only pass us the unique detail view events (save, new, etc)
     }
 
     public initialise():void { // call when all views are ready
@@ -126,33 +163,40 @@ export class LinkedCollectionDetailController implements CollectionViewListener,
         return canProceedWithSelection;
     }
 
+
+
     cancelled(view: DetailView, dataObj: any): void {
         logger(`Handling cancelled from child view ${view.getName()}`);
         dlogger(dataObj);
         this.isCreatingNew = false;
-        this.listeners.forEach((listener) => listener.cancelled(view,dataObj));
     }
 
     deletedItem(view: DetailView, dataObj: any): void {
         logger(`Handling deleted from child view ${view.getName()}`);
         dlogger(dataObj);
-        this.isCreatingNew = false;
-        this.listeners.forEach((listener) => listener.cancelled(view,dataObj));
+        this.informListenersOfDelete(dataObj);
     }
 
     saveNewItem(view: DetailView, dataObj: any): void {
         logger(`Handling save new from child view ${view.getName()}`);
         dlogger(dataObj);
-        this.isCreatingNew = false;
-        this.listeners.forEach((listener) => listener.cancelled(view,dataObj));
+        this.informListenersOfCreate(dataObj);
     }
 
     updateItem(view: DetailView, dataObj: any): void {
         logger(`Handling update from child view ${view.getName()}`);
         dlogger(dataObj);
-        this.isCreatingNew = false;
-        this.listeners.forEach((listener) => listener.cancelled(view,dataObj));
+        this.informListenersOfUpdate(dataObj);
     }
 
+    protected _startNewObject(): boolean {
+        // assume the first detail view will create the object for us
+        let result = false;
+        if (this.children.length > 0) {
+            let dataObj = this.children[0].createItem();
+            if (dataObj) result = true;
+        }
+        return result;
+    }
 
 }

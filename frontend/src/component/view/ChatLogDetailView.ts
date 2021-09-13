@@ -10,7 +10,12 @@ import Controller from "../../Controller";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import StateChangeListener from "../../state/StateChangeListener";
-import {DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
+import {
+    DRAGGABLE_KEY_ID,
+    DRAGGABLE_TYPE,
+    Modifier,
+    ViewDOMConfig
+} from "../../ui-framework/ConfigurationTypes";
 import {View} from '../../ui-framework/view/interface/View';
 import NotificationManager from "../../notification/NotificationManager";
 import { CollectionView } from '../../ui-framework/view/interface/CollectionView';
@@ -392,7 +397,7 @@ class ChatLogDetailView implements View, ChatEventListener, CollectionViewListen
         return "";
     }
 
-    getUIConfig(): CollectionViewDOMConfig {
+    getUIConfig(): ViewDOMConfig {
         // @ts-ignore
         return undefined;
     }

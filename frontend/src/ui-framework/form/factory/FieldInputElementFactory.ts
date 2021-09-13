@@ -3,8 +3,8 @@ import {DATA_ID_ATTRIBUTE, FieldUIConfig, UIFieldType} from "../FormUITypeDefs";
 import {FieldListener} from "../field/FieldListener";
 import {ValidationEventHandler} from "../event-handlers/ValidationEventHandler";
 import {EditingEventListener} from "../event-handlers/EditingEventListener";
-import {FieldValueOptionsListener, ValueOption} from "../CommonTypes";
-import {FieldType} from "../DataObjectTypeDefs";
+import {FieldValueOptionsListener, ValueOption} from "../../../model/CommonTypes";
+import {FieldType} from "../../../model/DataObjectTypeDefs";
 
 class DefaultFieldOptionsListener implements FieldValueOptionsListener {
     private formId: string;

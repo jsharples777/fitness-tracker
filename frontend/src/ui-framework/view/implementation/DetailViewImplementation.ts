@@ -1,6 +1,6 @@
 import {AbstractView} from "./AbstractView";
 import {DetailView} from "../interface/DetailView";
-import {CollectionViewDOMConfig} from "../../ConfigurationTypes";
+import {ViewDOMConfig} from "../../ConfigurationTypes";
 import {DetailViewRenderer} from "../interface/DetailViewRenderer";
 import {DetailViewListenerForwarder} from "../delegate/DetailViewListenerForwarder";
 import {DetailViewListener} from "../interface/DetailViewListener";
@@ -9,7 +9,7 @@ export class DetailViewImplementation extends AbstractView implements DetailView
     protected currentItem:any|null = null;
     protected renderer:DetailViewRenderer;
 
-    constructor(uiConfig: CollectionViewDOMConfig, renderer:DetailViewRenderer) {
+    constructor(uiConfig: ViewDOMConfig, renderer:DetailViewRenderer) {
         super(uiConfig);
         this.renderer = renderer;
         const forwarder = new DetailViewListenerForwarder();

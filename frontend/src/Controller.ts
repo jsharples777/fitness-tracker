@@ -10,7 +10,7 @@ import {ChatManager} from "./socket/ChatManager";
 import {NotificationController} from "./socket/NotificationController";
 import {API_Config, STATE_NAMES} from "./AppTypes";
 import {RESTApiStateManager} from "./state/RESTApiStateManager";
-import {DataObjectDefinition, FieldDefinition, FieldType} from "./ui-framework/form/DataObjectTypeDefs";
+import {DataObjectDefinition, FieldDefinition, FieldType} from "./model/DataObjectTypeDefs";
 import {ObjectDefinitionRegistry} from "./model/ObjectDefinitionRegistry";
 import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
 import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
@@ -92,7 +92,41 @@ class Controller implements StateChangeListener {
         //event handlers
         this.addBoardGameToCollection = this.addBoardGameToCollection.bind(this);
 
+        // data objects
+        this.setupDataObjectDefinitions();
+
         return this;
+    }
+
+    private setupDataObjectDefinitions() {
+        // create the object definitions for the exercise type and workout
+        let exerciseTypeDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.exerciseTypes,'Exercise', true, true, true, '_id');
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "type", "Type", FieldType.limitedChoice, true, "Choose cardio or strength",
+            new SimpleValueDataSource([
+                {name: 'Cardio', value: 'cardio'},
+                {name: 'Strength', value: 'strength'}
+            ]));
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "name", "Name", FieldType.text, true, "Exercise name");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "duration", "Duration", FieldType.shortTime, true, "Exercise time");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "sets", "Sets", FieldType.integer, false, "Number of sets");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "reps", "Repetitions", FieldType.integer, false, "Number of reps");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "weight", "Weight", FieldType.float, false, "Weight used");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "distance", "Distance", FieldType.float, false, "Distance travelled");
+
+        cLogger(`Exercise type data object definition`);
+        cLogger(exerciseTypeDefinition);
+        cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
+
+        let workoutDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition('workout','Workout', true, true, true, '_id');
+        let exercisesFieldDefinition:FieldDefinition = BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", FieldType.collection, true, "Exercises in this workout");
+        exercisesFieldDefinition.idType = KeyType.collection;
+        exercisesFieldDefinition.collectionOfDataObjectId = exerciseTypeDefinition.id;
+
+        cLogger(`Workout data object definition`);
+        cLogger(workoutDefinition);
+        cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('workout'));
+
+
     }
 
     /*
@@ -122,37 +156,6 @@ class Controller implements StateChangeListener {
             this.getStateManager().getStateByName(STATE_NAMES.users);
             this.getStateManager().getStateByName(STATE_NAMES.exerciseTypes);
         }
-
-        // create the object definitions for the exercise type and workout
-        let exerciseTypeDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition('exerciseType','Exercise', true, true, true, '_id');
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "type", "Type", FieldType.limitedChoice, true, "Choose cardio or strength",
-            new SimpleValueDataSource([
-                {name: 'Cardio', value: 'cardio'},
-                {name: 'Strength', value: 'strength'}
-            ]));
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "name", "Name", FieldType.text, true, "Exercise name");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "duration", "Duration", FieldType.shortTime, true, "Exercise time");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "sets", "Sets", FieldType.integer, false, "Number of sets");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "reps", "Repetitions", FieldType.integer, false, "Number of reps");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "weight", "Weight", FieldType.float, false, "Weight used");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "distance", "Distance", FieldType.float, false, "Distance travelled");
-
-        cLogger(`Exercise type data object definition`);
-        cLogger(exerciseTypeDefinition);
-        cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
-
-        let workoutDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition('workout','Workout', true, true, true, '_id');
-        let exercisesFieldDefinition:FieldDefinition = BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", FieldType.collection, true, "Exercises in this workout");
-        exercisesFieldDefinition.idType = KeyType.collection;
-        exercisesFieldDefinition.collectionOfDataObjectId = exerciseTypeDefinition.id;
-
-        cLogger(`Workout data object definition`);
-        cLogger(workoutDefinition);
-        cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('workout'));
-
-
-
-
 
     }
 

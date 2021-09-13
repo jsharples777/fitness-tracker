@@ -1,4 +1,9 @@
-import {DRAGGABLE_FROM, DRAGGABLE_KEY_ID, DRAGGABLE_TYPE, CollectionViewDOMConfig} from "../../ConfigurationTypes";
+import {
+    DRAGGABLE_FROM,
+    DRAGGABLE_KEY_ID,
+    DRAGGABLE_TYPE,
+    ViewDOMConfig
+} from "../../ConfigurationTypes";
 import {View} from "../interface/View";
 import debug from "debug";
 import {ViewListenerForwarder} from "../delegate/ViewListenerForwarder";
@@ -13,14 +18,14 @@ export abstract class AbstractView implements View {
     public static DATA_SOURCE = 'data-source';
 
 
-    protected uiConfig: CollectionViewDOMConfig;
+    protected uiConfig: ViewDOMConfig;
 
     protected eventForwarder: ViewListenerForwarder;
     protected containerEl: HTMLElement | null = null;
     protected viewEl:HTMLElement|null;
 
 
-    protected constructor(uiConfig: CollectionViewDOMConfig) {
+    protected constructor(uiConfig: ViewDOMConfig) {
         this.uiConfig = uiConfig;
         this.viewEl = null;
         this.eventForwarder = new ViewListenerForwarder();
@@ -29,7 +34,7 @@ export abstract class AbstractView implements View {
 
     }
 
-    getUIConfig(): CollectionViewDOMConfig {
+    getUIConfig(): ViewDOMConfig {
         return this.uiConfig;
     }
 
@@ -78,12 +83,12 @@ export abstract class AbstractView implements View {
         const droppedObjectType = draggedObject[DRAGGABLE_TYPE];
         const droppedObjectFrom = draggedObject[DRAGGABLE_FROM];
         avLogger(`view ${this.getName()}: drop event from ${droppedObjectFrom} with type ${droppedObjectType}`);
-        if (this.uiConfig.detail.drop) {
-            const acceptType = (this.uiConfig.detail.drop.acceptTypes.findIndex((objectType) => objectType === droppedObjectType) >= 0);
+        if (this.uiConfig.drop) {
+            const acceptType = (this.uiConfig.drop.acceptTypes.findIndex((objectType) => objectType === droppedObjectType) >= 0);
             let acceptFrom = true;
             if (acceptType) {
-                if (this.uiConfig.detail.drop.acceptFrom) {
-                    acceptFrom = (this.uiConfig.detail.drop.acceptFrom.findIndex((from) => from === droppedObjectFrom) >= 0);
+                if (this.uiConfig.drop.acceptFrom) {
+                    acceptFrom = (this.uiConfig.drop.acceptFrom.findIndex((from) => from === droppedObjectFrom) >= 0);
                 }
                 avLoggerDetails(`view ${this.getName()}: accepted type? ${acceptType} and from? ${acceptFrom}`);
                 if (acceptType && acceptFrom) {

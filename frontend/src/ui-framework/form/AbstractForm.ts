@@ -1,7 +1,7 @@
 import {Form} from "./Form";
 import {FormEvent, FormEventType, FormListener} from "./FormListener";
 import {FieldListener} from "./field/FieldListener";
-import {DataObjectDefinition, FieldDefinition} from "./DataObjectTypeDefs";
+import {DataObjectDefinition, FieldDefinition} from "../../model/DataObjectTypeDefs";
 import {AttributeFieldMapItem, FieldUIConfig, FormUIDefinition} from "./FormUITypeDefs";
 import {Field} from "./field/Field";
 

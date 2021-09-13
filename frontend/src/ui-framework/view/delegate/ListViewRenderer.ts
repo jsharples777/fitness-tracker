@@ -1,7 +1,6 @@
 import browserUtil from "../../../util/BrowserUtil";
 import {EXTRA_ACTION_ATTRIBUTE_NAME, Modifier, CollectionViewDOMConfig} from "../../ConfigurationTypes";
 import debug from 'debug';
-import {View} from "../interface/View";
 import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
 import {CollectionView} from "../interface/CollectionView";
 import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandler";
@@ -19,7 +18,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
 
     public createDisplayElementForCollectionItem(collectionName:string, item: any): HTMLElement {
         const canDeleteItem:boolean = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName,item);
-        const uiConfig:CollectionViewDOMConfig = this.view.getUIConfig();
+        const uiConfig:CollectionViewDOMConfig = this.view.getCollectionUIConfig();
         const dataSourceKeyId = this.view.getDataSourceKeyId();
 
         avLogger(`view ${this.view.getName()}: creating List item`);
@@ -31,20 +30,20 @@ export class ListViewRenderer implements CollectionViewRenderer{
         browserUtil.addRemoveClasses(childEl, uiConfig.resultsClasses);
         browserUtil.addAttributes(childEl, uiConfig.resultsElementAttributes);
         childEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-        childEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+        childEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
         // the content may be structured
         let textEl = childEl;
         if (uiConfig.detail.containerClasses) {
             let contentEl: HTMLElement = document.createElement('div');
             browserUtil.addRemoveClasses(contentEl, uiConfig.detail.containerClasses);
             contentEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-            contentEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+            contentEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
 
 
             textEl = document.createElement(uiConfig.detail.textElementType);
             browserUtil.addRemoveClasses(textEl,uiConfig.detail.textElementClasses);
             textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-            textEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+            textEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
 
             contentEl.appendChild(textEl);
 
@@ -65,7 +64,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                     browserUtil.addRemoveClasses(badgeEl, uiConfig.detail.badge.elementClasses);
                     browserUtil.addAttributes(badgeEl, uiConfig.detail.badge.elementAttributes);
                     badgeEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                    badgeEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                    badgeEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                     buttonsEl.appendChild(badgeEl);
                     badgeEl.innerHTML = `&nbsp;&nbsp;&nbsp;${badgeValue}&nbsp;&nbsp;&nbsp;`;
                 }
@@ -83,12 +82,12 @@ export class ListViewRenderer implements CollectionViewRenderer{
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, extraAction.iconClasses);
                         iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                        iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                         iconEl.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME,extraAction.name);
                         action.appendChild(iconEl);
                     }
                     action.setAttribute(uiConfig.keyId, resultDataKeyId);
-                    action.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                    action.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                     action.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME,extraAction.name);
 
                     action.addEventListener('click', (event) => {
@@ -110,11 +109,11 @@ export class ListViewRenderer implements CollectionViewRenderer{
                     let iconEl = document.createElement('i');
                     browserUtil.addRemoveClasses(iconEl, uiConfig.detail.delete.iconClasses);
                     iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                    iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                    iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                     deleteButtonEl.appendChild(iconEl);
                 }
                 deleteButtonEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                deleteButtonEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                deleteButtonEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                 deleteButtonEl.addEventListener('click', (event) => {
                     event.preventDefault();
                     event.stopPropagation();
@@ -137,7 +136,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
 
         // add the key ids for selection
         textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-        textEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+        textEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
         const displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
         textEl.innerHTML = displayText;
         // add icons
@@ -148,7 +147,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                 let iconEl = document.createElement('i');
                 browserUtil.addRemoveClasses(iconEl, icon);
                 iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                 textEl.appendChild(iconEl);
             });
         }
@@ -165,7 +164,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, uiConfig.icons.normal);
                         iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                        iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -177,7 +176,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, uiConfig.icons.warning);
                                 iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -187,7 +186,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, uiConfig.icons.active);
                                 iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                         }
@@ -202,7 +201,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, uiConfig.icons.active);
                         iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                        iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -214,7 +213,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, uiConfig.icons.warning);
                                 iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -229,7 +228,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, uiConfig.icons.inactive);
                         iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                        iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -241,7 +240,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, uiConfig.icons.warning);
                                 iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -251,7 +250,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, uiConfig.icons.active);
                                 iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,uiConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;

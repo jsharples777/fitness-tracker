@@ -1,4 +1,4 @@
-import {DataObjectDefinition} from "../ui-framework/form/DataObjectTypeDefs";
+import {DataObjectDefinition} from "./DataObjectTypeDefs";
 import {BasicObjectDefinitionFactory, FIELD_ID} from "./BasicObjectDefinitionFactory";
 
 export class ObjectDefinitionRegistry {

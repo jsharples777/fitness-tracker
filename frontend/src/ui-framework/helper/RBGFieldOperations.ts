@@ -2,7 +2,7 @@ import moment from "moment";
 import {v4} from 'uuid';
 import Controller from "../../Controller";
 import {FieldFormatter, FieldValidator, ValidationResponse} from "../form/FormUITypeDefs";
-import {FieldDefinition, FieldType, FieldValueGenerator} from "../form/DataObjectTypeDefs";
+import {FieldDefinition, FieldType, FieldValueGenerator} from "../../model/DataObjectTypeDefs";
 import debug from 'debug';
 import {KeyType} from "../ConfigurationTypes";
 

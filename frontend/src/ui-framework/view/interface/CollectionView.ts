@@ -1,4 +1,4 @@
-import {Modifier} from "../../ConfigurationTypes";
+import {CollectionViewDOMConfig, Modifier} from "../../ConfigurationTypes";
 import {View} from "./View";
 import {CollectionViewRenderer} from "./CollectionViewRenderer";
 
@@ -22,5 +22,6 @@ export interface CollectionView extends View {
 
     updateViewForNamedCollection(name: string, collection: any): void;
 
+    getCollectionUIConfig():CollectionViewDOMConfig;
 
 }

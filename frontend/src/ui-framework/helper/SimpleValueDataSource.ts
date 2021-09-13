@@ -1,4 +1,4 @@
-import {FieldValueOptions, FieldValueOptionsListener, ValueOption} from "../form/CommonTypes";
+import {FieldValueOptions, FieldValueOptionsListener, ValueOption} from "../../model/CommonTypes";
 
 export class SimpleValueDataSource implements FieldValueOptions { // static value list
     private options:ValueOption[];

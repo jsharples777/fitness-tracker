@@ -15,13 +15,19 @@ const vLogger = debug('user-search-sidebar');
 
 class BlockedUserView extends AbstractStatefulCollectionView implements ChatUserEventListener, CollectionViewListener {
     private static DOMConfig: CollectionViewDOMConfig = {
-        resultsContainerId: 'blockedUsers',
+        viewConfig: {
+            resultsContainerId: 'blockedUsers',
+            dataSourceId: VIEW_NAME.blockedUsers,
+            drop: {
+                acceptFrom:[DRAGGABLE.fromUserSearch, DRAGGABLE.fromFavourites],
+                acceptTypes:[DRAGGABLE.typeUser],
+            }
+        },
         resultsElementType: 'a',
         resultsElementAttributes: [{name: 'href', value: '#'}],
         resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
         keyId: '_id',
         keyType: KeyType.string,
-        dataSourceId: VIEW_NAME.blockedUsers,
         modifiers: {
             normal: 'list-group-item-primary',
             inactive: 'list-group-item-light',
@@ -44,10 +50,6 @@ class BlockedUserView extends AbstractStatefulCollectionView implements ChatUser
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
                 iconClasses: 'fas fa-trash-alt',
             },
-            drop: {
-                acceptFrom:[DRAGGABLE.fromUserSearch, DRAGGABLE.fromFavourites],
-                acceptTypes:[DRAGGABLE.typeUser],
-            }
         },
     };
 
