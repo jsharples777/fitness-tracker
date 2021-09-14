@@ -51,7 +51,7 @@ router.post('/', (req, res) => {
         const message:DataMessage = {type:"create",stateName: "exerciseType",data:value, user:user,}
         socketManager.sendDataMessage(message);
 
-        res.json(value);
+        res.json(req.body);
     })
     .catch((err) => {
         logger(err);
