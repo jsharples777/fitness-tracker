@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
         }
         else { user = "-1"}
         // @ts-ignore
-        const message:DataMessage = {type:"create",stateName: "exerciseType",data:value, user:user,}
+        const message:DataMessage = {type:"create",stateName: "exerciseType",data:req.body, user:user,}
         socketManager.sendDataMessage(message);
 
         res.json(req.body);
