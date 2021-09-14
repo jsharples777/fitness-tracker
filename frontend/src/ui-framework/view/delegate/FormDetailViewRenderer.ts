@@ -50,8 +50,8 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
         if (this.form) this.form.reset();
     }
 
-    initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean): void {
-        if (this.form) this.form.initialise(displayOrder,hideModifierFields);
+    initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean): void {
+        if (this.form) this.form.initialise(displayOrder,hasDeleteButton,hideModifierFields);
     }
 
     displayItemReadonly(dataObject: any): void {

@@ -104,12 +104,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
     }
 
     getModifierForItemInNamedCollection(name: string, item: any): Modifier {
-        if (this.selectedItem) {
-            if (this.compareItemsForEquality(item,this.selectedItem)) {
-                return Modifier.active;
-            }
-        }
-        return Modifier.inactive;
+        return Modifier.normal;
     }
 
     public getSecondaryModifierForItemInNamedCollection(name: string, item: any): Modifier {

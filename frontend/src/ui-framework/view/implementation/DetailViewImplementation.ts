@@ -92,7 +92,7 @@ export class DetailViewImplementation extends AbstractView implements DetailView
         return this.renderer.hasChanged();
     }
 
-    initialise(displayOrder: DisplayOrder[], hideModifierFields: boolean = false): void {
-        this.renderer.initialise(displayOrder,hideModifierFields)
+    initialise(displayOrder: DisplayOrder[],hasDeleteButton:boolean, hideModifierFields: boolean = false): void {
+        this.renderer.initialise(displayOrder,hasDeleteButton,hideModifierFields)
     }
 }

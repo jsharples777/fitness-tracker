@@ -80,11 +80,11 @@ export class BasicFormImplementation extends AbstractForm {
 
     }
 
-    protected _initialise(displayOrder:DisplayOrder[],hideModiferFields:boolean = false): void {
+    protected _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModiferFields:boolean = false): void {
         logger(`Initialising`);
 
         // ok, so given a Data Object definition we are going to create the form ui config
-        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hideModiferFields);
+        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hasDeleteButton,hideModiferFields);
         logger(this.uiDef);
         // now we need to create all the form elements from the ui definition
         this.factoryElements = FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
@@ -155,7 +155,7 @@ export class BasicFormImplementation extends AbstractForm {
         });
 
         // delete button can go
-        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
+        if (this.factoryElements && this.factoryElements.deleteButton) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
             name: 'style',
             value: 'display:none'
         }]);
@@ -177,7 +177,7 @@ export class BasicFormImplementation extends AbstractForm {
             this.validateField(fieldDef);
         });
         // delete button make visible again
-        if (this.factoryElements) browserUtil.removeAttributes(this.factoryElements.deleteButton, ['style']);
+        if (this.factoryElements && this.factoryElements.deleteButton) browserUtil.removeAttributes(this.factoryElements.deleteButton, ['style']);
     }
 
     protected _displayOnly(): void {
@@ -189,7 +189,7 @@ export class BasicFormImplementation extends AbstractForm {
             this.setFieldValueFromDataObject(fieldDef, fieldValue);
         });
         // delete button can go
-        if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
+        if (this.factoryElements && this.factoryElements.deleteButton) if (this.factoryElements) browserUtil.addAttributes(this.factoryElements.deleteButton, [{
             name: 'style',
             value: 'display:none'
         }]);
@@ -272,6 +272,56 @@ export class BasicFormImplementation extends AbstractForm {
             return true;
         });
         return isSameObject;
+    }
+
+    protected enableButtons() {
+        if (this.factoryElements && this.uiDef) {
+            if (this.factoryElements.deleteButton) {
+                this.factoryElements.deleteButton.removeAttribute('disabled');
+            }
+            this.factoryElements.cancelButton.removeAttribute('disabled');
+            this.factoryElements.submitButton.removeAttribute('disabled');
+            // @ts-ignore
+            this.factoryElements.submitButton.innerHTML = this.uiDef.submitButton.buttonText;
+        }
+    }
+
+    protected disableButtons() {
+        if (this.factoryElements) {
+            if (this.factoryElements.deleteButton) {
+                this.factoryElements.deleteButton.setAttribute('disabled','true');
+            }
+            this.factoryElements.cancelButton.setAttribute('disabled','true');
+            this.factoryElements.submitButton.setAttribute('disabled','true');
+        }
+    }
+
+
+    public clearReadOnly() {
+        super.clearReadOnly();
+        this.enableButtons();
+    }
+
+    public setReadOnly() {
+        super.setReadOnly();
+        this.disableButtons();
+    }
+
+    protected _saveFinishedOrAborted(): void {
+        dlogger(`save is finished or aborted`);
+        this.enableButtons();
+    }
+
+    protected _saveIsActive(): void {
+        dlogger(`save is active`);
+        this.disableButtons();
+        if (this.factoryElements && this.uiDef) {
+            if (this.uiDef.activeSave) {
+                dlogger(`save is active ${this.uiDef.activeSave}`);
+                // @ts-ignore
+                this.factoryElements.submitButton.innerHTML = this.uiDef.activeSave + this.uiDef.submitButton.buttonText;
+            }
+        }
     }
 
 

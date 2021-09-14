@@ -16,6 +16,6 @@ export interface DetailView extends View {
     handleActionItem(actionName: string, selectedItem: any):void;
     isDisplayingItem(dataObj:any):boolean;
 
-    initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean):void;
+    initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean):void;
 
 }

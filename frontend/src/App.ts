@@ -3,7 +3,7 @@ import {Form} from "./ui-framework/form/Form";
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'linked-controller linked-controller-detail exercise-types-view app api-ts ab-stateful-collection-view controller-ts controller-ts-detail abstract-form-detail-validation abstract-form-detail abstract-form list-view-renderer';
+localStorage.debug = 'socket-listener';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -85,7 +85,7 @@ class Root implements UnreadMessageCountListener {
             viewLinker.addLinkedDetailView(exerciseTypeDetailView);
             this.exerciseTypesSidebar.onDocumentLoaded();
             let startingDisplayOrder = BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
-            exerciseTypeDetailView.initialise(startingDisplayOrder,true);
+            exerciseTypeDetailView.initialise(startingDisplayOrder,false,true);
 
             const detailForm:Form|null = exerciseTypeDetailRenderer.getForm();
 

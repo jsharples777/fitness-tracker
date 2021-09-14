@@ -172,7 +172,7 @@ class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUs
     hideRequested(view: View): void {}
     itemAction(view: View, actionName: string, selectedItem: any): void {
         // @ts-ignore
-        if (actionName === this.uiConfig.extraActions[0].name) {
+        if (actionName === this.collectionUIConfig.extraActions[0].name) {
             if (ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
                 vLogger(`${selectedItem.username} already in fav list, ignoring`);
                 return;

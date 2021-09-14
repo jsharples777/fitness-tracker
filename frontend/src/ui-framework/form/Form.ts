@@ -5,7 +5,7 @@ import {Field} from "./field/Field";
 
 export interface Form {
     getId():string;
-    initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean):void;
+    initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean):void;
     setIsVisible(isVisible:boolean):void;
     reset():void;
     startCreateNew():any;

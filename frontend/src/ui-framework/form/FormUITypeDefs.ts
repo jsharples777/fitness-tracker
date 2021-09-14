@@ -102,9 +102,10 @@ export type FormUIDefinition = {
     classes?:string,
     fieldGroups:FieldGroup[],
     buttonsContainedBy?:BasicElement
-    deleteButton:BasicButtonElement,// should be clickable
+    deleteButton?:BasicButtonElement,// should be clickable
     cancelButton:BasicButtonElement,// should be clickable
     submitButton:BasicButtonElement  // should be clickable
+    activeSave?:string
 }
 
 export enum FormMode {

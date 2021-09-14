@@ -72,7 +72,7 @@ router.put('/', (req, res) => {
             }
             else { user = "-1"}
             // @ts-ignore
-            const message:DataMessage = {type:"update",stateName: "exerciseType",data:value, user:user,}
+            const message:DataMessage = {type:"update",stateName: "exerciseType",data:req.body, user:user,}
             socketManager.sendDataMessage(message);
             res.json(value);
         })

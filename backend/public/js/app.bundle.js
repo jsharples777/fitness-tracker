@@ -33,7 +33,7 @@ __webpack_require__.r(__webpack_exports__);
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'linked-controller linked-controller-detail exercise-types-view app api-ts ab-stateful-collection-view controller-ts controller-ts-detail abstract-form-detail-validation abstract-form-detail abstract-form list-view-renderer';
+localStorage.debug = 'socket-listener';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
@@ -99,7 +99,7 @@ var Root = /*#__PURE__*/function () {
       viewLinker.addLinkedDetailView(exerciseTypeDetailView);
       this.exerciseTypesSidebar.onDocumentLoaded();
       var startingDisplayOrder = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__.BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
-      exerciseTypeDetailView.initialise(startingDisplayOrder, true);
+      exerciseTypeDetailView.initialise(startingDisplayOrder, false, true);
       var detailForm = exerciseTypeDetailRenderer.getForm();
 
       if (detailForm) {
@@ -2270,7 +2270,7 @@ var FavouriteUserView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.itemAction = function itemAction(view, actionName, selectedItem) {
     // @ts-ignore
-    if (actionName === this.uiConfig.extraActions[0].name) {
+    if (actionName === this.collectionUIConfig.extraActions[0].name) {
       if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_3__.ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
         vLogger(selectedItem.username + " already in fav list, ignoring");
         return;
@@ -2599,7 +2599,7 @@ var UserSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.itemAction = function itemAction(view, actionName, selectedItem) {
     // @ts-ignore
-    if (actionName === this.uiConfig.extraActions[0].name) {
+    if (actionName === this.collectionUIConfig.extraActions[0].name) {
       if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().isUserInFavouriteList(selectedItem.username)) {
         vLogger(selectedItem.username + " already in fav list, ignoring");
         return;
@@ -2609,7 +2609,7 @@ var UserSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
     } // @ts-ignore
 
 
-    if (actionName === this.uiConfig.extraActions[1].name) {
+    if (actionName === this.collectionUIConfig.extraActions[1].name) {
       if (_socket_ChatManager__WEBPACK_IMPORTED_MODULE_5__.ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
         vLogger(selectedItem.username + " already in blocked list, ignoring");
         return;
@@ -7018,7 +7018,7 @@ var AbstractForm = /*#__PURE__*/function () {
   /* methods to be implemented in the subclass */
   ;
 
-  _proto.initialise = function initialise(displayOrder, hideModifierFields) {
+  _proto.initialise = function initialise(displayOrder, hasDeleteButton, hideModifierFields) {
     if (hideModifierFields === void 0) {
       hideModifierFields = false;
     }
@@ -7026,7 +7026,7 @@ var AbstractForm = /*#__PURE__*/function () {
     if (this.isInitialised) return;
     this.isInitialised = true;
 
-    this._initialise(displayOrder, hideModifierFields);
+    this._initialise(displayOrder, hasDeleteButton, hideModifierFields);
   };
 
   _proto.addFieldListener = function addFieldListener(listener) {
@@ -7118,10 +7118,28 @@ var AbstractForm = /*#__PURE__*/function () {
     }
 
     if (isVisible && !this.isDisplayOnly) this.checkFormValidationOnDisplay();
+    if (isVisible && this.isDisplayOnly) this.checkForVisualValidationForDisplayOnly();
+  };
+
+  _proto.checkForVisualValidationForDisplayOnly = function checkForVisualValidationForDisplayOnly() {
+    var _this = this;
+
+    logger("Checking display validation for display only");
+    this.fields.forEach(function (field) {
+      field.show(); // @ts-ignore
+
+      var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
+
+      if (response.ruleFailed) {
+        // @ts-ignore
+        field.hide();
+        vlogger("Field " + field.getId() + " is hidden from validation manager with message " + response.message);
+      }
+    });
   };
 
   _proto.checkFormValidationOnDisplay = function checkFormValidationOnDisplay() {
-    var _this = this;
+    var _this2 = this;
 
     logger("Checking display validation");
     this.fields.forEach(function (field) {
@@ -7134,7 +7152,7 @@ var AbstractForm = /*#__PURE__*/function () {
       } else {
         // does the field fulfil any rules from the Validation manager
         // @ts-ignore
-        var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
+        var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this2.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
 
         if (response.ruleFailed) {
           // @ts-ignore
@@ -7143,7 +7161,7 @@ var AbstractForm = /*#__PURE__*/function () {
         } // @ts-ignore
 
 
-        response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
+        response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this2.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
 
         if (response.ruleFailed) {
           // @ts-ignore
@@ -7156,6 +7174,7 @@ var AbstractForm = /*#__PURE__*/function () {
 
   _proto.startCreateNew = function startCreateNew() {
     logger("Starting create new");
+    this.reset();
     this.currentDataObj = {};
     this.isDisplayOnly = false;
     this.hasChangedBoolean = false;
@@ -7217,7 +7236,7 @@ var AbstractForm = /*#__PURE__*/function () {
   };
 
   _proto.formChanged = function formChanged(event, formValues) {
-    var _this2 = this; // catch form events for user leaving the form
+    var _this3 = this; // catch form events for user leaving the form
 
 
     var shouldCancelChange = false;
@@ -7257,6 +7276,7 @@ var AbstractForm = /*#__PURE__*/function () {
 
           this.reset(); // reset the form state
 
+          this.setReadOnly();
           break;
         }
 
@@ -7287,12 +7307,16 @@ var AbstractForm = /*#__PURE__*/function () {
 
       case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVE_ABORTED:
         {
+          this._saveFinishedOrAborted();
+
           logger("Form save cancelled");
           break;
         }
 
       case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVED:
         {
+          this._saveFinishedOrAborted();
+
           logger("Form is saved with data");
           logger(formValues);
           this.isDisplayOnly = false;
@@ -7303,6 +7327,8 @@ var AbstractForm = /*#__PURE__*/function () {
       case _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVING:
         {
           logger("Form is saving, checking validation and storing values");
+
+          this._saveIsActive();
 
           if (this.uiDef) {
             var allFieldsValid = true; // user attempting to save the form, lets check the field validation
@@ -7317,7 +7343,7 @@ var AbstractForm = /*#__PURE__*/function () {
               } else {
                 // does the field fulfil any rules from the Validation manager
                 // @ts-ignore
-                var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this2.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
+                var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this3.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
 
                 if (response.ruleFailed) {
                   // @ts-ignore
@@ -7325,7 +7351,7 @@ var AbstractForm = /*#__PURE__*/function () {
                   vlogger("Field " + field.getId() + " is invalid from validation manager with message " + response.message);
                   allFieldsValid = false;
                 } else {
-                  _this2.setFieldValueToDataObject(_this2.currentDataObj, field, currentValue);
+                  _this3.setFieldValueToDataObject(_this3.currentDataObj, field, currentValue);
                 }
               }
             }); // is every field valid?
@@ -7606,7 +7632,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     }
   };
 
-  _proto._initialise = function _initialise(displayOrder, hideModiferFields) {
+  _proto._initialise = function _initialise(displayOrder, hasDeleteButton, hideModiferFields) {
     var _this2 = this;
 
     if (hideModiferFields === void 0) {
@@ -7615,7 +7641,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
 
     logger("Initialising"); // ok, so given a Data Object definition we are going to create the form ui config
 
-    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hideModiferFields);
+    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModiferFields);
     logger(this.uiDef); // now we need to create all the form elements from the ui definition
 
     this.factoryElements = _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_3__.FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
@@ -7685,7 +7711,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       _this3.validateField(fieldDef);
     }); // delete button can go
 
-    if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].addAttributes(this.factoryElements.deleteButton, [{
+    if (this.factoryElements && this.factoryElements.deleteButton) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].addAttributes(this.factoryElements.deleteButton, [{
       name: 'style',
       value: 'display:none'
     }]);
@@ -7712,7 +7738,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       _this4.validateField(fieldDef);
     }); // delete button make visible again
 
-    if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].removeAttributes(this.factoryElements.deleteButton, ['style']);
+    if (this.factoryElements && this.factoryElements.deleteButton) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].removeAttributes(this.factoryElements.deleteButton, ['style']);
   };
 
   _proto._displayOnly = function _displayOnly() {
@@ -7727,7 +7753,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       _this5.setFieldValueFromDataObject(fieldDef, fieldValue);
     }); // delete button can go
 
-    if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].addAttributes(this.factoryElements.deleteButton, [{
+    if (this.factoryElements && this.factoryElements.deleteButton) if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].addAttributes(this.factoryElements.deleteButton, [{
       name: 'style',
       value: 'display:none'
     }]);
@@ -7829,6 +7855,60 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       return true;
     });
     return isSameObject;
+  };
+
+  _proto.enableButtons = function enableButtons() {
+    if (this.factoryElements && this.uiDef) {
+      if (this.factoryElements.deleteButton) {
+        this.factoryElements.deleteButton.removeAttribute('disabled');
+      }
+
+      this.factoryElements.cancelButton.removeAttribute('disabled');
+      this.factoryElements.submitButton.removeAttribute('disabled'); // @ts-ignore
+
+      this.factoryElements.submitButton.innerHTML = this.uiDef.submitButton.buttonText;
+    }
+  };
+
+  _proto.disableButtons = function disableButtons() {
+    if (this.factoryElements) {
+      if (this.factoryElements.deleteButton) {
+        this.factoryElements.deleteButton.setAttribute('disabled', 'true');
+      }
+
+      this.factoryElements.cancelButton.setAttribute('disabled', 'true');
+      this.factoryElements.submitButton.setAttribute('disabled', 'true');
+    }
+  };
+
+  _proto.clearReadOnly = function clearReadOnly() {
+    _AbstractForm.prototype.clearReadOnly.call(this);
+
+    this.enableButtons();
+  };
+
+  _proto.setReadOnly = function setReadOnly() {
+    _AbstractForm.prototype.setReadOnly.call(this);
+
+    this.disableButtons();
+  };
+
+  _proto._saveFinishedOrAborted = function _saveFinishedOrAborted() {
+    dlogger("save is finished or aborted");
+    this.enableButtons();
+  };
+
+  _proto._saveIsActive = function _saveIsActive() {
+    dlogger("save is active");
+    this.disableButtons();
+
+    if (this.factoryElements && this.uiDef) {
+      if (this.uiDef.activeSave) {
+        dlogger("save is active " + this.uiDef.activeSave); // @ts-ignore
+
+        this.factoryElements.submitButton.innerHTML = this.uiDef.activeSave + this.uiDef.submitButton.buttonText;
+      }
+    }
   };
 
   return BasicFormImplementation;
@@ -8652,8 +8732,13 @@ var FormElementFactory = /*#__PURE__*/function () {
       }
     }
 
-    var deleteButtonEl = this.createFormButton(form, formConfig, formListeners, formConfig.deleteButton, _FormListener__WEBPACK_IMPORTED_MODULE_3__.FormEventType.DELETING);
-    buttonContainer.appendChild(deleteButtonEl);
+    var deleteButtonEl = undefined;
+
+    if (formConfig.deleteButton) {
+      deleteButtonEl = this.createFormButton(form, formConfig, formListeners, formConfig.deleteButton, _FormListener__WEBPACK_IMPORTED_MODULE_3__.FormEventType.DELETING);
+      buttonContainer.appendChild(deleteButtonEl);
+    }
+
     var cancelButtonEl = this.createFormButton(form, formConfig, formListeners, formConfig.cancelButton, _FormListener__WEBPACK_IMPORTED_MODULE_3__.FormEventType.CANCELLING);
     buttonContainer.appendChild(cancelButtonEl);
     var submitButtonEl = this.createFormButton(form, formConfig, formListeners, formConfig.submitButton, _FormListener__WEBPACK_IMPORTED_MODULE_3__.FormEventType.SAVING);
@@ -10432,7 +10517,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
 
   var _proto = BootstrapFormConfigHelper.prototype;
 
-  _proto.generateFormConfig = function generateFormConfig(dataObjDef, displayOrders, hideModifierFields) {
+  _proto.generateFormConfig = function generateFormConfig(dataObjDef, displayOrders, hasDeleteButton, hideModifierFields) {
     if (hideModifierFields === void 0) {
       hideModifierFields = false;
     }
@@ -10560,7 +10645,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
         };
         fieldUIConfig.label = {
           label: fieldDef.displayName,
-          classes: 'col-sm-12 col-md-3 col-form-label'
+          classes: 'col-md-12 col-lg-3 col-form-label'
         };
 
         if (fieldDef.description) {
@@ -10568,7 +10653,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
           fieldUIConfig.describedBy = {
             message: fieldDef.description,
             elementType: 'small',
-            elementClasses: 'text-muted col-sm-12 col-md-9 offset-md-3 mt-1'
+            elementClasses: 'text-muted col-md-12 col-lg-9 offset-lg-3 mt-1'
           };
         }
 
@@ -10578,7 +10663,7 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
             validator: fieldOperations,
             messageDisplay: {
               elementType: 'div',
-              elementClasses: 'invalid-feedback col-sm-12 col-md-9 offset-md-3'
+              elementClasses: 'invalid-feedback col-md-12 col-lg-9 offset-lg-3'
             },
             validClasses: 'is-valid',
             invalidClasses: 'is-invalid'
@@ -10650,11 +10735,6 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
         elementType: 'div',
         elementClasses: 'd-flex w-100 justify-space-between'
       },
-      deleteButton: {
-        buttonText: 'Delete  ',
-        buttonClasses: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
-        iconClasses: 'fas fa-trash-alt'
-      },
       cancelButton: {
         buttonText: 'Cancel  ',
         buttonClasses: 'btn-info rounded p-1 mr-2 mt-2 w-100',
@@ -10664,7 +10744,8 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
         buttonText: 'Save  ',
         buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
         iconClasses: 'fas fa-save'
-      }
+      },
+      activeSave: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;'
     }; // sort the fields into display order
 
     formConfig.fieldGroups.forEach(function (group) {
@@ -10672,6 +10753,15 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
         return a.displayOrder - b.displayOrder;
       });
     });
+
+    if (hasDeleteButton) {
+      formConfig.deleteButton = {
+        buttonText: 'Delete  ',
+        buttonClasses: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
+        iconClasses: 'fas fa-trash-alt'
+      };
+    }
+
     logger(formConfig);
     return formConfig;
   };
@@ -11302,8 +11392,8 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
     if (this.form) this.form.reset();
   };
 
-  _proto.initialise = function initialise(displayOrder, hideModifierFields) {
-    if (this.form) this.form.initialise(displayOrder, hideModifierFields);
+  _proto.initialise = function initialise(displayOrder, hasDeleteButton, hideModifierFields) {
+    if (this.form) this.form.initialise(displayOrder, hasDeleteButton, hideModifierFields);
   };
 
   _proto.displayItemReadonly = function displayItemReadonly(dataObject) {
@@ -12091,13 +12181,7 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
   };
 
   _proto.getModifierForItemInNamedCollection = function getModifierForItemInNamedCollection(name, item) {
-    if (this.selectedItem) {
-      if (this.compareItemsForEquality(item, this.selectedItem)) {
-        return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active;
-      }
-    }
-
-    return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive;
+    return _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal;
   };
 
   _proto.getSecondaryModifierForItemInNamedCollection = function getSecondaryModifierForItemInNamedCollection(name, item) {
@@ -12613,12 +12697,12 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
     return this.renderer.hasChanged();
   };
 
-  _proto.initialise = function initialise(displayOrder, hideModifierFields) {
+  _proto.initialise = function initialise(displayOrder, hasDeleteButton, hideModifierFields) {
     if (hideModifierFields === void 0) {
       hideModifierFields = false;
     }
 
-    this.renderer.initialise(displayOrder, hideModifierFields);
+    this.renderer.initialise(displayOrder, hasDeleteButton, hideModifierFields);
   };
 
   return DetailViewImplementation;

@@ -68,17 +68,20 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     protected abstract _reset():void;
     protected abstract _visible():void;
     protected abstract _hidden():void;
-    protected abstract _initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean):void;
+    protected abstract _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean):void;
     protected abstract _displayOnly():void;
     protected abstract _isSameObjectAsDisplayed(dataObj:any):boolean;
 
     protected abstract setFieldValueToDataObject(dataObj:any,field:Field,currentValue:string|null):void;
     public abstract getFormattedDataObject(): any;
+    protected abstract _saveFinishedOrAborted():void;
+    protected abstract _saveIsActive():void;
 
-    public initialise(displayOrder:DisplayOrder[],hideModifierFields:boolean = false): void {
+
+    public initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean = false): void {
         if (this.isInitialised) return;
         this.isInitialised = true;
-        this._initialise(displayOrder,hideModifierFields);
+        this._initialise(displayOrder,hasDeleteButton,hideModifierFields);
     }
 
 
@@ -159,7 +162,22 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             this.informFormListeners(formEvent, this.currentDataObj);
         }
         if (isVisible && !this.isDisplayOnly) this.checkFormValidationOnDisplay();
+        if (isVisible && this.isDisplayOnly) this.checkForVisualValidationForDisplayOnly();
+    }
 
+    protected checkForVisualValidationForDisplayOnly() {
+        logger(`Checking display validation for display only`);
+        this.fields.forEach((field) => {
+            field.show();
+            // @ts-ignore
+            let response = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.hide);
+            if (response.ruleFailed) {
+                // @ts-ignore
+                field.hide();
+                vlogger(`Field ${field.getId()} is hidden from validation manager with message ${response.message}`);
+            }
+
+        });
     }
 
     protected checkFormValidationOnDisplay() {
@@ -193,6 +211,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
     public startCreateNew(): any {
         logger(`Starting create new`);
+        this.reset();
         this.currentDataObj = {};
         this.isDisplayOnly = false;
         this.hasChangedBoolean = false;
@@ -279,6 +298,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                 logger(`Form is cancelled - resetting`);
                 // user cancelled the form, will become invisible
                 this.reset(); // reset the form state
+                this.setReadOnly();
                 break;
             }
             case (FormEventType.DELETING): {
@@ -299,10 +319,12 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                 break;
             }
             case (FormEventType.SAVE_ABORTED): {
+                this._saveFinishedOrAborted();
                 logger(`Form save cancelled`);
                 break;
             }
             case (FormEventType.SAVED): {
+                this._saveFinishedOrAborted();
                 logger(`Form is saved with data`);
                 logger(formValues);
                 this.isDisplayOnly = false;
@@ -311,6 +333,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             }
             case (FormEventType.SAVING): {
                 logger(`Form is saving, checking validation and storing values`);
+                this._saveIsActive();
                 if (this.uiDef) {
                     let allFieldsValid: boolean = true;
 

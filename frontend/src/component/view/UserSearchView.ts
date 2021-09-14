@@ -234,7 +234,7 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
 
     itemAction(view: View, actionName: string, selectedItem: any): void {
         // @ts-ignore
-        if (actionName === this.uiConfig.extraActions[0].name) {
+        if (actionName === this.collectionUIConfig.extraActions[0].name) {
             if (ChatManager.getInstance().isUserInFavouriteList(selectedItem.username)) {
                 vLogger(`${selectedItem.username} already in fav list, ignoring`);
                 return;
@@ -242,7 +242,7 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
             ChatManager.getInstance().addUserToFavouriteList(selectedItem.username);
         }
         // @ts-ignore
-        if (actionName === this.uiConfig.extraActions[1].name) {
+        if (actionName === this.collectionUIConfig.extraActions[1].name) {
             if (ChatManager.getInstance().isUserInBlockedList(selectedItem.username)) {
                 vLogger(`${selectedItem.username} already in blocked list, ignoring`);
                 return;

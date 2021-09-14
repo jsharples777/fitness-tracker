@@ -24,7 +24,7 @@ export class BootstrapFormConfigHelper {
 
 
 
-    public generateFormConfig(dataObjDef: DataObjectDefinition,displayOrders:DisplayOrder[],hideModifierFields:boolean = false): FormUIDefinition {
+    public generateFormConfig(dataObjDef: DataObjectDefinition,displayOrders:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean = false): FormUIDefinition {
         let fieldOperations: BasicFieldOperations = new BasicFieldOperations();
         let rbgFieldOperation:RBGFieldOperations = new RBGFieldOperations();
 
@@ -123,13 +123,13 @@ export class BootstrapFormConfigHelper {
 
                 fieldUIConfig.label = {
                     label: fieldDef.displayName,
-                    classes: 'col-sm-12 col-md-3 col-form-label'
+                    classes: 'col-md-12 col-lg-3 col-form-label'
                 };
                 if (fieldDef.description) { // descriptions if the field has one
                     fieldUIConfig.describedBy = {
                         message: fieldDef.description,
                         elementType: 'small',
-                        elementClasses: 'text-muted col-sm-12 col-md-9 offset-md-3 mt-1'
+                        elementClasses: 'text-muted col-md-12 col-lg-9 offset-lg-3 mt-1'
                     }
                 }
                 if (!fieldDef.displayOnly) { // no validator for readonly items
@@ -137,7 +137,7 @@ export class BootstrapFormConfigHelper {
                             validator: fieldOperations,
                             messageDisplay: {
                             elementType: 'div',
-                            elementClasses: 'invalid-feedback col-sm-12 col-md-9 offset-md-3'
+                            elementClasses: 'invalid-feedback col-md-12 col-lg-9 offset-lg-3'
                         },
                         validClasses: 'is-valid',
                         invalidClasses: 'is-invalid',
@@ -203,11 +203,6 @@ export class BootstrapFormConfigHelper {
                 elementType: 'div',
                 elementClasses: 'd-flex w-100 justify-space-between',
             },
-            deleteButton: {
-                buttonText: 'Delete  ',
-                buttonClasses: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
-                iconClasses: 'fas fa-trash-alt'
-            },
             cancelButton: {
                 buttonText: 'Cancel  ',
                 buttonClasses: 'btn-info rounded p-1 mr-2 mt-2 w-100',
@@ -217,7 +212,8 @@ export class BootstrapFormConfigHelper {
                 buttonText: 'Save  ',
                 buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
                 iconClasses: 'fas fa-save'
-            }
+            },
+            activeSave:'<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;',
         }
         // sort the fields into display order
 
@@ -225,6 +221,15 @@ export class BootstrapFormConfigHelper {
             group.fields.sort((a,b) => { return (a.displayOrder - b.displayOrder);})
 
         });
+
+        if (hasDeleteButton) {
+            formConfig.deleteButton = {
+                buttonText: 'Delete  ',
+                buttonClasses: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
+                iconClasses: 'fas fa-trash-alt'
+            };
+
+        }
 
 
         logger(formConfig);
