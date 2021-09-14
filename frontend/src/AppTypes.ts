@@ -48,4 +48,8 @@ export const VIEW_CONTAINER = {
     exerciseTypeDetail:"exerciseTypeDetail",
 }
 
+export const BUTTON = {
+    createNewExerciseType: 'addNewExerciseType'
+}
+
 

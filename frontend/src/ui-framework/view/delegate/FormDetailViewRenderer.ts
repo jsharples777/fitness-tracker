@@ -106,10 +106,12 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
 
     public createItem(): any {
         this.currentItem = {};
+        logger(`Creating new item with form ${this.form?.getId()}`);
         if (this.form) {
             this.isNewItem = true;
             this.currentItem = this.form.startCreateNew();
         }
+        return this.currentItem;
     }
 
     public displayItem(dataObj: any): void {
@@ -177,6 +179,7 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
             }
             case (FormEventType.CANCELLED): {
                 logger(`Form is cancelled - resetting`);
+                this.currentItem = formValues;
                 if (this.forwarder && this.view) this.forwarder.cancelled(this.view,this.currentItem);
                 break;
             }
@@ -190,6 +193,7 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
             }
             case (FormEventType.DELETED): {
                 logger(`Form is deleted - resetting`);
+                this.currentItem = formValues;
                 if (this.forwarder && this.view) this.forwarder.deletedItem(this.view,this.currentItem);
                 // user is deleting the object, will become invisible
                 break;
@@ -203,10 +207,10 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
                 if (this.form) {
                     let formattedObj = this.form?.getFormattedDataObject();
                     if (this.isNewItem) {
-                        if (this.forwarder && this.view) this.forwarder.saveNewItem(this.view,this.currentItem);
+                        if (this.forwarder && this.view) this.forwarder.saveNewItem(this.view,formattedObj);
                     }
                     else {
-                        if (this.forwarder && this.view) this.forwarder.updateItem(this.view,this.currentItem);
+                        if (this.forwarder && this.view) this.forwarder.updateItem(this.view,formattedObj);
                     }
                     this.isNewItem = false;
                 }

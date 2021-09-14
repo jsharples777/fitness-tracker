@@ -27,12 +27,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_view_delegate_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ui-framework/view/delegate/FormDetailViewRenderer */ "./src/ui-framework/view/delegate/FormDetailViewRenderer.ts");
 /* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
 /* harmony import */ var _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ui-framework/view/implementation/DetailViewImplementation */ "./src/ui-framework/view/implementation/DetailViewImplementation.ts");
-/* harmony import */ var _ui_framework_view_implementation_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ui-framework/view/implementation/LinkedCollectionDetailController */ "./src/ui-framework/view/implementation/LinkedCollectionDetailController.ts");
+/* harmony import */ var _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ui-framework/helper/LinkedCollectionDetailController */ "./src/ui-framework/helper/LinkedCollectionDetailController.ts");
 /* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
 /* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
-localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
+//localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
+localStorage.debug = 'linked-controller linked-controller-detail exercise-types-view app api-ts ab-stateful-collection-view controller-ts controller-ts-detail abstract-form-detail-validation abstract-form-detail abstract-form list-view-renderer';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
@@ -77,39 +78,10 @@ var Root = /*#__PURE__*/function () {
     return _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getLoggedInUserId();
   };
 
-  _proto.onDocumentLoad = function onDocumentLoad() {
-    logger('document loaded');
-    this.chatSidebar = new _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"](); // add the views to the chat side bar
-
-    this.chatView = new _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_3__["default"]();
-    this.chatSidebar.addView(this.chatView, {
-      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLogs
-    });
-    var chatLogView = new _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
-    this.chatSidebar.addView(chatLogView, {
-      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLog
-    });
-    this.chatView.addEventListener(chatLogView);
-    this.chatSidebar.onDocumentLoaded();
-    this.userSearchSidebar = new _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"](); // add the subviews for the user search
-
-    var recentSearches = new _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_2__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
-    this.userSearchSidebar.addView(recentSearches, {
-      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.recentSearches
-    });
-    var favouriteUsers = new _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
-    this.userSearchSidebar.addView(favouriteUsers, {
-      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.favourites
-    });
-    var blockedUsers = new _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
-    this.userSearchSidebar.addView(blockedUsers, {
-      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.blocked
-    });
-    this.userSearchSidebar.onDocumentLoaded();
+  _proto.setupExerciseTypeViews = function setupExerciseTypeViews() {
     /*
       Exercise Types - sidebar, list view and linked detail view
     */
-
     this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"]();
     var exerciseTypes = new _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_11__.ExerciseTypesView();
     this.exerciseTypesSidebar.addView(exerciseTypes, {
@@ -123,7 +95,7 @@ var Root = /*#__PURE__*/function () {
         resultsContainerId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail,
         dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_NAME.exerciseTypes
       }, exerciseTypeDetailRenderer);
-      var viewLinker = new _ui_framework_view_implementation_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__.LinkedCollectionDetailController(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes, exerciseTypes);
+      var viewLinker = new _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__.LinkedCollectionDetailController(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes, exerciseTypes);
       viewLinker.addLinkedDetailView(exerciseTypeDetailView);
       this.exerciseTypesSidebar.onDocumentLoaded();
       var startingDisplayOrder = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__.BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
@@ -134,25 +106,76 @@ var Root = /*#__PURE__*/function () {
         logger("Setting up validation rules for " + detailForm.getId());
         logger(detailForm);
         this.setupValidationForExerciseTypeDetailsForm(detailForm);
+      } // setup the event handling for the create new exercise type button
+
+
+      var createExerciseType = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.BUTTON.createNewExerciseType);
+      logger("Setting up button for creating exercise types");
+      logger(createExerciseType);
+
+      if (createExerciseType) {
+        createExerciseType.addEventListener('click', function (event) {
+          logger("Asking view linker to start a new object");
+          viewLinker.startNewObject();
+        });
       }
-    } // navigation item handlers
 
+      viewLinker.addListener(_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance());
+    }
+  };
 
-    if (document) {
-      // @ts-ignore
-      document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
-
-      document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes); // @ts-ignore
-
-      this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.chatId); // @ts-ignore
-
-      this.chatNavigationItem.addEventListener('click', this.handleShowChat); // @ts-ignore
-      //document.getElementById(NAVIGATION.showMyWorkouts).addEventListener('click', this.handleShowWorkouts);
-    } // a reference to the div containing ourselves
+  _proto.setupNavigationItemHandling = function setupNavigationItemHandling() {
     // @ts-ignore
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
 
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes); // @ts-ignore
+
+    this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.chatId); // @ts-ignore
+
+    this.chatNavigationItem.addEventListener('click', this.handleShowChat);
+  };
+
+  _proto.setupUserSearchViews = function setupUserSearchViews() {
+    // add the subviews for the user search
+    this.userSearchSidebar = new _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"]();
+    var recentSearches = new _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_2__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.userSearchSidebar.addView(recentSearches, {
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.recentSearches
+    });
+    var favouriteUsers = new _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.userSearchSidebar.addView(favouriteUsers, {
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.favourites
+    });
+    var blockedUsers = new _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.userSearchSidebar.addView(blockedUsers, {
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.blocked
+    });
+    this.userSearchSidebar.onDocumentLoaded();
+  };
+
+  _proto.setupChatViews = function setupChatViews() {
+    // add the views to the chat side bar
+    this.chatSidebar = new _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"]();
+    this.chatView = new _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_3__["default"]();
+    this.chatSidebar.addView(this.chatView, {
+      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLogs
+    });
+    var chatLogView = new _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.chatSidebar.addView(chatLogView, {
+      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLog
+    });
+    this.chatView.addEventListener(chatLogView);
+    this.chatSidebar.onDocumentLoaded();
+  };
+
+  _proto.onDocumentLoad = function onDocumentLoad() {
+    logger('document loaded'); // @ts-ignore
 
     this.thisEl = document.getElementById('root');
+    this.setupUserSearchViews();
+    this.setupChatViews();
+    this.setupExerciseTypeViews();
+    this.setupNavigationItemHandling();
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise();
   };
 
@@ -326,7 +349,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "NAVIGATION": () => (/* binding */ NAVIGATION),
 /* harmony export */   "DRAGGABLE": () => (/* binding */ DRAGGABLE),
 /* harmony export */   "VIEW_NAME": () => (/* binding */ VIEW_NAME),
-/* harmony export */   "VIEW_CONTAINER": () => (/* binding */ VIEW_CONTAINER)
+/* harmony export */   "VIEW_CONTAINER": () => (/* binding */ VIEW_CONTAINER),
+/* harmony export */   "BUTTON": () => (/* binding */ BUTTON)
 /* harmony export */ });
 var Decorator;
 
@@ -374,6 +398,9 @@ var VIEW_NAME = {
 var VIEW_CONTAINER = {
   exerciseTypeDetail: "exerciseTypeDetail"
 };
+var BUTTON = {
+  createNewExerciseType: 'addNewExerciseType'
+};
 
 /***/ }),
 
@@ -404,6 +431,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
 /* harmony import */ var _ui_framework_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./ui-framework/helper/SimpleValueDataSource */ "./src/ui-framework/helper/SimpleValueDataSource.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+
 
 
 
@@ -660,6 +689,41 @@ var Controller = /*#__PURE__*/function () {
     this.applicationView.handleShowChat(roomName);
   };
 
+  _proto.create = function create(controller, typeName, dataObj) {
+    switch (typeName) {
+      case _AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.exerciseTypes:
+        {
+          cLogger("Handling create new exercise type");
+          cLoggerDetail(dataObj);
+          this.stateManager.addNewItemToState(typeName, dataObj, false);
+          break;
+        }
+    }
+  };
+
+  _proto.delete = function _delete(controller, typeName, dataObj) {
+    switch (typeName) {
+      case _AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.exerciseTypes:
+        {
+          cLogger("Handling delete exercise type - already managed by stateful collection view");
+          cLoggerDetail(dataObj);
+          break;
+        }
+    }
+  };
+
+  _proto.update = function update(controller, typeName, dataObj) {
+    switch (typeName) {
+      case _AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.exerciseTypes:
+        {
+          cLogger("Handling update exercise type");
+          cLoggerDetail(dataObj);
+          this.stateManager.updateItemInState(typeName, dataObj, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_15__.isSameMongo, false);
+          break;
+        }
+    }
+  };
+
   return Controller;
 }();
 
@@ -742,8 +806,8 @@ var SocketListenerDelegate = /*#__PURE__*/function () {
   _proto.handleDataChangedByAnotherUser = function handleDataChangedByAnotherUser(message) {
     slLogger("Handling data change " + message.type + " on object type " + message.stateName + " made by user " + message.user);
     var changeUser = _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().findItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.users, {
-      id: message.user
-    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__.isSame);
+      _id: message.user
+    }, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__.isSameMongo);
     var username = "unknown";
 
     if (changeUser) {
@@ -763,6 +827,38 @@ var SocketListenerDelegate = /*#__PURE__*/function () {
                 {
                   _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.users, stateObj, true);
                   _notification_NotificationManager__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().show(stateObj.username, stateObj.username + " has just registered.", 'message');
+                  break;
+                }
+
+              case _AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes:
+                {
+                  _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes, stateObj, true);
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case "update":
+          {
+            switch (message.stateName) {
+              case _AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes:
+                {
+                  _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().updateItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes, stateObj, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__.isSameMongo, true);
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case "delete":
+          {
+            switch (message.stateName) {
+              case _AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes:
+                {
+                  _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().removeItemFromState(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes, stateObj, _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__.isSameMongo, true);
                   break;
                 }
             }
@@ -10585,6 +10681,260 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/ui-framework/helper/LinkedCollectionDetailController.ts":
+/*!*********************************************************************!*\
+  !*** ./src/ui-framework/helper/LinkedCollectionDetailController.ts ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "LinkedCollectionDetailController": () => (/* binding */ LinkedCollectionDetailController)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _model_DataObjectController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../model/DataObjectController */ "./src/model/DataObjectController.ts");
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_0___default()('linked-controller');
+var dlogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('linked-controller-detail');
+
+var ChildViewListenerDelegate = /*#__PURE__*/function () {
+  function ChildViewListenerDelegate(controller) {
+    this.controller = controller;
+  }
+
+  var _proto = ChildViewListenerDelegate.prototype;
+
+  _proto.addView = function addView(view) {
+    view.addEventListener(this);
+  };
+
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    return true;
+  };
+
+  _proto.documentLoaded = function documentLoaded(view) {};
+
+  _proto.hideRequested = function hideRequested(view) {};
+
+  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
+
+  _proto.itemDeleted = function itemDeleted(view, selectedItem) {};
+
+  _proto.itemDropped = function itemDropped(view, droppedItem) {};
+
+  _proto.showRequested = function showRequested(view) {};
+
+  _proto.cancelled = function cancelled(view, dataObj) {
+    this.controller.cancelled(view, dataObj);
+  };
+
+  _proto.deletedItem = function deletedItem(view, dataObj) {
+    this.controller.deletedItem(view, dataObj);
+  };
+
+  _proto.saveNewItem = function saveNewItem(view, dataObj) {
+    this.controller.saveNewItem(view, dataObj);
+  };
+
+  _proto.updateItem = function updateItem(view, dataObj) {
+    this.controller.updateItem(view, dataObj);
+  };
+
+  return ChildViewListenerDelegate;
+}();
+
+var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectController) {
+  _inheritsLoose(LinkedCollectionDetailController, _DataObjectController);
+
+  function LinkedCollectionDetailController(typeName, parentView) {
+    var _this;
+
+    _this = _DataObjectController.call(this, typeName) || this;
+    _this.children = [];
+    logger("Starting with parent view " + parentView.getName());
+    _this.parentView = parentView;
+    _this.delegate = new ChildViewListenerDelegate(_assertThisInitialized(_this));
+
+    _this.parentView.addEventListener(_assertThisInitialized(_this));
+
+    return _this;
+  }
+
+  var _proto2 = LinkedCollectionDetailController.prototype;
+
+  _proto2.addLinkedDetailView = function addLinkedDetailView(childView) {
+    logger("Adding child view " + childView.getName());
+    this.children.push(childView);
+    this.delegate.addView(childView); // this delegate will only pass us the unique detail view events (save, new, etc)
+  };
+
+  _proto2.initialise = function initialise() {// call when all views are ready
+  };
+
+  _proto2.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    logger("Handling delete item from view " + view.getName());
+    dlogger(selectedItem);
+    return this.parentView.hasPermissionToDeleteItemInNamedCollection('', selectedItem);
+  };
+
+  _proto2.documentLoaded = function documentLoaded(view) {
+    logger("Handling document loaded view " + view.getName()); // let the children know
+
+    this.children.forEach(function (childView) {
+      childView.onDocumentLoaded();
+    });
+  };
+
+  _proto2.hideRequested = function hideRequested(view) {
+    // let the children know
+    logger("Handling hide  from view " + view.getName());
+    this.children.forEach(function (childView) {
+      childView.hidden();
+    });
+  };
+
+  _proto2.itemAction = function itemAction(view, actionName, selectedItem) {
+    logger("Handling item action " + actionName + " from view " + view.getName());
+    dlogger(selectedItem);
+    this.children.forEach(function (childView) {
+      childView.handleActionItem(actionName, selectedItem);
+    });
+  };
+
+  _proto2.itemDeleted = function itemDeleted(view, selectedItem) {
+    logger("Handling item deleted from view " + view.getName());
+    dlogger(selectedItem);
+    this.children.forEach(function (childView) {
+      // clear the child display and set readonly
+      childView.clearDisplay();
+      childView.setReadOnly();
+    });
+  };
+
+  _proto2.itemDeselected = function itemDeselected(view, selectedItem) {
+    logger("Handling item deselected from view " + view.getName());
+    dlogger(selectedItem);
+    this.children.forEach(function (childView) {
+      // clear the child display and set readonly
+      childView.clearDisplay();
+      childView.setReadOnly();
+    });
+  };
+
+  _proto2.itemDragStarted = function itemDragStarted(view, selectedItem) {// nothing to do here
+  };
+
+  _proto2.itemDropped = function itemDropped(view, droppedItem) {// nothing to do here
+  };
+
+  _proto2.itemSelected = function itemSelected(view, selectedItem) {
+    logger("Handling item selected from view " + view.getName());
+    dlogger(selectedItem);
+    this.children.forEach(function (childView) {
+      childView.displayItem(selectedItem);
+    });
+  };
+
+  _proto2.showRequested = function showRequested(view) {
+    logger("Handling show from view " + view.getName()); // let the children know
+
+    this.children.forEach(function (childView) {
+      childView.show();
+    });
+  };
+
+  _proto2.canSelectItem = function canSelectItem(view, selectedItem) {
+    logger("Handling can select item from view " + view.getName());
+    dlogger(selectedItem); // are we currently in the middle of creating a new object?
+
+    if (this.isCreatingNew) return false; // prevent selection if the children views have modified this item
+
+    var canProceedWithSelection = true;
+    this.children.forEach(function (childView) {
+      if (childView.isDisplayingItem(selectedItem)) {
+        if (childView.hasChanged()) {
+          dlogger("child view " + childView.getName() + " has changed - cancelling");
+          canProceedWithSelection = false;
+        }
+      }
+    });
+    return canProceedWithSelection;
+  };
+
+  _proto2.cancelled = function cancelled(view, dataObj) {
+    logger("Handling cancelled from child view " + view.getName());
+    dlogger(dataObj);
+    this.isCreatingNew = false;
+  };
+
+  _proto2.deletedItem = function deletedItem(view, dataObj) {
+    logger("Handling deleted from child view " + view.getName());
+    dlogger(dataObj);
+    this.informListenersOfDelete(dataObj);
+  };
+
+  _proto2.saveNewItem = function saveNewItem(view, dataObj) {
+    logger("Handling save new from child view " + view.getName());
+    dlogger(dataObj);
+    this.informListenersOfCreate(dataObj);
+  };
+
+  _proto2.updateItem = function updateItem(view, dataObj) {
+    logger("Handling update from child view " + view.getName());
+    dlogger(dataObj);
+    this.informListenersOfUpdate(dataObj);
+  };
+
+  _proto2._startNewObject = function _startNewObject() {
+    logger("Handling start new object"); // assume the first detail view will create the object for us
+
+    var result = false;
+
+    if (this.children.length > 0) {
+      logger("Handling start new object with child view " + this.children[0].getName());
+      var dataObj = this.children[0].createItem();
+
+      if (dataObj) {
+        result = true;
+        this.children[0].show();
+      }
+    }
+
+    return result;
+  };
+
+  return LinkedCollectionDetailController;
+}(_model_DataObjectController__WEBPACK_IMPORTED_MODULE_1__.DataObjectController);
+
+/***/ }),
+
 /***/ "./src/ui-framework/helper/RBGFieldOperations.ts":
 /*!*******************************************************!*\
   !*** ./src/ui-framework/helper/RBGFieldOperations.ts ***!
@@ -11007,12 +11357,17 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
   };
 
   _proto.createItem = function createItem() {
+    var _this$form;
+
     this.currentItem = {};
+    logger("Creating new item with form " + ((_this$form = this.form) == null ? void 0 : _this$form.getId()));
 
     if (this.form) {
       this.isNewItem = true;
       this.currentItem = this.form.startCreateNew();
     }
+
+    return this.currentItem;
   };
 
   _proto.displayItem = function displayItem(dataObj) {
@@ -11085,6 +11440,7 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
       case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLED:
         {
           logger("Form is cancelled - resetting");
+          this.currentItem = formValues;
           if (this.forwarder && this.view) this.forwarder.cancelled(this.view, this.currentItem);
           break;
         }
@@ -11104,6 +11460,7 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
       case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETED:
         {
           logger("Form is deleted - resetting");
+          this.currentItem = formValues;
           if (this.forwarder && this.view) this.forwarder.deletedItem(this.view, this.currentItem); // user is deleting the object, will become invisible
 
           break;
@@ -11120,14 +11477,14 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
           logger("Form is saved with data");
 
           if (this.form) {
-            var _this$form;
+            var _this$form2;
 
-            var formattedObj = (_this$form = this.form) == null ? void 0 : _this$form.getFormattedDataObject();
+            var formattedObj = (_this$form2 = this.form) == null ? void 0 : _this$form2.getFormattedDataObject();
 
             if (this.isNewItem) {
-              if (this.forwarder && this.view) this.forwarder.saveNewItem(this.view, this.currentItem);
+              if (this.forwarder && this.view) this.forwarder.saveNewItem(this.view, formattedObj);
             } else {
-              if (this.forwarder && this.view) this.forwarder.updateItem(this.view, this.currentItem);
+              if (this.forwarder && this.view) this.forwarder.updateItem(this.view, formattedObj);
             }
 
             this.isNewItem = false;
@@ -11897,6 +12254,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ AbstractStatefulCollectionView)
 /* harmony export */ });
 /* harmony import */ var _AbstractCollectionView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AbstractCollectionView */ "./src/ui-framework/view/implementation/AbstractCollectionView.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -11922,6 +12281,8 @@ function _setPrototypeOf(o, p) {
 }
 
 
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('ab-stateful-collection-view');
 
 var AbstractStatefulCollectionView = /*#__PURE__*/function (_AbstractCollectionVi) {
   _inheritsLoose(AbstractStatefulCollectionView, _AbstractCollectionVi);
@@ -11952,18 +12313,26 @@ var AbstractStatefulCollectionView = /*#__PURE__*/function (_AbstractCollectionV
   };
 
   _proto.stateChanged = function stateChanged(managerName, name, newValue) {
+    logger("handling state " + name + " changed");
+    logger(newValue);
     this.updateViewForNamedCollection(name, newValue);
   };
 
   _proto.stateChangedItemAdded = function stateChangedItemAdded(managerName, name, itemAdded) {
+    logger("handling state " + name + " new item added");
+    logger(itemAdded);
     if (this.stateManager && this.collectionName) this.updateViewForNamedCollection(name, this.stateManager.getStateByName(name));
   };
 
   _proto.stateChangedItemRemoved = function stateChangedItemRemoved(managerName, name, itemRemoved) {
+    logger("handling state " + name + " new item removed");
+    logger(itemRemoved);
     if (this.stateManager && this.collectionName) this.updateViewForNamedCollection(name, this.stateManager.getStateByName(name));
   };
 
   _proto.stateChangedItemUpdated = function stateChangedItemUpdated(managerName, name, itemUpdated, itemNewValue) {
+    logger("handling state " + name + " new item updated");
+    logger(itemNewValue);
     if (this.stateManager && this.collectionName) this.updateViewForNamedCollection(name, this.stateManager.getStateByName(name));
   };
 
@@ -12254,254 +12623,6 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   return DetailViewImplementation;
 }(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView);
-
-/***/ }),
-
-/***/ "./src/ui-framework/view/implementation/LinkedCollectionDetailController.ts":
-/*!**********************************************************************************!*\
-  !*** ./src/ui-framework/view/implementation/LinkedCollectionDetailController.ts ***!
-  \**********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "LinkedCollectionDetailController": () => (/* binding */ LinkedCollectionDetailController)
-/* harmony export */ });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _model_DataObjectController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../model/DataObjectController */ "./src/model/DataObjectController.ts");
-function _assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return self;
-}
-
-function _inheritsLoose(subClass, superClass) {
-  subClass.prototype = Object.create(superClass.prototype);
-  subClass.prototype.constructor = subClass;
-
-  _setPrototypeOf(subClass, superClass);
-}
-
-function _setPrototypeOf(o, p) {
-  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-
-  return _setPrototypeOf(o, p);
-}
-
-
-
-var logger = debug__WEBPACK_IMPORTED_MODULE_0___default()('linked-controller');
-var dlogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('linked-controller-detail');
-
-var ChildViewListenerDelegate = /*#__PURE__*/function () {
-  function ChildViewListenerDelegate(controller) {
-    this.controller = controller;
-  }
-
-  var _proto = ChildViewListenerDelegate.prototype;
-
-  _proto.addView = function addView(view) {
-    view.addEventListener(this);
-  };
-
-  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
-    return true;
-  };
-
-  _proto.documentLoaded = function documentLoaded(view) {};
-
-  _proto.hideRequested = function hideRequested(view) {};
-
-  _proto.itemAction = function itemAction(view, actionName, selectedItem) {};
-
-  _proto.itemDeleted = function itemDeleted(view, selectedItem) {};
-
-  _proto.itemDropped = function itemDropped(view, droppedItem) {};
-
-  _proto.showRequested = function showRequested(view) {};
-
-  _proto.cancelled = function cancelled(view, dataObj) {
-    this.controller.cancelled(view, dataObj);
-  };
-
-  _proto.deletedItem = function deletedItem(view, dataObj) {
-    this.controller.deletedItem(view, dataObj);
-  };
-
-  _proto.saveNewItem = function saveNewItem(view, dataObj) {
-    this.controller.saveNewItem(view, dataObj);
-  };
-
-  _proto.updateItem = function updateItem(view, dataObj) {
-    this.controller.updateItem(view, dataObj);
-  };
-
-  return ChildViewListenerDelegate;
-}();
-
-var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectController) {
-  _inheritsLoose(LinkedCollectionDetailController, _DataObjectController);
-
-  function LinkedCollectionDetailController(typeName, parentView) {
-    var _this;
-
-    _this = _DataObjectController.call(this, typeName) || this;
-    _this.children = [];
-    logger("Starting with parent view " + parentView.getName());
-    _this.parentView = parentView;
-    _this.delegate = new ChildViewListenerDelegate(_assertThisInitialized(_this));
-
-    _this.parentView.addEventListener(_assertThisInitialized(_this));
-
-    return _this;
-  }
-
-  var _proto2 = LinkedCollectionDetailController.prototype;
-
-  _proto2.addLinkedDetailView = function addLinkedDetailView(childView) {
-    logger("Adding child view " + childView.getName());
-    this.children.push(childView);
-    this.delegate.addView(childView); // this delegate will only pass us the unique detail view events (save, new, etc)
-  };
-
-  _proto2.initialise = function initialise() {// call when all views are ready
-  };
-
-  _proto2.canDeleteItem = function canDeleteItem(view, selectedItem) {
-    logger("Handling delete item from view " + view.getName());
-    dlogger(selectedItem);
-    return this.parentView.hasPermissionToDeleteItemInNamedCollection('', selectedItem);
-  };
-
-  _proto2.documentLoaded = function documentLoaded(view) {
-    logger("Handling document loaded view " + view.getName()); // let the children know
-
-    this.children.forEach(function (childView) {
-      childView.onDocumentLoaded();
-    });
-  };
-
-  _proto2.hideRequested = function hideRequested(view) {
-    // let the children know
-    logger("Handling hide  from view " + view.getName());
-    this.children.forEach(function (childView) {
-      childView.hidden();
-    });
-  };
-
-  _proto2.itemAction = function itemAction(view, actionName, selectedItem) {
-    logger("Handling item action " + actionName + " from view " + view.getName());
-    dlogger(selectedItem);
-    this.children.forEach(function (childView) {
-      childView.handleActionItem(actionName, selectedItem);
-    });
-  };
-
-  _proto2.itemDeleted = function itemDeleted(view, selectedItem) {
-    logger("Handling item deleted from view " + view.getName());
-    dlogger(selectedItem);
-    this.children.forEach(function (childView) {
-      // clear the child display and set readonly
-      childView.clearDisplay();
-      childView.setReadOnly();
-    });
-  };
-
-  _proto2.itemDeselected = function itemDeselected(view, selectedItem) {
-    logger("Handling item deselected from view " + view.getName());
-    dlogger(selectedItem);
-    this.children.forEach(function (childView) {
-      // clear the child display and set readonly
-      childView.clearDisplay();
-      childView.setReadOnly();
-    });
-  };
-
-  _proto2.itemDragStarted = function itemDragStarted(view, selectedItem) {// nothing to do here
-  };
-
-  _proto2.itemDropped = function itemDropped(view, droppedItem) {// nothing to do here
-  };
-
-  _proto2.itemSelected = function itemSelected(view, selectedItem) {
-    logger("Handling item selected from view " + view.getName());
-    dlogger(selectedItem);
-    this.children.forEach(function (childView) {
-      childView.displayItem(selectedItem);
-    });
-  };
-
-  _proto2.showRequested = function showRequested(view) {
-    logger("Handling show from view " + view.getName()); // let the children know
-
-    this.children.forEach(function (childView) {
-      childView.show();
-    });
-  };
-
-  _proto2.canSelectItem = function canSelectItem(view, selectedItem) {
-    logger("Handling can select item from view " + view.getName());
-    dlogger(selectedItem); // are we currently in the middle of creating a new object?
-
-    if (this.isCreatingNew) return false; // prevent selection if the children views have modified this item
-
-    var canProceedWithSelection = true;
-    this.children.forEach(function (childView) {
-      if (childView.isDisplayingItem(selectedItem)) {
-        if (childView.hasChanged()) {
-          dlogger("child view " + childView.getName() + " has changed - cancelling");
-          canProceedWithSelection = false;
-        }
-      }
-    });
-    return canProceedWithSelection;
-  };
-
-  _proto2.cancelled = function cancelled(view, dataObj) {
-    logger("Handling cancelled from child view " + view.getName());
-    dlogger(dataObj);
-    this.isCreatingNew = false;
-  };
-
-  _proto2.deletedItem = function deletedItem(view, dataObj) {
-    logger("Handling deleted from child view " + view.getName());
-    dlogger(dataObj);
-    this.informListenersOfDelete(dataObj);
-  };
-
-  _proto2.saveNewItem = function saveNewItem(view, dataObj) {
-    logger("Handling save new from child view " + view.getName());
-    dlogger(dataObj);
-    this.informListenersOfCreate(dataObj);
-  };
-
-  _proto2.updateItem = function updateItem(view, dataObj) {
-    logger("Handling update from child view " + view.getName());
-    dlogger(dataObj);
-    this.informListenersOfUpdate(dataObj);
-  };
-
-  _proto2._startNewObject = function _startNewObject() {
-    // assume the first detail view will create the object for us
-    var result = false;
-
-    if (this.children.length > 0) {
-      var dataObj = this.children[0].createItem();
-      if (dataObj) result = true;
-    }
-
-    return result;
-  };
-
-  return LinkedCollectionDetailController;
-}(_model_DataObjectController__WEBPACK_IMPORTED_MODULE_1__.DataObjectController);
 
 /***/ }),
 

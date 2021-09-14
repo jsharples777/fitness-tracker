@@ -15,11 +15,14 @@ import {ObjectDefinitionRegistry} from "./model/ObjectDefinitionRegistry";
 import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
 import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
 import {KeyType} from "./ui-framework/ConfigurationTypes";
+import {DataObjectListener} from "./model/DataObjectListener";
+import {DataObjectController} from "./model/DataObjectController";
+import {isSameMongo} from "./util/EqualityFunctions";
 
 const cLogger = debug('controller-ts');
 const cLoggerDetail = debug('controller-ts-detail');
 
-class Controller implements StateChangeListener {
+class Controller implements StateChangeListener,DataObjectListener {
     private static _instance: Controller;
 
     public static getInstance(): Controller {
@@ -269,6 +272,38 @@ class Controller implements StateChangeListener {
 
     handleShowChat(roomName:string|null) {
         this.applicationView.handleShowChat(roomName);
+    }
+
+    create(controller: DataObjectController, typeName: string, dataObj: any): void {
+        switch(typeName) {
+            case STATE_NAMES.exerciseTypes: {
+                cLogger(`Handling create new exercise type`);
+                cLoggerDetail(dataObj);
+                this.stateManager.addNewItemToState(typeName,dataObj,false);
+                break;
+            }
+        }
+    }
+
+    delete(controller: DataObjectController, typeName: string, dataObj: any): void {
+        switch(typeName) {
+            case STATE_NAMES.exerciseTypes: {
+                cLogger(`Handling delete exercise type - already managed by stateful collection view`);
+                cLoggerDetail(dataObj);
+                break;
+            }
+        }
+    }
+
+    update(controller: DataObjectController, typeName: string, dataObj: any): void {
+        switch(typeName) {
+            case STATE_NAMES.exerciseTypes: {
+                cLogger(`Handling update exercise type`);
+                cLoggerDetail(dataObj);
+                this.stateManager.updateItemInState(typeName,dataObj,isSameMongo,false);
+                break;
+            }
+        }
     }
 }
 

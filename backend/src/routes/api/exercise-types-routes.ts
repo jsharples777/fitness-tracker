@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
         }
         else { user = "-1"}
         // @ts-ignore
-        const message:DataMessage = {type:"create",objectType: "ExerciseType",data:value, user:user,}
+        const message:DataMessage = {type:"create",stateName: "exerciseType",data:value, user:user,}
         socketManager.sendDataMessage(message);
 
         res.json(value);
@@ -59,9 +59,9 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.params.id}).then((result:DeleteResult) => {
+    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.body._id}).then((result:DeleteResult) => {
         logger(result);
         MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
             logger(value);
@@ -72,7 +72,7 @@ router.put('/:id', (req, res) => {
             }
             else { user = "-1"}
             // @ts-ignore
-            const message:DataMessage = {type:"update",objectType: "ExerciseType",data:value, user:user,}
+            const message:DataMessage = {type:"update",stateName: "exerciseType",data:value, user:user,}
             socketManager.sendDataMessage(message);
             res.json(value);
         })
@@ -97,7 +97,7 @@ router.delete('/:id', (req, res) => {
         }
         else { user = "-1"}
         // @ts-ignore
-        const message:DataMessage = {type:"delete",objectType: "ExerciseType",data:{ _id: req.params.id},user:user,}
+        const message:DataMessage = {type:"delete",stateName: "exerciseType",data:{ _id: req.params.id},user:user,}
         socketManager.sendDataMessage(message);
         logger(result);
         res.json(result);

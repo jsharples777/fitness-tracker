@@ -2,7 +2,8 @@ import {Form} from "./ui-framework/form/Form";
 
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
-localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
+//localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
+localStorage.debug = 'linked-controller linked-controller-detail exercise-types-view app api-ts ab-stateful-collection-view controller-ts controller-ts-detail abstract-form-detail-validation abstract-form-detail abstract-form list-view-renderer';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -10,7 +11,7 @@ debug.log = console.info.bind(console);
 import Controller from './Controller';
 import UserSearchView from "./component/view/UserSearchView";
 import ChatLogsView from "./component/view/ChatLogsView";
-import {API_Config, NAVIGATION, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "./AppTypes";
+import {API_Config, BUTTON, NAVIGATION, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "./AppTypes";
 import {UnreadMessageCountListener} from "./socket/UnreadMessageCountListener";
 import UserSearchSidebar from "./component/sidebar/UserSearchSidebar";
 import ChatRoomsSidebar from "./component/sidebar/ChatRoomsSidebar";
@@ -24,10 +25,9 @@ import {ValidationManager} from "./ui-framework/form/validation/ValidationManage
 import {FormDetailViewRenderer} from "./ui-framework/view/delegate/FormDetailViewRenderer";
 import {ObjectDefinitionRegistry} from "./model/ObjectDefinitionRegistry";
 import {DataObjectDefinition} from "./model/DataObjectTypeDefs";
-import {DetailViewRenderer} from "./ui-framework/view/interface/DetailViewRenderer";
 import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
 import {DetailView} from "./ui-framework/view/interface/DetailView";
-import {LinkedCollectionDetailController} from "./ui-framework/view/implementation/LinkedCollectionDetailController";
+import {LinkedCollectionDetailController} from "./ui-framework/helper/LinkedCollectionDetailController";
 import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
 import {CreatedByPermissionChecker} from "./CreatedByPermissionChecker";
 
@@ -63,30 +63,7 @@ class Root implements UnreadMessageCountListener {
         return Controller.getInstance().getLoggedInUserId();
     }
 
-    onDocumentLoad() {
-        logger('document loaded');
-
-        this.chatSidebar = new ChatRoomsSidebar();
-        // add the views to the chat side bar
-        this.chatView = new ChatLogsView();
-        this.chatSidebar.addView(this.chatView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLogs});
-
-        const chatLogView = new ChatLogDetailView(Controller.getInstance().getStateManager());
-        this.chatSidebar.addView(chatLogView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLog});
-        this.chatView.addEventListener(chatLogView);
-        this.chatSidebar.onDocumentLoaded();
-
-
-        this.userSearchSidebar = new UserSearchSidebar();
-        // add the subviews for the user search
-        const recentSearches = new UserSearchView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(recentSearches, {containerId: UserSearchSidebar.SidebarContainers.recentSearches});
-        const favouriteUsers = new FavouriteUserView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(favouriteUsers, {containerId: UserSearchSidebar.SidebarContainers.favourites});
-        const blockedUsers = new BlockedUserView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(blockedUsers, {containerId: UserSearchSidebar.SidebarContainers.blocked});
-        this.userSearchSidebar.onDocumentLoaded();
-
+    private setupExerciseTypeViews() {
         /*
           Exercise Types - sidebar, list view and linked detail view
         */
@@ -118,28 +95,69 @@ class Root implements UnreadMessageCountListener {
                 this.setupValidationForExerciseTypeDetailsForm(detailForm);
             }
 
+            // setup the event handling for the create new exercise type button
+            let createExerciseType = <HTMLButtonElement>document.getElementById(BUTTON.createNewExerciseType);
+            logger(`Setting up button for creating exercise types`);
+            logger(createExerciseType);
+            if (createExerciseType) {
+                createExerciseType.addEventListener('click',(event) => {
+                    logger(`Asking view linker to start a new object`);
+                    viewLinker.startNewObject();
+                });
+
+            }
+
+            viewLinker.addListener(Controller.getInstance());
         }
 
+    }
 
+    private setupNavigationItemHandling() {
+        // @ts-ignore
+        document.getElementById(NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch);
+        // @ts-ignore
+        document.getElementById(NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes);
+        // @ts-ignore
+        this.chatNavigationItem = document.getElementById(NAVIGATION.chatId);
 
-        // navigation item handlers
-        if (document) {
-            // @ts-ignore
-            document.getElementById(NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch);
-            // @ts-ignore
-            document.getElementById(NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes);
-            // @ts-ignore
-            this.chatNavigationItem = document.getElementById(NAVIGATION.chatId);
+        // @ts-ignore
+        this.chatNavigationItem.addEventListener('click', this.handleShowChat);
+    }
 
-            // @ts-ignore
-            this.chatNavigationItem.addEventListener('click', this.handleShowChat);
-            // @ts-ignore
-            //document.getElementById(NAVIGATION.showMyWorkouts).addEventListener('click', this.handleShowWorkouts);
-        }
+    private setupUserSearchViews() {
+        // add the subviews for the user search
+        this.userSearchSidebar = new UserSearchSidebar();
+        const recentSearches = new UserSearchView(Controller.getInstance().getStateManager());
+        this.userSearchSidebar.addView(recentSearches, {containerId: UserSearchSidebar.SidebarContainers.recentSearches});
+        const favouriteUsers = new FavouriteUserView(Controller.getInstance().getStateManager());
+        this.userSearchSidebar.addView(favouriteUsers, {containerId: UserSearchSidebar.SidebarContainers.favourites});
+        const blockedUsers = new BlockedUserView(Controller.getInstance().getStateManager());
+        this.userSearchSidebar.addView(blockedUsers, {containerId: UserSearchSidebar.SidebarContainers.blocked});
+        this.userSearchSidebar.onDocumentLoaded();
+    }
 
-        // a reference to the div containing ourselves
+    private setupChatViews() {
+        // add the views to the chat side bar
+        this.chatSidebar = new ChatRoomsSidebar();
+        this.chatView = new ChatLogsView();
+        this.chatSidebar.addView(this.chatView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLogs});
+
+        const chatLogView = new ChatLogDetailView(Controller.getInstance().getStateManager());
+        this.chatSidebar.addView(chatLogView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLog});
+        this.chatView.addEventListener(chatLogView);
+        this.chatSidebar.onDocumentLoaded();
+    }
+
+    onDocumentLoad() {
+        logger('document loaded');
         // @ts-ignore
         this.thisEl = document.getElementById('root');
+
+
+        this.setupUserSearchViews();
+        this.setupChatViews();
+        this.setupExerciseTypeViews();
+        this.setupNavigationItemHandling();
 
         Controller.getInstance().initialise();
 

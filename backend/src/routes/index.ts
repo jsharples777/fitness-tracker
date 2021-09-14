@@ -4,6 +4,8 @@ const router = express.Router();
 import passport from 'passport';
 import debug from 'debug';
 import MongoAccount from '../models/MongoAccount';
+import {DataMessage} from "../socket/SocketTypes";
+import socketManager from "../socket/SocketManager";
 
 const routeDebug = debug('route');
 
@@ -30,6 +32,13 @@ router.post('/register', (req, res, next) => {
                 return res.render('register', {error: err.message});
             }
             routeDebug('Registered');
+            const message:DataMessage = {
+                type:"create",
+                stateName: "user",
+                data:{ _id: account._id,username:(''+account.username)},
+                user:(''+account._id)
+            };
+            socketManager.sendDataMessage(message);
 
             passport.authenticate('local')(req, res, () => {
                 req.session.save((err) => {

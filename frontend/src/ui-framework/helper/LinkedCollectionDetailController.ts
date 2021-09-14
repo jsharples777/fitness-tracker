@@ -1,11 +1,11 @@
-import {CollectionView} from "../interface/CollectionView";
-import {DetailView} from "../interface/DetailView";
-import {CollectionViewListener} from "../interface/CollectionViewListener";
-import {View} from "../interface/View";
-import {DetailViewListener} from "../interface/DetailViewListener";
+import {CollectionView} from "../view/interface/CollectionView";
+import {DetailView} from "../view/interface/DetailView";
+import {CollectionViewListener} from "../view/interface/CollectionViewListener";
+import {View} from "../view/interface/View";
+import {DetailViewListener} from "../view/interface/DetailViewListener";
 
 import debug from 'debug';
-import {DataObjectController} from "../../../model/DataObjectController";
+import {DataObjectController} from "../../model/DataObjectController";
 
 const logger = debug('linked-controller');
 const dlogger = debug('linked-controller-detail');
@@ -190,11 +190,16 @@ export class LinkedCollectionDetailController extends DataObjectController imple
     }
 
     protected _startNewObject(): boolean {
+        logger(`Handling start new object`);
         // assume the first detail view will create the object for us
         let result = false;
         if (this.children.length > 0) {
+            logger(`Handling start new object with child view ${this.children[0].getName()}`);
             let dataObj = this.children[0].createItem();
-            if (dataObj) result = true;
+            if (dataObj) {
+                result = true;
+                this.children[0].show();
+            }
         }
         return result;
     }

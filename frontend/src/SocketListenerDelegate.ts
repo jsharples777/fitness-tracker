@@ -3,7 +3,7 @@ import debug from 'debug';
 
 import notifier from "./notification/NotificationManager";
 import Controller from "./Controller";
-import {isSame} from "./util/EqualityFunctions";
+import {isSame, isSameMongo} from "./util/EqualityFunctions";
 import {STATE_NAMES} from "./AppTypes";
 import NotificationManager from "./notification/NotificationManager";
 
@@ -15,7 +15,7 @@ export default class SocketListenerDelegate implements SocketListener {
 
     public handleDataChangedByAnotherUser(message: any) {
         slLogger(`Handling data change ${message.type} on object type ${message.stateName} made by user ${message.user}`);
-        const changeUser = Controller.getInstance().getStateManager().findItemInState(STATE_NAMES.users, {id: message.user}, isSame);
+        const changeUser = Controller.getInstance().getStateManager().findItemInState(STATE_NAMES.users, {_id: message.user}, isSameMongo);
         let username = "unknown";
         if (changeUser) {
             username = changeUser.username;
@@ -32,6 +32,28 @@ export default class SocketListenerDelegate implements SocketListener {
                         case STATE_NAMES.users: {
                             Controller.getInstance().getStateManager().addNewItemToState(STATE_NAMES.users, stateObj, true);
                             NotificationManager.getInstance().show(stateObj.username, `${stateObj.username} has just registered.`, 'message');
+                            break;
+                        }
+                        case STATE_NAMES.exerciseTypes: {
+                            Controller.getInstance().getStateManager().addNewItemToState(STATE_NAMES.exerciseTypes, stateObj, true);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "update": {
+                    switch (message.stateName) {
+                        case STATE_NAMES.exerciseTypes: {
+                            Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.exerciseTypes, stateObj, isSameMongo,true);
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "delete": {
+                    switch (message.stateName) {
+                        case STATE_NAMES.exerciseTypes: {
+                            Controller.getInstance().getStateManager().removeItemFromState(STATE_NAMES.exerciseTypes, stateObj, isSameMongo,true);
                             break;
                         }
                     }

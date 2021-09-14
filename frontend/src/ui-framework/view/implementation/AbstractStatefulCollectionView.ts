@@ -6,6 +6,10 @@ import {CollectionViewListener} from "../interface/CollectionViewListener";
 import {View} from "../interface/View";
 import {CollectionView} from "../interface/CollectionView";
 
+import debug from 'debug';
+
+const logger = debug('ab-stateful-collection-view');
+
 export default abstract class AbstractStatefulCollectionView extends AbstractCollectionView implements StateChangeListener,CollectionViewListener {
 
     protected stateManager: StateManager;
@@ -31,18 +35,26 @@ export default abstract class AbstractStatefulCollectionView extends AbstractCol
     }
 
     public stateChanged(managerName: string, name: string, newValue: any): void {
+        logger(`handling state ${name} changed`);
+        logger(newValue);
         this.updateViewForNamedCollection(name, newValue);
     }
 
     stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {
+        logger(`handling state ${name} new item added`);
+        logger(itemAdded);
         if (this.stateManager && this.collectionName) this.updateViewForNamedCollection(name, this.stateManager.getStateByName(name));
     }
 
     stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {
+        logger(`handling state ${name} new item removed`);
+        logger(itemRemoved);
         if (this.stateManager && this.collectionName) this.updateViewForNamedCollection(name, this.stateManager.getStateByName(name));
     }
 
     stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {
+        logger(`handling state ${name} new item updated`);
+        logger(itemNewValue);
         if (this.stateManager && this.collectionName) this.updateViewForNamedCollection(name, this.stateManager.getStateByName(name));
     }
 
