@@ -22,7 +22,7 @@ import BlockedUserView from "./component/view/BlockedUserView";
 import {ExerciseTypesView} from "./component/view/ExerciseTypesView";
 import {ComparisonType, ConditionResponse, ValidationRule} from "./ui-framework/form/validation/ValidationTypeDefs";
 import {ValidationManager} from "./ui-framework/form/validation/ValidationManager";
-import {FormDetailViewRenderer} from "./ui-framework/view/delegate/FormDetailViewRenderer";
+import {FormDetailViewRenderer} from "./ui-framework/view/renderer/FormDetailViewRenderer";
 import {ObjectDefinitionRegistry} from "./model/ObjectDefinitionRegistry";
 import {DataObjectDefinition} from "./model/DataObjectTypeDefs";
 import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
@@ -34,7 +34,7 @@ import {CreatedByPermissionChecker} from "./CreatedByPermissionChecker";
 
 const logger = debug('app');
 
-class Root implements UnreadMessageCountListener {
+class App implements UnreadMessageCountListener {
 
     // @ts-ignore
     private exerciseTypesSidebar: ExerciseTypesSidebar;
@@ -324,6 +324,6 @@ class Root implements UnreadMessageCountListener {
 
 
 $(function() {
-    const root = new Root();
-    root.onDocumentLoad();
+    const app = new App();
+    app.onDocumentLoad();
 });

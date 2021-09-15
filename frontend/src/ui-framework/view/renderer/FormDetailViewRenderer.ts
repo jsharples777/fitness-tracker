@@ -5,7 +5,7 @@ import {ViewDOMConfig} from "../../ConfigurationTypes";
 import {BasicFormImplementation} from "../../form/BasicFormImplementation";
 import {FormEvent, FormEventType, FormListener} from "../../form/FormListener";
 import debug from 'debug';
-import {DetailViewListenerForwarder} from "./DetailViewListenerForwarder";
+import {DetailViewListenerForwarder} from "../delegate/DetailViewListenerForwarder";
 import {DetailView} from "../interface/DetailView";
 import {ViewListener} from "../interface/ViewListener";
 import {ObjectPermissionChecker} from "../interface/ObjectPermissionChecker";

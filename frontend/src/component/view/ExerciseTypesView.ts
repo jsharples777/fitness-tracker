@@ -1,7 +1,7 @@
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {CollectionViewDOMConfig, KeyType, Modifier} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {ListViewRenderer} from "../../ui-framework/view/renderer/ListViewRenderer";
 import Controller from "../../Controller";
 import {isSameMongo} from "../../util/EqualityFunctions";
 import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
@@ -45,16 +45,16 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
             icons:(name:string,item:any) => {
                 if (item.type) {
                     if (item.type === 'cardio') {
-                        return ['fas fa-running'];
+                        return ['fas fa-running ml-2'];
                     }
                     else {
-                        return ['fas fa-dumbbell'];
+                        return ['fas fa-dumbbell ml-2'];
                     }
                 }
                 return [];
             },
             delete: {
-                buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
+                buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
                 iconClasses: 'text-black fas fa-sign-out-alt',
             },
             drag: {
@@ -62,6 +62,11 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
                 from: DRAGGABLE.fromExerciseTypes
             }
         },
+        extraActions: [{
+            name: 'addToWorkout',
+            buttonClasses:'btn bg-primary text-white btn-circle btn-md mr-1',
+            iconClasses:'fas fa-arrow-alt-circle-right'
+        }]
     };
 
     constructor() {

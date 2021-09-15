@@ -24,7 +24,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/ExerciseTypesView */ "./src/component/view/ExerciseTypesView.ts");
 /* harmony import */ var _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./ui-framework/form/validation/ValidationTypeDefs */ "./src/ui-framework/form/validation/ValidationTypeDefs.ts");
 /* harmony import */ var _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./ui-framework/form/validation/ValidationManager */ "./src/ui-framework/form/validation/ValidationManager.ts");
-/* harmony import */ var _ui_framework_view_delegate_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ui-framework/view/delegate/FormDetailViewRenderer */ "./src/ui-framework/view/delegate/FormDetailViewRenderer.ts");
+/* harmony import */ var _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ui-framework/view/renderer/FormDetailViewRenderer */ "./src/ui-framework/view/renderer/FormDetailViewRenderer.ts");
 /* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
 /* harmony import */ var _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ui-framework/view/implementation/DetailViewImplementation */ "./src/ui-framework/view/implementation/DetailViewImplementation.ts");
 /* harmony import */ var _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ui-framework/helper/LinkedCollectionDetailController */ "./src/ui-framework/helper/LinkedCollectionDetailController.ts");
@@ -57,14 +57,14 @@ localStorage.debug = 'socket-listener';
 
 var logger = debug__WEBPACK_IMPORTED_MODULE_0___default()('app');
 
-var Root = /*#__PURE__*/function () {
+var App = /*#__PURE__*/function () {
   // @ts-ignore
   // @ts-ignore
   // @ts-ignore
   // @ts-ignore
   // @ts-ignore
   // @ts-ignore
-  function Root() {
+  function App() {
     // event handlers
     this.handleShowUserSearch = this.handleShowUserSearch.bind(this);
     this.handleShowExerciseTypes = this.handleShowExerciseTypes.bind(this);
@@ -72,7 +72,7 @@ var Root = /*#__PURE__*/function () {
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().connectToApplication(this, window.localStorage);
   }
 
-  var _proto = Root.prototype;
+  var _proto = App.prototype;
 
   _proto.getCurrentUser = function getCurrentUser() {
     return _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getLoggedInUserId();
@@ -90,7 +90,7 @@ var Root = /*#__PURE__*/function () {
     var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_15__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes);
 
     if (exerciseTypeDefinition) {
-      var exerciseTypeDetailRenderer = new _ui_framework_view_delegate_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition, new _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__.CreatedByPermissionChecker());
+      var exerciseTypeDetailRenderer = new _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition, new _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__.CreatedByPermissionChecker());
       var exerciseTypeDetailView = new _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_16__.DetailViewImplementation({
         resultsContainerId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail,
         dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_NAME.exerciseTypes
@@ -324,12 +324,12 @@ var Root = /*#__PURE__*/function () {
     if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = "" + buffer;
   };
 
-  return Root;
+  return App;
 }();
 
 $(function () {
-  var root = new Root();
-  root.onDocumentLoad();
+  var app = new App();
+  app.onDocumentLoad();
 });
 
 /***/ }),
@@ -393,7 +393,8 @@ var VIEW_NAME = {
   chatLogs: 'chatLogs',
   favouriteUsers: 'favouriteUsers',
   exerciseTypes: 'exerciseTypes',
-  userSearch: 'userSearch'
+  userSearch: 'userSearch',
+  workouts: 'workouts'
 };
 var VIEW_CONTAINER = {
   exerciseTypeDetail: "exerciseTypeDetail"
@@ -1069,7 +1070,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/view/delegate/ListViewRenderer */ "./src/ui-framework/view/delegate/ListViewRenderer.ts");
+/* harmony import */ var _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRenderer */ "./src/ui-framework/view/renderer/ListViewRenderer.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -1111,7 +1112,7 @@ var BlockedUserView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
     _this = _AbstractStatefulColl.call(this, BlockedUserView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.users) || this; // list renderer
 
-    _this.renderer = new _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_6__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
+    _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_6__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
 
     _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
     _this.handleFavouriteUserLoggedIn = _this.handleFavouriteUserLoggedIn.bind(_assertThisInitialized(_this));
@@ -1718,7 +1719,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../state/MemoryBufferStateManager */ "./src/state/MemoryBufferStateManager.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
 /* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
-/* harmony import */ var _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/view/delegate/ListViewRenderer */ "./src/ui-framework/view/delegate/ListViewRenderer.ts");
+/* harmony import */ var _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRenderer */ "./src/ui-framework/view/renderer/ListViewRenderer.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -1762,7 +1763,7 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
     _this = _AbstractStatefulColl.call(this, ChatLogsView.DOMConfig, new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_5__["default"](), _AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.chatLogs) || this;
     _this.selectedChatLog = null;
-    _this.renderer = new _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_8__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
+    _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_8__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
 
     _this.handleChatLogsUpdated = _this.handleChatLogsUpdated.bind(_assertThisInitialized(_this));
     _this.handleChatLogUpdated = _this.handleChatLogUpdated.bind(_assertThisInitialized(_this));
@@ -1959,7 +1960,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/view/delegate/ListViewRenderer */ "./src/ui-framework/view/delegate/ListViewRenderer.ts");
+/* harmony import */ var _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRenderer */ "./src/ui-framework/view/renderer/ListViewRenderer.ts");
 /* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
 /* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
 /* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
@@ -2005,7 +2006,7 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
     var _this;
 
     _this = _AbstractStatefulColl.call(this, ExerciseTypesView.DOMConfig, _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes) || this;
-    _this.renderer = new _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this));
+    _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this));
     return _this;
   }
 
@@ -2084,23 +2085,28 @@ ExerciseTypesView.DOMConfig = {
     icons: function icons(name, item) {
       if (item.type) {
         if (item.type === 'cardio') {
-          return ['fas fa-running'];
+          return ['fas fa-running ml-2'];
         } else {
-          return ['fas fa-dumbbell'];
+          return ['fas fa-dumbbell ml-2'];
         }
       }
 
       return [];
     },
     delete: {
-      buttonClasses: 'btn bg-danger text-white btn-circle btn-sm',
+      buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
       iconClasses: 'text-black fas fa-sign-out-alt'
     },
     drag: {
       type: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.typeExerciseType,
       from: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.fromExerciseTypes
     }
-  }
+  },
+  extraActions: [{
+    name: 'addToWorkout',
+    buttonClasses: 'btn bg-primary text-white btn-circle btn-md mr-1',
+    iconClasses: 'fas fa-arrow-alt-circle-right'
+  }]
 };
 
 /***/ }),
@@ -2124,7 +2130,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ui-framework/view/delegate/ListViewRenderer */ "./src/ui-framework/view/delegate/ListViewRenderer.ts");
+/* harmony import */ var _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRenderer */ "./src/ui-framework/view/renderer/ListViewRenderer.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -2167,7 +2173,7 @@ var FavouriteUserView = /*#__PURE__*/function (_AbstractStatefulColl) {
     var _this;
 
     _this = _AbstractStatefulColl.call(this, FavouriteUserView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_6__.STATE_NAMES.users) || this;
-    _this.renderer = new _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_7__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
+    _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_7__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
 
     _this.handleLoggedInUsersUpdated = _this.handleLoggedInUsersUpdated.bind(_assertThisInitialized(_this));
     _this.handleFavouriteUserLoggedIn = _this.handleFavouriteUserLoggedIn.bind(_assertThisInitialized(_this));
@@ -2394,7 +2400,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
 /* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
-/* harmony import */ var _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../ui-framework/view/delegate/ListViewRenderer */ "./src/ui-framework/view/delegate/ListViewRenderer.ts");
+/* harmony import */ var _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRenderer */ "./src/ui-framework/view/renderer/ListViewRenderer.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -2440,7 +2446,7 @@ var UserSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
     _this = _AbstractStatefulColl.call(this, UserSearchView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_7__.STATE_NAMES.users) || this;
     _this.loggedInUsers = [];
-    _this.renderer = new _ui_framework_view_delegate_ListViewRenderer__WEBPACK_IMPORTED_MODULE_9__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
+    _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_9__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this)); // handler binding
 
     _this.updateViewForNamedCollection = _this.updateViewForNamedCollection.bind(_assertThisInitialized(_this));
     _this.eventUserSelected = _this.eventUserSelected.bind(_assertThisInitialized(_this));
@@ -6627,7 +6633,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "EXTRA_ACTION_ATTRIBUTE_NAME": () => (/* binding */ EXTRA_ACTION_ATTRIBUTE_NAME),
 /* harmony export */   "Modifier": () => (/* binding */ Modifier),
 /* harmony export */   "KeyType": () => (/* binding */ KeyType),
-/* harmony export */   "SidebarLocation": () => (/* binding */ SidebarLocation)
+/* harmony export */   "SidebarLocation": () => (/* binding */ SidebarLocation),
+/* harmony export */   "RowPosition": () => (/* binding */ RowPosition)
 /* harmony export */ });
 var DRAGGABLE_KEY_ID = 'text/plain';
 var DRAGGABLE_TYPE = 'draggedType';
@@ -6659,6 +6666,13 @@ var SidebarLocation;
   SidebarLocation[SidebarLocation["left"] = 2] = "left";
   SidebarLocation[SidebarLocation["bottom"] = 3] = "bottom";
 })(SidebarLocation || (SidebarLocation = {}));
+
+var RowPosition;
+
+(function (RowPosition) {
+  RowPosition[RowPosition["first"] = 0] = "first";
+  RowPosition[RowPosition["last"] = 1] = "last";
+})(RowPosition || (RowPosition = {}));
 
 /***/ }),
 
@@ -11342,622 +11356,6 @@ var DetailViewListenerForwarder = /*#__PURE__*/function (_ViewListenerForwarde) 
 
 /***/ }),
 
-/***/ "./src/ui-framework/view/delegate/FormDetailViewRenderer.ts":
-/*!******************************************************************!*\
-  !*** ./src/ui-framework/view/delegate/FormDetailViewRenderer.ts ***!
-  \******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "FormDetailViewRenderer": () => (/* binding */ FormDetailViewRenderer)
-/* harmony export */ });
-/* harmony import */ var _form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../form/BasicFormImplementation */ "./src/ui-framework/form/BasicFormImplementation.ts");
-/* harmony import */ var _form_FormListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../form/FormListener */ "./src/ui-framework/form/FormListener.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
-
-
-
-var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('form-detail-view-renderer');
-var FormDetailViewRenderer = /*#__PURE__*/function () {
-  function FormDetailViewRenderer(containerId, objDef, permissionChecker) {
-    this.form = null;
-    this.containerId = containerId;
-    this.objDef = objDef;
-    this.currentItem = {};
-    this.isNewItem = false;
-    this.forwarder = null;
-    this.view = null;
-    this.permissionChecker = permissionChecker;
-  }
-
-  var _proto = FormDetailViewRenderer.prototype;
-
-  _proto.setEventForwarder = function setEventForwarder(forwarder) {
-    this.forwarder = forwarder;
-  };
-
-  _proto.setView = function setView(view) {
-    this.view = view;
-  };
-
-  _proto.onDocumentLoaded = function onDocumentLoaded() {
-    this.form = new _form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_0__.BasicFormImplementation(this.containerId, this.objDef);
-    this.form.addFormListener(this);
-  };
-
-  _proto.reset = function reset() {
-    if (this.form) this.form.reset();
-  };
-
-  _proto.initialise = function initialise(displayOrder, hasDeleteButton, hideModifierFields) {
-    if (this.form) this.form.initialise(displayOrder, hasDeleteButton, hideModifierFields);
-  };
-
-  _proto.displayItemReadonly = function displayItemReadonly(dataObject) {
-    this.isNewItem = false;
-    if (this.form) this.form.displayOnly(dataObject);
-  };
-
-  _proto.getName = function getName() {
-    return this.objDef.displayName;
-  };
-
-  _proto.setContainedBy = function setContainedBy(container) {
-    throw new Error("Method not implemented.");
-  };
-
-  _proto.addEventListener = function addEventListener(listener) {
-    throw new Error("Method not implemented.");
-  };
-
-  _proto.hasChanged = function hasChanged() {
-    var result = false;
-    if (this.form) result = this.form.hasChanged();
-    return result;
-  };
-
-  _proto.getUIConfig = function getUIConfig() {
-    throw new Error("Method not implemented.");
-  };
-
-  _proto.getDataSourceKeyId = function getDataSourceKeyId() {
-    throw new Error("Method not implemented.");
-  };
-
-  _proto.clearDisplay = function clearDisplay() {
-    this.isNewItem = false;
-    if (this.form) this.form.reset();
-  };
-
-  _proto.clearReadOnly = function clearReadOnly() {
-    if (this.form) this.form.clearReadOnly();
-  };
-
-  _proto.setReadOnly = function setReadOnly() {
-    if (this.form) this.form.setReadOnly();
-  };
-
-  _proto.isReadOnly = function isReadOnly() {
-    var result = false;
-    if (this.form) result = this.form.isReadOnly();
-    return result;
-  };
-
-  _proto.createItem = function createItem() {
-    var _this$form;
-
-    this.currentItem = {};
-    logger("Creating new item with form " + ((_this$form = this.form) == null ? void 0 : _this$form.getId()));
-
-    if (this.form) {
-      this.isNewItem = true;
-      this.currentItem = this.form.startCreateNew();
-    }
-
-    return this.currentItem;
-  };
-
-  _proto.displayItem = function displayItem(dataObj) {
-    this.currentItem = dataObj;
-    this.isNewItem = false;
-
-    if (this.hasPermissionToUpdateItem(dataObj)) {
-      if (this.form) this.form.startUpdate(dataObj);
-    } else {
-      if (this.form) this.form.displayOnly(dataObj);
-    }
-  };
-
-  _proto.hidden = function hidden() {
-    if (this.form) this.form.setIsVisible(false);
-  };
-
-  _proto.show = function show() {
-    if (this.form) this.form.setIsVisible(true);
-  };
-
-  _proto.render = function render() {
-    this.displayItem(this.currentItem);
-    this.show();
-  };
-
-  _proto.hasPermissionToDeleteItem = function hasPermissionToDeleteItem(item) {
-    return this.permissionChecker.hasPermissionToDeleteItem(item);
-  };
-
-  _proto.hasPermissionToUpdateItem = function hasPermissionToUpdateItem(item) {
-    return this.permissionChecker.hasPermissionToUpdateItem(item);
-  };
-
-  _proto.getForm = function getForm() {
-    return this.form;
-  };
-
-  _proto.handleActionItem = function handleActionItem(actionName, selectedItem) {
-    throw new Error("Handle action item not implemented for " + actionName);
-  };
-
-  _proto.isDisplayingItem = function isDisplayingItem(dataObj) {
-    var result = false;
-
-    if (this.currentItem) {
-      if (this.form) {
-        result = this.form.isDisplayingItem(dataObj);
-      }
-    }
-
-    return result;
-  };
-
-  _proto.formChanged = function formChanged(event, formValues) {
-    // catch form events for user leaving the form
-    switch (event.eventType) {
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLING:
-        {
-          logger("Form is cancelling");
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLING_ABORTED:
-        {
-          logger("Form is cancelling - aborted");
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLED:
-        {
-          logger("Form is cancelled - resetting");
-          this.currentItem = formValues;
-          if (this.forwarder && this.view) this.forwarder.cancelled(this.view, this.currentItem);
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETING:
-        {
-          logger("Form is deleting");
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETE_ABORTED:
-        {
-          logger("Form is deleting - aborted");
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETED:
-        {
-          logger("Form is deleted - resetting");
-          this.currentItem = formValues;
-          if (this.forwarder && this.view) this.forwarder.deletedItem(this.view, this.currentItem); // user is deleting the object, will become invisible
-
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVE_ABORTED:
-        {
-          logger("Form save cancelled");
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVED:
-        {
-          logger("Form is saved with data");
-
-          if (this.form) {
-            var _this$form2;
-
-            var formattedObj = (_this$form2 = this.form) == null ? void 0 : _this$form2.getFormattedDataObject();
-
-            if (this.isNewItem) {
-              if (this.forwarder && this.view) this.forwarder.saveNewItem(this.view, formattedObj);
-            } else {
-              if (this.forwarder && this.view) this.forwarder.updateItem(this.view, formattedObj);
-            }
-
-            this.isNewItem = false;
-          }
-
-          break;
-        }
-
-      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVING:
-        {
-          logger("Form is saving");
-          break;
-        }
-    }
-
-    return false;
-  };
-
-  return FormDetailViewRenderer;
-}();
-
-/***/ }),
-
-/***/ "./src/ui-framework/view/delegate/ListViewRenderer.ts":
-/*!************************************************************!*\
-  !*** ./src/ui-framework/view/delegate/ListViewRenderer.ts ***!
-  \************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ListViewRenderer": () => (/* binding */ ListViewRenderer)
-/* harmony export */ });
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
-
-
-
-var avLogger = debug__WEBPACK_IMPORTED_MODULE_2___default()('list-view-renderer');
-var ListViewRenderer = /*#__PURE__*/function () {
-  function ListViewRenderer(view, eventHandler) {
-    this.view = view;
-    this.eventHandler = eventHandler;
-  }
-
-  var _proto = ListViewRenderer.prototype;
-
-  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
-    var _this = this;
-
-    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
-    var uiConfig = this.view.getCollectionUIConfig();
-    var dataSourceKeyId = this.view.getDataSourceKeyId();
-    avLogger("view " + this.view.getName() + ": creating List item");
-    avLogger(item);
-    var resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
-    var childEl = document.createElement(uiConfig.resultsElementType);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.resultsClasses);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(childEl, uiConfig.resultsElementAttributes);
-    childEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-    childEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId); // the content may be structured
-
-    var textEl = childEl;
-
-    if (uiConfig.detail.containerClasses) {
-      var contentEl = document.createElement('div');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(contentEl, uiConfig.detail.containerClasses);
-      contentEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-      contentEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-      textEl = document.createElement(uiConfig.detail.textElementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(textEl, uiConfig.detail.textElementClasses);
-      textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-      textEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-      contentEl.appendChild(textEl);
-
-      if (uiConfig.detail.background) {
-        var imgEl = document.createElement(uiConfig.detail.background.elementType);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(imgEl, uiConfig.detail.background.elementClasses);
-        imgEl.setAttribute('src', this.view.getBackgroundImageForItemInNamedCollection(collectionName, item));
-        childEl.appendChild(imgEl);
-      }
-
-      var buttonsEl = document.createElement('div');
-      contentEl.appendChild(buttonsEl);
-
-      if (uiConfig.detail.badge) {
-        var badgeValue = this.view.getBadgeValueForItemInNamedCollection(collectionName, item);
-
-        if (badgeValue > 0) {
-          var badgeEl = document.createElement(uiConfig.detail.badge.elementType);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(badgeEl, uiConfig.detail.badge.elementClasses);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(badgeEl, uiConfig.detail.badge.elementAttributes);
-          badgeEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-          badgeEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-          buttonsEl.appendChild(badgeEl);
-          badgeEl.innerHTML = "&nbsp;&nbsp;&nbsp;" + badgeValue + "&nbsp;&nbsp;&nbsp;";
-        }
-      }
-
-      if (uiConfig.extraActions) {
-        uiConfig.extraActions.forEach(function (extraAction) {
-          var action = document.createElement('button');
-          action.setAttribute('type', 'button');
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(action, extraAction.buttonClasses);
-
-          if (extraAction.buttonText) {
-            action.innerHTML = extraAction.buttonText;
-          }
-
-          if (extraAction.iconClasses) {
-            var iconEl = document.createElement('i');
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
-            iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-            iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-            iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-            action.appendChild(iconEl);
-          }
-
-          action.setAttribute(uiConfig.keyId, resultDataKeyId);
-          action.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-          action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-          action.addEventListener('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            _this.eventHandler.eventActionClicked(event);
-          });
-          buttonsEl.appendChild(action);
-        });
-      }
-
-      if (uiConfig.detail.delete && canDeleteItem) {
-        var deleteButtonEl = document.createElement('button');
-        deleteButtonEl.setAttribute('type', 'button');
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(deleteButtonEl, uiConfig.detail.delete.buttonClasses);
-
-        if (uiConfig.detail.delete.buttonText) {
-          deleteButtonEl.innerHTML = uiConfig.detail.delete.buttonText;
-        }
-
-        if (uiConfig.detail.delete.iconClasses) {
-          var iconEl = document.createElement('i');
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, uiConfig.detail.delete.iconClasses);
-          iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-          iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-          deleteButtonEl.appendChild(iconEl);
-        }
-
-        deleteButtonEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-        deleteButtonEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-        deleteButtonEl.addEventListener('click', function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-
-          _this.eventHandler.eventDeleteClickItem(event);
-        });
-        buttonsEl.appendChild(deleteButtonEl);
-      }
-
-      childEl.appendChild(contentEl);
-
-      if (uiConfig.detail.drag) {
-        childEl.setAttribute('draggable', 'true');
-        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
-      } // add selection actions
-
-
-      if (uiConfig.detail.select) {
-        childEl.addEventListener('click', this.eventHandler.eventClickItem);
-      }
-    } // add the key ids for selection
-
-
-    textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-    textEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-    var displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
-    textEl.innerHTML = displayText; // add icons
-
-    if (uiConfig.detail.icons) {
-      var icons = uiConfig.detail.icons(collectionName, item);
-      icons.forEach(function (icon) {
-        var iconEl = document.createElement('i');
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, icon);
-        iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-        iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-        textEl.appendChild(iconEl);
-      });
-    } // add modifiers for patient state
-
-
-    if (uiConfig.modifiers) {
-      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
-      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
-
-      switch (modifier) {
-        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal:
-          {
-            avLogger("view " + this.view.getName() + ": normal item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.normal);
-
-            if (uiConfig.icons && uiConfig.icons.normal) {
-              var _iconEl = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl, uiConfig.icons.normal);
-
-              _iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-              _iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-              textEl.appendChild(_iconEl);
-            }
-
-            switch (secondModifier) {
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
-                {
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.normal, false);
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
-
-                  if (uiConfig.icons && uiConfig.icons.warning) {
-                    var _iconEl2 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl2, uiConfig.icons.warning);
-
-                    _iconEl2.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-                    _iconEl2.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl2);
-                  }
-
-                  break;
-                }
-
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
-                {
-                  if (uiConfig.icons && uiConfig.icons.active) {
-                    var _iconEl3 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl3, uiConfig.icons.active);
-
-                    _iconEl3.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-                    _iconEl3.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl3);
-                  }
-                }
-            }
-
-            break;
-          }
-
-        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
-          {
-            avLogger("view " + this.view.getName() + ": active item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.active);
-
-            if (uiConfig.icons && uiConfig.icons.active) {
-              var _iconEl4 = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl4, uiConfig.icons.active);
-
-              _iconEl4.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-              _iconEl4.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-              textEl.appendChild(_iconEl4);
-            }
-
-            switch (secondModifier) {
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
-                {
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.active, false);
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
-
-                  if (uiConfig.icons && uiConfig.icons.warning) {
-                    var _iconEl5 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl5, uiConfig.icons.warning);
-
-                    _iconEl5.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-                    _iconEl5.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl5);
-                  }
-
-                  break;
-                }
-            }
-
-            break;
-          }
-
-        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive:
-          {
-            avLogger("view " + this.view.getName() + ": inactive item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.inactive);
-
-            if (uiConfig.icons && uiConfig.icons.inactive) {
-              var _iconEl6 = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl6, uiConfig.icons.inactive);
-
-              _iconEl6.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-              _iconEl6.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-              textEl.appendChild(_iconEl6);
-            }
-
-            switch (secondModifier) {
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
-                {
-                  if (uiConfig.icons && uiConfig.icons.warning) {
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.inactive, false);
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
-
-                    var _iconEl7 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl7, uiConfig.icons.warning);
-
-                    _iconEl7.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-                    _iconEl7.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl7);
-                  }
-
-                  break;
-                }
-
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
-                {
-                  if (uiConfig.icons && uiConfig.icons.active) {
-                    var _iconEl8 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl8, uiConfig.icons.active);
-
-                    _iconEl8.setAttribute(uiConfig.keyId, resultDataKeyId);
-
-                    _iconEl8.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl8);
-                  }
-
-                  break;
-                }
-            }
-
-            break;
-          }
-      }
-    }
-
-    return childEl;
-  };
-
-  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
-    var _this2 = this;
-
-    avLogger("view " + this.view.getName() + ": creating Results");
-    avLogger(newState); // remove the previous items from list
-
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].removeAllChildren(containerEl); // add the new children
-
-    newState.map(function (item, index) {
-      var childEl = _this2.createDisplayElementForCollectionItem(collectionName, item); // add draggable actions
-
-
-      avLogger("view " + _this2.view.getName() + ":  Adding child " + _this2.view.getIdForItemInNamedCollection(collectionName, item));
-      containerEl.appendChild(childEl);
-    });
-  };
-
-  return ListViewRenderer;
-}();
-
-/***/ }),
-
 /***/ "./src/ui-framework/view/delegate/ViewListenerForwarder.ts":
 /*!*****************************************************************!*\
   !*** ./src/ui-framework/view/delegate/ViewListenerForwarder.ts ***!
@@ -12707,6 +12105,622 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   return DetailViewImplementation;
 }(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView);
+
+/***/ }),
+
+/***/ "./src/ui-framework/view/renderer/FormDetailViewRenderer.ts":
+/*!******************************************************************!*\
+  !*** ./src/ui-framework/view/renderer/FormDetailViewRenderer.ts ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "FormDetailViewRenderer": () => (/* binding */ FormDetailViewRenderer)
+/* harmony export */ });
+/* harmony import */ var _form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../form/BasicFormImplementation */ "./src/ui-framework/form/BasicFormImplementation.ts");
+/* harmony import */ var _form_FormListener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../form/FormListener */ "./src/ui-framework/form/FormListener.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('form-detail-view-renderer');
+var FormDetailViewRenderer = /*#__PURE__*/function () {
+  function FormDetailViewRenderer(containerId, objDef, permissionChecker) {
+    this.form = null;
+    this.containerId = containerId;
+    this.objDef = objDef;
+    this.currentItem = {};
+    this.isNewItem = false;
+    this.forwarder = null;
+    this.view = null;
+    this.permissionChecker = permissionChecker;
+  }
+
+  var _proto = FormDetailViewRenderer.prototype;
+
+  _proto.setEventForwarder = function setEventForwarder(forwarder) {
+    this.forwarder = forwarder;
+  };
+
+  _proto.setView = function setView(view) {
+    this.view = view;
+  };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    this.form = new _form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_0__.BasicFormImplementation(this.containerId, this.objDef);
+    this.form.addFormListener(this);
+  };
+
+  _proto.reset = function reset() {
+    if (this.form) this.form.reset();
+  };
+
+  _proto.initialise = function initialise(displayOrder, hasDeleteButton, hideModifierFields) {
+    if (this.form) this.form.initialise(displayOrder, hasDeleteButton, hideModifierFields);
+  };
+
+  _proto.displayItemReadonly = function displayItemReadonly(dataObject) {
+    this.isNewItem = false;
+    if (this.form) this.form.displayOnly(dataObject);
+  };
+
+  _proto.getName = function getName() {
+    return this.objDef.displayName;
+  };
+
+  _proto.setContainedBy = function setContainedBy(container) {
+    throw new Error("Method not implemented.");
+  };
+
+  _proto.addEventListener = function addEventListener(listener) {
+    throw new Error("Method not implemented.");
+  };
+
+  _proto.hasChanged = function hasChanged() {
+    var result = false;
+    if (this.form) result = this.form.hasChanged();
+    return result;
+  };
+
+  _proto.getUIConfig = function getUIConfig() {
+    throw new Error("Method not implemented.");
+  };
+
+  _proto.getDataSourceKeyId = function getDataSourceKeyId() {
+    throw new Error("Method not implemented.");
+  };
+
+  _proto.clearDisplay = function clearDisplay() {
+    this.isNewItem = false;
+    if (this.form) this.form.reset();
+  };
+
+  _proto.clearReadOnly = function clearReadOnly() {
+    if (this.form) this.form.clearReadOnly();
+  };
+
+  _proto.setReadOnly = function setReadOnly() {
+    if (this.form) this.form.setReadOnly();
+  };
+
+  _proto.isReadOnly = function isReadOnly() {
+    var result = false;
+    if (this.form) result = this.form.isReadOnly();
+    return result;
+  };
+
+  _proto.createItem = function createItem() {
+    var _this$form;
+
+    this.currentItem = {};
+    logger("Creating new item with form " + ((_this$form = this.form) == null ? void 0 : _this$form.getId()));
+
+    if (this.form) {
+      this.isNewItem = true;
+      this.currentItem = this.form.startCreateNew();
+    }
+
+    return this.currentItem;
+  };
+
+  _proto.displayItem = function displayItem(dataObj) {
+    this.currentItem = dataObj;
+    this.isNewItem = false;
+
+    if (this.hasPermissionToUpdateItem(dataObj)) {
+      if (this.form) this.form.startUpdate(dataObj);
+    } else {
+      if (this.form) this.form.displayOnly(dataObj);
+    }
+  };
+
+  _proto.hidden = function hidden() {
+    if (this.form) this.form.setIsVisible(false);
+  };
+
+  _proto.show = function show() {
+    if (this.form) this.form.setIsVisible(true);
+  };
+
+  _proto.render = function render() {
+    this.displayItem(this.currentItem);
+    this.show();
+  };
+
+  _proto.hasPermissionToDeleteItem = function hasPermissionToDeleteItem(item) {
+    return this.permissionChecker.hasPermissionToDeleteItem(item);
+  };
+
+  _proto.hasPermissionToUpdateItem = function hasPermissionToUpdateItem(item) {
+    return this.permissionChecker.hasPermissionToUpdateItem(item);
+  };
+
+  _proto.getForm = function getForm() {
+    return this.form;
+  };
+
+  _proto.handleActionItem = function handleActionItem(actionName, selectedItem) {
+    throw new Error("Handle action item not implemented for " + actionName);
+  };
+
+  _proto.isDisplayingItem = function isDisplayingItem(dataObj) {
+    var result = false;
+
+    if (this.currentItem) {
+      if (this.form) {
+        result = this.form.isDisplayingItem(dataObj);
+      }
+    }
+
+    return result;
+  };
+
+  _proto.formChanged = function formChanged(event, formValues) {
+    // catch form events for user leaving the form
+    switch (event.eventType) {
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLING:
+        {
+          logger("Form is cancelling");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLING_ABORTED:
+        {
+          logger("Form is cancelling - aborted");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.CANCELLED:
+        {
+          logger("Form is cancelled - resetting");
+          this.currentItem = formValues;
+          if (this.forwarder && this.view) this.forwarder.cancelled(this.view, this.currentItem);
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETING:
+        {
+          logger("Form is deleting");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETE_ABORTED:
+        {
+          logger("Form is deleting - aborted");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.DELETED:
+        {
+          logger("Form is deleted - resetting");
+          this.currentItem = formValues;
+          if (this.forwarder && this.view) this.forwarder.deletedItem(this.view, this.currentItem); // user is deleting the object, will become invisible
+
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVE_ABORTED:
+        {
+          logger("Form save cancelled");
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVED:
+        {
+          logger("Form is saved with data");
+
+          if (this.form) {
+            var _this$form2;
+
+            var formattedObj = (_this$form2 = this.form) == null ? void 0 : _this$form2.getFormattedDataObject();
+
+            if (this.isNewItem) {
+              if (this.forwarder && this.view) this.forwarder.saveNewItem(this.view, formattedObj);
+            } else {
+              if (this.forwarder && this.view) this.forwarder.updateItem(this.view, formattedObj);
+            }
+
+            this.isNewItem = false;
+          }
+
+          break;
+        }
+
+      case _form_FormListener__WEBPACK_IMPORTED_MODULE_1__.FormEventType.SAVING:
+        {
+          logger("Form is saving");
+          break;
+        }
+    }
+
+    return false;
+  };
+
+  return FormDetailViewRenderer;
+}();
+
+/***/ }),
+
+/***/ "./src/ui-framework/view/renderer/ListViewRenderer.ts":
+/*!************************************************************!*\
+  !*** ./src/ui-framework/view/renderer/ListViewRenderer.ts ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ListViewRenderer": () => (/* binding */ ListViewRenderer)
+/* harmony export */ });
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+var avLogger = debug__WEBPACK_IMPORTED_MODULE_2___default()('list-view-renderer');
+var ListViewRenderer = /*#__PURE__*/function () {
+  function ListViewRenderer(view, eventHandler) {
+    this.view = view;
+    this.eventHandler = eventHandler;
+  }
+
+  var _proto = ListViewRenderer.prototype;
+
+  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
+    var _this = this;
+
+    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
+    var uiConfig = this.view.getCollectionUIConfig();
+    var dataSourceKeyId = this.view.getDataSourceKeyId();
+    avLogger("view " + this.view.getName() + ": creating List item");
+    avLogger(item);
+    var resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
+    var childEl = document.createElement(uiConfig.resultsElementType);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.resultsClasses);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(childEl, uiConfig.resultsElementAttributes);
+    childEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+    childEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId); // the content may be structured
+
+    var textEl = childEl;
+
+    if (uiConfig.detail.containerClasses) {
+      var contentEl = document.createElement('div');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(contentEl, uiConfig.detail.containerClasses);
+      contentEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+      contentEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+      textEl = document.createElement(uiConfig.detail.textElementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(textEl, uiConfig.detail.textElementClasses);
+      textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+      textEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+      contentEl.appendChild(textEl);
+
+      if (uiConfig.detail.background) {
+        var imgEl = document.createElement(uiConfig.detail.background.elementType);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(imgEl, uiConfig.detail.background.elementClasses);
+        imgEl.setAttribute('src', this.view.getBackgroundImageForItemInNamedCollection(collectionName, item));
+        childEl.appendChild(imgEl);
+      }
+
+      var buttonsEl = document.createElement('div');
+      contentEl.appendChild(buttonsEl);
+
+      if (uiConfig.detail.badge) {
+        var badgeValue = this.view.getBadgeValueForItemInNamedCollection(collectionName, item);
+
+        if (badgeValue > 0) {
+          var badgeEl = document.createElement(uiConfig.detail.badge.elementType);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(badgeEl, uiConfig.detail.badge.elementClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(badgeEl, uiConfig.detail.badge.elementAttributes);
+          badgeEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+          badgeEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+          buttonsEl.appendChild(badgeEl);
+          badgeEl.innerHTML = "&nbsp;&nbsp;&nbsp;" + badgeValue + "&nbsp;&nbsp;&nbsp;";
+        }
+      }
+
+      if (uiConfig.extraActions) {
+        uiConfig.extraActions.forEach(function (extraAction) {
+          var action = document.createElement('button');
+          action.setAttribute('type', 'button');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+
+          if (extraAction.buttonText) {
+            action.innerHTML = extraAction.buttonText;
+          }
+
+          if (extraAction.iconClasses) {
+            var iconEl = document.createElement('i');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+            iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+            iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+            iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+            action.appendChild(iconEl);
+          }
+
+          action.setAttribute(uiConfig.keyId, resultDataKeyId);
+          action.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+          action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+          action.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            _this.eventHandler.eventActionClicked(event);
+          });
+          buttonsEl.appendChild(action);
+        });
+      }
+
+      if (uiConfig.detail.delete && canDeleteItem) {
+        var deleteButtonEl = document.createElement('button');
+        deleteButtonEl.setAttribute('type', 'button');
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(deleteButtonEl, uiConfig.detail.delete.buttonClasses);
+
+        if (uiConfig.detail.delete.buttonText) {
+          deleteButtonEl.innerHTML = uiConfig.detail.delete.buttonText;
+        }
+
+        if (uiConfig.detail.delete.iconClasses) {
+          var iconEl = document.createElement('i');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, uiConfig.detail.delete.iconClasses);
+          iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+          iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+          deleteButtonEl.appendChild(iconEl);
+        }
+
+        deleteButtonEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+        deleteButtonEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+        deleteButtonEl.addEventListener('click', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          _this.eventHandler.eventDeleteClickItem(event);
+        });
+        buttonsEl.appendChild(deleteButtonEl);
+      }
+
+      childEl.appendChild(contentEl);
+
+      if (uiConfig.detail.drag) {
+        childEl.setAttribute('draggable', 'true');
+        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
+      } // add selection actions
+
+
+      if (uiConfig.detail.select) {
+        childEl.addEventListener('click', this.eventHandler.eventClickItem);
+      }
+    } // add the key ids for selection
+
+
+    textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+    textEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+    var displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
+    textEl.innerHTML = displayText; // add icons
+
+    if (uiConfig.detail.icons) {
+      var icons = uiConfig.detail.icons(collectionName, item);
+      icons.forEach(function (icon) {
+        var iconEl = document.createElement('i');
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, icon);
+        iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+        iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+        textEl.appendChild(iconEl);
+      });
+    } // add modifiers for patient state
+
+
+    if (uiConfig.modifiers) {
+      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
+      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
+
+      switch (modifier) {
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal:
+          {
+            avLogger("view " + this.view.getName() + ": normal item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.normal);
+
+            if (uiConfig.icons && uiConfig.icons.normal) {
+              var _iconEl = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl, uiConfig.icons.normal);
+
+              _iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+              _iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.normal, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
+
+                  if (uiConfig.icons && uiConfig.icons.warning) {
+                    var _iconEl2 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl2, uiConfig.icons.warning);
+
+                    _iconEl2.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl2.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl2);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (uiConfig.icons && uiConfig.icons.active) {
+                    var _iconEl3 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl3, uiConfig.icons.active);
+
+                    _iconEl3.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl3.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl3);
+                  }
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+          {
+            avLogger("view " + this.view.getName() + ": active item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.active);
+
+            if (uiConfig.icons && uiConfig.icons.active) {
+              var _iconEl4 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl4, uiConfig.icons.active);
+
+              _iconEl4.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+              _iconEl4.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl4);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.active, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
+
+                  if (uiConfig.icons && uiConfig.icons.warning) {
+                    var _iconEl5 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl5, uiConfig.icons.warning);
+
+                    _iconEl5.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl5.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl5);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive:
+          {
+            avLogger("view " + this.view.getName() + ": inactive item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.inactive);
+
+            if (uiConfig.icons && uiConfig.icons.inactive) {
+              var _iconEl6 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl6, uiConfig.icons.inactive);
+
+              _iconEl6.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+              _iconEl6.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl6);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  if (uiConfig.icons && uiConfig.icons.warning) {
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.inactive, false);
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
+
+                    var _iconEl7 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl7, uiConfig.icons.warning);
+
+                    _iconEl7.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl7.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl7);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (uiConfig.icons && uiConfig.icons.active) {
+                    var _iconEl8 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(_iconEl8, uiConfig.icons.active);
+
+                    _iconEl8.setAttribute(uiConfig.keyId, resultDataKeyId);
+
+                    _iconEl8.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl8);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+      }
+    }
+
+    return childEl;
+  };
+
+  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
+    var _this2 = this;
+
+    avLogger("view " + this.view.getName() + ": creating Results");
+    avLogger(newState); // remove the previous items from list
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].removeAllChildren(containerEl); // add the new children
+
+    newState.map(function (item, index) {
+      var childEl = _this2.createDisplayElementForCollectionItem(collectionName, item); // add draggable actions
+
+
+      avLogger("view " + _this2.view.getName() + ":  Adding child " + _this2.view.getIdForItemInNamedCollection(collectionName, item));
+      containerEl.appendChild(childEl);
+    });
+  };
+
+  return ListViewRenderer;
+}();
 
 /***/ }),
 

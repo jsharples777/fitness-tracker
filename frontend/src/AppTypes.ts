@@ -41,7 +41,8 @@ export const VIEW_NAME = {
     chatLogs: 'chatLogs',
     favouriteUsers: 'favouriteUsers',
     exerciseTypes: 'exerciseTypes',
-    userSearch: 'userSearch'
+    userSearch: 'userSearch',
+    workouts: 'workouts'
 }
 
 export const VIEW_CONTAINER = {

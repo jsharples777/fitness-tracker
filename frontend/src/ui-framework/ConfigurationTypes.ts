@@ -123,4 +123,20 @@ export type ViewPrefs = {
     sidebar?:SidebarPrefs
 }
 
+export enum RowPosition {
+    first,
+    last
+}
+
+export type CarouselDOMConfig = {
+    itemsPerRow: number,
+    rowContainer: BasicElement,
+    activeRow: BasicElement,
+    activeRowPosition:RowPosition,
+    row: BasicElement,
+    multipleItemsPerRowContainer?:BasicElement,
+    actionContainer:BasicElement,
+    collectionConfig: CollectionViewDOMConfig
+}
+
 

@@ -9,7 +9,7 @@ import {CollectionViewListener} from "../../ui-framework/view/interface/Collecti
 import {KeyType, Modifier, CollectionViewDOMConfig} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {View} from "../../ui-framework/view/interface/View";
-import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {ListViewRenderer} from "../../ui-framework/view/renderer/ListViewRenderer";
 import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 
 const vLogger = debug('user-search-sidebar');

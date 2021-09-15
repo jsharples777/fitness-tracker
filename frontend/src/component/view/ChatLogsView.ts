@@ -10,7 +10,7 @@ import {View} from "../../ui-framework/view/interface/View";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import {isSame, isSameRoom} from "../../util/EqualityFunctions";
-import {ListViewRenderer} from "../../ui-framework/view/delegate/ListViewRenderer";
+import {ListViewRenderer} from "../../ui-framework/view/renderer/ListViewRenderer";
 import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
 import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
 
