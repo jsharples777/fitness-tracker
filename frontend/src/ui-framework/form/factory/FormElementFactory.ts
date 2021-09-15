@@ -8,6 +8,7 @@ import {FieldListener} from "../field/FieldListener";
 
 export type FormFactoryResponse = {
     form: HTMLFormElement,
+    unsavedMessage: HTMLElement,
     fields: HTMLInputElement[],
     textFields:HTMLTextAreaElement[],
     selectFields:HTMLSelectElement[],
@@ -76,6 +77,12 @@ export class FormElementFactory {
             }[] = [];
         let formSelectElements:HTMLSelectElement[] = [];
 
+        let unsavedMessage:HTMLElement = document.createElement(formConfig.unsavedChanges.elementType);
+        browserUtil.addRemoveClasses(unsavedMessage,formConfig.unsavedChanges.elementClasses);
+        if (formConfig.unsavedChanges.elementAttributes) browserUtil.addAttributes(unsavedMessage,formConfig.unsavedChanges.elementAttributes);
+
+        formEl.appendChild(unsavedMessage);
+
         formConfig.fieldGroups.forEach((group:FieldGroup) => {
             // if the group has a container make that, otherwise the form is the container
             let containerEl = formEl;
@@ -142,6 +149,7 @@ export class FormElementFactory {
 
         let result:FormFactoryResponse = {
             form: formEl,
+            unsavedMessage:unsavedMessage,
             fields: formInputElements,
             selectFields:formSelectElements,
             radioButtonGroups:formRBGElements,

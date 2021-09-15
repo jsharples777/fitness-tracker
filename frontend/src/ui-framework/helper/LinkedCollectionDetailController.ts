@@ -6,6 +6,8 @@ import {DetailViewListener} from "../view/interface/DetailViewListener";
 
 import debug from 'debug';
 import {DataObjectController} from "../../model/DataObjectController";
+import {AlertEvent, AlertListener, AlertType} from "../alert/AlertListener";
+import {AlertManager} from "../alert/AlertManager";
 
 const logger = debug('linked-controller');
 const dlogger = debug('linked-controller-detail');
@@ -46,6 +48,26 @@ class ChildViewListenerDelegate implements DetailViewListener {
 
     updateItem(view: DetailView, dataObj: any): void {
         this.controller.updateItem(view,dataObj);
+    }
+}
+
+export class ChangeDataObjectDelegate implements AlertListener {
+    protected callback:any;
+
+    constructor(callback:any) {
+        this.callback = callback;
+    }
+
+    public shouldDiscardChanges() {
+        AlertManager.getInstance().startAlert(this,'Discard Changes','There are unsaved changes.  Discard?',{});
+
+    }
+
+
+    completed(event: AlertEvent): void {
+        if (event.outcome === AlertType.confirmed) {
+            this.callback();
+        }
     }
 
 }
@@ -153,13 +175,14 @@ export class LinkedCollectionDetailController extends DataObjectController imple
         // prevent selection if the children views have modified this item
         let canProceedWithSelection:boolean = true;
         this.children.forEach((childView) => {
-            if (childView.isDisplayingItem(selectedItem)) {
-                if (childView.hasChanged()) {
-                    dlogger(`child view ${childView.getName()} has changed - cancelling`);
-                    canProceedWithSelection = false;
-                }
+            if (childView.hasChanged()) {
+                dlogger(`child view ${childView.getName()} has changed - cancelling`);
+                canProceedWithSelection = false;
             }
         });
+        if (!canProceedWithSelection) {
+            canProceedWithSelection = confirm(`${view.getName()} - unsaved changes.  Discard them?`);
+        }
         return canProceedWithSelection;
     }
 
@@ -192,16 +215,26 @@ export class LinkedCollectionDetailController extends DataObjectController imple
     protected _startNewObject(): boolean {
         logger(`Handling start new object`);
         // assume the first detail view will create the object for us
-        let result = false;
+        let canProceedWithCreateNew:boolean = true;
+        this.children.forEach((childView) => {
+            if (childView.hasChanged()) {
+                dlogger(`child view ${childView.getName()} has changed - cancelling`);
+                canProceedWithCreateNew = false;
+            }
+        });
+        if (!canProceedWithCreateNew) {
+            canProceedWithCreateNew = confirm(`There are unsaved changes.  Discard them?`);
+        }
+
         if (this.children.length > 0) {
             logger(`Handling start new object with child view ${this.children[0].getName()}`);
             let dataObj = this.children[0].createItem();
             if (dataObj) {
-                result = true;
+                canProceedWithCreateNew = true;
                 this.children[0].show();
             }
         }
-        return result;
+        return canProceedWithCreateNew;
     }
 
 }

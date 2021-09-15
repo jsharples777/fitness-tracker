@@ -77,7 +77,19 @@ export class BasicFormImplementation extends AbstractForm {
 
             }
         }
+    }
 
+    protected clearUnsavedMessage() {
+        if (this.factoryElements) this.factoryElements.unsavedMessage.innerHTML = '';
+    }
+
+    protected setUnsavedMessage() {
+        if (this.factoryElements && this.uiDef && this.uiDef.unsavedChanges.innerHTML) {
+            this.factoryElements.unsavedMessage.innerHTML = this.uiDef.unsavedChanges.innerHTML;
+        }
+        else if (this.factoryElements) {
+            this.factoryElements.unsavedMessage.innerHTML = 'Pending changes to save';
+        }
     }
 
     protected _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModiferFields:boolean = false): void {
@@ -92,17 +104,27 @@ export class BasicFormImplementation extends AbstractForm {
         // create field elements for each field element, and the basic map
         logger(`Converting field input elements to Field objects`);
         this.factoryElements.fields.forEach((fieldEl) => {
+            fieldEl.addEventListener('keyup',(event) => {
+                dlogger(`key up in form ${this.getName()}`);
+                this.hasChangedBoolean = true;
+                this.setUnsavedMessage();
+            });
             this.setupFieldObject(fieldEl);
         });
 
         logger(`Converting field text area elements to Field objects`);
         this.factoryElements.textFields.forEach((fieldEl) => {
+            fieldEl.addEventListener('keyup',(event) => {
+                dlogger(`key up in form ${this.getName()}`);
+                this.hasChangedBoolean = true;
+                this.setUnsavedMessage();
+            });
             this.setupFieldObject(fieldEl);
         });
 
         logger(`Converting field select elements to Field objects`);
         this.factoryElements.selectFields.forEach((fieldEl) => {
-            this.setupFieldObject(fieldEl);
+            dlogger(`key up in form ${this.getName()}`);
         });
 
         logger(`Converting field rbg elements to Field objects`);
@@ -118,6 +140,7 @@ export class BasicFormImplementation extends AbstractForm {
     }
 
     protected _reset(): void {
+        this.clearUnsavedMessage();
     }
 
     protected validateField(fieldDef: FieldDefinition) {
@@ -137,6 +160,8 @@ export class BasicFormImplementation extends AbstractForm {
 
 
     protected _startCreate(): void {
+        this.clearUnsavedMessage();
+
         // we have a new object, there might be some values to generate
         this.dataObjDef.fields.forEach((fieldDef) => {
             if (fieldDef.generator && fieldDef.generator.onCreation) {
@@ -163,6 +188,8 @@ export class BasicFormImplementation extends AbstractForm {
     }
 
     protected _startUpdate(): void {
+        this.clearUnsavedMessage();
+
         // we have an existing object, there might be some values to generate
         logger(this.currentDataObj);
         this.dataObjDef.fields.forEach((fieldDef) => {
@@ -181,6 +208,8 @@ export class BasicFormImplementation extends AbstractForm {
     }
 
     protected _displayOnly(): void {
+        this.clearUnsavedMessage();
+
         // we have an existing object, there might be some values to generate
         logger(this.currentDataObj);
         this.dataObjDef.fields.forEach((fieldDef) => {
@@ -310,6 +339,7 @@ export class BasicFormImplementation extends AbstractForm {
     protected _saveFinishedOrAborted(): void {
         dlogger(`save is finished or aborted`);
         this.enableButtons();
+        this.clearUnsavedMessage();
     }
 
     protected _saveIsActive(): void {

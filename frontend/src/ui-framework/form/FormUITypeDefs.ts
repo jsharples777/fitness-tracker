@@ -100,6 +100,7 @@ export type FormUIDefinition = {
     id:string,
     displayName:string,
     classes?:string,
+    unsavedChanges:BasicElement,
     fieldGroups:FieldGroup[],
     buttonsContainedBy?:BasicElement
     deleteButton?:BasicButtonElement,// should be clickable
