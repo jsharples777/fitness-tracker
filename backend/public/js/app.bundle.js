@@ -33,7 +33,7 @@ __webpack_require__.r(__webpack_exports__);
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'socket-listener';
+localStorage.debug = 'linked-controller linked-controller-detail';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
@@ -7022,6 +7022,7 @@ var AbstractForm = /*#__PURE__*/function () {
 
   _proto.valueChanged = function valueChanged(formId, field, newValue) {
     this.hasChangedBoolean = true;
+    this.setUnsavedMessage();
     logger("Form has changed");
   };
 
@@ -7084,6 +7085,7 @@ var AbstractForm = /*#__PURE__*/function () {
 
   _proto.reset = function reset() {
     logger("Resetting form");
+    this.clearUnsavedMessage();
     this.isDisplayOnly = false;
     this.hasChangedBoolean = false; // inform the listeners
 
@@ -7187,6 +7189,7 @@ var AbstractForm = /*#__PURE__*/function () {
   };
 
   _proto.startCreateNew = function startCreateNew() {
+    this.clearUnsavedMessage();
     logger("Starting create new");
     this.reset();
     this.currentDataObj = {};
@@ -7212,6 +7215,7 @@ var AbstractForm = /*#__PURE__*/function () {
   };
 
   _proto.startUpdate = function startUpdate(objectToEdit) {
+    this.clearUnsavedMessage();
     logger("Starting modify existing on ");
     this.isDisplayOnly = false;
     this.hasChangedBoolean = false;
@@ -7236,6 +7240,7 @@ var AbstractForm = /*#__PURE__*/function () {
   };
 
   _proto.displayOnly = function displayOnly(objectToView) {
+    this.clearUnsavedMessage();
     logger("Starting display only ");
     logger(objectToView);
     this.isDisplayOnly = true;
@@ -7288,6 +7293,7 @@ var AbstractForm = /*#__PURE__*/function () {
         {
           logger("Form is cancelled - resetting"); // user cancelled the form, will become invisible
 
+          this.isDisplayOnly = true;
           this.reset(); // reset the form state
 
           this.setReadOnly();
@@ -7646,6 +7652,18 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     }
   };
 
+  _proto.clearUnsavedMessage = function clearUnsavedMessage() {
+    if (this.factoryElements) this.factoryElements.unsavedMessage.innerHTML = '';
+  };
+
+  _proto.setUnsavedMessage = function setUnsavedMessage() {
+    if (this.factoryElements && this.uiDef && this.uiDef.unsavedChanges.innerHTML) {
+      this.factoryElements.unsavedMessage.innerHTML = this.uiDef.unsavedChanges.innerHTML;
+    } else if (this.factoryElements) {
+      this.factoryElements.unsavedMessage.innerHTML = 'Pending changes to save';
+    }
+  };
+
   _proto._initialise = function _initialise(displayOrder, hasDeleteButton, hideModiferFields) {
     var _this2 = this;
 
@@ -7663,15 +7681,29 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
 
     logger("Converting field input elements to Field objects");
     this.factoryElements.fields.forEach(function (fieldEl) {
+      fieldEl.addEventListener('keyup', function (event) {
+        dlogger("key up in form " + _this2.getName());
+        _this2.hasChangedBoolean = true;
+
+        _this2.setUnsavedMessage();
+      });
+
       _this2.setupFieldObject(fieldEl);
     });
     logger("Converting field text area elements to Field objects");
     this.factoryElements.textFields.forEach(function (fieldEl) {
+      fieldEl.addEventListener('keyup', function (event) {
+        dlogger("key up in form " + _this2.getName());
+        _this2.hasChangedBoolean = true;
+
+        _this2.setUnsavedMessage();
+      });
+
       _this2.setupFieldObject(fieldEl);
     });
     logger("Converting field select elements to Field objects");
     this.factoryElements.selectFields.forEach(function (fieldEl) {
-      _this2.setupFieldObject(fieldEl);
+      dlogger("key up in form " + _this2.getName());
     });
     logger("Converting field rbg elements to Field objects");
     this.factoryElements.radioButtonGroups.forEach(function (rbg) {
@@ -7683,7 +7715,9 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     logger(this.fields);
   };
 
-  _proto._reset = function _reset() {};
+  _proto._reset = function _reset() {
+    this.clearUnsavedMessage();
+  };
 
   _proto.validateField = function validateField(fieldDef) {
     var field = this.getFieldFromDataFieldId(fieldDef.id);
@@ -7702,8 +7736,9 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
   };
 
   _proto._startCreate = function _startCreate() {
-    var _this3 = this; // we have a new object, there might be some values to generate
+    var _this3 = this;
 
+    this.clearUnsavedMessage(); // we have a new object, there might be some values to generate
 
     this.dataObjDef.fields.forEach(function (fieldDef) {
       if (fieldDef.generator && fieldDef.generator.onCreation) {
@@ -7732,8 +7767,9 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
   };
 
   _proto._startUpdate = function _startUpdate() {
-    var _this4 = this; // we have an existing object, there might be some values to generate
+    var _this4 = this;
 
+    this.clearUnsavedMessage(); // we have an existing object, there might be some values to generate
 
     logger(this.currentDataObj);
     this.dataObjDef.fields.forEach(function (fieldDef) {
@@ -7756,8 +7792,9 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
   };
 
   _proto._displayOnly = function _displayOnly() {
-    var _this5 = this; // we have an existing object, there might be some values to generate
+    var _this5 = this;
 
+    this.clearUnsavedMessage(); // we have an existing object, there might be some values to generate
 
     logger(this.currentDataObj);
     this.dataObjDef.fields.forEach(function (fieldDef) {
@@ -7910,6 +7947,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
   _proto._saveFinishedOrAborted = function _saveFinishedOrAborted() {
     dlogger("save is finished or aborted");
     this.enableButtons();
+    this.clearUnsavedMessage();
   };
 
   _proto._saveIsActive = function _saveIsActive() {
@@ -8681,6 +8719,10 @@ var FormElementFactory = /*#__PURE__*/function () {
     var formTAElements = [];
     var formRBGElements = [];
     var formSelectElements = [];
+    var unsavedMessage = document.createElement(formConfig.unsavedChanges.elementType);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(unsavedMessage, formConfig.unsavedChanges.elementClasses);
+    if (formConfig.unsavedChanges.elementAttributes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(unsavedMessage, formConfig.unsavedChanges.elementAttributes);
+    formEl.appendChild(unsavedMessage);
     formConfig.fieldGroups.forEach(function (group) {
       // if the group has a container make that, otherwise the form is the container
       var containerEl = formEl;
@@ -8759,6 +8801,7 @@ var FormElementFactory = /*#__PURE__*/function () {
     buttonContainer.appendChild(submitButtonEl);
     var result = {
       form: formEl,
+      unsavedMessage: unsavedMessage,
       fields: formInputElements,
       selectFields: formSelectElements,
       radioButtonGroups: formRBGElements,
@@ -10745,6 +10788,15 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
       id: dataObjDef.id,
       displayName: dataObjDef.displayName,
       fieldGroups: [fieldGroup],
+      unsavedChanges: {
+        elementType: 'div',
+        elementClasses: 'invalid-feedback text-right col-md-12 col-lg-9 offset-lg-3',
+        elementAttributes: [{
+          name: 'style',
+          value: 'display:block'
+        }],
+        innerHTML: "Pending changes to " + dataObjDef.displayName
+      },
       buttonsContainedBy: {
         elementType: 'div',
         elementClasses: 'd-flex w-100 justify-space-between'
@@ -10794,11 +10846,14 @@ var BootstrapFormConfigHelper = /*#__PURE__*/function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ChangeDataObjectDelegate": () => (/* binding */ ChangeDataObjectDelegate),
 /* harmony export */   "LinkedCollectionDetailController": () => (/* binding */ LinkedCollectionDetailController)
 /* harmony export */ });
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _model_DataObjectController__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../model/DataObjectController */ "./src/model/DataObjectController.ts");
+/* harmony import */ var _alert_AlertListener__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../alert/AlertListener */ "./src/ui-framework/alert/AlertListener.ts");
+/* harmony import */ var _alert_AlertManager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -10822,6 +10877,8 @@ function _setPrototypeOf(o, p) {
 
   return _setPrototypeOf(o, p);
 }
+
+
 
 
 
@@ -10874,6 +10931,25 @@ var ChildViewListenerDelegate = /*#__PURE__*/function () {
   return ChildViewListenerDelegate;
 }();
 
+var ChangeDataObjectDelegate = /*#__PURE__*/function () {
+  function ChangeDataObjectDelegate(callback) {
+    this.callback = callback;
+  }
+
+  var _proto2 = ChangeDataObjectDelegate.prototype;
+
+  _proto2.shouldDiscardChanges = function shouldDiscardChanges() {
+    _alert_AlertManager__WEBPACK_IMPORTED_MODULE_3__.AlertManager.getInstance().startAlert(this, 'Discard Changes', 'There are unsaved changes.  Discard?', {});
+  };
+
+  _proto2.completed = function completed(event) {
+    if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_2__.AlertType.confirmed) {
+      this.callback();
+    }
+  };
+
+  return ChangeDataObjectDelegate;
+}();
 var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectController) {
   _inheritsLoose(LinkedCollectionDetailController, _DataObjectController);
 
@@ -10891,24 +10967,24 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     return _this;
   }
 
-  var _proto2 = LinkedCollectionDetailController.prototype;
+  var _proto3 = LinkedCollectionDetailController.prototype;
 
-  _proto2.addLinkedDetailView = function addLinkedDetailView(childView) {
+  _proto3.addLinkedDetailView = function addLinkedDetailView(childView) {
     logger("Adding child view " + childView.getName());
     this.children.push(childView);
     this.delegate.addView(childView); // this delegate will only pass us the unique detail view events (save, new, etc)
   };
 
-  _proto2.initialise = function initialise() {// call when all views are ready
+  _proto3.initialise = function initialise() {// call when all views are ready
   };
 
-  _proto2.canDeleteItem = function canDeleteItem(view, selectedItem) {
+  _proto3.canDeleteItem = function canDeleteItem(view, selectedItem) {
     logger("Handling delete item from view " + view.getName());
     dlogger(selectedItem);
     return this.parentView.hasPermissionToDeleteItemInNamedCollection('', selectedItem);
   };
 
-  _proto2.documentLoaded = function documentLoaded(view) {
+  _proto3.documentLoaded = function documentLoaded(view) {
     logger("Handling document loaded view " + view.getName()); // let the children know
 
     this.children.forEach(function (childView) {
@@ -10916,7 +10992,7 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     });
   };
 
-  _proto2.hideRequested = function hideRequested(view) {
+  _proto3.hideRequested = function hideRequested(view) {
     // let the children know
     logger("Handling hide  from view " + view.getName());
     this.children.forEach(function (childView) {
@@ -10924,7 +11000,7 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     });
   };
 
-  _proto2.itemAction = function itemAction(view, actionName, selectedItem) {
+  _proto3.itemAction = function itemAction(view, actionName, selectedItem) {
     logger("Handling item action " + actionName + " from view " + view.getName());
     dlogger(selectedItem);
     this.children.forEach(function (childView) {
@@ -10932,7 +11008,7 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     });
   };
 
-  _proto2.itemDeleted = function itemDeleted(view, selectedItem) {
+  _proto3.itemDeleted = function itemDeleted(view, selectedItem) {
     logger("Handling item deleted from view " + view.getName());
     dlogger(selectedItem);
     this.children.forEach(function (childView) {
@@ -10942,7 +11018,7 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     });
   };
 
-  _proto2.itemDeselected = function itemDeselected(view, selectedItem) {
+  _proto3.itemDeselected = function itemDeselected(view, selectedItem) {
     logger("Handling item deselected from view " + view.getName());
     dlogger(selectedItem);
     this.children.forEach(function (childView) {
@@ -10952,13 +11028,13 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     });
   };
 
-  _proto2.itemDragStarted = function itemDragStarted(view, selectedItem) {// nothing to do here
+  _proto3.itemDragStarted = function itemDragStarted(view, selectedItem) {// nothing to do here
   };
 
-  _proto2.itemDropped = function itemDropped(view, droppedItem) {// nothing to do here
+  _proto3.itemDropped = function itemDropped(view, droppedItem) {// nothing to do here
   };
 
-  _proto2.itemSelected = function itemSelected(view, selectedItem) {
+  _proto3.itemSelected = function itemSelected(view, selectedItem) {
     logger("Handling item selected from view " + view.getName());
     dlogger(selectedItem);
     this.children.forEach(function (childView) {
@@ -10966,7 +11042,7 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     });
   };
 
-  _proto2.showRequested = function showRequested(view) {
+  _proto3.showRequested = function showRequested(view) {
     logger("Handling show from view " + view.getName()); // let the children know
 
     this.children.forEach(function (childView) {
@@ -10974,7 +11050,7 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
     });
   };
 
-  _proto2.canSelectItem = function canSelectItem(view, selectedItem) {
+  _proto3.canSelectItem = function canSelectItem(view, selectedItem) {
     logger("Handling can select item from view " + view.getName());
     dlogger(selectedItem); // are we currently in the middle of creating a new object?
 
@@ -10982,56 +11058,69 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
 
     var canProceedWithSelection = true;
     this.children.forEach(function (childView) {
-      if (childView.isDisplayingItem(selectedItem)) {
-        if (childView.hasChanged()) {
-          dlogger("child view " + childView.getName() + " has changed - cancelling");
-          canProceedWithSelection = false;
-        }
+      if (childView.hasChanged()) {
+        dlogger("child view " + childView.getName() + " has changed - cancelling");
+        canProceedWithSelection = false;
       }
     });
+
+    if (!canProceedWithSelection) {
+      canProceedWithSelection = confirm(view.getName() + " - unsaved changes.  Discard them?");
+    }
+
     return canProceedWithSelection;
   };
 
-  _proto2.cancelled = function cancelled(view, dataObj) {
+  _proto3.cancelled = function cancelled(view, dataObj) {
     logger("Handling cancelled from child view " + view.getName());
     dlogger(dataObj);
     this.isCreatingNew = false;
   };
 
-  _proto2.deletedItem = function deletedItem(view, dataObj) {
+  _proto3.deletedItem = function deletedItem(view, dataObj) {
     logger("Handling deleted from child view " + view.getName());
     dlogger(dataObj);
     this.informListenersOfDelete(dataObj);
   };
 
-  _proto2.saveNewItem = function saveNewItem(view, dataObj) {
+  _proto3.saveNewItem = function saveNewItem(view, dataObj) {
     logger("Handling save new from child view " + view.getName());
     dlogger(dataObj);
     this.informListenersOfCreate(dataObj);
   };
 
-  _proto2.updateItem = function updateItem(view, dataObj) {
+  _proto3.updateItem = function updateItem(view, dataObj) {
     logger("Handling update from child view " + view.getName());
     dlogger(dataObj);
     this.informListenersOfUpdate(dataObj);
   };
 
-  _proto2._startNewObject = function _startNewObject() {
+  _proto3._startNewObject = function _startNewObject() {
     logger("Handling start new object"); // assume the first detail view will create the object for us
 
-    var result = false;
+    var canProceedWithCreateNew = true;
+    this.children.forEach(function (childView) {
+      if (childView.hasChanged()) {
+        dlogger("child view " + childView.getName() + " has changed - cancelling");
+        canProceedWithCreateNew = false;
+      }
+    });
+
+    if (!canProceedWithCreateNew) {
+      canProceedWithCreateNew = confirm("There are unsaved changes.  Discard them?");
+    }
 
     if (this.children.length > 0) {
       logger("Handling start new object with child view " + this.children[0].getName());
       var dataObj = this.children[0].createItem();
 
       if (dataObj) {
-        result = true;
+        canProceedWithCreateNew = true;
         this.children[0].show();
       }
     }
 
-    return result;
+    return canProceedWithCreateNew;
   };
 
   return LinkedCollectionDetailController;

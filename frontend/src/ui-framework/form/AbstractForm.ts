@@ -54,6 +54,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
     valueChanged(formId: String, field: FieldDefinition, newValue: string | null): void {
         this.hasChangedBoolean = true;
+        this.setUnsavedMessage();
         logger(`Form has changed`);
     }
 
@@ -93,6 +94,10 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
         this.formListeners.push(listener);
     }
 
+    protected abstract clearUnsavedMessage():void;
+
+    protected abstract setUnsavedMessage():void;
+
 
 
     protected informFormListeners(formEvent: FormEvent, dataObj?: any) {
@@ -120,6 +125,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
     public reset(): void {
         logger(`Resetting form`);
+        this.clearUnsavedMessage();
         this.isDisplayOnly = false;
         this.hasChangedBoolean = false;
 
@@ -210,6 +216,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     }
 
     public startCreateNew(): any {
+        this.clearUnsavedMessage();
         logger(`Starting create new`);
         this.reset();
         this.currentDataObj = {};
@@ -232,6 +239,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
 
     public startUpdate(objectToEdit: any): void {
+        this.clearUnsavedMessage();
         logger(`Starting modify existing on `);
         this.isDisplayOnly = false;
         this.hasChangedBoolean = false;
@@ -253,6 +261,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     }
 
     displayOnly(objectToView: any): void {
+        this.clearUnsavedMessage();
         logger(`Starting display only `);
         logger(objectToView);
         this.isDisplayOnly = true;
@@ -297,6 +306,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             case (FormEventType.CANCELLED): {
                 logger(`Form is cancelled - resetting`);
                 // user cancelled the form, will become invisible
+                this.isDisplayOnly = true;
                 this.reset(); // reset the form state
                 this.setReadOnly();
                 break;

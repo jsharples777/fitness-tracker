@@ -28,7 +28,8 @@ export type BasicButtonElement = {
 export type BasicElement = {
     elementType:string,
     elementAttributes?:Attribute[],
-    elementClasses:string
+    elementClasses:string,
+    innerHTML?:string
 }
 
 export const DRAGGABLE_KEY_ID:string = 'text/plain';

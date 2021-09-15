@@ -199,6 +199,12 @@ export class BootstrapFormConfigHelper {
             id: dataObjDef.id,
             displayName: dataObjDef.displayName,
             fieldGroups: [fieldGroup],
+            unsavedChanges: {
+                elementType: 'div',
+                elementClasses: 'invalid-feedback text-right col-md-12 col-lg-9 offset-lg-3',
+                elementAttributes: [{name:'style',value:'display:block'}],
+                innerHTML: `Pending changes to ${dataObjDef.displayName}`,
+            },
             buttonsContainedBy: {
                 elementType: 'div',
                 elementClasses: 'd-flex w-100 justify-space-between',
