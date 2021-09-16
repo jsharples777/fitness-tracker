@@ -333,7 +333,7 @@ i:hover {
 .root-registration {
     width: 100vw;
     height: 100vh;
-    background-image: url('../img/physiotherapy.jpeg');
+    background-image: url('public/img/physiotherapy.jpg');
     background-size: cover;
     background-repeat: repeat-y;
     padding-top: 110px;
