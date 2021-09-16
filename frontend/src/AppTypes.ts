@@ -25,6 +25,7 @@ export const NAVIGATION = {
     userSearchId: 'navigationItemUserSearch',
     exerciseTypesId: 'navigationItemExerciseTypes',
     chatId: 'navigationItemChat',
+    workoutSummary:'navigationItemWorkoutSummary'
 }
 
 export const DRAGGABLE = {
@@ -42,7 +43,8 @@ export const VIEW_NAME = {
     favouriteUsers: 'favouriteUsers',
     exerciseTypes: 'exerciseTypes',
     userSearch: 'userSearch',
-    workouts: 'workouts'
+    workouts: 'workouts',
+    workoutSummary: 'workoutSummary'
 }
 
 export const VIEW_CONTAINER = {

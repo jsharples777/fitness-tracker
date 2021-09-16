@@ -21,28 +21,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./component/view/ChatLogDetailView */ "./src/component/view/ChatLogDetailView.ts");
 /* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
 /* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
-/* harmony import */ var _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/ExerciseTypesView */ "./src/component/view/ExerciseTypesView.ts");
-/* harmony import */ var _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./ui-framework/form/validation/ValidationTypeDefs */ "./src/ui-framework/form/validation/ValidationTypeDefs.ts");
-/* harmony import */ var _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./ui-framework/form/validation/ValidationManager */ "./src/ui-framework/form/validation/ValidationManager.ts");
-/* harmony import */ var _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ui-framework/view/renderer/FormDetailViewRenderer */ "./src/ui-framework/view/renderer/FormDetailViewRenderer.ts");
-/* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
-/* harmony import */ var _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ui-framework/view/implementation/DetailViewImplementation */ "./src/ui-framework/view/implementation/DetailViewImplementation.ts");
-/* harmony import */ var _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ui-framework/helper/LinkedCollectionDetailController */ "./src/ui-framework/helper/LinkedCollectionDetailController.ts");
-/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
-/* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
-/* harmony import */ var _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./component/view/WorkoutsView */ "./src/component/view/WorkoutsView.ts");
+/* harmony import */ var _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/WorkoutsView */ "./src/component/view/WorkoutsView.ts");
+/* harmony import */ var _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/view/ExerciseTypesCompositeView */ "./src/component/view/ExerciseTypesCompositeView.ts");
+/* harmony import */ var _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/sidebar/WorkoutSummarySidebar */ "./src/component/sidebar/WorkoutSummarySidebar.ts");
+/* harmony import */ var _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/view/WorkoutSummaryView */ "./src/component/view/WorkoutSummaryView.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'carousel-renderer workouts-view';
+localStorage.debug = 'app controller-ts';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
-
-
-
-
-
-
 
 
 
@@ -66,11 +54,13 @@ var App = /*#__PURE__*/function () {
   // @ts-ignore
   // @ts-ignore
   // @ts-ignore
+  // @ts-ignore
   function App() {
     // event handlers
     this.handleShowUserSearch = this.handleShowUserSearch.bind(this);
     this.handleShowExerciseTypes = this.handleShowExerciseTypes.bind(this);
     this.handleShowChat = this.handleShowChat.bind(this);
+    this.handleShowWorkoutSummary = this.handleShowWorkoutSummary.bind(this);
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().connectToApplication(this, window.localStorage);
   }
 
@@ -80,57 +70,13 @@ var App = /*#__PURE__*/function () {
     return _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getLoggedInUserId();
   };
 
-  _proto.setupExerciseTypeViews = function setupExerciseTypeViews() {
-    /*
-      Exercise Types - sidebar, list view and linked detail view
-    */
-    this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"]();
-    var exerciseTypes = new _component_view_ExerciseTypesView__WEBPACK_IMPORTED_MODULE_11__.ExerciseTypesView();
-    this.exerciseTypesSidebar.addView(exerciseTypes, {
-      containerId: _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"].SidebarContainers.container
-    });
-    var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_15__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes);
-
-    if (exerciseTypeDefinition) {
-      var exerciseTypeDetailRenderer = new _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_14__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition, new _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__.CreatedByPermissionChecker());
-      var exerciseTypeDetailView = new _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_16__.DetailViewImplementation({
-        resultsContainerId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_CONTAINER.exerciseTypeDetail,
-        dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_4__.VIEW_NAME.exerciseTypes
-      }, exerciseTypeDetailRenderer);
-      var viewLinker = new _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__.LinkedCollectionDetailController(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes, exerciseTypes);
-      viewLinker.addLinkedDetailView(exerciseTypeDetailView);
-      this.exerciseTypesSidebar.onDocumentLoaded();
-      var startingDisplayOrder = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__.BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
-      exerciseTypeDetailView.initialise(startingDisplayOrder, false, true);
-      var detailForm = exerciseTypeDetailRenderer.getForm();
-
-      if (detailForm) {
-        logger("Setting up validation rules for " + detailForm.getId());
-        logger(detailForm);
-        this.setupValidationForExerciseTypeDetailsForm(detailForm);
-      } // setup the event handling for the create new exercise type button
-
-
-      var createExerciseType = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.BUTTON.createNewExerciseType);
-      logger("Setting up button for creating exercise types");
-      logger(createExerciseType);
-
-      if (createExerciseType) {
-        createExerciseType.addEventListener('click', function (event) {
-          logger("Asking view linker to start a new object");
-          viewLinker.startNewObject();
-        });
-      }
-
-      viewLinker.addListener(_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance());
-    }
-  };
-
   _proto.setupNavigationItemHandling = function setupNavigationItemHandling() {
     // @ts-ignore
     document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
 
     document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes); // @ts-ignore
+
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.workoutSummary).addEventListener('click', this.handleShowWorkoutSummary); // @ts-ignore
 
     this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.chatId); // @ts-ignore
 
@@ -176,98 +122,23 @@ var App = /*#__PURE__*/function () {
     this.thisEl = document.getElementById('root');
     this.setupUserSearchViews();
     this.setupChatViews();
-    this.setupExerciseTypeViews();
     this.setupNavigationItemHandling();
-    new _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_20__.WorkoutsView().onDocumentLoaded();
-    _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise();
-  };
+    this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"]();
+    new _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_12__.ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded();
+    new _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_11__.WorkoutsView().onDocumentLoaded(); // carousel view
 
-  _proto.setupValidationForExerciseTypeDetailsForm = function setupValidationForExerciseTypeDetailsForm(form) {
-    var rule = {
-      targetDataFieldId: 'sets',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.show,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'cardio'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
-    rule = {
-      targetDataFieldId: 'reps',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.show,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'cardio'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
-    rule = {
-      targetDataFieldId: 'weight',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.show,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'cardio'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
-    rule = {
-      targetDataFieldId: 'reps',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.hide,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'strength'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
-    rule = {
-      targetDataFieldId: 'sets',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.hide,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'strength'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
-    rule = {
-      targetDataFieldId: 'weight',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.hide,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'strength'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
-    rule = {
-      targetDataFieldId: 'distance',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.show,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'strength'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
-    rule = {
-      targetDataFieldId: 'distance',
-      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ConditionResponse.hide,
-      conditions: [{
-        sourceDataFieldId: 'type',
-        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_12__.ComparisonType.hasValue,
-        values: 'cardio'
-      }]
-    };
-    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_13__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    this.workoutSummarySidebar = new _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__["default"]();
+    this.workoutSummarySidebar.addView(new _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_14__.WorkoutSummaryView(), {
+      containerId: _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__["default"].SidebarContainers.container
+    });
+    this.workoutSummarySidebar.onDocumentLoaded();
+    _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise();
   };
 
   _proto.hideAllSideBars = function hideAllSideBars() {
     this.chatSidebar.eventHide(null);
     this.userSearchSidebar.eventHide(null);
+    this.exerciseTypesSidebar.eventHide(null);
   };
 
   _proto.handleShowUserSearch = function handleShowUserSearch(event) {
@@ -282,6 +153,20 @@ var App = /*#__PURE__*/function () {
     }
 
     this.userSearchSidebar.eventShow(event);
+  };
+
+  _proto.handleShowWorkoutSummary = function handleShowWorkoutSummary(event) {
+    logger('Handling Show Workout Summary');
+    event.preventDefault(); //this.hideAllSideBars();
+    // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+      // @ts-ignore
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      return;
+    }
+
+    this.workoutSummarySidebar.eventShow(event);
   };
 
   _proto.handleShowExerciseTypes = function handleShowExerciseTypes(event) {
@@ -381,7 +266,8 @@ var NAVIGATION = {
   showMyWorkouts: 'navigationItemMyWorkouts',
   userSearchId: 'navigationItemUserSearch',
   exerciseTypesId: 'navigationItemExerciseTypes',
-  chatId: 'navigationItemChat'
+  chatId: 'navigationItemChat',
+  workoutSummary: 'navigationItemWorkoutSummary'
 };
 var DRAGGABLE = {
   typeUser: 'user',
@@ -397,7 +283,8 @@ var VIEW_NAME = {
   favouriteUsers: 'favouriteUsers',
   exerciseTypes: 'exerciseTypes',
   userSearch: 'userSearch',
-  workouts: 'workouts'
+  workouts: 'workouts',
+  workoutSummary: 'workoutSummary'
 };
 var VIEW_CONTAINER = {
   exerciseTypeDetail: "exerciseTypeDetail"
@@ -892,6 +779,75 @@ var SocketListenerDelegate = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/component/renderer/WorkoutSummaryRenderer.ts":
+/*!**********************************************************!*\
+  !*** ./src/component/renderer/WorkoutSummaryRenderer.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "WorkoutSummaryRenderer": () => (/* binding */ WorkoutSummaryRenderer)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+
+
+var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('workout-summary-renderer');
+var WorkoutSummaryRenderer = /*#__PURE__*/function () {
+  function WorkoutSummaryRenderer(view, eventHandler) {
+    this.view = view;
+    this.eventHandler = eventHandler;
+  }
+
+  var _proto = WorkoutSummaryRenderer.prototype;
+
+  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
+    return document.createElement('a');
+  };
+
+  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
+    avLogger("view " + this.view.getName() + ": creating workout summary");
+    avLogger(newState); // okay we need to go through the last 7 days of workouts
+    // we need to go backward through the state array and collect the 7 days worth of results
+
+    var sevenDaysOfWorkouts = [];
+
+    if (newState.length > 0) {
+      var index = newState.length - 1;
+      var latestWorkout = newState[index];
+      sevenDaysOfWorkouts.push(latestWorkout);
+      var latestWorkoutDate = moment__WEBPACK_IMPORTED_MODULE_1___default()(latestWorkout.createdOn, 'YYYYMMDDHHmmss');
+      var sevenDaysPrior = latestWorkoutDate.add(-7, 'days');
+      var foundAllWorkoutsForSummary = false;
+
+      while (!foundAllWorkoutsForSummary) {
+        index -= 1; // have we run out of workouts?
+
+        if (index >= 0) {
+          var previousWorkout = newState[index];
+          var workoutDate = moment__WEBPACK_IMPORTED_MODULE_1___default()(previousWorkout.createdOn, 'YYYYMMDDHHmmss');
+
+          if (workoutDate.isAfter(sevenDaysPrior)) {
+            sevenDaysOfWorkouts.push(previousWorkout);
+          } else {
+            foundAllWorkoutsForSummary = true;
+          }
+        } else {
+          foundAllWorkoutsForSummary = true;
+        }
+      }
+    }
+  };
+
+  return WorkoutSummaryRenderer;
+}();
+
+/***/ }),
+
 /***/ "./src/component/sidebar/ChatRoomsSidebar.ts":
 /*!***************************************************!*\
   !*** ./src/component/sidebar/ChatRoomsSidebar.ts ***!
@@ -1054,6 +1010,60 @@ UserSearchSidebar.SidebarContainers = {
   blocked: 'blockedUsersDropZone'
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserSearchSidebar);
+
+/***/ }),
+
+/***/ "./src/component/sidebar/WorkoutSummarySidebar.ts":
+/*!********************************************************!*\
+  !*** ./src/component/sidebar/WorkoutSummarySidebar.ts ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ WorkoutSummarySidebar)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/container/SidebarViewContainer */ "./src/ui-framework/container/SidebarViewContainer.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+var WorkoutSummarySidebar = /*#__PURE__*/function (_SidebarViewContainer) {
+  _inheritsLoose(WorkoutSummarySidebar, _SidebarViewContainer);
+
+  function WorkoutSummarySidebar() {
+    return _SidebarViewContainer.call(this, WorkoutSummarySidebar.SidebarPrefs) || this;
+  }
+
+  return WorkoutSummarySidebar;
+}(_ui_framework_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+WorkoutSummarySidebar.SidebarPrefs = {
+  id: 'workoutSummarySidebar',
+  expandedSize: '50%',
+  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.bottom
+};
+WorkoutSummarySidebar.SidebarContainers = {
+  container: 'workoutSummary'
+};
+
 
 /***/ }),
 
@@ -1951,6 +1961,182 @@ ChatLogsView.DOMConfig = {
 
 /***/ }),
 
+/***/ "./src/component/view/ExerciseTypesCompositeView.ts":
+/*!**********************************************************!*\
+  !*** ./src/component/view/ExerciseTypesCompositeView.ts ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ExerciseTypesCompositeView": () => (/* binding */ ExerciseTypesCompositeView)
+/* harmony export */ });
+/* harmony import */ var _ExerciseTypesView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExerciseTypesView */ "./src/component/view/ExerciseTypesView.ts");
+/* harmony import */ var _sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../sidebar/ExerciseTypesSidebar */ "./src/component/sidebar/ExerciseTypesSidebar.ts");
+/* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/view/renderer/FormDetailViewRenderer */ "./src/ui-framework/view/renderer/FormDetailViewRenderer.ts");
+/* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
+/* harmony import */ var _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/view/implementation/DetailViewImplementation */ "./src/ui-framework/view/implementation/DetailViewImplementation.ts");
+/* harmony import */ var _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ui-framework/helper/LinkedCollectionDetailController */ "./src/ui-framework/helper/LinkedCollectionDetailController.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../ui-framework/form/validation/ValidationTypeDefs */ "./src/ui-framework/form/validation/ValidationTypeDefs.ts");
+/* harmony import */ var _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../ui-framework/form/validation/ValidationManager */ "./src/ui-framework/form/validation/ValidationManager.ts");
+
+
+
+
+
+
+
+
+
+
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_10___default()('exercise-types-composite-view');
+var ExerciseTypesCompositeView = /*#__PURE__*/function () {
+  function ExerciseTypesCompositeView(sideBar) {
+    this.sideBar = sideBar;
+  }
+
+  var _proto = ExerciseTypesCompositeView.prototype;
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    var exerciseTypes = new _ExerciseTypesView__WEBPACK_IMPORTED_MODULE_0__.ExerciseTypesView();
+    this.sideBar.addView(exerciseTypes, {
+      containerId: _sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_1__["default"].SidebarContainers.container
+    });
+    var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_2__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes);
+
+    if (exerciseTypeDefinition) {
+      var exerciseTypeDetailRenderer = new _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_4__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition, new _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_5__.CreatedByPermissionChecker());
+      var exerciseTypeDetailView = new _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_6__.DetailViewImplementation({
+        resultsContainerId: _AppTypes__WEBPACK_IMPORTED_MODULE_3__.VIEW_CONTAINER.exerciseTypeDetail,
+        dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_3__.VIEW_NAME.exerciseTypes
+      }, exerciseTypeDetailRenderer);
+      var viewLinker = new _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_7__.LinkedCollectionDetailController(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes, exerciseTypes);
+      viewLinker.addLinkedDetailView(exerciseTypeDetailView);
+      this.sideBar.onDocumentLoaded();
+      var startingDisplayOrder = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_8__.BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
+      exerciseTypeDetailView.initialise(startingDisplayOrder, false, true);
+      var detailForm = exerciseTypeDetailRenderer.getForm();
+
+      if (detailForm) {
+        logger("Setting up validation rules for " + detailForm.getId());
+        logger(detailForm);
+        this.setupValidationForExerciseTypeDetailsForm(detailForm);
+      } // setup the event handling for the create new exercise type button
+
+
+      var createExerciseType = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.BUTTON.createNewExerciseType);
+      logger("Setting up button for creating exercise types");
+      logger(createExerciseType);
+
+      if (createExerciseType) {
+        createExerciseType.addEventListener('click', function (event) {
+          logger("Asking view linker to start a new object");
+          viewLinker.startNewObject();
+        });
+      }
+
+      viewLinker.addListener(_Controller__WEBPACK_IMPORTED_MODULE_9__["default"].getInstance());
+    }
+  };
+
+  _proto.setupValidationForExerciseTypeDetailsForm = function setupValidationForExerciseTypeDetailsForm(form) {
+    var rule = {
+      targetDataFieldId: 'sets',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.show,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'cardio'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    rule = {
+      targetDataFieldId: 'reps',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.show,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'cardio'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    rule = {
+      targetDataFieldId: 'weight',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.show,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'cardio'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    rule = {
+      targetDataFieldId: 'reps',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.hide,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'strength'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    rule = {
+      targetDataFieldId: 'sets',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.hide,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'strength'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    rule = {
+      targetDataFieldId: 'weight',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.hide,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'strength'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    rule = {
+      targetDataFieldId: 'distance',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.show,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'strength'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+    rule = {
+      targetDataFieldId: 'distance',
+      response: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ConditionResponse.hide,
+      conditions: [{
+        sourceDataFieldId: 'type',
+        comparison: _ui_framework_form_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_11__.ComparisonType.hasValue,
+        values: 'cardio'
+      }]
+    };
+    _ui_framework_form_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_12__.ValidationManager.getInstance().addRuleToForm(form, rule);
+  };
+
+  return ExerciseTypesCompositeView;
+}();
+
+/***/ }),
+
 /***/ "./src/component/view/ExerciseTypesView.ts":
 /*!*************************************************!*\
   !*** ./src/component/view/ExerciseTypesView.ts ***!
@@ -2721,6 +2907,111 @@ UserSearchView.DOMConfig = {
   }]
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserSearchView);
+
+/***/ }),
+
+/***/ "./src/component/view/WorkoutSummaryView.ts":
+/*!**************************************************!*\
+  !*** ./src/component/view/WorkoutSummaryView.ts ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "WorkoutSummaryView": () => (/* binding */ WorkoutSummaryView)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var _renderer_WorkoutSummaryRenderer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../renderer/WorkoutSummaryRenderer */ "./src/component/renderer/WorkoutSummaryRenderer.ts");
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+
+
+
+var WorkoutSummaryView = /*#__PURE__*/function (_AbstractStatefulColl) {
+  _inheritsLoose(WorkoutSummaryView, _AbstractStatefulColl);
+
+  function WorkoutSummaryView() {
+    var _this;
+
+    _this = _AbstractStatefulColl.call(this, WorkoutSummaryView.DOMConfig, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts) || this;
+    _this.renderer = new _renderer_WorkoutSummaryRenderer__WEBPACK_IMPORTED_MODULE_5__.WorkoutSummaryRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this));
+    return _this;
+  }
+
+  var _proto = WorkoutSummaryView.prototype;
+
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    return false;
+  };
+
+  _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__.isSameMongo)(item1, item2);
+  };
+
+  _proto.getIdForItemInNamedCollection = function getIdForItemInNamedCollection(name, item) {
+    return item._id;
+  };
+
+  _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {};
+
+  _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
+    return false;
+  };
+
+  _proto.hasPermissionToActionItemInNamedCollection = function hasPermissionToActionItemInNamedCollection(actionName, name, item) {
+    return false;
+  };
+
+  _proto.renderBackgroundForItemInNamedCollection = function renderBackgroundForItemInNamedCollection(containerEl, name, item) {};
+
+  return WorkoutSummaryView;
+}(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__["default"]);
+WorkoutSummaryView.DOMConfig = {
+  viewConfig: {
+    resultsContainerId: 'workoutSummaryChart',
+    dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.VIEW_NAME.workoutSummary
+  },
+  resultsElementType: 'canvas',
+  resultsClasses: '',
+  keyId: '_id',
+  keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.string,
+  detail: {
+    containerClasses: '',
+    textElementType: '',
+    textElementClasses: '',
+    select: false
+  }
+};
 
 /***/ }),
 
