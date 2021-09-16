@@ -72,36 +72,42 @@ export class ListViewRenderer implements CollectionViewRenderer{
 
             if (uiConfig.extraActions) {
                 uiConfig.extraActions.forEach((extraAction) => {
-                    let action: HTMLElement = document.createElement('button');
-                    action.setAttribute('type', 'button');
-                    browserUtil.addRemoveClasses(action, extraAction.buttonClasses);
-                    if (extraAction.buttonText) {
-                        action.innerHTML = extraAction.buttonText;
-                    }
-                    if (extraAction.iconClasses) {
-                        let iconEl = document.createElement('i');
-                        browserUtil.addRemoveClasses(iconEl, extraAction.iconClasses);
-                        iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
-                        iconEl.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME,extraAction.name);
-                        action.appendChild(iconEl);
-                    }
-                    action.setAttribute(uiConfig.keyId, resultDataKeyId);
-                    action.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
-                    action.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME,extraAction.name);
+                    const hasPermissionForAction = this.view.hasPermissionToActionItemInNamedCollection(extraAction.name,collectionName,item);
+                    if (hasPermissionForAction) {
+                        let action: HTMLElement = document.createElement('button');
+                        action.setAttribute('type', 'button');
+                        browserUtil.addRemoveClasses(action, extraAction.buttonClasses);
+                        browserUtil.addAttributes(action,extraAction.attributes);
+                        if (extraAction.buttonText) {
+                            action.innerHTML = extraAction.buttonText;
+                        }
+                        if (extraAction.iconClasses) {
+                            let iconEl = document.createElement('i');
+                            browserUtil.addRemoveClasses(iconEl, extraAction.iconClasses);
+                            iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+                            iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+                            iconEl.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+                            action.appendChild(iconEl);
+                        }
+                        action.setAttribute(uiConfig.keyId, resultDataKeyId);
+                        action.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+                        action.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
 
-                    action.addEventListener('click', (event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        this.eventHandler.eventActionClicked(event);
-                    });
-                    buttonsEl.appendChild(action);
+                        action.addEventListener('click', (event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            this.eventHandler.eventActionClicked(event);
+                        });
+                        buttonsEl.appendChild(action);
+                    }
                 });
+
             }
             if (uiConfig.detail.delete && canDeleteItem) {
                 let deleteButtonEl: HTMLElement = document.createElement('button');
                 deleteButtonEl.setAttribute('type', 'button');
                 browserUtil.addRemoveClasses(deleteButtonEl, uiConfig.detail.delete.buttonClasses);
+                browserUtil.addAttributes(deleteButtonEl,uiConfig.detail.delete.attributes);
                 if (uiConfig.detail.delete.buttonText) {
                     deleteButtonEl.innerHTML = uiConfig.detail.delete.buttonText;
                 }
@@ -275,6 +281,7 @@ export class ListViewRenderer implements CollectionViewRenderer{
             avLogger(`view ${this.view.getName()}:  Adding child ${this.view.getIdForItemInNamedCollection(collectionName,item)}`);
             containerEl.appendChild(childEl);
         });
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
 }

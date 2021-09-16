@@ -22,7 +22,9 @@ export type IconClasses = {
 export type BasicButtonElement = {
     buttonClasses:string,
     buttonText?:string,
-    iconClasses?:string
+    iconClasses?:string,
+    attributes?:Attribute[]
+
 }
 
 export type BasicElement = {
@@ -67,7 +69,8 @@ export type ExtraAction = {
     name:string,
     buttonClasses:string,
     buttonText?:string,
-    iconClasses:string
+    iconClasses:string,
+    attributes?:Attribute[]
 }
 
 export enum Modifier {
@@ -130,7 +133,11 @@ export enum RowPosition {
 }
 
 export type CarouselDOMConfig = {
-    itemsPerRow: number,
+    itemsPerRow: {
+        small: number,
+        medium: number,
+        large: number
+    },
     rowContainer: BasicElement,
     activeRow: BasicElement,
     activeRowPosition:RowPosition,

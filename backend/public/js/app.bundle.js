@@ -34,7 +34,7 @@ __webpack_require__.r(__webpack_exports__);
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'carousel-renderer';
+localStorage.debug = 'carousel-renderer workouts-view';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
@@ -2100,7 +2100,17 @@ ExerciseTypesView.DOMConfig = {
     },
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
-      iconClasses: 'text-black fas fa-sign-out-alt'
+      iconClasses: 'text-black fas fa-sign-out-alt',
+      attributes: [{
+        name: 'data-toggle',
+        value: "tooltip"
+      }, {
+        name: 'data-placement',
+        value: "right"
+      }, {
+        name: 'title',
+        value: "Delete this exercise type."
+      }]
     },
     drag: {
       type: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.typeExerciseType,
@@ -2110,7 +2120,17 @@ ExerciseTypesView.DOMConfig = {
   extraActions: [{
     name: 'addToWorkout',
     buttonClasses: 'btn bg-primary text-white btn-circle btn-md mr-1',
-    iconClasses: 'fas fa-arrow-alt-circle-right'
+    iconClasses: 'fas fa-arrow-alt-circle-right',
+    attributes: [{
+      name: 'data-toggle',
+      value: "tooltip"
+    }, {
+      name: 'data-placement',
+      value: "right"
+    }, {
+      name: 'title',
+      value: "Add this exercise to the current workout."
+    }]
   }]
 };
 
@@ -2726,6 +2746,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_7__);
 /* harmony import */ var _util_DurationFunctions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/DurationFunctions */ "./src/util/DurationFunctions.ts");
+/* harmony import */ var _util_MiscFunctions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../util/MiscFunctions */ "./src/util/MiscFunctions.ts");
+/* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.esm.js");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -2759,6 +2782,9 @@ function _setPrototypeOf(o, p) {
 
 
 
+
+
+
 var logger = debug__WEBPACK_IMPORTED_MODULE_5___default()('workouts-view');
 var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
   _inheritsLoose(WorkoutsView, _AbstractStatefulColl);
@@ -2774,7 +2800,7 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
   var _proto = WorkoutsView.prototype;
 
   _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
-    return true;
+    return selectedItem.completed;
   };
 
   _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
@@ -2817,7 +2843,25 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
   };
 
   _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
-    return true;
+    return item.completed;
+  };
+
+  _proto.hasPermissionToActionItemInNamedCollection = function hasPermissionToActionItemInNamedCollection(actionName, name, item) {
+    var result = false;
+
+    if (actionName === 'template') {
+      if (item.completed && item.completed === true) {
+        result = true;
+      }
+    }
+
+    if (actionName === 'continue') {
+      if (item.completed && item.completed === false) {
+        result = true;
+      }
+    }
+
+    return result;
   };
 
   _proto.getModifierForItemInNamedCollection = function getModifierForItemInNamedCollection(name, item) {
@@ -2832,12 +2876,75 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
     return result;
   };
 
-  _proto.renderBackgroundForItemInNamedCollection = function renderBackgroundForItemInNamedCollection(containerEl, name, item) {};
+  _proto.renderBackgroundForItemInNamedCollection = function renderBackgroundForItemInNamedCollection(containerEl, name, item) {
+    // we are going to render a chart for the workout
+    if (item.exercises) {
+      var dataSourceKeyId = this.getDataSourceKeyId();
+      var resultDataKeyId = this.getIdForItemInNamedCollection(name, item);
+      var canvas = document.createElement('canvas');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_11__["default"].addAttributes(canvas, [{
+        name: 'style',
+        value: 'height:100%; width:100%'
+      }]);
+      canvas.setAttribute(this.collectionUIConfig.keyId, resultDataKeyId);
+      canvas.setAttribute(dataSourceKeyId, this.collectionUIConfig.viewConfig.dataSourceId); // chart labels are the exercise names (shortened to 10 characters)
+
+      var labels = [];
+      var data = [];
+      var bgColour = [];
+      var brColour = [];
+      item.exercises.forEach(function (exercise) {
+        labels.push((0,_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_9__.truncateString)(exercise.name, 10));
+
+        if (exercise.type === 'cardio') {
+          data.push(exercise.distance);
+          bgColour.push(WorkoutsView.bgCardio);
+          brColour.push(WorkoutsView.borderCardio);
+        } else {
+          data.push(exercise.weight);
+          bgColour.push(WorkoutsView.bgStrength);
+          brColour.push(WorkoutsView.borderStrength);
+        }
+      });
+      var chartData = {
+        labels: labels,
+        datasets: [{
+          label: 'Exercises',
+          data: data,
+          backgroundColor: bgColour,
+          borderColor: brColour,
+          borderWidth: 1
+        }]
+      };
+      var config = {
+        type: 'bar',
+        data: chartData,
+        options: {
+          responsive: false,
+          animation: false,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      };
+      logger(config); // @ts-ignore
+
+      var workoutChart = new chart_js_auto__WEBPACK_IMPORTED_MODULE_10__["default"](canvas, config);
+      containerEl.appendChild(canvas); //const testChart = new Chart(document.getElementById('test'),config);
+    }
+  };
 
   return WorkoutsView;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__["default"]);
 WorkoutsView.DOMConfig = {
-  itemsPerRow: 1,
+  itemsPerRow: {
+    small: 1,
+    medium: 2,
+    large: 3
+  },
   rowContainer: {
     elementClasses: "carousel-item",
     elementType: 'div'
@@ -2853,11 +2960,11 @@ WorkoutsView.DOMConfig = {
   },
   multipleItemsPerRowContainer: {
     elementType: 'div',
-    elementClasses: 'col-md-3 mb-2'
+    elementClasses: 'col-sm-12 col-md-4 col-lg-3 mb-2'
   },
   actionContainer: {
     elementType: 'div',
-    elementClasses: 'card-footer bg-light'
+    elementClasses: 'card-footer d-flex w-100 justify-content-end'
   },
   collectionConfig: {
     viewConfig: {
@@ -2868,14 +2975,14 @@ WorkoutsView.DOMConfig = {
         acceptFrom: [_AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.fromExerciseTypes]
       }
     },
-    resultsElementType: 'card',
-    resultsClasses: '',
+    resultsElementType: 'div',
+    resultsClasses: 'card',
     keyId: '_id',
     keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.string,
     modifiers: {
       normal: '',
-      inactive: '',
-      active: '',
+      inactive: 'bg-light',
+      active: 'bg-primary',
       warning: ''
     },
     detail: {
@@ -2883,19 +2990,62 @@ WorkoutsView.DOMConfig = {
       textElementType: 'div',
       textElementClasses: '',
       select: true,
+      delete: {
+        buttonClasses: 'btn btn-warning btn-circle btn-md',
+        iconClasses: 'fas fa-trash text-white',
+        attributes: [{
+          name: 'data-toggle',
+          value: "tooltip"
+        }, {
+          name: 'data-placement',
+          value: "top"
+        }, {
+          name: 'title',
+          value: "Delete this workout"
+        }]
+      },
       background: {
-        elementType: 'canvas',
+        elementType: 'div',
         elementClasses: ''
       }
     },
     extraActions: [{
       name: 'template',
       buttonText: '',
-      buttonClasses: 'btn btn-primary',
-      iconClasses: 'fas fa-copy'
+      buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
+      iconClasses: 'fas fa-copy',
+      attributes: [{
+        name: 'data-toggle',
+        value: "tooltip"
+      }, {
+        name: 'data-placement',
+        value: "top"
+      }, {
+        name: 'title',
+        value: "Create a new workout with this one as a starting point."
+      }]
+    }, {
+      name: 'continue',
+      buttonText: '',
+      iconClasses: 'fas fa-running',
+      buttonClasses: 'btn btn-info btn-circle btn-md mr-2',
+      attributes: [{
+        name: 'data-toggle',
+        value: "tooltip"
+      }, {
+        name: 'data-placement',
+        value: "top"
+      }, {
+        name: 'title',
+        value: "Continue this incomplete workout"
+      }]
     }]
   }
 };
+WorkoutsView.bgStrength = 'rgba(255, 99, 132, 0.2)';
+WorkoutsView.bgCardio = 'rgba(54, 162, 235, 0.2)';
+WorkoutsView.borderStrength = 'rgb(255, 99, 132)';
+WorkoutsView.borderCardio = 'rgb(54, 162, 235)';
 
 /***/ }),
 
@@ -11761,6 +11911,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../delegate/CollectionViewListenerForwarder */ "./src/ui-framework/view/delegate/CollectionViewListenerForwarder.ts");
 /* harmony import */ var _alert_AlertManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
+/* harmony import */ var _alert_AlertListener__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../alert/AlertListener */ "./src/ui-framework/alert/AlertListener.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -11784,6 +11935,7 @@ function _setPrototypeOf(o, p) {
 
   return _setPrototypeOf(o, p);
 }
+
 
 
 
@@ -12000,14 +12152,21 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     return true;
   };
 
+  _proto.hasPermissionToActionItemInNamedCollection = function hasPermissionToActionItemInNamedCollection(actionName, name, item) {
+    return true;
+  };
+
   _proto.setRenderer = function setRenderer(renderer) {
     this.renderer = renderer;
   };
 
   _proto.completed = function completed(event) {
     avLoggerDetails(event.context);
-    this.selectedItem = null;
-    this.eventForwarder.itemDeleted(this, event.context);
+
+    if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_6__.AlertType.confirmed) {
+      this.selectedItem = null;
+      this.eventForwarder.itemDeleted(this, event.context);
+    }
   };
 
   return AbstractCollectionView;
@@ -12432,6 +12591,7 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
 
     var dataSourceKeyId = this.view.getDataSourceKeyId();
     var resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
+    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
     avLogger("view " + this.view.getName() + ": creating carousel item");
     avLogger(item);
     var collectionConfig = this.view.getCollectionUIConfig();
@@ -12445,8 +12605,8 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
       var backgroundEl = document.createElement(collectionConfig.detail.background.elementType);
       _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
       _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
-      childEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-      childEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+      backgroundEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+      backgroundEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
       childEl.appendChild(backgroundEl);
       this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
     } // the content may be structured
@@ -12472,40 +12632,46 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
 
         if (collectionConfig.extraActions) {
           collectionConfig.extraActions.forEach(function (extraAction) {
-            var action = document.createElement('button');
-            action.setAttribute('type', 'button');
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+            var hasPermissionForAction = _this.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
 
-            if (extraAction.buttonText) {
-              action.innerHTML = extraAction.buttonText;
+            if (hasPermissionForAction) {
+              var action = document.createElement('button');
+              action.setAttribute('type', 'button');
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(action, extraAction.attributes);
+
+              if (extraAction.buttonText) {
+                action.innerHTML = extraAction.buttonText;
+              }
+
+              if (extraAction.iconClasses) {
+                var iconEl = document.createElement('i');
+                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+                iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+                iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+                action.appendChild(iconEl);
+              }
+
+              action.setAttribute(collectionConfig.keyId, resultDataKeyId);
+              action.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+              action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+              action.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                _this.eventHandler.eventActionClicked(event);
+              });
+              buttonsEl.appendChild(action);
             }
-
-            if (extraAction.iconClasses) {
-              var iconEl = document.createElement('i');
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
-              iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-              iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-              iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-              action.appendChild(iconEl);
-            }
-
-            action.setAttribute(collectionConfig.keyId, resultDataKeyId);
-            action.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-            action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-            action.addEventListener('click', function (event) {
-              event.preventDefault();
-              event.stopPropagation();
-
-              _this.eventHandler.eventActionClicked(event);
-            });
-            buttonsEl.appendChild(action);
           });
         }
 
-        if (collectionConfig.detail.delete && collectionConfig) {
+        if (collectionConfig.detail.delete && collectionConfig && canDeleteItem) {
           var deleteButtonEl = document.createElement('button');
           deleteButtonEl.setAttribute('type', 'button');
           _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(deleteButtonEl, collectionConfig.detail.delete.buttonClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(deleteButtonEl, collectionConfig.detail.delete.attributes);
 
           if (collectionConfig.detail.delete.buttonText) {
             deleteButtonEl.innerHTML = collectionConfig.detail.delete.buttonText;
@@ -12724,32 +12890,40 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
 
     _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(containerEl); // need to break the items up by row, and the last row is active (assumes increasing time order)
 
-    var numberOfResults = newState.length;
-    var numberOfRows = Math.ceil(numberOfResults / this.config.itemsPerRow);
-    avLogger("view " + this.view.getName() + ": creating carousel with number of results per row of " + this.config.itemsPerRow + " with rows " + numberOfRows);
+    var numberOfResults = newState.length; // number of items per row depends on view port
+
+    var itemsPerRow = this.config.itemsPerRow.large;
+
+    if (window.innerWidth < 769) {
+      itemsPerRow = this.config.itemsPerRow.medium;
+    }
+
+    if (window.innerWidth < 415) {
+      itemsPerRow = this.config.itemsPerRow.small;
+    }
+
+    var numberOfRows = Math.ceil(numberOfResults / itemsPerRow);
+    avLogger("view " + this.view.getName() + ": creating carousel with number of results per row of " + itemsPerRow + " with rows " + numberOfRows);
 
     for (var rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
       // create the row
       var rowContainerEl = document.createElement(this.config.rowContainer.elementType);
       _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, [{
-        name: 'style',
-        value: 'display:block'
-      }]);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes); //browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
+
       var rowEl = document.createElement(this.config.row.elementType);
       _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowEl, this.config.row.elementClasses);
       _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowEl, this.config.row.elementAttributes);
       rowContainerEl.appendChild(rowEl); // if this the active row?
 
       if (rowIndex === 0 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.RowPosition.first || rowIndex === numberOfRows - 1 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.RowPosition.last) {
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowEl, this.config.activeRow.elementClasses);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowEl, this.config.activeRow.elementAttributes);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowContainerEl, this.config.activeRow.elementClasses);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, this.config.activeRow.elementAttributes);
       }
 
-      var itemIndex = rowIndex * this.config.itemsPerRow;
+      var itemIndex = rowIndex * itemsPerRow;
 
-      while (itemIndex < (rowIndex + 1) * this.config.itemsPerRow) {
+      while (itemIndex < (rowIndex + 1) * itemsPerRow && itemIndex < numberOfResults) {
         avLogger("rowIndex " + rowIndex + " item index " + itemIndex);
         var item = newState[itemIndex];
         var itemContainerEl = rowEl;
@@ -12768,6 +12942,8 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
 
       containerEl.appendChild(rowContainerEl);
     }
+
+    $('[data-toggle="tooltip"]').tooltip();
   };
 
   return CarouselViewRenderer;
@@ -12890,6 +13066,7 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
       this.currentItem = this.form.startCreateNew();
     }
 
+    $('[data-toggle="tooltip"]').tooltip();
     return this.currentItem;
   };
 
@@ -12902,6 +13079,8 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
     } else {
       if (this.form) this.form.displayOnly(dataObj);
     }
+
+    $('[data-toggle="tooltip"]').tooltip();
   };
 
   _proto.hidden = function hidden() {
@@ -13112,33 +13291,38 @@ var ListViewRenderer = /*#__PURE__*/function () {
 
       if (uiConfig.extraActions) {
         uiConfig.extraActions.forEach(function (extraAction) {
-          var action = document.createElement('button');
-          action.setAttribute('type', 'button');
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+          var hasPermissionForAction = _this.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
 
-          if (extraAction.buttonText) {
-            action.innerHTML = extraAction.buttonText;
+          if (hasPermissionForAction) {
+            var action = document.createElement('button');
+            action.setAttribute('type', 'button');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(action, extraAction.attributes);
+
+            if (extraAction.buttonText) {
+              action.innerHTML = extraAction.buttonText;
+            }
+
+            if (extraAction.iconClasses) {
+              var iconEl = document.createElement('i');
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+              iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
+              iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+              iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+              action.appendChild(iconEl);
+            }
+
+            action.setAttribute(uiConfig.keyId, resultDataKeyId);
+            action.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
+            action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+            action.addEventListener('click', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+
+              _this.eventHandler.eventActionClicked(event);
+            });
+            buttonsEl.appendChild(action);
           }
-
-          if (extraAction.iconClasses) {
-            var iconEl = document.createElement('i');
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
-            iconEl.setAttribute(uiConfig.keyId, resultDataKeyId);
-            iconEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-            iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-            action.appendChild(iconEl);
-          }
-
-          action.setAttribute(uiConfig.keyId, resultDataKeyId);
-          action.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-          action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-          action.addEventListener('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            _this.eventHandler.eventActionClicked(event);
-          });
-          buttonsEl.appendChild(action);
         });
       }
 
@@ -13146,6 +13330,7 @@ var ListViewRenderer = /*#__PURE__*/function () {
         var deleteButtonEl = document.createElement('button');
         deleteButtonEl.setAttribute('type', 'button');
         _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(deleteButtonEl, uiConfig.detail.delete.buttonClasses);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(deleteButtonEl, uiConfig.detail.delete.attributes);
 
         if (uiConfig.detail.delete.buttonText) {
           deleteButtonEl.innerHTML = uiConfig.detail.delete.buttonText;
@@ -13383,6 +13568,7 @@ var ListViewRenderer = /*#__PURE__*/function () {
       avLogger("view " + _this2.view.getName() + ":  Adding child " + _this2.view.getIdForItemInNamedCollection(collectionName, item));
       containerEl.appendChild(childEl);
     });
+    $('[data-toggle="tooltip"]').tooltip();
   };
 
   return ListViewRenderer;
@@ -13581,6 +13767,30 @@ function isSameUsername(item1, item2) {
 }
 function isSameRoom(item1, item2) {
   return item1.roomName === item2.roomName;
+}
+
+/***/ }),
+
+/***/ "./src/util/MiscFunctions.ts":
+/*!***********************************!*\
+  !*** ./src/util/MiscFunctions.ts ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "truncateString": () => (/* binding */ truncateString)
+/* harmony export */ });
+function truncateString(str, num) {
+  // If the length of str is less than or equal to num
+  // just return str--don't truncate it.
+  if (str.length <= num) {
+    return str;
+  } // Return str truncated with '...' concatenated to the end of str.
+
+
+  return str.slice(0, num) + '...';
 }
 
 /***/ }),

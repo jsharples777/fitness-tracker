@@ -15,7 +15,7 @@ import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
 import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandler";
 import {CollectionViewListenerForwarder} from "../delegate/CollectionViewListenerForwarder";
 import {AlertManager} from "../../alert/AlertManager";
-import {AlertEvent, AlertListener} from "../../alert/AlertListener";
+import {AlertEvent, AlertListener, AlertType} from "../../alert/AlertListener";
 import {CollectionViewListener} from "../interface/CollectionViewListener";
 
 const avLogger = debug('collection-view-ts');
@@ -238,14 +238,20 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         return true;
     }
 
+    hasPermissionToActionItemInNamedCollection(actionName: string, name: string, item: any): boolean {
+        return true;
+    }
+
     setRenderer(renderer: CollectionViewRenderer): void {
         this.renderer = renderer;
     }
 
     completed(event: AlertEvent): void {
         avLoggerDetails(event.context);
-        this.selectedItem = null;
-        this.eventForwarder.itemDeleted(this, event.context);
+        if (event.outcome === AlertType.confirmed) {
+            this.selectedItem = null;
+            this.eventForwarder.itemDeleted(this, event.context);
+        }
     }
 
 }

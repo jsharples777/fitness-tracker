@@ -20,6 +20,7 @@ export interface CollectionView extends View {
 
     hasPermissionToDeleteItemInNamedCollection(name:string, item:any):boolean;
     hasPermissionToUpdateItemInNamedCollection(name:string, item:any):boolean;
+    hasPermissionToActionItemInNamedCollection(actionName:string, name:string, item:any):boolean;
 
     updateViewForNamedCollection(name: string, collection: any): void;
 

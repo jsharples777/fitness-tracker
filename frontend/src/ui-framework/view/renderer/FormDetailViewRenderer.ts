@@ -111,6 +111,7 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
             this.isNewItem = true;
             this.currentItem = this.form.startCreateNew();
         }
+        $('[data-toggle="tooltip"]').tooltip();
         return this.currentItem;
     }
 
@@ -123,6 +124,7 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
         } else {
             if (this.form) this.form.displayOnly(dataObj);
         }
+        $('[data-toggle="tooltip"]').tooltip();
     }
 
 

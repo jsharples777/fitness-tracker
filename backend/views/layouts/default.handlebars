@@ -11,12 +11,12 @@
 {{> sidebars/user-search-sb }}
 {{> sidebars/chat-sb }}
 {{> modals/alert }}
-<div id="root">
+<div id="root" class="root">
     <section class="pt-5 pb-5">
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <h3 class="mb-3">Workouts </h3>
+                    <h3 class="mb-3 text-white">Workouts </h3>
                 </div>
                 <div class="col-6 text-right">
                     <a class="btn btn-primary mb-3 mr-1" href="#workoutsContainer" role="button" data-slide="prev">
@@ -36,6 +36,7 @@
         </div>
     </section>
 </div>
+<div><canvas id="test" ></canvas></div>
 {{> footers/footer-main }}
 </body>
 {{#if user}}

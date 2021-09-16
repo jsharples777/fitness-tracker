@@ -6,13 +6,15 @@ import debug from 'debug';
 import MongoAccount from '../models/MongoAccount';
 import {DataMessage} from "../socket/SocketTypes";
 import socketManager from "../socket/SocketManager";
+import {ensureAuthenticated} from "./auth";
 
 const routeDebug = debug('route');
 
 
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
+router.get('/', ensureAuthenticated, (req, res, next) => {
+//router.get('/', (req, res, next) => {
     routeDebug(req.user);
     res.render('index', {user: req.user});
 });

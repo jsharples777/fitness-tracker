@@ -21,6 +21,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
     public createDisplayElementForCollectionItem(collectionName: string, item: any): HTMLElement {
         const dataSourceKeyId = this.view.getDataSourceKeyId();
         const resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
+        const canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName,item);
 
         avLogger(`view ${this.view.getName()}: creating carousel item`);
         avLogger(item);
@@ -39,8 +40,8 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
             let backgroundEl = document.createElement(collectionConfig.detail.background.elementType);
             browserUtil.addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
             browserUtil.addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
-            childEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-            childEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+            backgroundEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+            backgroundEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
             childEl.appendChild(backgroundEl);
             this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
         }
@@ -71,36 +72,42 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
 
                 if (collectionConfig.extraActions) {
                     collectionConfig.extraActions.forEach((extraAction) => {
-                        let action: HTMLElement = document.createElement('button');
-                        action.setAttribute('type', 'button');
-                        browserUtil.addRemoveClasses(action, extraAction.buttonClasses);
-                        if (extraAction.buttonText) {
-                            action.innerHTML = extraAction.buttonText;
-                        }
-                        if (extraAction.iconClasses) {
-                            let iconEl = document.createElement('i');
-                            browserUtil.addRemoveClasses(iconEl, extraAction.iconClasses);
-                            iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                            iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-                            iconEl.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-                            action.appendChild(iconEl);
-                        }
-                        action.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                        action.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-                        action.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+                        const hasPermissionForAction = this.view.hasPermissionToActionItemInNamedCollection(extraAction.name,collectionName,item);
+                        if (hasPermissionForAction) {
 
-                        action.addEventListener('click', (event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            this.eventHandler.eventActionClicked(event);
-                        });
-                        buttonsEl.appendChild(action);
+                            let action: HTMLElement = document.createElement('button');
+                            action.setAttribute('type', 'button');
+                            browserUtil.addRemoveClasses(action, extraAction.buttonClasses);
+                            browserUtil.addAttributes(action,extraAction.attributes);
+                            if (extraAction.buttonText) {
+                                action.innerHTML = extraAction.buttonText;
+                            }
+                            if (extraAction.iconClasses) {
+                                let iconEl = document.createElement('i');
+                                browserUtil.addRemoveClasses(iconEl, extraAction.iconClasses);
+                                iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+                                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+                                iconEl.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+                                action.appendChild(iconEl);
+                            }
+                            action.setAttribute(collectionConfig.keyId, resultDataKeyId);
+                            action.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+                            action.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+
+                            action.addEventListener('click', (event) => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                this.eventHandler.eventActionClicked(event);
+                            });
+                            buttonsEl.appendChild(action);
+                        }
                     });
                 }
-                if (collectionConfig.detail.delete && collectionConfig) {
+                if (collectionConfig.detail.delete && collectionConfig && canDeleteItem) {
                     let deleteButtonEl: HTMLElement = document.createElement('button');
                     deleteButtonEl.setAttribute('type', 'button');
                     browserUtil.addRemoveClasses(deleteButtonEl, collectionConfig.detail.delete.buttonClasses);
+                    browserUtil.addAttributes(deleteButtonEl, collectionConfig.detail.delete.attributes);
                     if (collectionConfig.detail.delete.buttonText) {
                         deleteButtonEl.innerHTML = collectionConfig.detail.delete.buttonText;
                     }
@@ -262,14 +269,26 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
 
         // need to break the items up by row, and the last row is active (assumes increasing time order)
         const numberOfResults = newState.length;
-        const numberOfRows = Math.ceil(numberOfResults / this.config.itemsPerRow);
-        avLogger(`view ${this.view.getName()}: creating carousel with number of results per row of ${this.config.itemsPerRow} with rows ${numberOfRows}`);
+
+        // number of items per row depends on view port
+        let itemsPerRow = this.config.itemsPerRow.large;
+        if (window.innerWidth < 769) {
+           itemsPerRow = this.config.itemsPerRow.medium;
+        }
+        if (window.innerWidth < 415) {
+            itemsPerRow = this.config.itemsPerRow.small;
+        }
+
+
+
+        const numberOfRows = Math.ceil(numberOfResults / itemsPerRow);
+        avLogger(`view ${this.view.getName()}: creating carousel with number of results per row of ${itemsPerRow} with rows ${numberOfRows}`);
         for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
             // create the row
             let rowContainerEl = document.createElement(this.config.rowContainer.elementType);
             browserUtil.addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
             browserUtil.addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes);
-            browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
+            //browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
 
             let rowEl = document.createElement(this.config.row.elementType);
             browserUtil.addRemoveClasses(rowEl, this.config.row.elementClasses);
@@ -279,13 +298,13 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
             // if this the active row?
             if (((rowIndex === 0) && this.config.activeRowPosition === RowPosition.first) ||
                 ((rowIndex === (numberOfRows - 1)) && this.config.activeRowPosition === RowPosition.last)) {
-                browserUtil.addRemoveClasses(rowEl, this.config.activeRow.elementClasses);
-                browserUtil.addAttributes(rowEl, this.config.activeRow.elementAttributes);
+                browserUtil.addRemoveClasses(rowContainerEl, this.config.activeRow.elementClasses);
+                browserUtil.addAttributes(rowContainerEl, this.config.activeRow.elementAttributes);
             }
 
-            let itemIndex = rowIndex * this.config.itemsPerRow;
+            let itemIndex = rowIndex * itemsPerRow;
 
-            while (itemIndex < ((rowIndex + 1) * this.config.itemsPerRow)) {
+            while (itemIndex < ((rowIndex + 1) * itemsPerRow) && (itemIndex < numberOfResults)) {
                 avLogger(`rowIndex ${rowIndex} item index ${itemIndex}`);
                 const item = newState[itemIndex];
 
@@ -307,6 +326,8 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
             containerEl.appendChild(rowContainerEl);
 
         }
+        $('[data-toggle="tooltip"]').tooltip();
+
     }
 
 }

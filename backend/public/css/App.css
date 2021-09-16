@@ -11,18 +11,24 @@
     width:30vw;
 }
 
+* {
+    font-family: 'Oxygen', sans-serif;
+}
+
 /* headings for the site using the new font */
 h1 {
-    font-family: 'Special Elite', cursive;
+    font-family: 'Oxygen', sans-serif;
     font-weight: bold;
     font-size: 32px;
 }
 
 h2 {
-    font-family: 'Special Elite', cursive;
+    font-family: 'Oxygen', sans-serif;
     font-weight: bold;
     font-size: 24px;
 }
+
+
 
 
 /*
@@ -307,18 +313,18 @@ i:hover {
 *
  */
 .root {
-    /*width: 100vw;
+    width: 100vw;
     height: 100vh;
-    background-image: url('../img/splash.jpg');
+    background-image: url('../img/landscape.jpg');
     background-size: cover;
     background-repeat: repeat-y;
-    padding-top: 10px;*/
+    padding-top: 10px;
 }
 
 .root-login {
     width: 100vw;
     height: 100vh;
-    background-image: url('../img/login.jpg');
+    background-image: url('../img/dumbbells.jpg');
     background-size: cover;
     background-repeat: repeat-y;
     padding-top: 110px;
@@ -327,50 +333,12 @@ i:hover {
 .root-registration {
     width: 100vw;
     height: 100vh;
-    background-image: url('../img/registration.jpg');
+    background-image: url('../img/physiotherapy.jpeg');
     background-size: cover;
     background-repeat: repeat-y;
     padding-top: 110px;
 }
 
-/*
-*
-*  Score sheet screen
-*
- */
-.scoresheet {
-    width: 100vw;
-    height: 100vh;
-    background-image: url('../img/scoresheet2.jpg');
-    background-size: cover;
-    background-repeat: repeat-y;
-    padding-top: 110px;
-}
-
-/* timer font */
-.timer {
-    font-family: 'digital';
-    font-size: 36pt;
-    color: white;
-    width: 40%;
-}
-
-/* score card side background image sizing */
-.score-card-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.score-card {
-    margin-right: 20px;
-}
-
-/* video */
-.video {
-    width:200px;
-    height:200px;
-}
 
 /* keep the messages where they are (left or right) */
 @media(max-width : 30em){
@@ -378,19 +346,6 @@ i:hover {
         flex: 1;
     }
 }
-
-
-@media(max-width: 500px) {
-    .btn-circle.btn-md {
-        width: 30px;
-        height: 30px;
-        padding: 6px 0px;
-        border-radius: 15px;
-        font-size: 8px;
-        text-align: center;
-    }
-}
-
 
 
 @media screen and (max-width: 768px) {
@@ -413,14 +368,15 @@ i:hover {
         background-size: contain;
         background-repeat: no-repeat;
     }
-    .enter-message {
-        width:60vw;
-    }
 
-    #queryText {
-        width:30vw;
+    .btn-circle.btn-md {
+        width: 40px;
+        height: 40px;
+        padding: 9px 0px;
+        border-radius: 24px;
+        font-size: 16px;
+        text-align: center;
     }
-
 }
 
 @media screen and (max-width: 467px) {
@@ -435,35 +391,13 @@ i:hover {
         padding-top: 0px;
         top:0;
     }
-    .root-login {
-        background-image: url('../img/login-vertical.jpg');
-        background-size: contain;
-        background-repeat: no-repeat;
-    }
-    .root-registration {
-        background-image: url('../img/registration-vertical.jpg');
-        background-size: contain;
-        background-repeat: no-repeat;
-    }
-    .enter-message {
-        width:70vw;
-    }
-
-    .scroll-score-sheet {
-        width: 100vw;
-        max-width:100vw;
-        height: 800px;
-        max-height: 800px;
-        overflow-y: auto;
-        flex-wrap: wrap;
-    }
-
-    .score-card {
-        margin-top: 20px;
-    }
-
-    #queryText {
-        width:60vw;
+    .btn-circle.btn-md {
+        width: 50px;
+        height: 50px;
+        padding: 10px 16px;
+        border-radius: 35px;
+        font-size: 20px;
+        text-align: center;
     }
 }
 

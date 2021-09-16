@@ -56,6 +56,7 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
             delete: {
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
                 iconClasses: 'text-black fas fa-sign-out-alt',
+                attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Delete this exercise type."}]
             },
             drag: {
                 type: DRAGGABLE.typeExerciseType,
@@ -65,7 +66,8 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
         extraActions: [{
             name: 'addToWorkout',
             buttonClasses:'btn bg-primary text-white btn-circle btn-md mr-1',
-            iconClasses:'fas fa-arrow-alt-circle-right'
+            iconClasses:'fas fa-arrow-alt-circle-right',
+            attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Add this exercise to the current workout."}]
         }]
     };
 
