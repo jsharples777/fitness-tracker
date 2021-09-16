@@ -1,11 +1,10 @@
 import {CollectionViewDOMConfig, Modifier} from "../../ConfigurationTypes";
 import {View} from "./View";
-import {CollectionViewRenderer} from "./CollectionViewRenderer";
 
 export interface CollectionView extends View {
     getIdForItemInNamedCollection(name: string, item: any): string;
 
-    getDisplayValueForItemInNamedCollection(name: string, item: any): string;
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void;
 
     compareItemsForEquality(item1:any, item2: any): boolean;
 
@@ -16,6 +15,8 @@ export interface CollectionView extends View {
     getBadgeValueForItemInNamedCollection(name: string, item: any): number;
 
     getBackgroundImageForItemInNamedCollection(name: string, item: any): string;
+
+    renderBackgroundForItemInNamedCollection(containerEl:HTMLElement,name:string, item:any):void;
 
     hasPermissionToDeleteItemInNamedCollection(name:string, item:any):boolean;
     hasPermissionToUpdateItemInNamedCollection(name:string, item:any):boolean;

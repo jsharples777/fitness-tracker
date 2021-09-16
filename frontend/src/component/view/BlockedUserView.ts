@@ -117,8 +117,8 @@ class BlockedUserView extends AbstractStatefulCollectionView implements ChatUser
         this.updateViewForNamedCollection('',{});
     }
 
-    getDisplayValueForItemInNamedCollection(name: string, item: any) {
-        return item.username;
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+        containerEl.innerHTML =  item.username;
     }
 
     getSecondaryModifierForItemInNamedCollection(name: string, item: any):Modifier{

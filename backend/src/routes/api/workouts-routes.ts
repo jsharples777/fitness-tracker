@@ -12,11 +12,17 @@ router.get('/', (req, res) => {
     // find all exercise types
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
     let filter = {};
+    let username = '';
     if (req.user) {
         // @ts-ignore
-        filter = { user: req.user.id};
+        username = req.user.username;
     }
-    MongoDataSource.getInstance().getDatabase().collection(collection).find(filter).toArray().then((results:Document[]) => {
+    logger(`Getting workouts for current user ${username}`);
+    if (req.user) {
+        // @ts-ignore
+        filter = { createdBy: req.user.username};
+    }
+    MongoDataSource.getInstance().getDatabase().collection(collection).find(filter).sort( { createdOn: 1 } ).toArray().then((results:Document[]) => {
         logger(results.length);
         res.json(results);
     })
@@ -43,12 +49,12 @@ router.post('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
     MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
         logger(value);
-        res.json(value);
+        res.json(req.body);
     })
-        .catch((err) => {
-            logger(err);
-            res.status(400).json(err);
-        });
+    .catch((err) => {
+        logger(err);
+        res.status(400).json(err);
+    });
 });
 
 router.put('/:id', (req, res) => {
@@ -56,8 +62,7 @@ router.put('/:id', (req, res) => {
     MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.params.id}).then((result:DeleteResult) => {
         logger(result);
         MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
-            logger(value);
-            res.json(value);
+            res.json(req.body);
         })
             .catch((err) => {
                 logger(err);

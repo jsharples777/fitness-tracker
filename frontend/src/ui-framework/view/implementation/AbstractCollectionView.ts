@@ -22,13 +22,13 @@ const avLogger = debug('collection-view-ts');
 const avLoggerDetails = debug('collection-view-ts-detail');
 
 
-export abstract class AbstractCollectionView extends AbstractView implements CollectionView,CollectionViewEventHandler,AlertListener{
+export abstract class AbstractCollectionView extends AbstractView implements CollectionView,CollectionViewEventHandler,AlertListener {
     protected collectionName: string;
-    protected renderer:CollectionViewRenderer|null;
-    protected selectedItem:any|null;
-    protected collectionUIConfig:CollectionViewDOMConfig;
+    protected renderer: CollectionViewRenderer | null;
+    protected selectedItem: any | null;
+    protected collectionUIConfig: CollectionViewDOMConfig;
 
-    protected constructor(uiConfig: CollectionViewDOMConfig, collectionName:string) {
+    protected constructor(uiConfig: CollectionViewDOMConfig, collectionName: string) {
         super(uiConfig.viewConfig);
         this.collectionUIConfig = uiConfig;
         this.collectionName = collectionName;
@@ -84,7 +84,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
         let selectedItem = {};
 
-        selectedItem = this.getItemInNamedCollection(this.collectionName,compareWith);
+        selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
 
         if (selectedItem) {
             // @ts-ignore
@@ -95,9 +95,11 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         return selectedItem;
     }
 
+    renderBackgroundForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {}
+
     abstract getIdForItemInNamedCollection(name: string, item: any): string;
-    abstract getItemInNamedCollection(name:string, compareWith:any):any;
-    abstract getDisplayValueForItemInNamedCollection(name: string, item: any): string;
+    abstract getItemInNamedCollection(name: string, compareWith: any): any;
+    abstract renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void;
 
     compareItemsForEquality(item1: any, item2: any): boolean {
         return isSame(item1, item2);
@@ -121,11 +123,11 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     updateViewForNamedCollection(name: string, newState: any): void {
         if (this.viewEl && this.renderer) {
-            this.renderer.setDisplayElementsForCollectionInContainer(this.viewEl,name,newState);
+            this.renderer.setDisplayElementsForCollectionInContainer(this.viewEl, name, newState);
         }
     }
 
-    public eventStartDrag(event: DragEvent):void {
+    public eventStartDrag(event: DragEvent): void {
         avLogger(`view ${this.getName()}: drag start`);
         avLoggerDetails(event.target);
         const data = JSON.stringify(this.getDragData(event));
@@ -185,19 +187,17 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
             const shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
             avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource} - ${shouldDelete}`);
             if (shouldDelete) {
-               // do we need to confirm?
-               if (this.collectionUIConfig.detail.quickDelete) {
-                   this.selectedItem = null;
-                   this.eventForwarder.itemDeleted(this, selectedItem);
-               }
-               else {
-                   AlertManager.getInstance().startAlert(this, this.getName(),`Are you sure you want to delete this information?`,selectedItem);
-               }
+                // do we need to confirm?
+                if (this.collectionUIConfig.detail.quickDelete) {
+                    this.selectedItem = null;
+                    this.eventForwarder.itemDeleted(this, selectedItem);
+                } else {
+                    AlertManager.getInstance().startAlert(this, this.getName(), `Are you sure you want to delete this information?`, selectedItem);
+                }
 
             }
         }
     }
-
 
 
     public eventActionClicked(event: MouseEvent): void {
@@ -238,7 +238,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         return true;
     }
 
-    setRenderer(renderer:CollectionViewRenderer):void {
+    setRenderer(renderer: CollectionViewRenderer): void {
         this.renderer = renderer;
     }
 

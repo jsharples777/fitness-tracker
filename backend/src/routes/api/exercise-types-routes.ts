@@ -13,7 +13,7 @@ const logger = debug('api-exercise-types');
 router.get('/', (req, res) => {
     // find all exercise types
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).find().toArray().then((results:Document[]) => {
+    MongoDataSource.getInstance().getDatabase().collection(collection).find().sort( { createdOn: 1 } ).toArray().then((results:Document[]) => {
           logger(results.length);
           res.json(results);
         })

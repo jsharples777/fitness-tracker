@@ -13,15 +13,20 @@ import {View} from "../../ui-framework/view/interface/View";
 import debug from 'debug';
 import {CarouselViewRenderer} from "../../ui-framework/view/renderer/CarouselViewRenderer";
 import moment from "moment";
+import {addDurations} from "../../util/DurationFunctions";
 
 const logger = debug('workouts-view');
 
-
+type ExerciseSummary = {
+    weight:number,
+    distance:number,
+    duration:string
+}
 
 export class WorkoutsView extends AbstractStatefulCollectionView implements CollectionViewListener {
 
     private static DOMConfig: CarouselDOMConfig = {
-        itemsPerRow: 4,
+        itemsPerRow: 1,
         rowContainer: {
             elementClasses: "carousel-item",
             elementType: 'div',
@@ -105,11 +110,37 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
         return item._id;
     }
 
-    getDisplayValueForItemInNamedCollection(name: string, item: any) {
+
+
+
+    private calculateExerciseSummary(item:any) : ExerciseSummary {
+        let result:ExerciseSummary = {
+            weight:0,
+            distance:0,
+            duration:'00:00'
+        };
+
+        if (item.exercises) {
+            for (let index = 0;index < item.exercises.length;index++) {
+                const exercise = item.exercises[index];
+                result.weight += exercise.weight;
+                result.distance += exercise.distance;
+                result.duration = addDurations(result.duration,exercise.duration);
+            }
+        }
+        return result;
+    }
+
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+        let summary = this.calculateExerciseSummary(item);
         let buffer = '';
         buffer += `<h5 class="card-title">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
-        buffer += `<p class="card-text">Calculate total weight and total Distance</p>`;
-        return buffer;
+        buffer += `<ul class="list-group list-group-flush">`;
+        buffer += `<li class="list-group-item"><strong>Duration:</strong> ${summary.duration}</li>`;
+        if (summary.weight > 0)   buffer += `<li class="list-group-item"><strong>Total Weight:</strong> ${summary.weight}</li>`;
+        if (summary.distance > 0) buffer += `<li class="list-group-item"><strong>Total Distance: </strong> ${summary.distance}</li>`;
+        buffer += `</ul>`;
+        containerEl.innerHTML = buffer;
     }
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
@@ -124,6 +155,10 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
             }
         }
         return result;
+    }
+
+    renderBackgroundForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any) {
+
     }
 
 

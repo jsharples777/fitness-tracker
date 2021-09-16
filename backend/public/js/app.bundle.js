@@ -30,12 +30,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./ui-framework/helper/LinkedCollectionDetailController */ "./src/ui-framework/helper/LinkedCollectionDetailController.ts");
 /* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
 /* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
+/* harmony import */ var _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./component/view/WorkoutsView */ "./src/component/view/WorkoutsView.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'linked-controller linked-controller-detail';
+localStorage.debug = 'carousel-renderer';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
+
 
 
 
@@ -176,6 +178,7 @@ var App = /*#__PURE__*/function () {
     this.setupChatViews();
     this.setupExerciseTypeViews();
     this.setupNavigationItemHandling();
+    new _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_20__.WorkoutsView().onDocumentLoaded();
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise();
   };
 
@@ -530,6 +533,7 @@ var Controller = /*#__PURE__*/function () {
     cLogger(exerciseTypeDefinition);
     cLoggerDetail(_model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
     var workoutDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().addDefinition('workout', 'Workout', true, true, true, '_id');
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.boolean, true, "Have completed the workout");
     var exercisesFieldDefinition = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.collection, true, "Exercises in this workout");
     exercisesFieldDefinition.idType = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_14__.KeyType.collection;
     exercisesFieldDefinition.collectionOfDataObjectId = exerciseTypeDefinition.id;
@@ -563,6 +567,7 @@ var Controller = /*#__PURE__*/function () {
 
       this.getStateManager().getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.users);
       this.getStateManager().getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.exerciseTypes);
+      this.getStateManager().getStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.workouts);
     }
   };
 
@@ -1177,8 +1182,8 @@ var BlockedUserView = /*#__PURE__*/function (_AbstractStatefulColl) {
     this.updateViewForNamedCollection('', {});
   };
 
-  _proto.getDisplayValueForItemInNamedCollection = function getDisplayValueForItemInNamedCollection(name, item) {
-    return item.username;
+  _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
+    containerEl.innerHTML = item.username;
   };
 
   _proto.getSecondaryModifierForItemInNamedCollection = function getSecondaryModifierForItemInNamedCollection(name, item) {
@@ -1805,8 +1810,8 @@ var ChatLogsView = /*#__PURE__*/function (_AbstractStatefulColl) {
     return item.roomName;
   };
 
-  _proto.getDisplayValueForItemInNamedCollection = function getDisplayValueForItemInNamedCollection(name, item) {
-    return item.users.join(',');
+  _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
+    containerEl.innerHTML = item.users.join(',');
   };
 
   _proto.getModifierForItemInNamedCollection = function getModifierForItemInNamedCollection(name, item) {
@@ -2033,8 +2038,8 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
     return item._id;
   };
 
-  _proto.getDisplayValueForItemInNamedCollection = function getDisplayValueForItemInNamedCollection(name, item) {
-    return item.name;
+  _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
+    containerEl.innerHTML = item.name;
   };
 
   _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
@@ -2217,8 +2222,8 @@ var FavouriteUserView = /*#__PURE__*/function (_AbstractStatefulColl) {
     return item._id;
   };
 
-  _proto.getDisplayValueForItemInNamedCollection = function getDisplayValueForItemInNamedCollection(name, item) {
-    return item.username;
+  _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
+    containerEl.innerHTML = item.username;
   };
 
   _proto.getModifierForItemInNamedCollection = function getModifierForItemInNamedCollection(name, item) {
@@ -2509,8 +2514,8 @@ var UserSearchView = /*#__PURE__*/function (_AbstractStatefulColl) {
     return item._id;
   };
 
-  _proto.getDisplayValueForItemInNamedCollection = function getDisplayValueForItemInNamedCollection(name, item) {
-    return item.username;
+  _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
+    containerEl.innerHTML = item.username;
   };
 
   _proto.getModifierForItemInNamedCollection = function getModifierForItemInNamedCollection(name, item) {
@@ -2696,6 +2701,201 @@ UserSearchView.DOMConfig = {
   }]
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (UserSearchView);
+
+/***/ }),
+
+/***/ "./src/component/view/WorkoutsView.ts":
+/*!********************************************!*\
+  !*** ./src/component/view/WorkoutsView.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "WorkoutsView": () => (/* binding */ WorkoutsView)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _ui_framework_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/view/renderer/CarouselViewRenderer */ "./src/ui-framework/view/renderer/CarouselViewRenderer.ts");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _util_DurationFunctions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/DurationFunctions */ "./src/util/DurationFunctions.ts");
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+
+
+
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_5___default()('workouts-view');
+var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
+  _inheritsLoose(WorkoutsView, _AbstractStatefulColl);
+
+  function WorkoutsView() {
+    var _this;
+
+    _this = _AbstractStatefulColl.call(this, WorkoutsView.DOMConfig.collectionConfig, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts) || this;
+    _this.renderer = new _ui_framework_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_6__.CarouselViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this), WorkoutsView.DOMConfig);
+    return _this;
+  }
+
+  var _proto = WorkoutsView.prototype;
+
+  _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
+    return true;
+  };
+
+  _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__.isSameMongo)(item1, item2);
+  };
+
+  _proto.getIdForItemInNamedCollection = function getIdForItemInNamedCollection(name, item) {
+    return item._id;
+  };
+
+  _proto.calculateExerciseSummary = function calculateExerciseSummary(item) {
+    var result = {
+      weight: 0,
+      distance: 0,
+      duration: '00:00'
+    };
+
+    if (item.exercises) {
+      for (var index = 0; index < item.exercises.length; index++) {
+        var exercise = item.exercises[index];
+        result.weight += exercise.weight;
+        result.distance += exercise.distance;
+        result.duration = (0,_util_DurationFunctions__WEBPACK_IMPORTED_MODULE_8__.addDurations)(result.duration, exercise.duration);
+      }
+    }
+
+    return result;
+  };
+
+  _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
+    var summary = this.calculateExerciseSummary(item);
+    var buffer = '';
+    buffer += "<h5 class=\"card-title\">" + moment__WEBPACK_IMPORTED_MODULE_7___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</h5>";
+    buffer += "<ul class=\"list-group list-group-flush\">";
+    buffer += "<li class=\"list-group-item\"><strong>Duration:</strong> " + summary.duration + "</li>";
+    if (summary.weight > 0) buffer += "<li class=\"list-group-item\"><strong>Total Weight:</strong> " + summary.weight + "</li>";
+    if (summary.distance > 0) buffer += "<li class=\"list-group-item\"><strong>Total Distance: </strong> " + summary.distance + "</li>";
+    buffer += "</ul>";
+    containerEl.innerHTML = buffer;
+  };
+
+  _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
+    return true;
+  };
+
+  _proto.getModifierForItemInNamedCollection = function getModifierForItemInNamedCollection(name, item) {
+    var result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive;
+
+    if (item.completed) {
+      if (item.completed !== true) {
+        result = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active;
+      }
+    }
+
+    return result;
+  };
+
+  _proto.renderBackgroundForItemInNamedCollection = function renderBackgroundForItemInNamedCollection(containerEl, name, item) {};
+
+  return WorkoutsView;
+}(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__["default"]);
+WorkoutsView.DOMConfig = {
+  itemsPerRow: 1,
+  rowContainer: {
+    elementClasses: "carousel-item",
+    elementType: 'div'
+  },
+  activeRow: {
+    elementType: '',
+    elementClasses: 'active'
+  },
+  activeRowPosition: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.RowPosition.last,
+  row: {
+    elementClasses: "row",
+    elementType: 'div'
+  },
+  multipleItemsPerRowContainer: {
+    elementType: 'div',
+    elementClasses: 'col-md-3 mb-2'
+  },
+  actionContainer: {
+    elementType: 'div',
+    elementClasses: 'card-footer bg-light'
+  },
+  collectionConfig: {
+    viewConfig: {
+      resultsContainerId: 'workouts',
+      dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.VIEW_NAME.workouts,
+      drop: {
+        acceptTypes: [_AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.typeExerciseType],
+        acceptFrom: [_AppTypes__WEBPACK_IMPORTED_MODULE_2__.DRAGGABLE.fromExerciseTypes]
+      }
+    },
+    resultsElementType: 'card',
+    resultsClasses: '',
+    keyId: '_id',
+    keyType: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.string,
+    modifiers: {
+      normal: '',
+      inactive: '',
+      active: '',
+      warning: ''
+    },
+    detail: {
+      containerClasses: 'card-body',
+      textElementType: 'div',
+      textElementClasses: '',
+      select: true,
+      background: {
+        elementType: 'canvas',
+        elementClasses: ''
+      }
+    },
+    extraActions: [{
+      name: 'template',
+      buttonText: '',
+      buttonClasses: 'btn btn-primary',
+      iconClasses: 'fas fa-copy'
+    }]
+  }
+};
 
 /***/ }),
 
@@ -11663,6 +11863,8 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     return selectedItem;
   };
 
+  _proto.renderBackgroundForItemInNamedCollection = function renderBackgroundForItemInNamedCollection(containerEl, name, item) {};
+
   _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
     return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_2__.isSame)(item1, item2);
   };
@@ -12197,6 +12399,382 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
 /***/ }),
 
+/***/ "./src/ui-framework/view/renderer/CarouselViewRenderer.ts":
+/*!****************************************************************!*\
+  !*** ./src/ui-framework/view/renderer/CarouselViewRenderer.ts ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CarouselViewRenderer": () => (/* binding */ CarouselViewRenderer)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+
+
+
+var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('carousel-renderer');
+var CarouselViewRenderer = /*#__PURE__*/function () {
+  function CarouselViewRenderer(view, eventHandler, config) {
+    this.view = view;
+    this.eventHandler = eventHandler;
+    this.config = config;
+  }
+
+  var _proto = CarouselViewRenderer.prototype;
+
+  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
+    var _this = this;
+
+    var dataSourceKeyId = this.view.getDataSourceKeyId();
+    var resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
+    avLogger("view " + this.view.getName() + ": creating carousel item");
+    avLogger(item);
+    var collectionConfig = this.view.getCollectionUIConfig();
+    var childEl = document.createElement(collectionConfig.resultsElementType);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.resultsClasses);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(childEl, collectionConfig.resultsElementAttributes);
+    childEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+    childEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+    if (collectionConfig.detail.background) {
+      var backgroundEl = document.createElement(collectionConfig.detail.background.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
+      childEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+      childEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+      childEl.appendChild(backgroundEl);
+      this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
+    } // the content may be structured
+
+
+    var textEl = childEl;
+
+    if (collectionConfig.detail.containerClasses) {
+      var contentEl = document.createElement('div');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(contentEl, collectionConfig.detail.containerClasses);
+      contentEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+      contentEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+      textEl = document.createElement(collectionConfig.detail.textElementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(textEl, collectionConfig.detail.textElementClasses);
+      textEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+      textEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+      contentEl.appendChild(textEl);
+
+      if (collectionConfig.extraActions || collectionConfig.detail.delete) {
+        var buttonsEl = document.createElement(this.config.actionContainer.elementType);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(buttonsEl, this.config.actionContainer.elementClasses);
+        contentEl.appendChild(buttonsEl);
+
+        if (collectionConfig.extraActions) {
+          collectionConfig.extraActions.forEach(function (extraAction) {
+            var action = document.createElement('button');
+            action.setAttribute('type', 'button');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+
+            if (extraAction.buttonText) {
+              action.innerHTML = extraAction.buttonText;
+            }
+
+            if (extraAction.iconClasses) {
+              var iconEl = document.createElement('i');
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+              iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+              iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+              iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+              action.appendChild(iconEl);
+            }
+
+            action.setAttribute(collectionConfig.keyId, resultDataKeyId);
+            action.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+            action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+            action.addEventListener('click', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+
+              _this.eventHandler.eventActionClicked(event);
+            });
+            buttonsEl.appendChild(action);
+          });
+        }
+
+        if (collectionConfig.detail.delete && collectionConfig) {
+          var deleteButtonEl = document.createElement('button');
+          deleteButtonEl.setAttribute('type', 'button');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(deleteButtonEl, collectionConfig.detail.delete.buttonClasses);
+
+          if (collectionConfig.detail.delete.buttonText) {
+            deleteButtonEl.innerHTML = collectionConfig.detail.delete.buttonText;
+          }
+
+          if (collectionConfig.detail.delete.iconClasses) {
+            var iconEl = document.createElement('i');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, collectionConfig.detail.delete.iconClasses);
+            iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+            iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+            deleteButtonEl.appendChild(iconEl);
+          }
+
+          deleteButtonEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+          deleteButtonEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+          deleteButtonEl.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            _this.eventHandler.eventDeleteClickItem(event);
+          });
+          buttonsEl.appendChild(deleteButtonEl);
+        }
+      }
+
+      childEl.appendChild(contentEl);
+
+      if (collectionConfig.detail.drag) {
+        childEl.setAttribute('draggable', 'true');
+        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
+      } // add selection actions
+
+
+      if (collectionConfig.detail.select) {
+        childEl.addEventListener('click', this.eventHandler.eventClickItem);
+      }
+    } // add the key ids for selection
+
+
+    textEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+    textEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+    var displayText = this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item); // add icons
+    // add modifiers for patient state
+
+    if (collectionConfig.modifiers) {
+      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
+      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
+
+      switch (modifier) {
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.normal:
+          {
+            avLogger("view " + this.view.getName() + ": normal item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal);
+
+            if (collectionConfig.icons && collectionConfig.icons.normal) {
+              var _iconEl = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl, collectionConfig.icons.normal);
+
+              _iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+              _iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    var _iconEl2 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl2, collectionConfig.icons.warning);
+
+                    _iconEl2.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+                    _iconEl2.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl2);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.active:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.active) {
+                    var _iconEl3 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl3, collectionConfig.icons.active);
+
+                    _iconEl3.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+                    _iconEl3.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl3);
+                  }
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.active:
+          {
+            avLogger("view " + this.view.getName() + ": active item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active);
+
+            if (collectionConfig.icons && collectionConfig.icons.active) {
+              var _iconEl4 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl4, collectionConfig.icons.active);
+
+              _iconEl4.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+              _iconEl4.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl4);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    var _iconEl5 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl5, collectionConfig.icons.warning);
+
+                    _iconEl5.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+                    _iconEl5.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl5);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.inactive:
+          {
+            avLogger("view " + this.view.getName() + ": inactive item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive);
+
+            if (collectionConfig.icons && collectionConfig.icons.inactive) {
+              var _iconEl6 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl6, collectionConfig.icons.inactive);
+
+              _iconEl6.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+              _iconEl6.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+              textEl.appendChild(_iconEl6);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.warning:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive, false);
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                    var _iconEl7 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl7, collectionConfig.icons.warning);
+
+                    _iconEl7.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+                    _iconEl7.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl7);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.active:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.active) {
+                    var _iconEl8 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl8, collectionConfig.icons.active);
+
+                    _iconEl8.setAttribute(collectionConfig.keyId, resultDataKeyId);
+
+                    _iconEl8.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+
+                    textEl.appendChild(_iconEl8);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+      }
+    }
+
+    return childEl;
+  };
+
+  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
+    avLogger("view " + this.view.getName() + ": creating carousel results");
+    avLogger(newState); // remove the previous items from list
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(containerEl); // need to break the items up by row, and the last row is active (assumes increasing time order)
+
+    var numberOfResults = newState.length;
+    var numberOfRows = Math.ceil(numberOfResults / this.config.itemsPerRow);
+    avLogger("view " + this.view.getName() + ": creating carousel with number of results per row of " + this.config.itemsPerRow + " with rows " + numberOfRows);
+
+    for (var rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+      // create the row
+      var rowContainerEl = document.createElement(this.config.rowContainer.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, [{
+        name: 'style',
+        value: 'display:block'
+      }]);
+      var rowEl = document.createElement(this.config.row.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowEl, this.config.row.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowEl, this.config.row.elementAttributes);
+      rowContainerEl.appendChild(rowEl); // if this the active row?
+
+      if (rowIndex === 0 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.RowPosition.first || rowIndex === numberOfRows - 1 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.RowPosition.last) {
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowEl, this.config.activeRow.elementClasses);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowEl, this.config.activeRow.elementAttributes);
+      }
+
+      var itemIndex = rowIndex * this.config.itemsPerRow;
+
+      while (itemIndex < (rowIndex + 1) * this.config.itemsPerRow) {
+        avLogger("rowIndex " + rowIndex + " item index " + itemIndex);
+        var item = newState[itemIndex];
+        var itemContainerEl = rowEl;
+
+        if (this.config.multipleItemsPerRowContainer) {
+          itemContainerEl = document.createElement(this.config.multipleItemsPerRowContainer.elementType);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(itemContainerEl, this.config.multipleItemsPerRowContainer.elementClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(itemContainerEl, this.config.multipleItemsPerRowContainer.elementAttributes);
+          rowEl.appendChild(itemContainerEl);
+        }
+
+        var itemEl = this.createDisplayElementForCollectionItem(collectionName, item);
+        itemContainerEl.appendChild(itemEl);
+        itemIndex++;
+      }
+
+      containerEl.appendChild(rowContainerEl);
+    }
+  };
+
+  return CarouselViewRenderer;
+}();
+
+/***/ }),
+
 /***/ "./src/ui-framework/view/renderer/FormDetailViewRenderer.ts":
 /*!******************************************************************!*\
   !*** ./src/ui-framework/view/renderer/FormDetailViewRenderer.ts ***!
@@ -12608,8 +13186,7 @@ var ListViewRenderer = /*#__PURE__*/function () {
 
     textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
     textEl.setAttribute(dataSourceKeyId, uiConfig.viewConfig.dataSourceId);
-    var displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
-    textEl.innerHTML = displayText; // add icons
+    this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item); // add icons
 
     if (uiConfig.detail.icons) {
       var icons = uiConfig.detail.icons(collectionName, item);
@@ -12913,6 +13490,69 @@ var BrowserUtil = /*#__PURE__*/function () {
 
 var browserUtil = new BrowserUtil();
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (browserUtil);
+
+/***/ }),
+
+/***/ "./src/util/DurationFunctions.ts":
+/*!***************************************!*\
+  !*** ./src/util/DurationFunctions.ts ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "addDurations": () => (/* binding */ addDurations)
+/* harmony export */ });
+function addDurations(duration1, duration2) {
+  var durationRegexp = /^(\d+:)?[0-5]?\d:[0-5]\d$/; // check both are valid durations
+
+  var duration1Valid = durationRegexp.test(duration1);
+  var duration2Valid = durationRegexp.test(duration2);
+
+  if (duration1Valid && duration2Valid) {
+    // split them into seconds, minutes, and hours
+    var duration1Components = duration1.split(':');
+    var duration2Components = duration2.split(':');
+    var carry = 0; // add the seconds (last elements in each)
+
+    var duration1Seconds = parseInt(duration1Components[duration1Components.length - 1]);
+    var duration2Seconds = parseInt(duration2Components[duration2Components.length - 1]);
+    var sumSeconds = duration1Seconds + duration2Seconds;
+
+    if (sumSeconds >= 60) {
+      carry = 1;
+      sumSeconds -= 60;
+    }
+
+    var duration1Minutes = parseInt(duration1Components[duration1Components.length - 2]);
+    var duration2Minutes = parseInt(duration2Components[duration2Components.length - 2]);
+    var sumMinutes = duration1Minutes + duration2Minutes + carry;
+
+    if (sumMinutes >= 60) {
+      carry = 1;
+      sumMinutes -= 60;
+    } // do we have hours?
+
+
+    var duration1Hours = 0;
+
+    if (duration1Components.length == 3) {
+      duration1Hours = parseInt(duration1Components[0]);
+    }
+
+    var duration2Hours = 0;
+
+    if (duration2Components.length == 3) {
+      duration2Hours = parseInt(duration2Components[0]);
+    }
+
+    var sumHours = duration1Hours + duration2Hours + carry;
+    return "" + (sumHours > 0 ? sumHours + ':' : '') + (sumMinutes < 10 ? '0' + sumMinutes : sumMinutes) + ":" + (sumSeconds < 10 ? '0' + sumSeconds : sumSeconds);
+  } else {
+    return '00:00';
+  }
+}
 
 /***/ }),
 

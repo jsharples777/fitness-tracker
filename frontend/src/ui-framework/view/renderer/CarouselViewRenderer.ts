@@ -7,18 +7,18 @@ import {CarouselDOMConfig, EXTRA_ACTION_ATTRIBUTE_NAME, Modifier, RowPosition} f
 
 const avLogger = debug('carousel-renderer');
 
-export class CarouselViewRenderer implements CollectionViewRenderer{
-    protected view:CollectionView;
-    protected eventHandler:CollectionViewEventHandler;
-    protected config:CarouselDOMConfig;
+export class CarouselViewRenderer implements CollectionViewRenderer {
+    protected view: CollectionView;
+    protected eventHandler: CollectionViewEventHandler;
+    protected config: CarouselDOMConfig;
 
-    constructor(view:CollectionView,eventHandler:CollectionViewEventHandler,config:CarouselDOMConfig) {
+    constructor(view: CollectionView, eventHandler: CollectionViewEventHandler, config: CarouselDOMConfig) {
         this.view = view;
         this.eventHandler = eventHandler;
         this.config = config;
     }
 
-    public createDisplayElementForCollectionItem(collectionName:string, item: any): HTMLElement {
+    public createDisplayElementForCollectionItem(collectionName: string, item: any): HTMLElement {
         const dataSourceKeyId = this.view.getDataSourceKeyId();
         const resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
 
@@ -32,7 +32,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
         browserUtil.addRemoveClasses(childEl, collectionConfig.resultsClasses);
         browserUtil.addAttributes(childEl, collectionConfig.resultsElementAttributes);
         childEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-        childEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+        childEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
 
 
         if (collectionConfig.detail.background) {
@@ -40,8 +40,9 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
             browserUtil.addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
             browserUtil.addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
             childEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-            childEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+            childEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
             childEl.appendChild(backgroundEl);
+            this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
         }
 
 
@@ -137,9 +138,8 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
 
         // add the key ids for selection
         textEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-        textEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
-        const displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
-        textEl.innerHTML = displayText;
+        textEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
+        const displayText = this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item);
         // add icons
 
 
@@ -155,7 +155,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.normal);
                         iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                        iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -167,7 +167,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.warning);
                                 iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -177,7 +177,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.active);
                                 iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                         }
@@ -192,7 +192,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.active);
                         iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                        iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -204,7 +204,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.warning);
                                 iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -219,7 +219,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                         let iconEl = document.createElement('i');
                         browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.inactive);
                         iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                        iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                        iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                         textEl.appendChild(iconEl);
                     }
 
@@ -231,7 +231,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.warning);
                                 iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -241,7 +241,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                                 let iconEl = document.createElement('i');
                                 browserUtil.addRemoveClasses(iconEl, collectionConfig.icons.active);
                                 iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                                iconEl.setAttribute(dataSourceKeyId,collectionConfig.viewConfig.dataSourceId);
+                                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
                                 textEl.appendChild(iconEl);
                             }
                             break;
@@ -254,7 +254,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
         return childEl;
     }
 
-    public setDisplayElementsForCollectionInContainer(containerEl:HTMLElement,collectionName:string,newState:any): void {
+    public setDisplayElementsForCollectionInContainer(containerEl: HTMLElement, collectionName: string, newState: any): void {
         avLogger(`view ${this.view.getName()}: creating carousel results`);
         avLogger(newState);
         // remove the previous items from list
@@ -262,14 +262,14 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
 
         // need to break the items up by row, and the last row is active (assumes increasing time order)
         const numberOfResults = newState.length;
-        const numberOfRows = Math.ceil(numberOfResults/this.config.itemsPerRow);
-        let itemIndex = 0;
-        for (let rowIndex = 0;rowIndex < numberOfRows;rowIndex++) {
-            const item = newState[itemIndex];
+        const numberOfRows = Math.ceil(numberOfResults / this.config.itemsPerRow);
+        avLogger(`view ${this.view.getName()}: creating carousel with number of results per row of ${this.config.itemsPerRow} with rows ${numberOfRows}`);
+        for (let rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
             // create the row
             let rowContainerEl = document.createElement(this.config.rowContainer.elementType);
             browserUtil.addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
             browserUtil.addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes);
+            browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
 
             let rowEl = document.createElement(this.config.row.elementType);
             browserUtil.addRemoveClasses(rowEl, this.config.row.elementClasses);
@@ -283,18 +283,29 @@ export class CarouselViewRenderer implements CollectionViewRenderer{
                 browserUtil.addAttributes(rowEl, this.config.activeRow.elementAttributes);
             }
 
-            let itemContainerEl = rowEl;
-            if (this.config.multipleItemsPerRowContainer) {
-                itemContainerEl = document.createElement(this.config.multipleItemsPerRowContainer.elementType);
-                browserUtil.addRemoveClasses(rowEl, this.config.multipleItemsPerRowContainer.elementClasses);
-                browserUtil.addAttributes(rowEl, this.config.multipleItemsPerRowContainer.elementAttributes);
-                rowEl.appendChild(itemContainerEl);
+            let itemIndex = rowIndex * this.config.itemsPerRow;
+
+            while (itemIndex < ((rowIndex + 1) * this.config.itemsPerRow)) {
+                avLogger(`rowIndex ${rowIndex} item index ${itemIndex}`);
+                const item = newState[itemIndex];
+
+
+                let itemContainerEl = rowEl;
+                if (this.config.multipleItemsPerRowContainer) {
+                    itemContainerEl = document.createElement(this.config.multipleItemsPerRowContainer.elementType);
+                    browserUtil.addRemoveClasses(itemContainerEl, this.config.multipleItemsPerRowContainer.elementClasses);
+                    browserUtil.addAttributes(itemContainerEl, this.config.multipleItemsPerRowContainer.elementAttributes);
+                    rowEl.appendChild(itemContainerEl);
+                }
+
+                const itemEl = this.createDisplayElementForCollectionItem(collectionName, item);
+                itemContainerEl.appendChild(itemEl);
+                itemIndex++;
             }
 
-            const itemEl = this.createDisplayElementForCollectionItem(collectionName,item);
-            itemContainerEl.appendChild(itemEl);
 
             containerEl.appendChild(rowContainerEl);
+
         }
     }
 

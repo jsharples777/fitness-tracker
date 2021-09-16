@@ -146,8 +146,8 @@ class UserSearchView extends AbstractStatefulCollectionView implements ChatUserE
     }
 
 
-    getDisplayValueForItemInNamedCollection(name: string, item: any) {
-        return item.username;
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+        containerEl.innerHTML =  item.username;
     }
 
     getModifierForItemInNamedCollection(name: string, item: any) {

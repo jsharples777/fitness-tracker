@@ -95,8 +95,8 @@ class ChatLogsView extends AbstractStatefulCollectionView implements ChatEventLi
         return item.roomName;
     }
 
-    getDisplayValueForItemInNamedCollection(name: string, item: any) {
-        return item.users.join(',');
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+        containerEl.innerHTML =  item.users.join(',');
     }
 
     getModifierForItemInNamedCollection(name: string, item: any) {

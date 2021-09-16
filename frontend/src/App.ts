@@ -3,7 +3,7 @@ import {Form} from "./ui-framework/form/Form";
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'linked-controller linked-controller-detail';
+localStorage.debug = 'carousel-renderer';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -30,6 +30,7 @@ import {DetailView} from "./ui-framework/view/interface/DetailView";
 import {LinkedCollectionDetailController} from "./ui-framework/helper/LinkedCollectionDetailController";
 import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
 import {CreatedByPermissionChecker} from "./CreatedByPermissionChecker";
+import {WorkoutsView} from "./component/view/WorkoutsView";
 
 
 const logger = debug('app');
@@ -158,6 +159,8 @@ class App implements UnreadMessageCountListener {
         this.setupChatViews();
         this.setupExerciseTypeViews();
         this.setupNavigationItemHandling();
+
+        new WorkoutsView().onDocumentLoaded();
 
         Controller.getInstance().initialise();
 

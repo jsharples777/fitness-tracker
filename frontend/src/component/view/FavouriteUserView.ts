@@ -115,8 +115,8 @@ class FavouriteUserView extends AbstractStatefulCollectionView implements ChatUs
     }
 
 
-    getDisplayValueForItemInNamedCollection(name: string, item: any) {
-        return item.username;
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+        containerEl.innerHTML =  item.username;
     }
 
     getModifierForItemInNamedCollection(name: string, item: any) {

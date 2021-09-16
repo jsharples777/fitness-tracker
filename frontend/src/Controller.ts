@@ -121,6 +121,7 @@ class Controller implements StateChangeListener,DataObjectListener {
         cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
 
         let workoutDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition('workout','Workout', true, true, true, '_id');
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", FieldType.boolean, true, "Have completed the workout");
         let exercisesFieldDefinition:FieldDefinition = BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", FieldType.collection, true, "Exercises in this workout");
         exercisesFieldDefinition.idType = KeyType.collection;
         exercisesFieldDefinition.collectionOfDataObjectId = exerciseTypeDefinition.id;
@@ -158,6 +159,7 @@ class Controller implements StateChangeListener,DataObjectListener {
             // load the users
             this.getStateManager().getStateByName(STATE_NAMES.users);
             this.getStateManager().getStateByName(STATE_NAMES.exerciseTypes);
+            this.getStateManager().getStateByName(STATE_NAMES.workouts);
         }
 
     }

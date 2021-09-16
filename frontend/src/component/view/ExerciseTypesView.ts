@@ -94,8 +94,8 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
         return item._id;
     }
 
-    getDisplayValueForItemInNamedCollection(name: string, item: any) {
-        return item.name;
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+        containerEl.innerHTML =  item.name;
     }
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {

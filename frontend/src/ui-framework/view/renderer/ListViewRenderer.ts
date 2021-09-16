@@ -137,10 +137,9 @@ export class ListViewRenderer implements CollectionViewRenderer{
         // add the key ids for selection
         textEl.setAttribute(uiConfig.keyId, resultDataKeyId);
         textEl.setAttribute(dataSourceKeyId,uiConfig.viewConfig.dataSourceId);
-        const displayText = this.view.getDisplayValueForItemInNamedCollection(collectionName, item);
-        textEl.innerHTML = displayText;
-        // add icons
+        this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item);
 
+        // add icons
         if (uiConfig.detail.icons) {
             const icons:string[] = uiConfig.detail.icons(collectionName,item);
             icons.forEach((icon) => {

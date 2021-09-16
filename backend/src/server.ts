@@ -13,7 +13,7 @@ dotenv.config();
 import morgan from 'morgan';
 import debug from 'debug';
 
-debug.enable('server socket db api route message-queue mongo-data-source api-exercise-types api-workouts');
+debug.enable('server db api route mongo-data-source api-exercise-types api-workouts');
 
 // HTTP handlers
 import http from 'http';
