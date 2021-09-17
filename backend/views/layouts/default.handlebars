@@ -11,10 +11,11 @@
 {{> sidebars/user-search-sb }}
 {{> sidebars/chat-sb }}
 {{> sidebars/workout-summary-sb }}
+{{> sidebars/current-workout-sb }}
 {{> modals/alert }}
 <div id="root" class="root">
     <section class="pt-5 pb-5">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-6">
                     <h3 class="mb-3 text-white">Workouts </h3>
@@ -28,7 +29,7 @@
                     </a>
                 </div>
                 <div class="col-12">
-                    <div id="workoutsContainer" class="carousel slide" data-ride="carousel">
+                    <div id="workoutsContainer" class="carousel slide" data-ride="carousel" data-interval="false">
                         <div id="workouts" class="carousel-inner">
                         </div>
                     </div>
@@ -36,6 +37,7 @@
             </div>
         </div>
     </section>
+
 </div>
 <div><canvas id="test" ></canvas></div>
 {{> footers/footer-main }}

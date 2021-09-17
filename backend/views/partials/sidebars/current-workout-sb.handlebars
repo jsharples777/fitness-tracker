@@ -1,0 +1,32 @@
+<div id="currentWorkoutSidebar" class="sidebar-right bg-dark">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 pb-3 align-items-end">
+                <button type="button" class="close text-white" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="col-12">
+                <div class="card" id="exerciseTypesContainer">
+                    <div class="card-header" data-toggle="tooltip" data-placement="bottom" title="Add new exercises from previous workouts or from the exercises">Current Workout</div>
+                    <div class="card-body scroll-exercise-type-list"  data-toggle="tooltip" data-placement="center" title="Add new exercises from previous workouts or from the exercises" >
+                        <div id="exercises"class="list-group list-group-flush">
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-end"  data-toggle="tooltip" data-placement="top" title="Add new exercises from previous workouts or from the exercises" >
+                            <button type="submit" class="btn btn-primary" id="completeWorkout" data-toggle="tooltip" data-placement="bottom" title="Complete the workout.">Complete Workout&nbsp;<i class="fas fa-check-square"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mt-3" id="exerciseTypeContainer">
+                    <div class="card-body scroll-exercise-type-detail">
+                        <div id="workoutDetail">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

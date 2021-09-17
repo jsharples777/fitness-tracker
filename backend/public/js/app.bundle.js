@@ -25,12 +25,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/view/ExerciseTypesCompositeView */ "./src/component/view/ExerciseTypesCompositeView.ts");
 /* harmony import */ var _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/sidebar/WorkoutSummarySidebar */ "./src/component/sidebar/WorkoutSummarySidebar.ts");
 /* harmony import */ var _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/view/WorkoutSummaryView */ "./src/component/view/WorkoutSummaryView.ts");
+/* harmony import */ var _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./component/sidebar/CurrentWorkoutSidebar */ "./src/component/sidebar/CurrentWorkoutSidebar.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'app controller-ts';
+localStorage.debug = 'app controller-ts workout-summary-renderer carousel-renderer';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
+
 
 
 
@@ -55,12 +57,14 @@ var App = /*#__PURE__*/function () {
   // @ts-ignore
   // @ts-ignore
   // @ts-ignore
+  // @ts-ignore
   function App() {
     // event handlers
     this.handleShowUserSearch = this.handleShowUserSearch.bind(this);
     this.handleShowExerciseTypes = this.handleShowExerciseTypes.bind(this);
     this.handleShowChat = this.handleShowChat.bind(this);
     this.handleShowWorkoutSummary = this.handleShowWorkoutSummary.bind(this);
+    this.handleShowCurrentWorkout = this.handleShowCurrentWorkout.bind(this);
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().connectToApplication(this, window.localStorage);
   }
 
@@ -77,6 +81,8 @@ var App = /*#__PURE__*/function () {
     document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes); // @ts-ignore
 
     document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.workoutSummary).addEventListener('click', this.handleShowWorkoutSummary); // @ts-ignore
+
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.currentWorkout).addEventListener('click', this.handleShowCurrentWorkout); // @ts-ignore
 
     this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.chatId); // @ts-ignore
 
@@ -132,6 +138,9 @@ var App = /*#__PURE__*/function () {
       containerId: _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__["default"].SidebarContainers.container
     });
     this.workoutSummarySidebar.onDocumentLoaded();
+    this.currentWorkoutSidebar = new _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_15__["default"](); // create a view for the current workout
+
+    this.currentWorkoutSidebar.onDocumentLoaded();
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise();
   };
 
@@ -167,6 +176,20 @@ var App = /*#__PURE__*/function () {
     }
 
     this.workoutSummarySidebar.eventShow(event);
+  };
+
+  _proto.handleShowCurrentWorkout = function handleShowCurrentWorkout(event) {
+    logger('Handling Show Current Workout');
+    event.preventDefault(); //this.hideAllSideBars();
+    // prevent anything from happening if we are not logged in
+
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+      // @ts-ignore
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      return;
+    }
+
+    this.currentWorkoutSidebar.eventShow(event);
   };
 
   _proto.handleShowExerciseTypes = function handleShowExerciseTypes(event) {
@@ -267,7 +290,8 @@ var NAVIGATION = {
   userSearchId: 'navigationItemUserSearch',
   exerciseTypesId: 'navigationItemExerciseTypes',
   chatId: 'navigationItemChat',
-  workoutSummary: 'navigationItemWorkoutSummary'
+  workoutSummary: 'navigationItemWorkoutSummary',
+  currentWorkout: 'navigationItemCurrentWorkout'
 };
 var DRAGGABLE = {
   typeUser: 'user',
@@ -794,6 +818,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.esm.js");
+
 
 
 var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('workout-summary-renderer');
@@ -805,43 +831,146 @@ var WorkoutSummaryRenderer = /*#__PURE__*/function () {
 
   var _proto = WorkoutSummaryRenderer.prototype;
 
+  _proto.generateRandomExerciseColourAndBorder = function generateRandomExerciseColourAndBorder() {
+    var red = Math.floor(Math.random() * 255);
+    var blue = Math.floor(Math.random() * 255);
+    var green = Math.floor(Math.random() * 255);
+    var transparency = 0.4;
+    var background = "rgba(" + red + "," + green + "," + blue + "," + transparency + ")";
+    var border = "rgb(" + red + "," + green + "," + blue + ")";
+    return [background, border];
+  };
+
   _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
     return document.createElement('a');
   };
 
   _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
+    var _this = this;
+
     avLogger("view " + this.view.getName() + ": creating workout summary");
-    avLogger(newState); // okay we need to go through the last 7 days of workouts
-    // we need to go backward through the state array and collect the 7 days worth of results
+    avLogger(newState); // okay we need to go through the last 7 workouts
 
-    var sevenDaysOfWorkouts = [];
+    var sevenWorkouts = newState;
 
-    if (newState.length > 0) {
-      var index = newState.length - 1;
-      var latestWorkout = newState[index];
-      sevenDaysOfWorkouts.push(latestWorkout);
-      var latestWorkoutDate = moment__WEBPACK_IMPORTED_MODULE_1___default()(latestWorkout.createdOn, 'YYYYMMDDHHmmss');
-      var sevenDaysPrior = latestWorkoutDate.add(-7, 'days');
-      var foundAllWorkoutsForSummary = false;
+    if (newState.length > 7) {
+      sevenWorkouts = newState.slice(newState.length - 7);
+    } // go through the workouts and find all the unique exercise names as data series names
 
-      while (!foundAllWorkoutsForSummary) {
-        index -= 1; // have we run out of workouts?
 
-        if (index >= 0) {
-          var previousWorkout = newState[index];
-          var workoutDate = moment__WEBPACK_IMPORTED_MODULE_1___default()(previousWorkout.createdOn, 'YYYYMMDDHHmmss');
+    var exerciseNames = [];
+    var exerciseBG = [];
+    var exerciseBR = [];
+    var exerciseTypes = [];
+    var labels = [];
+    sevenWorkouts.forEach(function (workout) {
+      var label = moment__WEBPACK_IMPORTED_MODULE_1___default()(workout.createdOn, 'YYYYMMDDHHmmss').format('ddd DD/MM/YYYY HH:mm');
+      labels.push(label);
+      avLogger("Added label " + label);
 
-          if (workoutDate.isAfter(sevenDaysPrior)) {
-            sevenDaysOfWorkouts.push(previousWorkout);
-          } else {
-            foundAllWorkoutsForSummary = true;
+      if (workout.exercises) {
+        workout.exercises.forEach(function (exercise) {
+          var exerciseName = exercise.name; // do we have this exercise already?
+
+          var foundIndex = exerciseNames.findIndex(function (name) {
+            return name == exerciseName;
+          });
+
+          if (foundIndex < 0) {
+            avLogger("Adding exercise " + exerciseName + " of type " + exercise.type + " to datasets");
+            exerciseNames.push(exerciseName);
+            exerciseTypes.push(exercise.type);
+
+            var colours = _this.generateRandomExerciseColourAndBorder();
+
+            exerciseBG.push(colours[0]);
+            exerciseBR.push(colours[1]);
+          }
+        });
+      }
+    }); // construct the data series, for each series (exercise), go through the workouts and create a data entry for that item
+
+    var datasets = [];
+    exerciseNames.forEach(function (name, index) {
+      var exerciseType = exerciseTypes[index];
+      var itemBG = exerciseBG[index];
+      var itemBR = exerciseBR[index];
+      avLogger("Constructing dataset " + name + " of type " + exerciseType + " to datasets");
+      var data = [];
+      var bg = [];
+      var br = [];
+      sevenWorkouts.forEach(function (workout) {
+        bg.push(itemBG);
+        br.push(itemBR); // find the exercise name
+
+        if (workout.exercises) {
+          var didntFindExercise = workout.exercises.every(function (exercise) {
+            if (exercise.name == name) {
+              if (exerciseType === 'strength') {
+                avLogger("Found exercise " + name + " with value " + exercise.weight);
+                data.push(exercise.weight);
+              } else {
+                avLogger("Found exercise " + name + " with value " + exercise.distance);
+                data.push(exercise.distance);
+              }
+
+              return false;
+            }
+
+            return true;
+          }); // not found - zero value
+
+          if (didntFindExercise) {
+            data.push(0);
           }
         } else {
-          foundAllWorkoutsForSummary = true;
+          data.push(0);
+        }
+      });
+      var dataset = {
+        label: name,
+        data: data,
+        backgroundColor: bg,
+        borderColor: br,
+        borderWidth: 1,
+        order: 1
+      };
+      var lineDataSet = {
+        label: name,
+        data: data,
+        backgroundColor: bg,
+        borderColor: br,
+        order: 0,
+        type: 'line'
+      };
+      avLogger(dataset);
+      datasets.push(dataset);
+      datasets.push(lineDataSet);
+    });
+    var chartData = {
+      labels: labels,
+      datasets: datasets
+    };
+    var config = {
+      type: 'bar',
+      data: chartData,
+      options: {
+        responsive: true,
+        animation: true,
+        maintainAspectRatio: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
       }
-    }
+    };
+    avLogger(chartData); // @ts-ignore
+
+    new chart_js_auto__WEBPACK_IMPORTED_MODULE_2__["default"](containerEl, config);
   };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {};
 
   return WorkoutSummaryRenderer;
 }();
@@ -900,6 +1029,61 @@ ChatRoomsSidebar.SidebarContainers = {
   chatLog: 'chatLogRoom'
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ChatRoomsSidebar);
+
+/***/ }),
+
+/***/ "./src/component/sidebar/CurrentWorkoutSidebar.ts":
+/*!********************************************************!*\
+  !*** ./src/component/sidebar/CurrentWorkoutSidebar.ts ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ CurrentWorkoutSidebar)
+/* harmony export */ });
+/* harmony import */ var _ui_framework_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/container/SidebarViewContainer */ "./src/ui-framework/container/SidebarViewContainer.ts");
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+
+var CurrentWorkoutSidebar = /*#__PURE__*/function (_SidebarViewContainer) {
+  _inheritsLoose(CurrentWorkoutSidebar, _SidebarViewContainer);
+
+  function CurrentWorkoutSidebar() {
+    return _SidebarViewContainer.call(this, CurrentWorkoutSidebar.SidebarPrefs) || this;
+  }
+
+  return CurrentWorkoutSidebar;
+}(_ui_framework_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+CurrentWorkoutSidebar.SidebarPrefs = {
+  id: 'currentWorkoutSidebar',
+  expandedSize: '50%',
+  location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.right
+};
+CurrentWorkoutSidebar.SidebarContainers = {
+  list: 'exercises',
+  detail: 'workoutDetail'
+};
+
 
 /***/ }),
 
@@ -1057,7 +1241,7 @@ var WorkoutSummarySidebar = /*#__PURE__*/function (_SidebarViewContainer) {
 
 WorkoutSummarySidebar.SidebarPrefs = {
   id: 'workoutSummarySidebar',
-  expandedSize: '50%',
+  expandedSize: '100%',
   location: _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SidebarLocation.bottom
 };
 WorkoutSummarySidebar.SidebarContainers = {
@@ -3234,7 +3418,8 @@ WorkoutsView.DOMConfig = {
   itemsPerRow: {
     small: 1,
     medium: 2,
-    large: 3
+    large: 3,
+    xlarge: 4
   },
   rowContainer: {
     elementClasses: "carousel-item",
@@ -3313,7 +3498,7 @@ WorkoutsView.DOMConfig = {
         value: "top"
       }, {
         name: 'title',
-        value: "Create a new workout with this one as a starting point."
+        value: "Add the exercises from this workout to the current workout."
       }]
     }, {
       name: 'continue',
@@ -7275,7 +7460,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Modifier": () => (/* binding */ Modifier),
 /* harmony export */   "KeyType": () => (/* binding */ KeyType),
 /* harmony export */   "SidebarLocation": () => (/* binding */ SidebarLocation),
-/* harmony export */   "RowPosition": () => (/* binding */ RowPosition)
+/* harmony export */   "RowPosition": () => (/* binding */ RowPosition),
+/* harmony export */   "SCREEN_WIDTH_LARGE": () => (/* binding */ SCREEN_WIDTH_LARGE),
+/* harmony export */   "SCREEN_WIDTH_MEDIUM": () => (/* binding */ SCREEN_WIDTH_MEDIUM),
+/* harmony export */   "SCREEN_WIDTH_SMALL": () => (/* binding */ SCREEN_WIDTH_SMALL)
 /* harmony export */ });
 var DRAGGABLE_KEY_ID = 'text/plain';
 var DRAGGABLE_TYPE = 'draggedType';
@@ -7314,6 +7502,10 @@ var RowPosition;
   RowPosition[RowPosition["first"] = 0] = "first";
   RowPosition[RowPosition["last"] = 1] = "last";
 })(RowPosition || (RowPosition = {}));
+
+var SCREEN_WIDTH_LARGE = 992;
+var SCREEN_WIDTH_MEDIUM = 769;
+var SCREEN_WIDTH_SMALL = 415;
 
 /***/ }),
 
@@ -12280,6 +12472,12 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     }
   };
 
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    _AbstractView.prototype.onDocumentLoaded.call(this);
+
+    if (this.renderer) this.renderer.onDocumentLoaded();
+  };
+
   _proto.getDragData = function getDragData(event) {
     // @ts-ignore
     var itemId = event.target.getAttribute(this.collectionUIConfig.keyId); // @ts-ignore
@@ -12870,6 +13068,10 @@ __webpack_require__.r(__webpack_exports__);
 var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('carousel-renderer');
 var CarouselViewRenderer = /*#__PURE__*/function () {
   function CarouselViewRenderer(view, eventHandler, config) {
+    this.lastRenderedContainer = null;
+    this.lastRenderedCollectionName = null;
+    this.lastRenderedCollection = null;
+    this.previousWindowWidth = 0;
     this.view = view;
     this.eventHandler = eventHandler;
     this.config = config;
@@ -12877,8 +13079,77 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
 
   var _proto = CarouselViewRenderer.prototype;
 
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    var _this = this; // we need to track window resizing
+
+
+    this.previousWindowWidth = window.innerWidth;
+    window.addEventListener('resize', function (event) {
+      var newWindowWidth = window.innerWidth;
+      var reRenderRequired = false;
+
+      if (newWindowWidth < _this.previousWindowWidth) {
+        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
+          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to large");
+          }
+
+          w;
+        }
+
+        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
+          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to medium");
+          }
+        }
+
+        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
+          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to small");
+          }
+        }
+      } else {
+        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
+          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
+            // need to re-render carousel
+            avLogger("window increased and is now larger than small");
+            reRenderRequired = true;
+          }
+        }
+
+        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
+          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
+            avLogger("window increased and is now larger than medium"); // need to re-render carousel
+
+            reRenderRequired = true;
+          }
+        }
+
+        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
+          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
+            avLogger("window increased and is now larger than large"); // need to re-render carousel
+
+            reRenderRequired = true;
+          }
+        }
+      }
+
+      _this.previousWindowWidth = newWindowWidth;
+
+      if (_this.lastRenderedContainer && _this.lastRenderedCollection && _this.lastRenderedCollectionName && reRenderRequired) {
+        _this.setDisplayElementsForCollectionInContainer(_this.lastRenderedContainer, _this.lastRenderedCollectionName, _this.lastRenderedCollection);
+      }
+    });
+  };
+
   _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
-    var _this = this;
+    var _this2 = this;
 
     var dataSourceKeyId = this.view.getDataSourceKeyId();
     var resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
@@ -12923,7 +13194,7 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
 
         if (collectionConfig.extraActions) {
           collectionConfig.extraActions.forEach(function (extraAction) {
-            var hasPermissionForAction = _this.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
+            var hasPermissionForAction = _this2.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
 
             if (hasPermissionForAction) {
               var action = document.createElement('button');
@@ -12951,7 +13222,7 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
                 event.preventDefault();
                 event.stopPropagation();
 
-                _this.eventHandler.eventActionClicked(event);
+                _this2.eventHandler.eventActionClicked(event);
               });
               buttonsEl.appendChild(action);
             }
@@ -12982,7 +13253,7 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
             event.preventDefault();
             event.stopPropagation();
 
-            _this.eventHandler.eventDeleteClickItem(event);
+            _this2.eventHandler.eventDeleteClickItem(event);
           });
           buttonsEl.appendChild(deleteButtonEl);
         }
@@ -13183,13 +13454,17 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
 
     var numberOfResults = newState.length; // number of items per row depends on view port
 
-    var itemsPerRow = this.config.itemsPerRow.large;
+    var itemsPerRow = this.config.itemsPerRow.xlarge;
 
-    if (window.innerWidth < 769) {
+    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
+      itemsPerRow = this.config.itemsPerRow.large;
+    }
+
+    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
       itemsPerRow = this.config.itemsPerRow.medium;
     }
 
-    if (window.innerWidth < 415) {
+    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
       itemsPerRow = this.config.itemsPerRow.small;
     }
 
@@ -13235,6 +13510,9 @@ var CarouselViewRenderer = /*#__PURE__*/function () {
     }
 
     $('[data-toggle="tooltip"]').tooltip();
+    this.lastRenderedContainer = containerEl;
+    this.lastRenderedCollectionName = collectionName;
+    this.lastRenderedCollection = newState;
   };
 
   return CarouselViewRenderer;
@@ -13861,6 +14139,8 @@ var ListViewRenderer = /*#__PURE__*/function () {
     });
     $('[data-toggle="tooltip"]').tooltip();
   };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {};
 
   return ListViewRenderer;
 }();

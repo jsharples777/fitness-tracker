@@ -3,7 +3,13 @@ import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
 import {CollectionView} from "../interface/CollectionView";
 import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandler";
 import browserUtil from "../../../util/BrowserUtil";
-import {CarouselDOMConfig, EXTRA_ACTION_ATTRIBUTE_NAME, Modifier, RowPosition} from "../../ConfigurationTypes";
+import {
+    CarouselDOMConfig,
+    EXTRA_ACTION_ATTRIBUTE_NAME,
+    Modifier,
+    RowPosition, SCREEN_WIDTH_LARGE,
+    SCREEN_WIDTH_MEDIUM, SCREEN_WIDTH_SMALL
+} from "../../ConfigurationTypes";
 
 const avLogger = debug('carousel-renderer');
 
@@ -12,10 +18,77 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
     protected eventHandler: CollectionViewEventHandler;
     protected config: CarouselDOMConfig;
 
+    private lastRenderedContainer:HTMLElement|null = null;
+    private lastRenderedCollectionName:string|null = null;
+    private lastRenderedCollection:any|null = null;
+    private previousWindowWidth:number = 0;
+
     constructor(view: CollectionView, eventHandler: CollectionViewEventHandler, config: CarouselDOMConfig) {
         this.view = view;
         this.eventHandler = eventHandler;
         this.config = config;
+    }
+
+    onDocumentLoaded(): void {
+        // we need to track window resizing
+        this.previousWindowWidth = window.innerWidth;
+
+        window.addEventListener('resize',(event) => {
+            const newWindowWidth = window.innerWidth;
+            let reRenderRequired:boolean = false;
+            if (newWindowWidth < this.previousWindowWidth) {
+                if (this.previousWindowWidth > SCREEN_WIDTH_LARGE) {
+                    if (newWindowWidth <= SCREEN_WIDTH_LARGE) {
+                        // need to re-render carousel
+                        reRenderRequired = true;
+                        avLogger(`window reduced and is now smaller or equal to large`);
+                    }w
+                }
+                if (this.previousWindowWidth > SCREEN_WIDTH_MEDIUM) {
+                    if (newWindowWidth <= SCREEN_WIDTH_MEDIUM) {
+                        // need to re-render carousel
+                        reRenderRequired = true;
+                        avLogger(`window reduced and is now smaller or equal to medium`);
+                    }
+                }
+                if (this.previousWindowWidth > SCREEN_WIDTH_SMALL) {
+                    if (newWindowWidth <= SCREEN_WIDTH_SMALL) {
+                        // need to re-render carousel
+                        reRenderRequired = true;
+                        avLogger(`window reduced and is now smaller or equal to small`);
+                    }
+                }
+            }
+            else {
+                if (this.previousWindowWidth <= SCREEN_WIDTH_SMALL) {
+                    if (newWindowWidth > SCREEN_WIDTH_SMALL) {
+                        // need to re-render carousel
+                        avLogger(`window increased and is now larger than small`);
+                        reRenderRequired = true;
+                    }
+                }
+                if (this.previousWindowWidth <= SCREEN_WIDTH_MEDIUM) {
+                    if (newWindowWidth > SCREEN_WIDTH_MEDIUM) {
+                        avLogger(`window increased and is now larger than medium`);
+                        // need to re-render carousel
+                        reRenderRequired = true;
+                    }
+                }
+                if (this.previousWindowWidth <= SCREEN_WIDTH_LARGE) {
+                    if (newWindowWidth > SCREEN_WIDTH_LARGE) {
+                        avLogger(`window increased and is now larger than large`);
+                        // need to re-render carousel
+                        reRenderRequired = true;
+                    }
+                }
+            }
+            this.previousWindowWidth = newWindowWidth;
+            if (this.lastRenderedContainer && this.lastRenderedCollection && this.lastRenderedCollectionName && reRenderRequired) {
+                this.setDisplayElementsForCollectionInContainer(this.lastRenderedContainer,this.lastRenderedCollectionName,this.lastRenderedCollection);
+            }
+        });
+
+
     }
 
     public createDisplayElementForCollectionItem(collectionName: string, item: any): HTMLElement {
@@ -271,11 +344,14 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
         const numberOfResults = newState.length;
 
         // number of items per row depends on view port
-        let itemsPerRow = this.config.itemsPerRow.large;
-        if (window.innerWidth < 769) {
+        let itemsPerRow = this.config.itemsPerRow.xlarge;
+        if (window.innerWidth <= SCREEN_WIDTH_LARGE) {
+            itemsPerRow = this.config.itemsPerRow.large;
+        }
+        if (window.innerWidth <= SCREEN_WIDTH_MEDIUM) {
            itemsPerRow = this.config.itemsPerRow.medium;
         }
-        if (window.innerWidth < 415) {
+        if (window.innerWidth <= SCREEN_WIDTH_SMALL) {
             itemsPerRow = this.config.itemsPerRow.small;
         }
 
@@ -327,6 +403,10 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
 
         }
         $('[data-toggle="tooltip"]').tooltip();
+
+        this.lastRenderedContainer = containerEl;
+        this.lastRenderedCollectionName = collectionName;
+        this.lastRenderedCollection = newState;
 
     }
 

@@ -1,19 +1,20 @@
 import SidebarViewContainer from '../../ui-framework/container/SidebarViewContainer';
 import {SidebarLocation, SidebarPrefs} from "../../ui-framework/ConfigurationTypes";
 
-export default class WorkoutSummarySidebar extends SidebarViewContainer {
+export default class CurrentWorkoutSidebar extends SidebarViewContainer {
     static SidebarPrefs:SidebarPrefs = {
-        id:'workoutSummarySidebar',
-        expandedSize:'100%',
-        location: SidebarLocation.bottom
+        id:'currentWorkoutSidebar',
+        expandedSize:'50%',
+        location: SidebarLocation.right
     }
 
     static SidebarContainers = {
-        container: 'workoutSummary',
+        list: 'exercises',
+        detail: 'workoutDetail'
     }
 
 
     constructor() {
-        super(WorkoutSummarySidebar.SidebarPrefs);
+        super(CurrentWorkoutSidebar.SidebarPrefs);
     }
 }

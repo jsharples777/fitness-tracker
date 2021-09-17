@@ -284,4 +284,6 @@ export class ListViewRenderer implements CollectionViewRenderer{
         $('[data-toggle="tooltip"]').tooltip();
     }
 
+    onDocumentLoaded(): void {}
+
 }

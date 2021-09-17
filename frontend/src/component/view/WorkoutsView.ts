@@ -33,6 +33,7 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
             small:1,
             medium:2,
             large: 3,
+            xlarge: 4
         },
         rowContainer: {
             elementClasses: "carousel-item",
@@ -95,7 +96,7 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
                     buttonText: '',
                     buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
                     iconClasses: 'fas fa-copy',
-                    attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Create a new workout with this one as a starting point."}]
+                    attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Add the exercises from this workout to the current workout."}]
 
                 },
                 {

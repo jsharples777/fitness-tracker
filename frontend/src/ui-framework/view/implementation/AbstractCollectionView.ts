@@ -68,6 +68,11 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     }
 
+    onDocumentLoaded() {
+        super.onDocumentLoaded();
+        if (this.renderer) this.renderer.onDocumentLoaded();
+    }
+
     protected getDragData(event: DragEvent): any {
         // @ts-ignore
         let itemId = event.target.getAttribute(this.collectionUIConfig.keyId);

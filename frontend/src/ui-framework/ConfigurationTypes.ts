@@ -136,7 +136,8 @@ export type CarouselDOMConfig = {
     itemsPerRow: {
         small: number,
         medium: number,
-        large: number
+        large: number,
+        xlarge: number,
     },
     rowContainer: BasicElement,
     activeRow: BasicElement,
@@ -146,5 +147,9 @@ export type CarouselDOMConfig = {
     actionContainer:BasicElement,
     collectionConfig: CollectionViewDOMConfig
 }
+
+export const SCREEN_WIDTH_LARGE = 992;
+export const SCREEN_WIDTH_MEDIUM = 769;
+export const SCREEN_WIDTH_SMALL = 415;
 
 
