@@ -277,7 +277,8 @@ var STATE_NAMES = {
   chatLogs: 'chatLog',
   exerciseTypes: 'exerciseType',
   workouts: 'workout',
-  recentUserSearches: 'recentUserSearch'
+  recentUserSearches: 'recentUserSearch',
+  exercises: 'exercises'
 };
 var API_Config = {
   login: '/login',
@@ -308,7 +309,8 @@ var VIEW_NAME = {
   exerciseTypes: 'exerciseTypes',
   userSearch: 'userSearch',
   workouts: 'workouts',
-  workoutSummary: 'workoutSummary'
+  workoutSummary: 'workoutSummary',
+  exercises: 'exercises'
 };
 var VIEW_CONTAINER = {
   exerciseTypeDetail: "exerciseTypeDetail"
@@ -443,7 +445,7 @@ var Controller = /*#__PURE__*/function () {
     cLogger("Exercise type data object definition");
     cLogger(exerciseTypeDefinition);
     cLoggerDetail(_model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
-    var workoutDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().addDefinition('workout', 'Workout', true, true, true, '_id');
+    var workoutDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().addDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.workouts, 'Workout', true, true, true, '_id');
     _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.boolean, true, "Have completed the workout");
     var exercisesFieldDefinition = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.collection, true, "Exercises in this workout");
     exercisesFieldDefinition.idType = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_14__.KeyType.collection;

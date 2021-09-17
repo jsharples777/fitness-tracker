@@ -150,7 +150,7 @@ i:hover {
     width: 0px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 2; /* Stay on top */
-    top: 0px;
+    top: 50px;
     left: 0;
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 10px; /* Place content 60px from the top */
@@ -174,7 +174,7 @@ i:hover {
     width: 0px; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
     z-index: 2; /* Stay on top */
-    top: 0px;
+    top: 50px;
     right: 0;
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 10px; /* Place content 60px from the top */
