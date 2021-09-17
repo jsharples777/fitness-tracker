@@ -10,7 +10,8 @@ export const STATE_NAMES = {
     chatLogs: 'chatLog',
     exerciseTypes: 'exerciseType',
     workouts: 'workout',
-    recentUserSearches: 'recentUserSearch'
+    recentUserSearches: 'recentUserSearch',
+    exercises: 'exercises'
 }
 
 export const API_Config = {
@@ -45,7 +46,8 @@ export const VIEW_NAME = {
     exerciseTypes: 'exerciseTypes',
     userSearch: 'userSearch',
     workouts: 'workouts',
-    workoutSummary: 'workoutSummary'
+    workoutSummary: 'workoutSummary',
+    exercises:'exercises'
 }
 
 export const VIEW_CONTAINER = {

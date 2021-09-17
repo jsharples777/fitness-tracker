@@ -16,17 +16,34 @@ import debug from "debug";
 import {ComparisonType, ConditionResponse, ValidationRule} from "../../ui-framework/form/validation/ValidationTypeDefs";
 import {ValidationManager} from "../../ui-framework/form/validation/ValidationManager";
 import CurrentWorkoutSidebar from "../sidebar/CurrentWorkoutSidebar";
+import {StateManager} from "../../state/StateManager";
+import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
+import StateChangeListener from "../../state/StateChangeListener";
+import DownloadManager from "../../network/DownloadManager";
+import {isSameMongo} from "../../util/EqualityFunctions";
 
 const logger = debug('exercise-types-composite-view');
 
-export class CurrentWorkoutCompositeView {
+export class CurrentWorkoutCompositeView implements StateChangeListener{
     private sideBar:SidebarViewContainer;
+    private currentWorkout:any = {};
+    private workoutDef:DataObjectDefinition|null = null;
+    private stateManager:StateManager;
 
     constructor(sideBar:SidebarViewContainer) {
         this.sideBar = sideBar;
+        this.stateManager = new MemoryBufferStateManager();
+        this.stateManager.addChangeListenerForName(STATE_NAMES.exercises,this);
     }
 
     onDocumentLoaded() {
+        this.workoutDef = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.workouts);
+        if (!this.workoutDef) throw new Error ('Workout definition not found');
+
+
+
+
+
         const exerciseTypes = new ExerciseTypesView();
         this.sideBar.addView(exerciseTypes,{containerId:CurrentWorkoutSidebar.SidebarContainers.list});
 
@@ -169,6 +186,26 @@ export class CurrentWorkoutCompositeView {
             ]
         }
         ValidationManager.getInstance().addRuleToForm(form, rule);
+    }
+
+    private createWorkout() {
+
+    }
+    private saveWorkout() {
+        Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.workouts,this.currentWorkout,isSameMongo,false);
+    }
+
+    stateChanged(managerName: string, name: string, newValue: any): void {}
+
+    stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {
+        this.currentWorkout.exercises.push(itemAdded);
+    }
+
+    stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {
+    }
+
+    stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {
+
     }
 
 }
