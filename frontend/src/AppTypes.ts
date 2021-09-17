@@ -10,8 +10,7 @@ export const STATE_NAMES = {
     chatLogs: 'chatLog',
     exerciseTypes: 'exerciseType',
     workouts: 'workout',
-    recentUserSearches: 'recentUserSearch',
-    exercises: 'exercises'
+    recentUserSearches: 'recentUserSearch'
 }
 
 export const API_Config = {
@@ -52,10 +51,13 @@ export const VIEW_NAME = {
 
 export const VIEW_CONTAINER = {
     exerciseTypeDetail:"exerciseTypeDetail",
+    currentWorkoutDetail: 'workoutDetail',
+    exerciseDropZone:'exerciseDropZone'
 }
 
 export const BUTTON = {
-    createNewExerciseType: 'addNewExerciseType'
+    createNewExerciseType: 'addNewExerciseType',
+    completeWorkout: 'completeWorkout'
 }
 
 

@@ -57,9 +57,9 @@ router.post('/', (req, res) => {
     });
 });
 
-router.put('/:id', (req, res) => {
+router.put('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.params.id}).then((result:DeleteResult) => {
+    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.body._id}).then((result:DeleteResult) => {
         logger(result);
         MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
             res.json(req.body);

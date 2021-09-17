@@ -3,7 +3,7 @@ import {Form} from "./ui-framework/form/Form";
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'app controller-ts workout-summary-renderer carousel-renderer';
+localStorage.debug = 'current-workout-composite-view';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -35,11 +35,23 @@ import {ExerciseTypesCompositeView} from "./component/view/ExerciseTypesComposit
 import WorkoutSummarySidebar from "./component/sidebar/WorkoutSummarySidebar";
 import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
+import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
+import {v4} from "uuid";
+import {StateManager} from "./state/StateManager";
 
 
 const logger = debug('app');
 
-class App implements UnreadMessageCountListener {
+export default class App implements UnreadMessageCountListener {
+
+    private static _instance: App;
+
+    public static getInstance(): App {
+        if (!(App._instance)) {
+            App._instance = new App();
+        }
+        return App._instance;
+    }
 
     // @ts-ignore
     private exerciseTypesSidebar: ExerciseTypesSidebar;
@@ -52,6 +64,8 @@ class App implements UnreadMessageCountListener {
     // @ts-ignore
     private currentWorkoutSidebar: CurrentWorkoutSidebar;
     // @ts-ignore
+    private currentWorkoutView: CurrentWorkoutCompositeView;
+    // @ts-ignore
     private chatView: ChatLogsView;
 
     // @ts-ignore
@@ -59,7 +73,7 @@ class App implements UnreadMessageCountListener {
     // @ts-ignore
     private chatNavigationItem: HTMLAnchorElement | null;
 
-    constructor() {
+    private constructor() {
         // event handlers
         this.handleShowUserSearch = this.handleShowUserSearch.bind(this);
         this.handleShowExerciseTypes = this.handleShowExerciseTypes.bind(this);
@@ -133,8 +147,8 @@ class App implements UnreadMessageCountListener {
         this.workoutSummarySidebar.onDocumentLoaded();
 
         this.currentWorkoutSidebar = new CurrentWorkoutSidebar();
-        // create a view for the current workout
-        this.currentWorkoutSidebar.onDocumentLoaded();
+        this.currentWorkoutView = new CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
+        this.currentWorkoutView.onDocumentLoaded();
 
         Controller.getInstance().initialise();
 
@@ -225,10 +239,19 @@ class App implements UnreadMessageCountListener {
         }
         if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = `${buffer}`;
     }
+
+    addingExerciseToCurrentWorkout(exerciseType:any) {
+        this.exerciseTypesSidebar.eventHide(null);
+        this.currentWorkoutSidebar.eventShow(null);
+        this.currentWorkoutView.getStateManager().addNewItemToState(STATE_NAMES.exerciseTypes,exerciseType, false);
+    }
+
+    showCurrentWorkout() {
+        this.currentWorkoutSidebar.eventShow(null);
+    }
 }
 
 
 $(function() {
-    const app = new App();
-    app.onDocumentLoad();
+    App.getInstance().onDocumentLoad();
 });

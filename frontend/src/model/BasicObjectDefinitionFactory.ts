@@ -1,5 +1,5 @@
 import {KeyType} from "../ui-framework/ConfigurationTypes";
-import {BasicFieldOperations} from "../ui-framework/helper/BasicFieldOperations";
+import {BasicFieldOperations} from "./BasicFieldOperations";
 import {DataObjectDefinition, FieldDefinition, FieldType} from "./DataObjectTypeDefs";
 import {FieldValueOptions} from "./CommonTypes";
 import {DisplayOrder} from "../ui-framework/form/FormUITypeDefs";
@@ -144,6 +144,16 @@ export class BasicObjectDefinitionFactory {
             mandatory:isMandatory,
             displayOnly:false,
         }
+
+        if (isMandatory) {
+            // add generator
+            fieldDef.generator = {
+                generator: new BasicFieldOperations(),
+                onCreation:true,
+                onModify:false
+            }
+        }
+
 
         if (description) fieldDef.description = description;
         if (datasource) fieldDef.dataSource = datasource;

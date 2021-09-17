@@ -42,7 +42,7 @@ export class CarouselViewRenderer implements CollectionViewRenderer {
                         // need to re-render carousel
                         reRenderRequired = true;
                         avLogger(`window reduced and is now smaller or equal to large`);
-                    }w
+                    }
                 }
                 if (this.previousWindowWidth > SCREEN_WIDTH_MEDIUM) {
                     if (newWindowWidth <= SCREEN_WIDTH_MEDIUM) {

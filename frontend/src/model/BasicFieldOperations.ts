@@ -1,10 +1,10 @@
 import moment from "moment";
 import {v4} from 'uuid';
-import Controller from "../../Controller";
-import {FieldFormatter, FieldRenderer, FieldValidator, ValidationResponse} from "../form/FormUITypeDefs";
-import {FieldDefinition, FieldType, FieldValueGenerator} from "../../model/DataObjectTypeDefs";
+import Controller from "../Controller";
+import {FieldFormatter, FieldRenderer, FieldValidator, ValidationResponse} from "../ui-framework/form/FormUITypeDefs";
+import {FieldDefinition, FieldType, FieldValueGenerator} from "./DataObjectTypeDefs";
 import debug from 'debug';
-import {KeyType} from "../ConfigurationTypes";
+import {KeyType} from "../ui-framework/ConfigurationTypes";
 
 const flogger = debug('basic-field-operations-formatter');
 const vlogger = debug('basic-field-operations-validator');

@@ -85,4 +85,8 @@ export default class AsyncStateManagerWrapper extends AbstractStateManager imple
         this.topLevelSM.addNewItemToState(name, itemAdded, true);
     }
 
+    getListenerName(): string {
+        return "Async Manager";
+    }
+
 }

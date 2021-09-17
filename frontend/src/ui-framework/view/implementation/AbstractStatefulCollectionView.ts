@@ -87,6 +87,10 @@ export default abstract class AbstractStatefulCollectionView extends AbstractCol
         return true;
     }
 
+    getListenerName(): string {
+        return this.getName();
+    }
+
 
 
 }

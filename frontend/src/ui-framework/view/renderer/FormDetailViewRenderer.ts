@@ -155,7 +155,7 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
     }
 
     handleActionItem(actionName: string, selectedItem: any): void {
-        throw new Error(`Handle action item not implemented for ${actionName}`);
+
     }
 
     isDisplayingItem(dataObj: any): boolean {

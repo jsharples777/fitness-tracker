@@ -6,4 +6,6 @@ export default interface StateChangeListener {
     stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void;
 
     stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void;
+
+    getListenerName():string;
 }

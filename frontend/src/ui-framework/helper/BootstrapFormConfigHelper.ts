@@ -1,4 +1,4 @@
-import {BasicFieldOperations} from "./BasicFieldOperations";
+import {BasicFieldOperations} from "../../model/BasicFieldOperations";
 import {DataObjectDefinition, FieldType} from "../../model/DataObjectTypeDefs";
 import {DisplayOrder, FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../form/FormUITypeDefs";
 

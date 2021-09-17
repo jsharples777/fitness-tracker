@@ -67,7 +67,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
     };
 
     constructor(stateManager:StateManager) {
-        super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exercises);
+        super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exerciseTypes);
         this.renderer = new ListViewRenderer(this, this);
     }
 
@@ -93,7 +93,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
     }
 
     itemDropped(view: View, droppedItem: any) {
-        this.stateManager.addNewItemToState(this.collectionName,droppedItem,false);
+        Controller.getInstance().addExerciseToCurrentWorkout(droppedItem);
     }
 
 

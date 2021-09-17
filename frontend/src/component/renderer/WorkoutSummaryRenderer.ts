@@ -10,16 +10,21 @@ const avLogger = debug('workout-summary-renderer');
 export class WorkoutSummaryRenderer implements CollectionViewRenderer {
     protected view: CollectionView;
     protected eventHandler: CollectionViewEventHandler;
+    private currentChart:Chart|null = null;
 
     constructor(view: CollectionView, eventHandler: CollectionViewEventHandler) {
         this.view = view;
         this.eventHandler = eventHandler;
     }
 
-    private generateRandomExerciseColourAndBorder() : string[] {
-        const red = Math.floor(Math.random() * 255);
-        const blue = Math.floor(Math.random() * 255);
-        const green = Math.floor(Math.random() * 255);
+    private generateRandomExerciseColourAndBorder(isStrength:boolean = true) : string[] {
+        let red = 0;
+        let blue = 0;
+        let green = 50;
+
+        const newColour = Math.floor(Math.random() * 100) + 155;
+        if (isStrength) red = newColour;
+        if (!isStrength) blue = newColour;
         const transparency = 0.4;
 
         const background = `rgba(${red},${green},${blue},${transparency})`;
@@ -35,6 +40,8 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
     public setDisplayElementsForCollectionInContainer(containerEl: HTMLElement, collectionName: string, newState: any): void {
         avLogger(`view ${this.view.getName()}: creating workout summary`);
         avLogger(newState);
+
+        if (this.currentChart) this.currentChart.destroy();
 
         // okay we need to go through the last 7 workouts
         let sevenWorkouts = newState;
@@ -63,7 +70,7 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
                         avLogger(`Adding exercise ${exerciseName} of type ${exercise.type} to datasets`);
                         exerciseNames.push(exerciseName);
                         exerciseTypes.push(exercise.type);
-                        const colours = this.generateRandomExerciseColourAndBorder();
+                        const colours = this.generateRandomExerciseColourAndBorder((exercise.type === 'strength'));
                         exerciseBG.push(colours[0]);
                         exerciseBR.push(colours[1]);
                     }
@@ -120,7 +127,7 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
             let lineDataSet = {label: name, data: data, backgroundColor: bg, borderColor: br, order: 0, type: 'line'};
             avLogger(dataset);
             datasets.push(dataset);
-            datasets.push(lineDataSet);
+            //datasets.push(lineDataSet);
         });
 
 
@@ -147,7 +154,7 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
         avLogger(chartData);
 
         // @ts-ignore
-        new Chart(<HTMLCanvasElement>containerEl, config);
+        this.currentChart = new Chart(<HTMLCanvasElement>containerEl, config);
     }
 
     onDocumentLoaded(): void {

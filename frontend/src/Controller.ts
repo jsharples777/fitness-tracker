@@ -18,11 +18,12 @@ import {KeyType} from "./ui-framework/ConfigurationTypes";
 import {DataObjectListener} from "./model/DataObjectListener";
 import {DataObjectController} from "./model/DataObjectController";
 import {isSameMongo} from "./util/EqualityFunctions";
+import {v4} from "uuid";
 
 const cLogger = debug('controller-ts');
 const cLoggerDetail = debug('controller-ts-detail');
 
-class Controller implements StateChangeListener,DataObjectListener {
+export default class Controller implements StateChangeListener,DataObjectListener {
     private static _instance: Controller;
 
     public static getInstance(): Controller {
@@ -86,14 +87,6 @@ class Controller implements StateChangeListener,DataObjectListener {
         this.stateChangedItemAdded = this.stateChangedItemAdded.bind(this);
         this.stateChangedItemRemoved = this.stateChangedItemRemoved.bind(this);
         this.stateChangedItemUpdated = this.stateChangedItemUpdated.bind(this);
-
-        // call backs
-        this.callbackAddToCollection = this.callbackAddToCollection.bind(this);
-        this.callbackRemoveFromCollection = this.callbackRemoveFromCollection.bind(this);
-        this.callbackGetCollection = this.callbackGetCollection.bind(this);
-
-        //event handlers
-        this.addBoardGameToCollection = this.addBoardGameToCollection.bind(this);
 
         // data objects
         this.setupDataObjectDefinitions();
@@ -168,6 +161,10 @@ class Controller implements StateChangeListener,DataObjectListener {
         return this.stateManager;
     }
 
+    public getListenerName(): string {
+        return 'Controller';
+    }
+
     public isLoggedIn(): boolean {
         let isLoggedIn = false;
         try {
@@ -222,40 +219,6 @@ class Controller implements StateChangeListener,DataObjectListener {
     stateChanged(managerName: string, name: string, values: any) {}
 
 
-    public callbackBoardGameDetails(data: any, status: number, associatedStateName: string): void {
-        cLogger(`callback for bgg search for single board game ${associatedStateName} with status ${status}`);
-        if (status >= 200 && status <= 299) { // do we have any data?
-            cLogger(data);
-        }
-
-    }
-
-    public callbackAddToCollection(data: any, status: number, associatedStateName: string): void {
-        cLogger(`callback for add single board game ${associatedStateName} to my collection with status ${status}`);
-        if (status >= 200 && status <= 299) { // do we have any data?
-            cLogger(data);
-        }
-    }
-
-    public callbackRemoveFromCollection(data: any, status: number, associatedStateName: string): void {
-        cLogger(`callback for remove single board game ${associatedStateName} from my collection with status ${status}`);
-        if (status >= 200 && status <= 299) { // do we have any data?
-            cLogger(data);
-        }
-    }
-
-    public callbackGetCollection(data: any, status: number, associatedStateName: string): void {
-        cLogger(`callback for getting my collection of board games ${associatedStateName} to my collection with status ${status}`);
-        if (status >= 200 && status <= 299) { // do we have any data?
-            cLogger(data);
-        }
-    }
-
-    addBoardGameToCollection(event: MouseEvent) {
-        cLogger(`Handling Add Board Game to collection`);
-    }
-
-
     /*
     *
     * Simple Application state (URL, logged in user)
@@ -307,6 +270,22 @@ class Controller implements StateChangeListener,DataObjectListener {
             }
         }
     }
+
+
+    addExerciseToCurrentWorkout(exerciseType:any):void {
+        let copyOfExercise = {...exerciseType};
+        copyOfExercise._id = v4(); // update the id to be unique for the workout
+        this.applicationView.addingExerciseToCurrentWorkout(copyOfExercise);
+    }
+
+    addWorkoutExercisesToCurrentWorkout(workout:any):void {
+        if (workout.exercises) {
+            workout.exercises.forEach((exercise:any) => {
+                this.addExerciseToCurrentWorkout(exercise);
+            });
+        }
+    }
+
 }
 
-export default Controller;
+

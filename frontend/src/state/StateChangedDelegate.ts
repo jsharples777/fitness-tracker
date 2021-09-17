@@ -34,29 +34,33 @@ class StateChangedDelegate implements StateChangeInformer {
             smLogger(`State Manager: Found state listeners of ${name} with event type ${eventType}`);
             /* let each state change listener know */
             const changeListenersForName = this.stateChangeListeners[foundIndex];
-            for (let index = 0; index < changeListenersForName.listeners.length; index++) {
-                smLogger(`State Manager: Found state listener of ${name} - informing`);
-                const listener = changeListenersForName.listeners[index];
-                switch (eventType) {
-                    case (stateEventType.StateChanged): {
-                        listener.stateChanged(this.managerName, name, stateObjValue);
-                        break;
-                    }
-                    case (stateEventType.ItemAdded): {
-                        listener.stateChangedItemAdded(this.managerName, name, stateObjValue);
-                        break;
-                    }
-                    case (stateEventType.ItemUpdated): {
-                        listener.stateChangedItemUpdated(this.managerName, name, previousObjValue, stateObjValue);
-                        break;
-                    }
-                    case (stateEventType.ItemDeleted): {
-                        listener.stateChangedItemRemoved(this.managerName, name, stateObjValue);
-                        break;
+            changeListenersForName.listeners.forEach((listener) =>  {
+                smLogger(`State Manager: Found state listener of ${name} with name ${listener.getListenerName()} - informing`);
+                try {
+                    switch (eventType) {
+                        case (stateEventType.StateChanged): {
+                            listener.stateChanged(this.managerName, name, stateObjValue);
+                            break;
+                        }
+                        case (stateEventType.ItemAdded): {
+                            listener.stateChangedItemAdded(this.managerName, name, stateObjValue);
+                            break;
+                        }
+                        case (stateEventType.ItemUpdated): {
+                            listener.stateChangedItemUpdated(this.managerName, name, previousObjValue, stateObjValue);
+                            break;
+                        }
+                        case (stateEventType.ItemDeleted): {
+                            listener.stateChangedItemRemoved(this.managerName, name, stateObjValue);
+                            break;
+                        }
                     }
                 }
+                catch (err) {
+                    console.log(err);
+                }
 
-            }
+            });
         }
     }
 
@@ -68,9 +72,10 @@ class StateChangedDelegate implements StateChangeInformer {
          */
     addChangeListenerForName(name: string, listener: StateChangeListener): void {
         this.ensureListenerSetupForName(name);
-        smLogger(`State Manager: Adding state listener for ${name}`);
+        smLogger(`State Manager: Adding state listener for ${name} with name ${listener.getListenerName()}`);
         const foundIndex = this.stateChangeListeners.findIndex(element => element.name === name);
         if (foundIndex >= 0) {
+            smLogger(`State Manager: Adding state listener for ${name} with name ${listener.getListenerName()} with index ${foundIndex}`);
             let changeListenersForName = this.stateChangeListeners[foundIndex];
             changeListenersForName.listeners.push(listener);
         }

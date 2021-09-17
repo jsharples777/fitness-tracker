@@ -70,6 +70,10 @@ class ChatLogDetailView implements View, ChatEventListener, CollectionViewListen
         this.stateManager.addChangeListenerForName(STATE_NAMES.users, this);
     }
 
+    getListenerName(): string {
+        return 'Chat Log Details';
+    }
+
     canSelectItem(view: CollectionView, selectedItem: any): boolean {
         return true;
     }

@@ -17,6 +17,7 @@ import {addDurations} from "../../util/DurationFunctions";
 import {truncateString} from "../../util/MiscFunctions";
 import Chart from 'chart.js/auto';
 import browserUtil from "../../util/BrowserUtil";
+import App from "../../App";
 
 const logger = debug('workouts-view');
 
@@ -70,10 +71,10 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
             keyId: '_id',
             keyType: KeyType.string,
             modifiers: {
-                normal:'',
+                normal:'bg-light',
                 inactive:'bg-light',
-                active:'bg-primary',
-                warning:'',
+                active:'bg-light',
+                warning:'bg-light',
             },
             detail: {
                 containerClasses: 'card-body',
@@ -102,9 +103,9 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
                 {
                     name: 'continue',
                     buttonText: '',
-                    iconClasses:'fas fa-running',
-                    buttonClasses: 'btn btn-info btn-circle btn-md mr-2',
-                    attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Continue this incomplete workout"}]
+                    iconClasses:'fas fa-clipboard-list',
+                    buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
+                    attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Continue this current workout"}]
                 }
             ],
 
@@ -113,10 +114,13 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
 
     }
 
+    private currentChart:Chart|null = null;
+
 
     constructor() {
         super(WorkoutsView.DOMConfig.collectionConfig, Controller.getInstance().getStateManager(), STATE_NAMES.workouts);
         this.renderer = new CarouselViewRenderer(this, this,WorkoutsView.DOMConfig);
+        this.addEventCollectionListener(this);
     }
 
     canDeleteItem(view: View, selectedItem: any): boolean {
@@ -176,7 +180,7 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
             }
         }
         if (actionName === 'continue') {
-            if ((item.completed) && (item.completed === false)) {
+            if (item.completed === false) {
                 result = true;
             }
         }
@@ -194,6 +198,7 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
     }
 
     renderBackgroundForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any) {
+        if (this.currentChart) this.currentChart.destroy();
         // we are going to render a chart for the workout
         if (item.exercises) {
             const dataSourceKeyId = this.getDataSourceKeyId();
@@ -254,20 +259,34 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
             logger(config);
 
             // @ts-ignore
-            const workoutChart = new Chart(canvas,config);
+            this.currentChart = new Chart(canvas,config);
             containerEl.appendChild(canvas);
-
-            //const testChart = new Chart(document.getElementById('test'),config);
 
         }
     }
 
-    private static bgStrength = 'rgba(255, 99, 132, 0.2)';
-    private static bgCardio = 'rgba(54, 162, 235, 0.2)';
+    private static bgStrength = 'rgba(255, 0, 0, 0.2)';
+    private static bgCardio = 'rgba(0, 50, 255, 0.2)';
 
-    private static borderStrength ='rgb(255, 99, 132)';
-    private static borderCardio = 'rgb(54, 162, 235)';
+    private static borderStrength ='rgb(255, 50, 0)';
+    private static borderCardio = 'rgb(0, 50 , 255)';
 
+    public itemAction(view: View, actionName: string, selectedItem: any) {
+        super.itemAction(view, actionName, selectedItem);
+        // @ts-ignore
+        if (actionName === WorkoutsView.DOMConfig.collectionConfig.extraActions[0].name) {
+            // add the current list of exercises to the current workout
+            Controller.getInstance().addWorkoutExercisesToCurrentWorkout(selectedItem);
+
+        }
+        // @ts-ignore
+        if (actionName === WorkoutsView.DOMConfig.collectionConfig.extraActions[1].name) {
+            // continue the current workout
+            App.getInstance().showCurrentWorkout();
+
+
+        }
+    }
 
 }
 

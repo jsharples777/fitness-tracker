@@ -15,6 +15,7 @@ import Controller from "../../Controller";
 import debug from "debug";
 import {ComparisonType, ConditionResponse, ValidationRule} from "../../ui-framework/form/validation/ValidationTypeDefs";
 import {ValidationManager} from "../../ui-framework/form/validation/ValidationManager";
+import {ValidationHelper} from "../helper/ValidationHelper";
 
 const logger = debug('exercise-types-composite-view');
 
@@ -26,7 +27,7 @@ export class ExerciseTypesCompositeView {
     }
 
     onDocumentLoaded() {
-        const exerciseTypes = new ExerciseTypesView();
+        const exerciseTypes = new ExerciseTypesView(Controller.getInstance().getStateManager());
         this.sideBar.addView(exerciseTypes,{containerId:ExerciseTypesSidebar.SidebarContainers.container});
 
         const exerciseTypeDefinition:DataObjectDefinition|null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exerciseTypes);
@@ -50,7 +51,7 @@ export class ExerciseTypesCompositeView {
             if (detailForm) {
                 logger(`Setting up validation rules for ${detailForm.getId()}`);
                 logger(detailForm);
-                this.setupValidationForExerciseTypeDetailsForm(detailForm);
+                ValidationHelper.getInstance().setupValidationForExerciseTypeDetailsForm(detailForm);
             }
 
             // setup the event handling for the create new exercise type button
@@ -69,105 +70,5 @@ export class ExerciseTypesCompositeView {
         }
     }
 
-    private setupValidationForExerciseTypeDetailsForm(form:Form) {
-        let rule: ValidationRule = {
-            targetDataFieldId: 'sets',
-            response: ConditionResponse.show,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values:'cardio'
-                }
-            ]
-        }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-        rule = {
-            targetDataFieldId: 'reps',
-            response: ConditionResponse.show,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values:'cardio'
-                }
-            ]
-        }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-        rule = {
-            targetDataFieldId: 'weight',
-            response: ConditionResponse.show,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values:'cardio'
-                }
-            ]
-        }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-        rule = {
-            targetDataFieldId: 'reps',
-            response: ConditionResponse.hide,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values:'strength'
-                }
-            ]
-        }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-        rule = {
-            targetDataFieldId: 'sets',
-            response: ConditionResponse.hide,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values:'strength'
-                }
-            ]
-        }
-
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-        rule = {
-            targetDataFieldId: 'weight',
-            response: ConditionResponse.hide,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values:'strength'
-                }
-            ]
-        }
-
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-        rule = {
-            targetDataFieldId: 'distance',
-            response: ConditionResponse.show,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values: 'strength'
-                }
-            ]
-        }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-        rule = {
-            targetDataFieldId: 'distance',
-            response: ConditionResponse.hide,
-            conditions: [
-                {
-                    sourceDataFieldId: 'type',
-                    comparison: ComparisonType.hasValue,
-                    values: 'cardio'
-                }
-            ]
-        }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
-    }
 
 }

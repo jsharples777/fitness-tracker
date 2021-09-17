@@ -1,5 +1,10 @@
-import {DataObjectDefinition} from "./DataObjectTypeDefs";
+import {DataObjectDefinition, FieldType} from "./DataObjectTypeDefs";
 import {BasicObjectDefinitionFactory, FIELD_ID} from "./BasicObjectDefinitionFactory";
+import debug from "debug";
+import {BasicFieldOperations} from "./BasicFieldOperations";
+import moment from "moment";
+
+const logger = debug('object-definition-registry');
 
 export class ObjectDefinitionRegistry {
     private static _instance: ObjectDefinitionRegistry;
@@ -27,6 +32,7 @@ export class ObjectDefinitionRegistry {
     }
 
     public addDefinition(id:string, displayName:string, hasDataId:boolean, dataIdIsUUID:boolean,createModifierFields:boolean = true,idFieldName:string = FIELD_ID):DataObjectDefinition {
+        logger(`Adding definition for ${id} with name ${displayName}`);
         let result:DataObjectDefinition|null = this.findDefinition(id);
         if (result) {
             return result;
@@ -36,5 +42,48 @@ export class ObjectDefinitionRegistry {
             this.definitions.push(definition);
             return definition;
         }
+    }
+
+    public createInstanceFromDef(definition:DataObjectDefinition):any {
+        logger(`Creating instance for definition ${definition.displayName}`);
+        let result: any = {};
+        const fieldOps = new BasicFieldOperations();
+
+        definition.fields.forEach((fieldDef) => {
+            if (fieldDef.generator && fieldDef.generator.onCreation) {
+                let fieldValue = fieldDef.generator.generator.generate(fieldDef, true);
+
+                switch(fieldDef.type) {
+                    case (FieldType.date):
+                    case (FieldType.datetime): {
+                        break;
+                    }
+                    default: {
+                        fieldValue = fieldOps.formatValue(fieldDef,fieldValue);
+                        break;
+                    }
+                }
+                                
+                logger(`Setting default values for ${fieldDef.displayName} to ${fieldValue}`);
+                result[fieldDef.id] = fieldValue;
+            }
+            if (fieldDef.type === FieldType.collection) {
+                result[fieldDef.id] = [];
+            }
+        });
+        return result;
+    }
+
+
+    public createInstance(id:string):any {
+        logger(`Creating instance for definition ${id}`);
+        let result:any = {};
+
+        const definition:DataObjectDefinition|null  = this.findDefinition(id);
+
+        if (definition) {
+            result = this.createInstanceFromDef(definition);
+        }
+        return result;
     }
 }

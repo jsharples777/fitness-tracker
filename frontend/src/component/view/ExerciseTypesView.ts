@@ -10,6 +10,7 @@ import { View } from "../../ui-framework/view/interface/View";
 import {FIELD_CreatedBy} from "../../model/BasicObjectDefinitionFactory";
 
 import debug from 'debug';
+import {StateManager} from "../../state/StateManager";
 
 const logger = debug('exercise-types-view');
 
@@ -71,9 +72,10 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
         }]
     };
 
-    constructor() {
-        super(ExerciseTypesView.DOMConfig, Controller.getInstance().getStateManager(), STATE_NAMES.exerciseTypes);
+    constructor(stateManager:StateManager) {
+        super(ExerciseTypesView.DOMConfig, stateManager, STATE_NAMES.exerciseTypes);
         this.renderer = new ListViewRenderer(this, this);
+        this.addEventCollectionListener(this);
     }
 
 
@@ -109,6 +111,15 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
             }
         }
         return false;
+    }
+
+    itemAction(view: View, actionName: string, selectedItem: any) {
+        super.itemAction(view, actionName, selectedItem);
+        // @ts-ignore
+        if (actionName === ExerciseTypesView.DOMConfig.extraActions[0].name) {
+            // add the exercise type the current workout
+            Controller.getInstance().addExerciseToCurrentWorkout(selectedItem);
+        }
     }
 
 
