@@ -1,16 +1,29 @@
-import {StateManager} from "../state/StateManager";
 import {View} from "../ui-framework/view/interface/View";
-import {CollectionView} from "../ui-framework/view/interface/CollectionView";
+import {BasicElement} from "../ui-framework/ConfigurationTypes";
 
 export type getIdentifier = (type:string,item:any) => string;
 export type getDescription = (type:string, item:any) => string;
 
-export type ContextDefinition = {
-    source:string,
+export type actionHandler = (actionName:string, type:string, item:any) => void;
+
+export type ContextTypeAction = {
+    actionName: string,
+    elementDefinition: BasicElement,
+    handler: actionHandler
+}
+
+export type ContextDefinitionType = {
     internalType:string,
     displayName:string,
     identifier:getIdentifier,
-    description:getDescription
+    description:getDescription,
+    actions?:ContextTypeAction[]
+}
+
+export type ContextDefinition = {
+    source:string,
+    defaultType: ContextDefinitionType,
+    extraTypes?: ContextDefinitionType[]
 }
 
 export type ContextDetails = {
@@ -71,10 +84,12 @@ export class ContextualInformationHelper {
         if (foundIndex < 0) {
             result = {
                 source:source,
-                internalType:'',
-                displayName:'',
-                identifier: defaultIdentifier,
-                description: defaultIdentifier
+                defaultType: {
+                    internalType: '',
+                    displayName: '',
+                    identifier: defaultIdentifier,
+                    description: defaultIdentifier
+                }
             }
             this.registry.push(result);
         }
@@ -86,10 +101,10 @@ export class ContextualInformationHelper {
 
     public addContextFromView(view:View,internalType:string,displayName:string) {
         let context: ContextDefinition = this.ensureInRegistry(view.getName());
-        context.internalType = internalType;
-        context.displayName = displayName;
-        context.identifier = view.getItemId;
-        context.description = view.getItemDescription;
+        context.defaultType.internalType = internalType;
+        context.defaultType.displayName = displayName;
+        context.defaultType.identifier = view.getItemId;
+        context.defaultType.description = view.getItemDescription;
         console.log("registering");
         console.log(context);
     }
@@ -98,10 +113,10 @@ export class ContextualInformationHelper {
         console.log("adding");
         const context:ContextDefinition = this.ensureInRegistry(source);
         element.setAttribute(ContextualInformationHelper.SOURCE,context.source);
-        element.setAttribute(ContextualInformationHelper.TYPE,context.internalType);
-        element.setAttribute(ContextualInformationHelper.DISPLAYNAME,context.displayName);
-        element.setAttribute(ContextualInformationHelper.IDENTIFIER,context.identifier(type,item));
-        element.setAttribute(ContextualInformationHelper.DESCRIPTION,context.description(type,item));
+        element.setAttribute(ContextualInformationHelper.TYPE,context.defaultType.internalType);
+        element.setAttribute(ContextualInformationHelper.DISPLAYNAME,context.defaultType.displayName);
+        element.setAttribute(ContextualInformationHelper.IDENTIFIER,context.defaultType.identifier(type,item));
+        element.setAttribute(ContextualInformationHelper.DESCRIPTION,context.defaultType.description(type,item));
         if (addTooltip) {
             element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE, ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE);
             element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML, ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML_VALUE);
@@ -123,7 +138,8 @@ export class ContextualInformationHelper {
                     break;
                 }
             }
-            $('[data-toggle="tooltip"]').tooltip();
+            // @ts-ignore
+            $('[data-toggle="tooltip"]').tooltip({html:true});
         }
     }
 

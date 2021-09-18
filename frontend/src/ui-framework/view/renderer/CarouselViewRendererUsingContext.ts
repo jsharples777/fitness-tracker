@@ -1,7 +1,7 @@
 import debug from 'debug';
-import {CollectionViewRenderer} from "../../ui-framework/view/interface/CollectionViewRenderer";
-import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
-import {CollectionViewEventHandler} from "../../ui-framework/view/interface/CollectionViewEventHandler";
+import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
+import {CollectionView} from "../interface/CollectionView";
+import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandler";
 import {
     CarouselDOMConfig,
     EXTRA_ACTION_ATTRIBUTE_NAME,
@@ -10,9 +10,9 @@ import {
     SCREEN_WIDTH_LARGE,
     SCREEN_WIDTH_MEDIUM,
     SCREEN_WIDTH_SMALL
-} from "../../ui-framework/ConfigurationTypes";
-import browserUtil from "../../util/BrowserUtil";
-import {ContextualInformationHelper, TogglePlacement} from "../../context/ContextualInformationHelper";
+} from "../../ConfigurationTypes";
+import browserUtil from "../../../util/BrowserUtil";
+import {ContextualInformationHelper, TogglePlacement} from "../../../context/ContextualInformationHelper";
 
 const avLogger = debug('carousel-renderer');
 

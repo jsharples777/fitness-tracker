@@ -33,7 +33,7 @@ __webpack_require__.r(__webpack_exports__);
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'workouts-view';
+localStorage.debug = 'app api-ts';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
@@ -154,6 +154,7 @@ var App = /*#__PURE__*/function () {
     this.chatSidebar.eventHide(null);
     this.userSearchSidebar.eventHide(null);
     this.exerciseTypesSidebar.eventHide(null);
+    this.currentWorkoutSidebar.eventHide(null);
   };
 
   _proto.handleShowUserSearch = function handleShowUserSearch(event) {
@@ -181,6 +182,7 @@ var App = /*#__PURE__*/function () {
       return;
     }
 
+    this.hideAllSideBars();
     this.workoutSummarySidebar.eventShow(event);
   };
 
@@ -1639,419 +1641,6 @@ BlockedUserView.DOMConfig = {
 
 /***/ }),
 
-/***/ "./src/component/view/CarouselViewRendererUsingContext.ts":
-/*!****************************************************************!*\
-  !*** ./src/component/view/CarouselViewRendererUsingContext.ts ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CarouselViewRendererUsingContext": () => (/* binding */ CarouselViewRendererUsingContext)
-/* harmony export */ });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
-
-
-
-
-var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('carousel-renderer');
-var CarouselViewRendererUsingContext = /*#__PURE__*/function () {
-  function CarouselViewRendererUsingContext(view, eventHandler, config) {
-    this.lastRenderedContainer = null;
-    this.lastRenderedCollectionName = null;
-    this.lastRenderedCollection = null;
-    this.previousWindowWidth = 0;
-    this.view = view;
-    this.eventHandler = eventHandler;
-    this.config = config;
-  }
-
-  var _proto = CarouselViewRendererUsingContext.prototype;
-
-  _proto.onDocumentLoaded = function onDocumentLoaded() {
-    var _this = this; // we need to track window resizing
-
-
-    this.previousWindowWidth = window.innerWidth;
-    window.addEventListener('resize', function (event) {
-      var newWindowWidth = window.innerWidth;
-      var reRenderRequired = false;
-
-      if (newWindowWidth < _this.previousWindowWidth) {
-        if (_this.previousWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
-          if (newWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
-            // need to re-render carousel
-            reRenderRequired = true;
-            avLogger("window reduced and is now smaller or equal to large");
-          }
-        }
-
-        if (_this.previousWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
-          if (newWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
-            // need to re-render carousel
-            reRenderRequired = true;
-            avLogger("window reduced and is now smaller or equal to medium");
-          }
-        }
-
-        if (_this.previousWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
-          if (newWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
-            // need to re-render carousel
-            reRenderRequired = true;
-            avLogger("window reduced and is now smaller or equal to small");
-          }
-        }
-      } else {
-        if (_this.previousWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
-          if (newWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
-            // need to re-render carousel
-            avLogger("window increased and is now larger than small");
-            reRenderRequired = true;
-          }
-        }
-
-        if (_this.previousWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
-          if (newWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
-            avLogger("window increased and is now larger than medium"); // need to re-render carousel
-
-            reRenderRequired = true;
-          }
-        }
-
-        if (_this.previousWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
-          if (newWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
-            avLogger("window increased and is now larger than large"); // need to re-render carousel
-
-            reRenderRequired = true;
-          }
-        }
-      }
-
-      _this.previousWindowWidth = newWindowWidth;
-
-      if (_this.lastRenderedContainer && _this.lastRenderedCollection && _this.lastRenderedCollectionName && reRenderRequired) {
-        _this.setDisplayElementsForCollectionInContainer(_this.lastRenderedContainer, _this.lastRenderedCollectionName, _this.lastRenderedCollection);
-      }
-    });
-  };
-
-  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
-    var _this2 = this;
-
-    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
-    avLogger("view " + this.view.getName() + ": creating carousel item");
-    avLogger(item);
-    var collectionConfig = this.view.getCollectionUIConfig();
-    var childEl = document.createElement(collectionConfig.resultsElementType);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.resultsClasses);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(childEl, collectionConfig.resultsElementAttributes);
-
-    if (collectionConfig.detail.background) {
-      var backgroundEl = document.createElement(collectionConfig.detail.background.elementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
-      childEl.appendChild(backgroundEl);
-      this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
-    } // the content may be structured
-
-
-    var textEl = childEl;
-
-    if (collectionConfig.detail.containerClasses) {
-      var contentEl = document.createElement('div');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(contentEl, collectionConfig.detail.containerClasses);
-      textEl = document.createElement(collectionConfig.detail.textElementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(textEl, collectionConfig.detail.textElementClasses);
-      contentEl.appendChild(textEl);
-
-      if (collectionConfig.extraActions || collectionConfig.detail.delete) {
-        var buttonsEl = document.createElement(this.config.actionContainer.elementType);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(buttonsEl, this.config.actionContainer.elementClasses);
-        contentEl.appendChild(buttonsEl);
-
-        if (collectionConfig.extraActions) {
-          collectionConfig.extraActions.forEach(function (extraAction) {
-            var hasPermissionForAction = _this2.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
-
-            if (hasPermissionForAction) {
-              var action = document.createElement('button');
-              action.setAttribute('type', 'button');
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(action, extraAction.buttonClasses);
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(action, extraAction.attributes);
-
-              if (extraAction.buttonText) {
-                action.innerHTML = extraAction.buttonText;
-              }
-
-              if (extraAction.iconClasses) {
-                var iconEl = document.createElement('i');
-                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
-                iconEl.setAttribute(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-                action.appendChild(iconEl);
-              }
-
-              action.setAttribute(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-              action.addEventListener('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                _this2.eventHandler.eventActionClicked(event);
-              });
-              buttonsEl.appendChild(action);
-            }
-          });
-        }
-
-        if (collectionConfig.detail.delete && collectionConfig && canDeleteItem) {
-          var deleteButtonEl = document.createElement('button');
-          deleteButtonEl.setAttribute('type', 'button');
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(deleteButtonEl, collectionConfig.detail.delete.buttonClasses);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(deleteButtonEl, collectionConfig.detail.delete.attributes);
-
-          if (collectionConfig.detail.delete.buttonText) {
-            deleteButtonEl.innerHTML = collectionConfig.detail.delete.buttonText;
-          }
-
-          if (collectionConfig.detail.delete.iconClasses) {
-            var iconEl = document.createElement('i');
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, collectionConfig.detail.delete.iconClasses);
-            deleteButtonEl.appendChild(iconEl);
-          }
-
-          deleteButtonEl.addEventListener('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            _this2.eventHandler.eventDeleteClickItem(event);
-          });
-          buttonsEl.appendChild(deleteButtonEl);
-        }
-      }
-
-      childEl.appendChild(contentEl);
-
-      if (collectionConfig.detail.drag) {
-        childEl.setAttribute('draggable', 'true');
-        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
-      } // add selection actions
-
-
-      if (collectionConfig.detail.select) {
-        childEl.addEventListener('click', this.eventHandler.eventClickItem);
-      }
-    }
-
-    var displayText = this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item); // add icons
-    // add modifiers for patient state
-
-    if (collectionConfig.modifiers) {
-      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
-      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
-
-      switch (modifier) {
-        case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal:
-          {
-            avLogger("view " + this.view.getName() + ": normal item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal);
-
-            if (collectionConfig.icons && collectionConfig.icons.normal) {
-              var _iconEl = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl, collectionConfig.icons.normal);
-              textEl.appendChild(_iconEl);
-            }
-
-            switch (secondModifier) {
-              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
-                {
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal, false);
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
-
-                  if (collectionConfig.icons && collectionConfig.icons.warning) {
-                    var _iconEl2 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl2, collectionConfig.icons.warning);
-                    textEl.appendChild(_iconEl2);
-                  }
-
-                  break;
-                }
-
-              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
-                {
-                  if (collectionConfig.icons && collectionConfig.icons.active) {
-                    var _iconEl3 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl3, collectionConfig.icons.active);
-                    textEl.appendChild(_iconEl3);
-                  }
-                }
-            }
-
-            break;
-          }
-
-        case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
-          {
-            avLogger("view " + this.view.getName() + ": active item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active);
-
-            if (collectionConfig.icons && collectionConfig.icons.active) {
-              var _iconEl4 = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl4, collectionConfig.icons.active);
-              textEl.appendChild(_iconEl4);
-            }
-
-            switch (secondModifier) {
-              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
-                {
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active, false);
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
-
-                  if (collectionConfig.icons && collectionConfig.icons.warning) {
-                    var _iconEl5 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl5, collectionConfig.icons.warning);
-                    textEl.appendChild(_iconEl5);
-                  }
-
-                  break;
-                }
-            }
-
-            break;
-          }
-
-        case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive:
-          {
-            avLogger("view " + this.view.getName() + ": inactive item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive);
-
-            if (collectionConfig.icons && collectionConfig.icons.inactive) {
-              var _iconEl6 = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl6, collectionConfig.icons.inactive);
-              textEl.appendChild(_iconEl6);
-            }
-
-            switch (secondModifier) {
-              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
-                {
-                  if (collectionConfig.icons && collectionConfig.icons.warning) {
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive, false);
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
-
-                    var _iconEl7 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl7, collectionConfig.icons.warning);
-                    textEl.appendChild(_iconEl7);
-                  }
-
-                  break;
-                }
-
-              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
-                {
-                  if (collectionConfig.icons && collectionConfig.icons.active) {
-                    var _iconEl8 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl8, collectionConfig.icons.active);
-                    textEl.appendChild(_iconEl8);
-                  }
-
-                  break;
-                }
-            }
-
-            break;
-          }
-      }
-    }
-
-    return childEl;
-  };
-
-  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
-    avLogger("view " + this.view.getName() + ": creating carousel results");
-    avLogger(newState); // remove the previous items from list
-
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].removeAllChildren(containerEl); // need to break the items up by row, and the last row is active (assumes increasing time order)
-
-    var numberOfResults = newState.length; // number of items per row depends on view port
-
-    var itemsPerRow = this.config.itemsPerRow.xlarge;
-
-    if (window.innerWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
-      itemsPerRow = this.config.itemsPerRow.large;
-    }
-
-    if (window.innerWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
-      itemsPerRow = this.config.itemsPerRow.medium;
-    }
-
-    if (window.innerWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
-      itemsPerRow = this.config.itemsPerRow.small;
-    }
-
-    var numberOfRows = Math.ceil(numberOfResults / itemsPerRow);
-    avLogger("view " + this.view.getName() + ": creating carousel with number of results per row of " + itemsPerRow + " with rows " + numberOfRows);
-
-    for (var rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
-      // create the row
-      var rowContainerEl = document.createElement(this.config.rowContainer.elementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes); //browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
-
-      var rowEl = document.createElement(this.config.row.elementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowEl, this.config.row.elementClasses);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowEl, this.config.row.elementAttributes);
-      rowContainerEl.appendChild(rowEl); // if this the active row?
-
-      if (rowIndex === 0 && this.config.activeRowPosition === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.RowPosition.first || rowIndex === numberOfRows - 1 && this.config.activeRowPosition === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.RowPosition.last) {
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowContainerEl, this.config.activeRow.elementClasses);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowContainerEl, this.config.activeRow.elementAttributes);
-      }
-
-      var itemIndex = rowIndex * itemsPerRow;
-
-      while (itemIndex < (rowIndex + 1) * itemsPerRow && itemIndex < numberOfResults) {
-        avLogger("rowIndex " + rowIndex + " item index " + itemIndex);
-        var item = newState[itemIndex];
-        var itemContainerEl = rowEl;
-
-        if (this.config.multipleItemsPerRowContainer) {
-          itemContainerEl = document.createElement(this.config.multipleItemsPerRowContainer.elementType);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(itemContainerEl, this.config.multipleItemsPerRowContainer.elementClasses);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(itemContainerEl, this.config.multipleItemsPerRowContainer.elementAttributes);
-          rowEl.appendChild(itemContainerEl);
-        }
-
-        var itemEl = this.createDisplayElementForCollectionItem(collectionName, item);
-        itemContainerEl.appendChild(itemEl);
-        _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextToElement(this.view.getName(), collectionName, item, itemEl, true, _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.TogglePlacement.bottom);
-        itemIndex++;
-      }
-
-      containerEl.appendChild(rowContainerEl);
-    }
-
-    $('[data-toggle="tooltip"]').tooltip();
-    this.lastRenderedContainer = containerEl;
-    this.lastRenderedCollectionName = collectionName;
-    this.lastRenderedCollection = newState;
-  };
-
-  return CarouselViewRendererUsingContext;
-}();
-
-/***/ }),
-
 /***/ "./src/component/view/ChatLogDetailView.ts":
 /*!*************************************************!*\
   !*** ./src/component/view/ChatLogDetailView.ts ***!
@@ -3118,19 +2707,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "ExerciseTypesCompositeView": () => (/* binding */ ExerciseTypesCompositeView)
 /* harmony export */ });
-/* harmony import */ var _ExerciseTypesView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ExerciseTypesView */ "./src/component/view/ExerciseTypesView.ts");
-/* harmony import */ var _sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../sidebar/ExerciseTypesSidebar */ "./src/component/sidebar/ExerciseTypesSidebar.ts");
-/* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../ui-framework/view/renderer/FormDetailViewRenderer */ "./src/ui-framework/view/renderer/FormDetailViewRenderer.ts");
-/* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
-/* harmony import */ var _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/view/implementation/DetailViewImplementation */ "./src/ui-framework/view/implementation/DetailViewImplementation.ts");
-/* harmony import */ var _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ui-framework/helper/LinkedCollectionDetailController */ "./src/ui-framework/helper/LinkedCollectionDetailController.ts");
-/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _helper_ValidationHelper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../helper/ValidationHelper */ "./src/component/helper/ValidationHelper.ts");
+/* harmony import */ var _sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../sidebar/ExerciseTypesSidebar */ "./src/component/sidebar/ExerciseTypesSidebar.ts");
+/* harmony import */ var _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../model/ObjectDefinitionRegistry */ "./src/model/ObjectDefinitionRegistry.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/view/renderer/FormDetailViewRenderer */ "./src/ui-framework/view/renderer/FormDetailViewRenderer.ts");
+/* harmony import */ var _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../CreatedByPermissionChecker */ "./src/CreatedByPermissionChecker.ts");
+/* harmony import */ var _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../ui-framework/view/implementation/DetailViewImplementation */ "./src/ui-framework/view/implementation/DetailViewImplementation.ts");
+/* harmony import */ var _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/helper/LinkedCollectionDetailController */ "./src/ui-framework/helper/LinkedCollectionDetailController.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _helper_ValidationHelper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../helper/ValidationHelper */ "./src/component/helper/ValidationHelper.ts");
+/* harmony import */ var _ExerciseTypesViewUsingContext__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./ExerciseTypesViewUsingContext */ "./src/component/view/ExerciseTypesViewUsingContext.ts");
 
 
 
@@ -3143,7 +2732,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var logger = debug__WEBPACK_IMPORTED_MODULE_10___default()('exercise-types-composite-view');
+var logger = debug__WEBPACK_IMPORTED_MODULE_9___default()('exercise-types-composite-view');
 var ExerciseTypesCompositeView = /*#__PURE__*/function () {
   function ExerciseTypesCompositeView(sideBar) {
     this.sideBar = sideBar;
@@ -3152,33 +2741,33 @@ var ExerciseTypesCompositeView = /*#__PURE__*/function () {
   var _proto = ExerciseTypesCompositeView.prototype;
 
   _proto.onDocumentLoaded = function onDocumentLoaded() {
-    var exerciseTypes = new _ExerciseTypesView__WEBPACK_IMPORTED_MODULE_0__.ExerciseTypesView(_Controller__WEBPACK_IMPORTED_MODULE_9__["default"].getInstance().getStateManager());
+    var exerciseTypes = new _ExerciseTypesViewUsingContext__WEBPACK_IMPORTED_MODULE_11__.ExerciseTypesViewUsingContext(_Controller__WEBPACK_IMPORTED_MODULE_8__["default"].getInstance().getStateManager());
     this.sideBar.addView(exerciseTypes, {
-      containerId: _sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_1__["default"].SidebarContainers.container
+      containerId: _sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_0__["default"].SidebarContainers.container
     });
-    var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_2__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes);
+    var exerciseTypeDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_1__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes);
 
     if (exerciseTypeDefinition) {
-      var exerciseTypeDetailRenderer = new _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_4__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition, new _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_5__.CreatedByPermissionChecker());
-      var exerciseTypeDetailView = new _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_6__.DetailViewImplementation({
-        resultsContainerId: _AppTypes__WEBPACK_IMPORTED_MODULE_3__.VIEW_CONTAINER.exerciseTypeDetail,
-        dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_3__.VIEW_NAME.exerciseTypes
+      var exerciseTypeDetailRenderer = new _ui_framework_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_3__.FormDetailViewRenderer(_AppTypes__WEBPACK_IMPORTED_MODULE_2__.VIEW_CONTAINER.exerciseTypeDetail, exerciseTypeDefinition, new _CreatedByPermissionChecker__WEBPACK_IMPORTED_MODULE_4__.CreatedByPermissionChecker());
+      var exerciseTypeDetailView = new _ui_framework_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_5__.DetailViewImplementation({
+        resultsContainerId: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.VIEW_CONTAINER.exerciseTypeDetail,
+        dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.VIEW_NAME.exerciseTypes
       }, exerciseTypeDetailRenderer);
-      var viewLinker = new _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_7__.LinkedCollectionDetailController(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.STATE_NAMES.exerciseTypes, exerciseTypes);
+      var viewLinker = new _ui_framework_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_6__.LinkedCollectionDetailController(_AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes, exerciseTypes);
       viewLinker.addLinkedDetailView(exerciseTypeDetailView);
       this.sideBar.onDocumentLoaded();
-      var startingDisplayOrder = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_8__.BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
+      var startingDisplayOrder = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_7__.BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
       exerciseTypeDetailView.initialise(startingDisplayOrder, false, true);
       var detailForm = exerciseTypeDetailRenderer.getForm();
 
       if (detailForm) {
         logger("Setting up validation rules for " + detailForm.getId());
         logger(detailForm);
-        _helper_ValidationHelper__WEBPACK_IMPORTED_MODULE_11__.ValidationHelper.getInstance().setupValidationForExerciseTypeDetailsForm(detailForm);
+        _helper_ValidationHelper__WEBPACK_IMPORTED_MODULE_10__.ValidationHelper.getInstance().setupValidationForExerciseTypeDetailsForm(detailForm);
       } // setup the event handling for the create new exercise type button
 
 
-      var createExerciseType = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_3__.BUTTON.createNewExerciseType);
+      var createExerciseType = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_2__.BUTTON.createNewExerciseType);
       logger("Setting up button for creating exercise types");
       logger(createExerciseType);
 
@@ -3189,7 +2778,7 @@ var ExerciseTypesCompositeView = /*#__PURE__*/function () {
         });
       }
 
-      viewLinker.addListener(_Controller__WEBPACK_IMPORTED_MODULE_9__["default"].getInstance());
+      viewLinker.addListener(_Controller__WEBPACK_IMPORTED_MODULE_8__["default"].getInstance());
     }
   };
 
@@ -3198,26 +2787,28 @@ var ExerciseTypesCompositeView = /*#__PURE__*/function () {
 
 /***/ }),
 
-/***/ "./src/component/view/ExerciseTypesView.ts":
-/*!*************************************************!*\
-  !*** ./src/component/view/ExerciseTypesView.ts ***!
-  \*************************************************/
+/***/ "./src/component/view/ExerciseTypesViewUsingContext.ts":
+/*!*************************************************************!*\
+  !*** ./src/component/view/ExerciseTypesViewUsingContext.ts ***!
+  \*************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ExerciseTypesView": () => (/* binding */ ExerciseTypesView)
+/* harmony export */   "ExerciseTypesViewUsingContext": () => (/* binding */ ExerciseTypesViewUsingContext)
 /* harmony export */ });
 /* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRenderer */ "./src/ui-framework/view/renderer/ListViewRenderer.ts");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
-/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
-/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _ui_framework_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRendererUsingContext */ "./src/ui-framework/view/renderer/ListViewRendererUsingContext.ts");
+/* harmony import */ var _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -3250,26 +2841,46 @@ function _setPrototypeOf(o, p) {
 
 
 
-var logger = debug__WEBPACK_IMPORTED_MODULE_7___default()('exercise-types-view');
-var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
-  _inheritsLoose(ExerciseTypesView, _AbstractStatefulColl);
 
-  function ExerciseTypesView(stateManager) {
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_6___default()('exercise-types-view');
+var ExerciseTypesViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
+  _inheritsLoose(ExerciseTypesViewUsingContext, _AbstractStatefulColl);
+
+  function ExerciseTypesViewUsingContext(stateManager) {
     var _this;
 
-    _this = _AbstractStatefulColl.call(this, ExerciseTypesView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes) || this;
-    _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this));
+    _this = _AbstractStatefulColl.call(this, ExerciseTypesViewUsingContext.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes) || this;
+    _this.renderer = new _ui_framework_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_8__.ListViewRendererUsingContext(_assertThisInitialized(_this), _assertThisInitialized(_this));
+    _this.eventHandlerDelegate = new _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_9__.CollectionViewEventHandlerDelegateUsingContext(_assertThisInitialized(_this), _this.eventForwarder);
+    _this.getIdForItemInNamedCollection = _this.getIdForItemInNamedCollection.bind(_assertThisInitialized(_this));
+    _this.getItemId = _this.getItemId.bind(_assertThisInitialized(_this));
+    _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes, 'Exercise Types');
     return _this;
   }
 
-  var _proto = ExerciseTypesView.prototype;
+  var _proto = ExerciseTypesViewUsingContext.prototype;
+
+  _proto.getItemDescription = function getItemDescription(from, item) {
+    var buffer = '';
+    buffer += "<strong>" + item.name + "</strong>:<ul> ";
+
+    if (item.type === 'cardio') {
+      buffer += "<li>" + item.distance + " in " + item.duration + "</li>";
+    } else {
+      buffer += "<li>" + item.sets + " sets with " + item.reps + " reps in " + item.duration + "</li>";
+    }
+
+    buffer += "</ul>";
+    return buffer;
+  };
 
   _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     logger("Can Delete " + selectedItem);
-    logger(selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]);
+    logger(selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedBy]);
 
-    if (selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]) {
-      if (selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy] === _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().getLoggedInUsername()) {
+    if (selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedBy]) {
+      if (selectedItem[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedBy] === _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getLoggedInUsername()) {
         return true;
       }
     }
@@ -3278,7 +2889,7 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
   };
 
   _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
-    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__.isSameMongo)(item1, item2);
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__.isSameMongo)(item1, item2);
   };
 
   _proto.getIdForItemInNamedCollection = function getIdForItemInNamedCollection(name, item) {
@@ -3291,10 +2902,10 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
     logger("Has delete permission " + item);
-    logger(item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]);
+    logger(item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedBy]);
 
-    if (item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy]) {
-      if (item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_6__.FIELD_CreatedBy] === _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().getLoggedInUsername()) {
+    if (item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedBy]) {
+      if (item[_model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedBy] === _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getLoggedInUsername()) {
         return true;
       }
     }
@@ -3306,15 +2917,15 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
     _AbstractStatefulColl.prototype.itemAction.call(this, view, actionName, selectedItem); // @ts-ignore
 
 
-    if (actionName === ExerciseTypesView.DOMConfig.extraActions[0].name) {
+    if (actionName === ExerciseTypesViewUsingContext.DOMConfig.extraActions[0].name) {
       // add the exercise type the current workout
-      _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().addExerciseToCurrentWorkout(selectedItem);
+      _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().addExerciseToCurrentWorkout(selectedItem);
     }
   };
 
-  return ExerciseTypesView;
+  return ExerciseTypesViewUsingContext;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__["default"]);
-ExerciseTypesView.DOMConfig = {
+ExerciseTypesViewUsingContext.DOMConfig = {
   viewConfig: {
     resultsContainerId: 'exerciseTypes',
     dataSourceId: _AppTypes__WEBPACK_IMPORTED_MODULE_2__.VIEW_NAME.exerciseTypes
@@ -4110,9 +3721,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_MiscFunctions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/MiscFunctions */ "./src/util/MiscFunctions.ts");
 /* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.esm.js");
 /* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../App */ "./src/App.ts");
-/* harmony import */ var _ui_framework_alert_AlertManager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../ui-framework/alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
-/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
-/* harmony import */ var _CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./CarouselViewRendererUsingContext */ "./src/component/view/CarouselViewRendererUsingContext.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _ui_framework_view_renderer_CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../ui-framework/view/renderer/CarouselViewRendererUsingContext */ "./src/ui-framework/view/renderer/CarouselViewRendererUsingContext.ts");
+/* harmony import */ var _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -4155,6 +3766,19 @@ var logger = debug__WEBPACK_IMPORTED_MODULE_5___default()('workouts-view');
 var WorkoutsViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
   _inheritsLoose(WorkoutsViewUsingContext, _AbstractStatefulColl);
 
+  function WorkoutsViewUsingContext() {
+    var _this;
+
+    _this = _AbstractStatefulColl.call(this, WorkoutsViewUsingContext.DOMConfig.collectionConfig, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts) || this;
+    _this.renderer = new _ui_framework_view_renderer_CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_12__.CarouselViewRendererUsingContext(_assertThisInitialized(_this), _assertThisInitialized(_this), WorkoutsViewUsingContext.DOMConfig);
+    _this.eventHandlerDelegate = new _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_13__.CollectionViewEventHandlerDelegateUsingContext(_assertThisInitialized(_this), _this.eventForwarder);
+    _this.chartRefs = [];
+    _this.getIdForItemInNamedCollection = _this.getIdForItemInNamedCollection.bind(_assertThisInitialized(_this));
+    _this.getItemId = _this.getItemId.bind(_assertThisInitialized(_this));
+    _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts, 'Workouts');
+    return _this;
+  }
+
   var _proto = WorkoutsViewUsingContext.prototype;
 
   _proto.getItemDescription = function getItemDescription(from, item) {
@@ -4176,18 +3800,6 @@ var WorkoutsViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
 
     return buffer;
   };
-
-  function WorkoutsViewUsingContext() {
-    var _this;
-
-    _this = _AbstractStatefulColl.call(this, WorkoutsViewUsingContext.DOMConfig.collectionConfig, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts) || this;
-    _this.renderer = new _CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_13__.CarouselViewRendererUsingContext(_assertThisInitialized(_this), _assertThisInitialized(_this), WorkoutsViewUsingContext.DOMConfig);
-    _this.chartRefs = [];
-    _this.getIdForItemInNamedCollection = _this.getIdForItemInNamedCollection.bind(_assertThisInitialized(_this));
-    _this.getItemId = _this.getItemId.bind(_assertThisInitialized(_this));
-    _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts, 'Workouts');
-    return _this;
-  }
 
   _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return selectedItem.completed;
@@ -4368,130 +3980,6 @@ var WorkoutsViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
     }
   };
 
-  _proto.eventClickItem = function eventClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    var context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
-    console.log('CONTEXT');
-    console.log(context);
-
-    if (context) {
-      // @ts-ignore
-      var itemId = context.identifier; // @ts-ignore
-
-      var dataSource = context.source;
-
-      if (this.collectionUIConfig.keyType === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
-        // @ts-ignore
-        itemId = parseInt(itemId);
-      } // @ts-ignore
-
-
-      logger("view " + this.getName() + ": Item with id " + itemId + " clicked from " + dataSource);
-      var compareWith = {}; // @ts-ignore
-
-      compareWith[this.collectionUIConfig.keyId] = itemId;
-      logger(compareWith);
-      var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-      logger(selectedItem);
-
-      if (selectedItem) {
-        var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
-        logger("view " + this.getName() + ": Item with id " + itemId + " attempting selected from " + dataSource + " - " + shouldSelect);
-
-        if (shouldSelect) {
-          this.selectedItem = selectedItem;
-          logger(selectedItem);
-          this.eventForwarder.itemSelected(this, selectedItem);
-        }
-      }
-    }
-  };
-
-  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    var context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
-    console.log('CONTEXT');
-    console.log(context);
-
-    if (context) {
-      // @ts-ignore
-      var itemId = context.identifier; // @ts-ignore
-
-      var dataSource = context.source;
-
-      if (this.collectionUIConfig.keyType === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
-        // @ts-ignore
-        itemId = parseInt(itemId);
-      } // @ts-ignore
-
-
-      logger("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
-      var compareWith = {}; // @ts-ignore
-
-      compareWith[this.collectionUIConfig.keyId] = itemId;
-      logger(compareWith);
-      var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-
-      if (selectedItem) {
-        var shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
-        logger("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource + " - " + shouldDelete);
-
-        if (shouldDelete) {
-          // do we need to confirm?
-          if (this.collectionUIConfig.detail.quickDelete) {
-            this.selectedItem = null;
-            this.eventForwarder.itemDeleted(this, selectedItem);
-          } else {
-            _ui_framework_alert_AlertManager__WEBPACK_IMPORTED_MODULE_11__.AlertManager.getInstance().startAlert(this, this.getName(), "Are you sure you want to delete this information?", selectedItem);
-          }
-        }
-      }
-    }
-  };
-
-  _proto.eventActionClicked = function eventActionClicked(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    var context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
-    console.log('CONTEXT');
-    console.log(context);
-
-    if (context) {
-      // @ts-ignore
-      var itemId = context.identifier; // @ts-ignore
-
-      var dataSource = context.source;
-
-      if (this.collectionUIConfig.keyType === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
-        // @ts-ignore
-        itemId = parseInt(itemId);
-      } // @ts-ignore
-
-
-      var actionName = event.target.getAttribute(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME); // @ts-ignore
-
-      logger("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
-      var compareWith = {}; // @ts-ignore
-
-      compareWith[this.collectionUIConfig.keyId] = itemId;
-      logger(compareWith);
-      var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-
-      if (selectedItem) {
-        var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
-        logger("view " + this.getName() + ": Item with id " + itemId + " attempting action " + actionName + " from " + dataSource + " - " + shouldSelect);
-
-        if (shouldSelect) {
-          this.selectedItem = selectedItem;
-          logger(selectedItem);
-          this.eventForwarder.itemAction(this, actionName, selectedItem);
-        }
-      }
-    }
-  };
-
   return WorkoutsViewUsingContext;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__["default"]);
 WorkoutsViewUsingContext.DOMConfig = {
@@ -4654,10 +4142,12 @@ var ContextualInformationHelper = /*#__PURE__*/function () {
     if (foundIndex < 0) {
       result = {
         source: source,
-        internalType: '',
-        displayName: '',
-        identifier: defaultIdentifier,
-        description: defaultIdentifier
+        defaultType: {
+          internalType: '',
+          displayName: '',
+          identifier: defaultIdentifier,
+          description: defaultIdentifier
+        }
       };
       this.registry.push(result);
     } else {
@@ -4669,10 +4159,10 @@ var ContextualInformationHelper = /*#__PURE__*/function () {
 
   _proto.addContextFromView = function addContextFromView(view, internalType, displayName) {
     var context = this.ensureInRegistry(view.getName());
-    context.internalType = internalType;
-    context.displayName = displayName;
-    context.identifier = view.getItemId;
-    context.description = view.getItemDescription;
+    context.defaultType.internalType = internalType;
+    context.defaultType.displayName = displayName;
+    context.defaultType.identifier = view.getItemId;
+    context.defaultType.description = view.getItemDescription;
     console.log("registering");
     console.log(context);
   };
@@ -4689,10 +4179,10 @@ var ContextualInformationHelper = /*#__PURE__*/function () {
     console.log("adding");
     var context = this.ensureInRegistry(source);
     element.setAttribute(ContextualInformationHelper.SOURCE, context.source);
-    element.setAttribute(ContextualInformationHelper.TYPE, context.internalType);
-    element.setAttribute(ContextualInformationHelper.DISPLAYNAME, context.displayName);
-    element.setAttribute(ContextualInformationHelper.IDENTIFIER, context.identifier(type, item));
-    element.setAttribute(ContextualInformationHelper.DESCRIPTION, context.description(type, item));
+    element.setAttribute(ContextualInformationHelper.TYPE, context.defaultType.internalType);
+    element.setAttribute(ContextualInformationHelper.DISPLAYNAME, context.defaultType.displayName);
+    element.setAttribute(ContextualInformationHelper.IDENTIFIER, context.defaultType.identifier(type, item));
+    element.setAttribute(ContextualInformationHelper.DESCRIPTION, context.defaultType.description(type, item));
 
     if (addTooltip) {
       element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE, ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE);
@@ -4722,9 +4212,12 @@ var ContextualInformationHelper = /*#__PURE__*/function () {
             element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_RIGHT);
             break;
           }
-      }
+      } // @ts-ignore
 
-      $('[data-toggle="tooltip"]').tooltip();
+
+      $('[data-toggle="tooltip"]').tooltip({
+        html: true
+      });
     }
   };
 
@@ -10265,25 +9758,25 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
             switch (fieldUIConfig.elementType) {
               case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.textarea:
                 {
-                  field = new _field_TextAreaField__WEBPACK_IMPORTED_MODULE_6__.TextAreaField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl);
+                  field = new _field_TextAreaField__WEBPACK_IMPORTED_MODULE_6__.TextAreaField(this.id, fieldUIConfig, fieldDef, fieldEl);
                   break;
                 }
 
               case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.radioGroup:
                 {
-                  field = new _field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_7__.RadioButtonGroupField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl, subElements);
+                  field = new _field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_7__.RadioButtonGroupField(this.id, fieldUIConfig, fieldDef, fieldEl, subElements);
                   break;
                 }
 
               case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.select:
                 {
-                  field = new _field_SelectField__WEBPACK_IMPORTED_MODULE_8__.SelectField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl);
+                  field = new _field_SelectField__WEBPACK_IMPORTED_MODULE_8__.SelectField(this.id, fieldUIConfig, fieldDef, fieldEl);
                   break;
                 }
 
               default:
                 {
-                  field = new _field_InputField__WEBPACK_IMPORTED_MODULE_9__.InputField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl);
+                  field = new _field_InputField__WEBPACK_IMPORTED_MODULE_9__.InputField(this.id, fieldUIConfig, fieldDef, fieldEl);
                   break;
                 }
             }
@@ -13467,6 +12960,274 @@ var SimpleValueDataSource = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegate.ts":
+/*!******************************************************************************!*\
+  !*** ./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegate.ts ***!
+  \******************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CollectionViewEventHandlerDelegate": () => (/* binding */ CollectionViewEventHandlerDelegate)
+/* harmony export */ });
+/* harmony import */ var _implementation_AbstractView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../implementation/AbstractView */ "./src/ui-framework/view/implementation/AbstractView.ts");
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _alert_AlertManager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _alert_AlertListener__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../alert/AlertListener */ "./src/ui-framework/alert/AlertListener.ts");
+
+
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_3___default()('collection-view-event-handler-delegate');
+var CollectionViewEventHandlerDelegate = /*#__PURE__*/function () {
+  function CollectionViewEventHandlerDelegate(view, forwarder) {
+    this.selectedItem = null;
+    this.view = view;
+    this.eventForwarder = forwarder; // event handlers
+
+    this.eventStartDrag = this.eventStartDrag.bind(this);
+    this.eventActionClicked = this.eventActionClicked.bind(this);
+    this.eventClickItem = this.eventClickItem.bind(this);
+    this.eventDeleteClickItem = this.eventDeleteClickItem.bind(this);
+  }
+
+  var _proto = CollectionViewEventHandlerDelegate.prototype;
+
+  _proto.getItemContext = function getItemContext(event) {
+    // @ts-ignore
+    var itemId = event.target.getAttribute(this.view.getCollectionUIConfig().keyId); // @ts-ignore
+
+    var dataSource = event.target.getAttribute(_implementation_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView.DATA_SOURCE);
+    var context = {
+      itemId: itemId,
+      dataSource: dataSource
+    };
+    return context;
+  };
+
+  _proto.getDragData = function getDragData(event) {
+    var context = this.getItemContext(event);
+    var itemId = context.itemId;
+    var dataSource = context.dataSource;
+
+    if (this.view.getCollectionUIConfig().keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+      // @ts-ignore
+      itemId = parseInt(itemId);
+    }
+
+    logger("view " + this.view.getName() + ": Item with id " + itemId + " getting drag data from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.view.getCollectionUIConfig().keyId] = itemId;
+    var selectedItem = {};
+    selectedItem = this.view.getItemInNamedCollection(this.view.getCollectionName(), compareWith);
+
+    if (selectedItem) {
+      var _this$view$getCollect, _this$view$getCollect2; // @ts-ignore
+
+
+      selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.DRAGGABLE_TYPE] = (_this$view$getCollect = this.view.getCollectionUIConfig().detail.drag) == null ? void 0 : _this$view$getCollect.type; // @ts-ignore
+
+      selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.DRAGGABLE_FROM] = (_this$view$getCollect2 = this.view.getCollectionUIConfig().detail.drag) == null ? void 0 : _this$view$getCollect2.from;
+    }
+
+    return selectedItem;
+  };
+
+  _proto.eventStartDrag = function eventStartDrag(event) {
+    logger("view " + this.view.getName() + ": drag start");
+    logger(event.target);
+    var data = JSON.stringify(this.getDragData(event));
+    logger(data); // @ts-ignore
+
+    event.dataTransfer.setData(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.DRAGGABLE_KEY_ID, data);
+    this.eventForwarder.itemDragStarted(this.view, data);
+  };
+
+  _proto.eventClickItem = function eventClickItem(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var context = this.getItemContext(event);
+    var itemId = context.itemId;
+    var dataSource = context.dataSource;
+
+    if (this.view.getCollectionUIConfig().keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+      // @ts-ignore
+      itemId = parseInt(itemId);
+    }
+
+    logger("view " + this.view.getName() + ": Item with id " + itemId + " clicked from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.view.getCollectionUIConfig().keyId] = itemId;
+    logger(compareWith);
+    var selectedItem = this.view.getItemInNamedCollection(this.view.getCollectionName(), compareWith);
+    logger(selectedItem);
+
+    if (selectedItem) {
+      var shouldSelect = this.eventForwarder.canSelectItem(this.view, selectedItem);
+      logger("view " + this.view.getName() + ": Item with id " + itemId + " attempting selected from " + dataSource + " - " + shouldSelect);
+
+      if (shouldSelect) {
+        this.selectedItem = selectedItem;
+        logger(selectedItem);
+        this.eventForwarder.itemSelected(this.view, selectedItem);
+      }
+    }
+  };
+
+  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var context = this.getItemContext(event);
+    var itemId = context.itemId;
+    var dataSource = context.dataSource;
+
+    if (this.view.getCollectionUIConfig().keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+      // @ts-ignore
+      itemId = parseInt(itemId);
+    }
+
+    logger("view " + this.view.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.view.getCollectionUIConfig().keyId] = itemId;
+    logger(compareWith);
+    var selectedItem = this.view.getItemInNamedCollection(this.view.getCollectionName(), compareWith);
+
+    if (selectedItem) {
+      var shouldDelete = this.eventForwarder.canDeleteItem(this.view, selectedItem);
+      logger("view " + this.view.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource + " - " + shouldDelete);
+
+      if (shouldDelete) {
+        // do we need to confirm?
+        if (this.view.getCollectionUIConfig().detail.quickDelete) {
+          this.selectedItem = null;
+          this.eventForwarder.itemDeleted(this.view, selectedItem);
+        } else {
+          _alert_AlertManager__WEBPACK_IMPORTED_MODULE_2__.AlertManager.getInstance().startAlert(this, this.view.getName(), "Are you sure you want to delete this information?", selectedItem);
+        }
+      }
+    }
+  };
+
+  _proto.eventActionClicked = function eventActionClicked(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var context = this.getItemContext(event);
+    var itemId = context.itemId;
+    var dataSource = context.dataSource; // @ts-ignore
+
+    var actionName = event.target.getAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME);
+
+    if (this.view.getCollectionUIConfig().keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+      // @ts-ignore
+      itemId = parseInt(itemId);
+    }
+
+    logger("view " + this.view.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
+    var compareWith = {}; // @ts-ignore
+
+    compareWith[this.view.getCollectionUIConfig().keyId] = itemId;
+    logger(compareWith);
+    var selectedItem = this.view.getItemInNamedCollection(this.view.getCollectionName(), compareWith);
+
+    if (selectedItem) {
+      var shouldSelect = this.eventForwarder.canSelectItem(this.view, selectedItem);
+      logger("view " + this.view.getName() + ": Item with id " + itemId + " attempting action " + actionName + " from " + dataSource + " - " + shouldSelect);
+
+      if (shouldSelect) {
+        this.selectedItem = selectedItem;
+        logger(selectedItem);
+        this.eventForwarder.itemAction(this.view, actionName, selectedItem);
+      }
+    }
+  };
+
+  _proto.completed = function completed(event) {
+    logger(event.context);
+
+    if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_4__.AlertType.confirmed) {
+      this.selectedItem = null;
+      this.eventForwarder.itemDeleted(this.view, event.context);
+    }
+  };
+
+  return CollectionViewEventHandlerDelegate;
+}();
+
+/***/ }),
+
+/***/ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext.ts":
+/*!******************************************************************************************!*\
+  !*** ./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext.ts ***!
+  \******************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CollectionViewEventHandlerDelegateUsingContext": () => (/* binding */ CollectionViewEventHandlerDelegateUsingContext)
+/* harmony export */ });
+/* harmony import */ var _CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CollectionViewEventHandlerDelegate */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegate.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+
+  _setPrototypeOf(subClass, superClass);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+
+
+var CollectionViewEventHandlerDelegateUsingContext = /*#__PURE__*/function (_CollectionViewEventH) {
+  _inheritsLoose(CollectionViewEventHandlerDelegateUsingContext, _CollectionViewEventH);
+
+  function CollectionViewEventHandlerDelegateUsingContext(view, forwarder) {
+    return _CollectionViewEventH.call(this, view, forwarder) || this;
+  }
+
+  var _proto = CollectionViewEventHandlerDelegateUsingContext.prototype;
+
+  _proto.getItemContext = function getItemContext(event) {
+    var contextDetail = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_1__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
+    console.log('CONTEXT');
+    console.log(contextDetail);
+    var context;
+
+    if (contextDetail) {
+      context = {
+        itemId: contextDetail.identifier,
+        dataSource: contextDetail.source
+      };
+    } else {
+      context = {
+        itemId: '',
+        dataSource: this.view.getName()
+      };
+    }
+
+    return context;
+  };
+
+  return CollectionViewEventHandlerDelegateUsingContext;
+}(_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_0__.CollectionViewEventHandlerDelegate);
+
+/***/ }),
+
 /***/ "./src/ui-framework/view/delegate/CollectionViewListenerForwarder.ts":
 /*!***************************************************************************!*\
   !*** ./src/ui-framework/view/delegate/CollectionViewListenerForwarder.ts ***!
@@ -13758,8 +13519,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../delegate/CollectionViewListenerForwarder */ "./src/ui-framework/view/delegate/CollectionViewListenerForwarder.ts");
-/* harmony import */ var _alert_AlertManager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
-/* harmony import */ var _alert_AlertListener__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../alert/AlertListener */ "./src/ui-framework/alert/AlertListener.ts");
+/* harmony import */ var _delegate_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../delegate/CollectionViewEventHandlerDelegate */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegate.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -13790,7 +13550,6 @@ function _setPrototypeOf(o, p) {
 
 
 
-
 var avLogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('collection-view-ts');
 var avLoggerDetails = debug__WEBPACK_IMPORTED_MODULE_3___default()('collection-view-ts-detail');
 var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
@@ -13803,18 +13562,39 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     _this.collectionUIConfig = uiConfig;
     _this.collectionName = collectionName;
     _this.renderer = null;
-    _this.selectedItem = null;
-    _this.eventForwarder = new _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_4__.CollectionViewListenerForwarder(); // event handlers
+    var forwarder = new _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_4__.CollectionViewListenerForwarder();
+    _this.eventForwarder = forwarder;
+    _this.eventHandlerDelegate = new _delegate_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_5__.CollectionViewEventHandlerDelegate(_assertThisInitialized(_this), forwarder);
+    _this.updateViewForNamedCollection = _this.updateViewForNamedCollection.bind(_assertThisInitialized(_this)); // event handlers
 
     _this.eventStartDrag = _this.eventStartDrag.bind(_assertThisInitialized(_this));
     _this.eventActionClicked = _this.eventActionClicked.bind(_assertThisInitialized(_this));
     _this.eventClickItem = _this.eventClickItem.bind(_assertThisInitialized(_this));
     _this.eventDeleteClickItem = _this.eventDeleteClickItem.bind(_assertThisInitialized(_this));
-    _this.updateViewForNamedCollection = _this.updateViewForNamedCollection.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   var _proto = AbstractCollectionView.prototype;
+
+  _proto.eventStartDrag = function eventStartDrag(event) {
+    this.eventHandlerDelegate.eventStartDrag(event);
+  };
+
+  _proto.eventClickItem = function eventClickItem(event) {
+    this.eventHandlerDelegate.eventClickItem(event);
+  };
+
+  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
+    this.eventHandlerDelegate.eventDeleteClickItem(event);
+  };
+
+  _proto.eventActionClicked = function eventActionClicked(event) {
+    this.eventHandlerDelegate.eventActionClicked(event);
+  };
+
+  _proto.getCollectionName = function getCollectionName() {
+    return this.collectionName;
+  };
 
   _proto.getItemId = function getItemId(from, item) {
     return this.getIdForItemInNamedCollection(from, item);
@@ -13847,32 +13627,6 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     if (this.renderer) this.renderer.onDocumentLoaded();
   };
 
-  _proto.getDragData = function getDragData(event) {
-    // @ts-ignore
-    var itemId = event.target.getAttribute(this.collectionUIConfig.keyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView.DATA_SOURCE);
-    if (this.collectionUIConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
-
-    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " getting drag data from " + dataSource);
-    var compareWith = {}; // @ts-ignore
-
-    compareWith[this.collectionUIConfig.keyId] = itemId;
-    var selectedItem = {};
-    selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-
-    if (selectedItem) {
-      var _this$collectionUICon, _this$collectionUICon2; // @ts-ignore
-
-
-      selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.DRAGGABLE_TYPE] = (_this$collectionUICon = this.collectionUIConfig.detail.drag) == null ? void 0 : _this$collectionUICon.type; // @ts-ignore
-
-      selectedItem[_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.DRAGGABLE_FROM] = (_this$collectionUICon2 = this.collectionUIConfig.detail.drag) == null ? void 0 : _this$collectionUICon2.from;
-    }
-
-    return selectedItem;
-  };
-
   _proto.renderBackgroundForItemInNamedCollection = function renderBackgroundForItemInNamedCollection(containerEl, name, item) {};
 
   _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
@@ -13901,107 +13655,6 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     }
   };
 
-  _proto.eventStartDrag = function eventStartDrag(event) {
-    avLogger("view " + this.getName() + ": drag start");
-    avLoggerDetails(event.target);
-    var data = JSON.stringify(this.getDragData(event));
-    avLoggerDetails(data); // @ts-ignore
-
-    event.dataTransfer.setData(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.DRAGGABLE_KEY_ID, data);
-    this.eventForwarder.itemDragStarted(this, data);
-  };
-
-  _proto.eventClickItem = function eventClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation(); // @ts-ignore
-
-    var itemId = event.target.getAttribute(this.collectionUIConfig.keyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView.DATA_SOURCE);
-    if (this.collectionUIConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
-
-    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " clicked from " + dataSource);
-    var compareWith = {}; // @ts-ignore
-
-    compareWith[this.collectionUIConfig.keyId] = itemId;
-    avLoggerDetails(compareWith);
-    var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-    avLogger(selectedItem);
-
-    if (selectedItem) {
-      var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
-      avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting selected from " + dataSource + " - " + shouldSelect);
-
-      if (shouldSelect) {
-        this.selectedItem = selectedItem;
-        avLoggerDetails(selectedItem);
-        this.eventForwarder.itemSelected(this, selectedItem);
-      }
-    }
-  };
-
-  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
-    event.preventDefault();
-    event.stopPropagation(); // @ts-ignore
-
-    var itemId = event.target.getAttribute(this.collectionUIConfig.keyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView.DATA_SOURCE);
-    if (this.collectionUIConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
-
-    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
-    var compareWith = {}; // @ts-ignore
-
-    compareWith[this.collectionUIConfig.keyId] = itemId;
-    avLoggerDetails(compareWith);
-    var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-
-    if (selectedItem) {
-      var shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
-      avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource + " - " + shouldDelete);
-
-      if (shouldDelete) {
-        // do we need to confirm?
-        if (this.collectionUIConfig.detail.quickDelete) {
-          this.selectedItem = null;
-          this.eventForwarder.itemDeleted(this, selectedItem);
-        } else {
-          _alert_AlertManager__WEBPACK_IMPORTED_MODULE_5__.AlertManager.getInstance().startAlert(this, this.getName(), "Are you sure you want to delete this information?", selectedItem);
-        }
-      }
-    }
-  };
-
-  _proto.eventActionClicked = function eventActionClicked(event) {
-    event.preventDefault();
-    event.stopPropagation(); // @ts-ignore
-
-    var itemId = event.target.getAttribute(this.collectionUIConfig.keyId); // @ts-ignore
-
-    var dataSource = event.target.getAttribute(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView.DATA_SOURCE); // @ts-ignore
-
-    var actionName = event.target.getAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME);
-    if (this.collectionUIConfig.keyType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) itemId = parseInt(itemId); // @ts-ignore
-
-    avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
-    var compareWith = {}; // @ts-ignore
-
-    compareWith[this.collectionUIConfig.keyId] = itemId;
-    avLoggerDetails(compareWith);
-    var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-
-    if (selectedItem) {
-      var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
-      avLoggerDetails("view " + this.getName() + ": Item with id " + itemId + " attempting action " + actionName + " from " + dataSource + " - " + shouldSelect);
-
-      if (shouldSelect) {
-        this.selectedItem = selectedItem;
-        avLoggerDetails(selectedItem);
-        this.eventForwarder.itemAction(this, actionName, selectedItem);
-      }
-    }
-  };
-
   _proto.hasPermissionToDeleteItemInNamedCollection = function hasPermissionToDeleteItemInNamedCollection(name, item) {
     return true;
   };
@@ -14016,15 +13669,6 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
 
   _proto.setRenderer = function setRenderer(renderer) {
     this.renderer = renderer;
-  };
-
-  _proto.completed = function completed(event) {
-    avLoggerDetails(event.context);
-
-    if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_6__.AlertType.confirmed) {
-      this.selectedItem = null;
-      this.eventForwarder.itemDeleted(this, event.context);
-    }
   };
 
   return AbstractCollectionView;
@@ -14437,6 +14081,419 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   return DetailViewImplementation;
 }(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView);
+
+/***/ }),
+
+/***/ "./src/ui-framework/view/renderer/CarouselViewRendererUsingContext.ts":
+/*!****************************************************************************!*\
+  !*** ./src/ui-framework/view/renderer/CarouselViewRendererUsingContext.ts ***!
+  \****************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CarouselViewRendererUsingContext": () => (/* binding */ CarouselViewRendererUsingContext)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+
+
+
+
+var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('carousel-renderer');
+var CarouselViewRendererUsingContext = /*#__PURE__*/function () {
+  function CarouselViewRendererUsingContext(view, eventHandler, config) {
+    this.lastRenderedContainer = null;
+    this.lastRenderedCollectionName = null;
+    this.lastRenderedCollection = null;
+    this.previousWindowWidth = 0;
+    this.view = view;
+    this.eventHandler = eventHandler;
+    this.config = config;
+  }
+
+  var _proto = CarouselViewRendererUsingContext.prototype;
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    var _this = this; // we need to track window resizing
+
+
+    this.previousWindowWidth = window.innerWidth;
+    window.addEventListener('resize', function (event) {
+      var newWindowWidth = window.innerWidth;
+      var reRenderRequired = false;
+
+      if (newWindowWidth < _this.previousWindowWidth) {
+        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to large");
+          }
+        }
+
+        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to medium");
+          }
+        }
+
+        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to small");
+          }
+        }
+      } else {
+        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+            // need to re-render carousel
+            avLogger("window increased and is now larger than small");
+            reRenderRequired = true;
+          }
+        }
+
+        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+            avLogger("window increased and is now larger than medium"); // need to re-render carousel
+
+            reRenderRequired = true;
+          }
+        }
+
+        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+            avLogger("window increased and is now larger than large"); // need to re-render carousel
+
+            reRenderRequired = true;
+          }
+        }
+      }
+
+      _this.previousWindowWidth = newWindowWidth;
+
+      if (_this.lastRenderedContainer && _this.lastRenderedCollection && _this.lastRenderedCollectionName && reRenderRequired) {
+        _this.setDisplayElementsForCollectionInContainer(_this.lastRenderedContainer, _this.lastRenderedCollectionName, _this.lastRenderedCollection);
+      }
+    });
+  };
+
+  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
+    var _this2 = this;
+
+    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
+    avLogger("view " + this.view.getName() + ": creating carousel item");
+    avLogger(item);
+    var collectionConfig = this.view.getCollectionUIConfig();
+    var childEl = document.createElement(collectionConfig.resultsElementType);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.resultsClasses);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(childEl, collectionConfig.resultsElementAttributes);
+
+    if (collectionConfig.detail.background) {
+      var backgroundEl = document.createElement(collectionConfig.detail.background.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
+      childEl.appendChild(backgroundEl);
+      this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
+    } // the content may be structured
+
+
+    var textEl = childEl;
+
+    if (collectionConfig.detail.containerClasses) {
+      var contentEl = document.createElement('div');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(contentEl, collectionConfig.detail.containerClasses);
+      textEl = document.createElement(collectionConfig.detail.textElementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(textEl, collectionConfig.detail.textElementClasses);
+      contentEl.appendChild(textEl);
+
+      if (collectionConfig.extraActions || collectionConfig.detail.delete) {
+        var buttonsEl = document.createElement(this.config.actionContainer.elementType);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(buttonsEl, this.config.actionContainer.elementClasses);
+        contentEl.appendChild(buttonsEl);
+
+        if (collectionConfig.extraActions) {
+          collectionConfig.extraActions.forEach(function (extraAction) {
+            var hasPermissionForAction = _this2.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
+
+            if (hasPermissionForAction) {
+              var action = document.createElement('button');
+              action.setAttribute('type', 'button');
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(action, extraAction.attributes);
+
+              if (extraAction.buttonText) {
+                action.innerHTML = extraAction.buttonText;
+              }
+
+              if (extraAction.iconClasses) {
+                var iconEl = document.createElement('i');
+                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+                iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+                action.appendChild(iconEl);
+              }
+
+              action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+              action.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                _this2.eventHandler.eventActionClicked(event);
+              });
+              buttonsEl.appendChild(action);
+            }
+          });
+        }
+
+        if (collectionConfig.detail.delete && collectionConfig && canDeleteItem) {
+          var deleteButtonEl = document.createElement('button');
+          deleteButtonEl.setAttribute('type', 'button');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(deleteButtonEl, collectionConfig.detail.delete.buttonClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(deleteButtonEl, collectionConfig.detail.delete.attributes);
+
+          if (collectionConfig.detail.delete.buttonText) {
+            deleteButtonEl.innerHTML = collectionConfig.detail.delete.buttonText;
+          }
+
+          if (collectionConfig.detail.delete.iconClasses) {
+            var iconEl = document.createElement('i');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, collectionConfig.detail.delete.iconClasses);
+            deleteButtonEl.appendChild(iconEl);
+          }
+
+          deleteButtonEl.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            _this2.eventHandler.eventDeleteClickItem(event);
+          });
+          buttonsEl.appendChild(deleteButtonEl);
+        }
+      }
+
+      childEl.appendChild(contentEl);
+
+      if (collectionConfig.detail.drag) {
+        childEl.setAttribute('draggable', 'true');
+        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
+      } // add selection actions
+
+
+      if (collectionConfig.detail.select) {
+        childEl.addEventListener('click', this.eventHandler.eventClickItem);
+      }
+    }
+
+    var displayText = this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item); // add icons
+    // add modifiers for patient state
+
+    if (collectionConfig.modifiers) {
+      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
+      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
+
+      switch (modifier) {
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal:
+          {
+            avLogger("view " + this.view.getName() + ": normal item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal);
+
+            if (collectionConfig.icons && collectionConfig.icons.normal) {
+              var _iconEl = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl, collectionConfig.icons.normal);
+              textEl.appendChild(_iconEl);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    var _iconEl2 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl2, collectionConfig.icons.warning);
+                    textEl.appendChild(_iconEl2);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.active) {
+                    var _iconEl3 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl3, collectionConfig.icons.active);
+                    textEl.appendChild(_iconEl3);
+                  }
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+          {
+            avLogger("view " + this.view.getName() + ": active item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active);
+
+            if (collectionConfig.icons && collectionConfig.icons.active) {
+              var _iconEl4 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl4, collectionConfig.icons.active);
+              textEl.appendChild(_iconEl4);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    var _iconEl5 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl5, collectionConfig.icons.warning);
+                    textEl.appendChild(_iconEl5);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive:
+          {
+            avLogger("view " + this.view.getName() + ": inactive item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive);
+
+            if (collectionConfig.icons && collectionConfig.icons.inactive) {
+              var _iconEl6 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl6, collectionConfig.icons.inactive);
+              textEl.appendChild(_iconEl6);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive, false);
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                    var _iconEl7 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl7, collectionConfig.icons.warning);
+                    textEl.appendChild(_iconEl7);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.active) {
+                    var _iconEl8 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl8, collectionConfig.icons.active);
+                    textEl.appendChild(_iconEl8);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+      }
+    }
+
+    return childEl;
+  };
+
+  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
+    avLogger("view " + this.view.getName() + ": creating carousel results");
+    avLogger(newState); // remove the previous items from list
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].removeAllChildren(containerEl); // need to break the items up by row, and the last row is active (assumes increasing time order)
+
+    var numberOfResults = newState.length; // number of items per row depends on view port
+
+    var itemsPerRow = this.config.itemsPerRow.xlarge;
+
+    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+      itemsPerRow = this.config.itemsPerRow.large;
+    }
+
+    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+      itemsPerRow = this.config.itemsPerRow.medium;
+    }
+
+    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+      itemsPerRow = this.config.itemsPerRow.small;
+    }
+
+    var numberOfRows = Math.ceil(numberOfResults / itemsPerRow);
+    avLogger("view " + this.view.getName() + ": creating carousel with number of results per row of " + itemsPerRow + " with rows " + numberOfRows);
+
+    for (var rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+      // create the row
+      var rowContainerEl = document.createElement(this.config.rowContainer.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes); //browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
+
+      var rowEl = document.createElement(this.config.row.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowEl, this.config.row.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowEl, this.config.row.elementAttributes);
+      rowContainerEl.appendChild(rowEl); // if this the active row?
+
+      if (rowIndex === 0 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.RowPosition.first || rowIndex === numberOfRows - 1 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.RowPosition.last) {
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowContainerEl, this.config.activeRow.elementClasses);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowContainerEl, this.config.activeRow.elementAttributes);
+      }
+
+      var itemIndex = rowIndex * itemsPerRow;
+
+      while (itemIndex < (rowIndex + 1) * itemsPerRow && itemIndex < numberOfResults) {
+        avLogger("rowIndex " + rowIndex + " item index " + itemIndex);
+        var item = newState[itemIndex];
+        var itemContainerEl = rowEl;
+
+        if (this.config.multipleItemsPerRowContainer) {
+          itemContainerEl = document.createElement(this.config.multipleItemsPerRowContainer.elementType);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(itemContainerEl, this.config.multipleItemsPerRowContainer.elementClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(itemContainerEl, this.config.multipleItemsPerRowContainer.elementAttributes);
+          rowEl.appendChild(itemContainerEl);
+        }
+
+        var itemEl = this.createDisplayElementForCollectionItem(collectionName, item);
+        itemContainerEl.appendChild(itemEl);
+        _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextToElement(this.view.getName(), collectionName, item, itemEl, true, _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.TogglePlacement.bottom);
+        itemIndex++;
+      }
+
+      containerEl.appendChild(rowContainerEl);
+    }
+
+    $('[data-toggle="tooltip"]').tooltip();
+    this.lastRenderedContainer = containerEl;
+    this.lastRenderedCollectionName = collectionName;
+    this.lastRenderedCollection = newState;
+  };
+
+  return CarouselViewRendererUsingContext;
+}();
 
 /***/ }),
 
@@ -15069,6 +15126,316 @@ var ListViewRenderer = /*#__PURE__*/function () {
   _proto.onDocumentLoaded = function onDocumentLoaded() {};
 
   return ListViewRenderer;
+}();
+
+/***/ }),
+
+/***/ "./src/ui-framework/view/renderer/ListViewRendererUsingContext.ts":
+/*!************************************************************************!*\
+  !*** ./src/ui-framework/view/renderer/ListViewRendererUsingContext.ts ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "ListViewRendererUsingContext": () => (/* binding */ ListViewRendererUsingContext)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+
+
+
+
+var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('list-view-renderer-with-context');
+var ListViewRendererUsingContext = /*#__PURE__*/function () {
+  function ListViewRendererUsingContext(view, eventHandler) {
+    this.view = view;
+    this.eventHandler = eventHandler;
+  }
+
+  var _proto = ListViewRendererUsingContext.prototype;
+
+  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
+    var _this = this;
+
+    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
+    var uiConfig = this.view.getCollectionUIConfig();
+    avLogger("view " + this.view.getName() + ": creating List item");
+    avLogger(item);
+    var resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
+    var childEl = document.createElement(uiConfig.resultsElementType);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.resultsClasses);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(childEl, uiConfig.resultsElementAttributes); // the content may be structured
+
+    var textEl = childEl;
+
+    if (uiConfig.detail.containerClasses) {
+      var contentEl = document.createElement('div');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(contentEl, uiConfig.detail.containerClasses);
+      textEl = document.createElement(uiConfig.detail.textElementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(textEl, uiConfig.detail.textElementClasses);
+      contentEl.appendChild(textEl);
+
+      if (uiConfig.detail.background) {
+        var imgEl = document.createElement(uiConfig.detail.background.elementType);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(imgEl, uiConfig.detail.background.elementClasses);
+        imgEl.setAttribute('src', this.view.getBackgroundImageForItemInNamedCollection(collectionName, item));
+        childEl.appendChild(imgEl);
+      }
+
+      var buttonsEl = document.createElement('div');
+      contentEl.appendChild(buttonsEl);
+
+      if (uiConfig.detail.badge) {
+        var badgeValue = this.view.getBadgeValueForItemInNamedCollection(collectionName, item);
+
+        if (badgeValue > 0) {
+          var badgeEl = document.createElement(uiConfig.detail.badge.elementType);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(badgeEl, uiConfig.detail.badge.elementClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(badgeEl, uiConfig.detail.badge.elementAttributes);
+          buttonsEl.appendChild(badgeEl);
+          badgeEl.innerHTML = "&nbsp;&nbsp;&nbsp;" + badgeValue + "&nbsp;&nbsp;&nbsp;";
+        }
+      }
+
+      if (uiConfig.extraActions) {
+        uiConfig.extraActions.forEach(function (extraAction) {
+          var hasPermissionForAction = _this.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
+
+          if (hasPermissionForAction) {
+            var action = document.createElement('button');
+            action.setAttribute('type', 'button');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(action, extraAction.attributes);
+
+            if (extraAction.buttonText) {
+              action.innerHTML = extraAction.buttonText;
+            }
+
+            if (extraAction.iconClasses) {
+              var iconEl = document.createElement('i');
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+              iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+              action.appendChild(iconEl);
+            }
+
+            action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+            action.addEventListener('click', function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+
+              _this.eventHandler.eventActionClicked(event);
+            });
+            buttonsEl.appendChild(action);
+          }
+        });
+      }
+
+      if (uiConfig.detail.delete && canDeleteItem) {
+        var deleteButtonEl = document.createElement('button');
+        deleteButtonEl.setAttribute('type', 'button');
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(deleteButtonEl, uiConfig.detail.delete.buttonClasses);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(deleteButtonEl, uiConfig.detail.delete.attributes);
+
+        if (uiConfig.detail.delete.buttonText) {
+          deleteButtonEl.innerHTML = uiConfig.detail.delete.buttonText;
+        }
+
+        if (uiConfig.detail.delete.iconClasses) {
+          var iconEl = document.createElement('i');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, uiConfig.detail.delete.iconClasses);
+          deleteButtonEl.appendChild(iconEl);
+        }
+
+        deleteButtonEl.addEventListener('click', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          _this.eventHandler.eventDeleteClickItem(event);
+        });
+        buttonsEl.appendChild(deleteButtonEl);
+      }
+
+      childEl.appendChild(contentEl);
+
+      if (uiConfig.detail.drag) {
+        childEl.setAttribute('draggable', 'true');
+        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
+      } // add selection actions
+
+
+      if (uiConfig.detail.select) {
+        childEl.addEventListener('click', this.eventHandler.eventClickItem);
+      }
+    } // add the key ids for selection
+
+
+    this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item); // add icons
+
+    if (uiConfig.detail.icons) {
+      var icons = uiConfig.detail.icons(collectionName, item);
+      icons.forEach(function (icon) {
+        var iconEl = document.createElement('i');
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, icon);
+        textEl.appendChild(iconEl);
+      });
+    } // add modifiers for patient state
+
+
+    if (uiConfig.modifiers) {
+      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
+      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
+
+      switch (modifier) {
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal:
+          {
+            avLogger("view " + this.view.getName() + ": normal item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.normal);
+
+            if (uiConfig.icons && uiConfig.icons.normal) {
+              var _iconEl = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl, uiConfig.icons.normal);
+              textEl.appendChild(_iconEl);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.normal, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
+
+                  if (uiConfig.icons && uiConfig.icons.warning) {
+                    var _iconEl2 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl2, uiConfig.icons.warning);
+                    textEl.appendChild(_iconEl2);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (uiConfig.icons && uiConfig.icons.active) {
+                    var _iconEl3 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl3, uiConfig.icons.active);
+                    textEl.appendChild(_iconEl3);
+                  }
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+          {
+            avLogger("view " + this.view.getName() + ": active item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.active);
+
+            if (uiConfig.icons && uiConfig.icons.active) {
+              var _iconEl4 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl4, uiConfig.icons.active);
+              textEl.appendChild(_iconEl4);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.active, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
+
+                  if (uiConfig.icons && uiConfig.icons.warning) {
+                    var _iconEl5 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl5, uiConfig.icons.warning);
+                    textEl.appendChild(_iconEl5);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive:
+          {
+            avLogger("view " + this.view.getName() + ": inactive item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.inactive);
+
+            if (uiConfig.icons && uiConfig.icons.inactive) {
+              var _iconEl6 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl6, uiConfig.icons.inactive);
+              textEl.appendChild(_iconEl6);
+            }
+
+            switch (secondModifier) {
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  if (uiConfig.icons && uiConfig.icons.warning) {
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.inactive, false);
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, uiConfig.modifiers.warning, true);
+
+                    var _iconEl7 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl7, uiConfig.icons.warning);
+                    textEl.appendChild(_iconEl7);
+                  }
+
+                  break;
+                }
+
+              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (uiConfig.icons && uiConfig.icons.active) {
+                    var _iconEl8 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl8, uiConfig.icons.active);
+                    textEl.appendChild(_iconEl8);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+      }
+    }
+
+    return childEl;
+  };
+
+  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
+    var _this2 = this;
+
+    avLogger("view " + this.view.getName() + ": creating Results");
+    avLogger(newState); // remove the previous items from list
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].removeAllChildren(containerEl); // add the new children
+
+    newState.map(function (item, index) {
+      var childEl = _this2.createDisplayElementForCollectionItem(collectionName, item); // add draggable actions
+
+
+      avLogger("view " + _this2.view.getName() + ":  Adding child " + _this2.view.getIdForItemInNamedCollection(collectionName, item));
+      containerEl.appendChild(childEl);
+      _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextToElement(_this2.view.getName(), collectionName, item, childEl, true);
+    });
+    $('[data-toggle="tooltip"]').tooltip();
+  };
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {};
+
+  return ListViewRendererUsingContext;
 }();
 
 /***/ }),

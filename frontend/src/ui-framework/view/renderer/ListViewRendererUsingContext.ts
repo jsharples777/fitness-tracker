@@ -1,10 +1,10 @@
 import debug from 'debug';
-import {CollectionViewRenderer} from "../../ui-framework/view/interface/CollectionViewRenderer";
-import {CollectionViewEventHandler} from "../../ui-framework/view/interface/CollectionViewEventHandler";
-import {CollectionView} from "../../ui-framework/view/interface/CollectionView";
-import {CollectionViewDOMConfig, EXTRA_ACTION_ATTRIBUTE_NAME, Modifier} from "../../ui-framework/ConfigurationTypes";
-import browserUtil from "../../util/BrowserUtil";
-import {ContextualInformationHelper} from "../../context/ContextualInformationHelper";
+import {CollectionViewRenderer} from "../interface/CollectionViewRenderer";
+import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandler";
+import {CollectionView} from "../interface/CollectionView";
+import {CollectionViewDOMConfig, EXTRA_ACTION_ATTRIBUTE_NAME, Modifier} from "../../ConfigurationTypes";
+import browserUtil from "../../../util/BrowserUtil";
+import {ContextualInformationHelper} from "../../../context/ContextualInformationHelper";
 
 const avLogger = debug('list-view-renderer-with-context');
 

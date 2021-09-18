@@ -1,7 +1,9 @@
 import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
 import {
-    CarouselDOMConfig, EXTRA_ACTION_ATTRIBUTE_NAME,
-    KeyType, Modifier,
+    CarouselDOMConfig,
+    EXTRA_ACTION_ATTRIBUTE_NAME,
+    KeyType,
+    Modifier,
     RowPosition
 } from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
@@ -11,17 +13,17 @@ import {CollectionViewListener} from "../../ui-framework/view/interface/Collecti
 import {View} from "../../ui-framework/view/interface/View";
 
 import debug from 'debug';
-import {CarouselViewRenderer} from "../../ui-framework/view/renderer/CarouselViewRenderer";
 import moment from "moment";
 import {addDurations} from "../../util/DurationFunctions";
 import {truncateString} from "../../util/MiscFunctions";
 import Chart from 'chart.js/auto';
 import App from "../../App";
-import {AbstractView} from "../../ui-framework/view/implementation/AbstractView";
 import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
 import {AlertManager} from "../../ui-framework/alert/AlertManager";
 import {ContextualInformationHelper} from "../../context/ContextualInformationHelper";
-import {CarouselViewRendererUsingContext} from "./CarouselViewRendererUsingContext";
+import {CarouselViewRendererUsingContext} from "../../ui-framework/view/renderer/CarouselViewRendererUsingContext";
+import {AlertEvent, AlertListener, AlertType} from "../../ui-framework/alert/AlertListener";
+import {CollectionViewEventHandlerDelegateUsingContext} from "../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
 
 const logger = debug('workouts-view');
 
@@ -35,6 +37,7 @@ type ChartRef = {
     _id:string,
     chart:Chart|null
 }
+
 
 
 
@@ -125,6 +128,19 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
 
     private chartRefs:ChartRef[];
 
+
+    constructor() {
+        super(WorkoutsViewUsingContext.DOMConfig.collectionConfig, Controller.getInstance().getStateManager(), STATE_NAMES.workouts);
+        this.renderer = new CarouselViewRendererUsingContext(this, this,WorkoutsViewUsingContext.DOMConfig);
+        this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this,<CollectionViewListenerForwarder>this.eventForwarder);
+        this.chartRefs = [];
+
+        this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
+        this.getItemId = this.getItemId.bind(this);
+
+        ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.workouts,'Workouts');
+    }
+
     getItemDescription(from: string, item: any): string {
         let buffer = '';
         if (item.exercises) {
@@ -140,17 +156,6 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
             });
         }
         return buffer;
-    }
-
-    constructor() {
-        super(WorkoutsViewUsingContext.DOMConfig.collectionConfig, Controller.getInstance().getStateManager(), STATE_NAMES.workouts);
-        this.renderer = new CarouselViewRendererUsingContext(this, this,WorkoutsViewUsingContext.DOMConfig);
-        this.chartRefs = [];
-
-        this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
-        this.getItemId = this.getItemId.bind(this);
-
-        ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.workouts,'Workouts');
     }
 
     canDeleteItem(view: View, selectedItem: any): boolean {
@@ -337,130 +342,6 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
             App.getInstance().showCurrentWorkout();
 
 
-        }
-    }
-
-
-    public eventClickItem(event: MouseEvent): void {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const context = ContextualInformationHelper.getInstance().findContextFromEvent(event);
-        console.log('CONTEXT')
-        console.log(context);
-
-        if (context) {
-
-            // @ts-ignore
-            let itemId = context.identifier;
-            // @ts-ignore
-            const dataSource = context.source;
-
-            if (this.collectionUIConfig.keyType === KeyType.number) { // @ts-ignore
-                itemId = parseInt(itemId);
-            }
-            // @ts-ignore
-            logger(`view ${this.getName()}: Item with id ${itemId} clicked from ${dataSource}`);
-            let compareWith = {};
-            // @ts-ignore
-            compareWith[this.collectionUIConfig.keyId] = itemId;
-            logger(compareWith);
-
-            let selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-            logger(selectedItem);
-            if (selectedItem) {
-                const shouldSelect = (<CollectionViewListenerForwarder>(this.eventForwarder)).canSelectItem(this, selectedItem);
-                logger(`view ${this.getName()}: Item with id ${itemId} attempting selected from ${dataSource} - ${shouldSelect}`);
-                if (shouldSelect) {
-                    this.selectedItem = selectedItem;
-                    logger(selectedItem);
-                    (<CollectionViewListenerForwarder>(this.eventForwarder)).itemSelected(this, selectedItem);
-                }
-            }
-        }
-    }
-
-    public eventDeleteClickItem(event: MouseEvent): void {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const context = ContextualInformationHelper.getInstance().findContextFromEvent(event);
-        console.log('CONTEXT')
-        console.log(context);
-
-        if (context) {
-
-            // @ts-ignore
-            let itemId = context.identifier;
-            // @ts-ignore
-            const dataSource = context.source;
-
-            if (this.collectionUIConfig.keyType === KeyType.number) { // @ts-ignore
-                itemId = parseInt(itemId);
-            }
-            // @ts-ignore
-            logger(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource}`);
-            let compareWith = {};
-            // @ts-ignore
-            compareWith[this.collectionUIConfig.keyId] = itemId;
-            logger(compareWith);
-
-            let selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-            if (selectedItem) {
-                const shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
-                logger(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource} - ${shouldDelete}`);
-                if (shouldDelete) {
-                    // do we need to confirm?
-                    if (this.collectionUIConfig.detail.quickDelete) {
-                        this.selectedItem = null;
-                        this.eventForwarder.itemDeleted(this, selectedItem);
-                    } else {
-                        AlertManager.getInstance().startAlert(this, this.getName(), `Are you sure you want to delete this information?`, selectedItem);
-                    }
-
-                }
-            }
-        }
-    }
-
-
-    public eventActionClicked(event: MouseEvent): void {
-        event.preventDefault();
-        event.stopPropagation();
-        const context = ContextualInformationHelper.getInstance().findContextFromEvent(event);
-        console.log('CONTEXT')
-        console.log(context);
-
-        if (context) {
-
-            // @ts-ignore
-            let itemId = context.identifier;
-            // @ts-ignore
-            const dataSource = context.source;
-
-            if (this.collectionUIConfig.keyType === KeyType.number) { // @ts-ignore
-                itemId = parseInt(itemId);
-            }
-            // @ts-ignore
-            const actionName = event.target.getAttribute(EXTRA_ACTION_ATTRIBUTE_NAME);
-
-            // @ts-ignore
-            logger(`view ${this.getName()}: Item with id ${itemId} attempting delete from ${dataSource}`);
-            let compareWith = {};
-            // @ts-ignore
-            compareWith[this.collectionUIConfig.keyId] = itemId;
-            logger(compareWith);
-
-            let selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-            if (selectedItem) {
-                const shouldSelect = (<CollectionViewListenerForwarder>(this.eventForwarder)).canSelectItem(this, selectedItem);
-                logger(`view ${this.getName()}: Item with id ${itemId} attempting action ${actionName} from ${dataSource} - ${shouldSelect}`);
-                if (shouldSelect) {
-                    this.selectedItem = selectedItem;
-                    logger(selectedItem);
-                    this.eventForwarder.itemAction(this, actionName, selectedItem);
-                }
-            }
         }
     }
 

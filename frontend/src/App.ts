@@ -3,7 +3,7 @@ import {Form} from "./ui-framework/form/Form";
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'workouts-view';
+localStorage.debug = 'app api-ts';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -161,6 +161,7 @@ export default class App implements UnreadMessageCountListener {
         this.chatSidebar.eventHide(null);
         this.userSearchSidebar.eventHide(null);
         this.exerciseTypesSidebar.eventHide(null);
+        this.currentWorkoutSidebar.eventHide(null);
     }
 
     handleShowUserSearch(event: Event) {
@@ -186,6 +187,7 @@ export default class App implements UnreadMessageCountListener {
             window.location.href = API_Config.login;
             return;
         }
+        this.hideAllSideBars();
         this.workoutSummarySidebar.eventShow(event);
     }
 
