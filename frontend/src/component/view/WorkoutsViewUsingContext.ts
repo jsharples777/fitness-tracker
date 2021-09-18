@@ -20,7 +20,7 @@ import Chart from 'chart.js/auto';
 import App from "../../App";
 import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
 import {AlertManager} from "../../ui-framework/alert/AlertManager";
-import {ContextualInformationHelper} from "../../context/ContextualInformationHelper";
+import {ContextDefinition, ContextualInformationHelper} from "../../ui-framework/context/ContextualInformationHelper";
 import {CarouselViewRendererUsingContext} from "../../ui-framework/view/renderer/CarouselViewRendererUsingContext";
 import {AlertEvent, AlertListener, AlertType} from "../../ui-framework/alert/AlertListener";
 import {CollectionViewEventHandlerDelegateUsingContext} from "../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
@@ -117,8 +117,8 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
                 {
                     name: 'continue',
                     buttonText: '',
-                    iconClasses:'fas fa-clipboard-list',
-                    buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
+                    iconClasses:'text-white fas fa-clipboard-list',
+                    buttonClasses: 'btn btn-warning btn-circle btn-md mr-2',
                     attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Continue this current workout"}]
                 }
             ],
@@ -138,7 +138,10 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
         this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
         this.getItemId = this.getItemId.bind(this);
 
-        ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.workouts,'Workouts');
+        let context:ContextDefinition = ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.workouts,'Workouts');
+        ContextualInformationHelper.getInstance().addActionToContext(context,'template','Copy exercises to Current Workout',this.eventHandlerDelegate.eventActionClicked,'fas fa-copy');
+        ContextualInformationHelper.getInstance().addActionToContext(context,'continue','Continue Current Workout',this.eventHandlerDelegate.eventActionClicked,'fas fa-clipboard-list');
+
     }
 
     getItemDescription(from: string, item: any): string {
@@ -198,7 +201,14 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
     renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
         let summary = this.calculateExerciseSummary(item);
         let buffer = '';
-        buffer += `<h5 class="card-title">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+        buffer += `<h5 class="card-title">`;
+        if (item.name) {
+            buffer+= `${item.name}</h5>`;
+            buffer += `<h6 class="card-subtitle">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h6>`;
+        }
+        else {
+            buffer += `${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+        }
         buffer += `<ul class="list-group list-group-flush">`;
         buffer += `<li class="list-group-item"><strong>Duration:</strong> ${summary.duration}</li>`;
         if (summary.weight > 0)   buffer += `<li class="list-group-item"><strong>Total Weight:</strong> ${summary.weight}</li>`;
@@ -206,6 +216,7 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
         buffer += `</ul>`;
         containerEl.innerHTML = buffer;
     }
+
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
         return (item.completed);

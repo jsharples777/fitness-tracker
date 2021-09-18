@@ -12,7 +12,7 @@ import {
     SCREEN_WIDTH_SMALL
 } from "../../ConfigurationTypes";
 import browserUtil from "../../../util/BrowserUtil";
-import {ContextualInformationHelper, TogglePlacement} from "../../../context/ContextualInformationHelper";
+import {ContextualInformationHelper, TogglePlacement} from "../../context/ContextualInformationHelper";
 
 const avLogger = debug('carousel-renderer');
 
@@ -363,6 +363,7 @@ export class CarouselViewRendererUsingContext implements CollectionViewRenderer 
                 itemContainerEl.appendChild(itemEl);
 
                 ContextualInformationHelper.getInstance().addContextToElement(this.view.getName(),collectionName,item,itemEl,true,TogglePlacement.bottom);
+                itemEl.addEventListener('contextmenu',ContextualInformationHelper.getInstance().handleContextMenu);
 
                 itemIndex++;
             }

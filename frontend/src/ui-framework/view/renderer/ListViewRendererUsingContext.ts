@@ -4,7 +4,7 @@ import {CollectionViewEventHandler} from "../interface/CollectionViewEventHandle
 import {CollectionView} from "../interface/CollectionView";
 import {CollectionViewDOMConfig, EXTRA_ACTION_ATTRIBUTE_NAME, Modifier} from "../../ConfigurationTypes";
 import browserUtil from "../../../util/BrowserUtil";
-import {ContextualInformationHelper} from "../../../context/ContextualInformationHelper";
+import {ContextualInformationHelper} from "../../context/ContextualInformationHelper";
 
 const avLogger = debug('list-view-renderer-with-context');
 
@@ -120,6 +120,7 @@ export class ListViewRendererUsingContext implements CollectionViewRenderer{
             // add selection actions
             if (uiConfig.detail.select) {
                 childEl.addEventListener('click', this.eventHandler.eventClickItem);
+
             }
         }
 
@@ -246,6 +247,7 @@ export class ListViewRendererUsingContext implements CollectionViewRenderer{
             containerEl.appendChild(childEl);
 
             ContextualInformationHelper.getInstance().addContextToElement(this.view.getName(),collectionName,item,childEl,true);
+            childEl.addEventListener('contextmenu',ContextualInformationHelper.getInstance().handleContextMenu);
         });
         $('[data-toggle="tooltip"]').tooltip();
     }

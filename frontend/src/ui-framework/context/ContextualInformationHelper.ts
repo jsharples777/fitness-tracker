@@ -1,14 +1,20 @@
-import {View} from "../ui-framework/view/interface/View";
-import {BasicElement} from "../ui-framework/ConfigurationTypes";
+import {View} from "../view/interface/View";
+import {BasicElement, EXTRA_ACTION_ATTRIBUTE_NAME} from "../ConfigurationTypes";
+import browserUtil from "../../util/BrowserUtil";
+import debug from 'debug';
+
+const logger = debug('context-helper');
 
 export type getIdentifier = (type:string,item:any) => string;
 export type getDescription = (type:string, item:any) => string;
 
-export type actionHandler = (actionName:string, type:string, item:any) => void;
+export type actionHandler = (event:MouseEvent) => void;
 
 export type ContextTypeAction = {
     actionName: string,
+    displayName:string,
     elementDefinition: BasicElement,
+    iconClasses?:string,
     handler: actionHandler
 }
 
@@ -17,11 +23,12 @@ export type ContextDefinitionType = {
     displayName:string,
     identifier:getIdentifier,
     description:getDescription,
-    actions?:ContextTypeAction[]
+    actions:ContextTypeAction[]
 }
 
 export type ContextDefinition = {
     source:string,
+    view?:View,
     defaultType: ContextDefinitionType,
     extraTypes?: ContextDefinitionType[]
 }
@@ -75,8 +82,22 @@ export class ContextualInformationHelper {
     }
 
     private registry:ContextDefinition[] = [];
+    private menuDivEl:HTMLDivElement|null = null;
+    private menuContentEl:HTMLUListElement|null = null;
 
-    private constructor() {}
+    private constructor() {
+        this.handleContextMenu = this.handleContextMenu.bind(this);
+        this.hideContextMenu = this.hideContextMenu.bind(this);
+    }
+
+    public onDocumentLoaded() {
+        // @ts-ignore
+        document.addEventListener('click',this.hideContextMenu);
+
+        this.menuDivEl = <HTMLDivElement|null>document.getElementById('contextmenu');
+        this.menuContentEl = <HTMLUListElement|null>document.getElementById('contextMenuItems');
+    }
+
 
     private ensureInRegistry(source:string) :ContextDefinition{
         let result:ContextDefinition;
@@ -88,7 +109,8 @@ export class ContextualInformationHelper {
                     internalType: '',
                     displayName: '',
                     identifier: defaultIdentifier,
-                    description: defaultIdentifier
+                    description: defaultIdentifier,
+                    actions: []
                 }
             }
             this.registry.push(result);
@@ -99,12 +121,14 @@ export class ContextualInformationHelper {
         return result;
     }
 
-    public addContextFromView(view:View,internalType:string,displayName:string) {
+    public addContextFromView(view:View,internalType:string,displayName:string):ContextDefinition {
         let context: ContextDefinition = this.ensureInRegistry(view.getName());
+        context.view = view;
         context.defaultType.internalType = internalType;
         context.defaultType.displayName = displayName;
         context.defaultType.identifier = view.getItemId;
         context.defaultType.description = view.getItemDescription;
+        return context;
     }
 
     public addContextToElement(source:string, type:string, item:any, element:HTMLElement, addTooltip:boolean = false,placement:TogglePlacement = TogglePlacement.bottom):void {
@@ -194,6 +218,106 @@ export class ContextualInformationHelper {
         return result;
     }
 
+    private addContextActionToContext(context:ContextDefinition,action:ContextTypeAction) {
+        logger(`Adding action to context ${context.source}`);
+        logger(action);
+        context.defaultType.actions.push(action);
+    }
+
+    public addActionToContext(context:ContextDefinition,actionName:string, displayName:string, handler:actionHandler, icon?:string) {
+        let action:ContextTypeAction = {
+            actionName:actionName,
+            displayName:displayName,
+            handler:handler,
+            elementDefinition: {
+                elementType: 'a',
+                elementAttributes: [{name: 'href', value: '#'}],
+                elementClasses: 'list-group-item list-group-item-action bg-dark text-white',
+            },
+            iconClasses: icon
+        };
+        this.addContextActionToContext(context,action);
+    }
+
+    private buildContextMenu(context:ContextDetails):boolean {
+        logger(`building context menu`);
+        let result = false;
+        // find the context for these details
+        const contextDef:ContextDefinition|null = this.ensureInRegistry(context.source);
+        if (contextDef.defaultType.actions.length > 0) {
+            if (this.menuContentEl && this.menuContentEl) {
+                browserUtil.removeAllChildren(this.menuContentEl);
+
+                contextDef.defaultType.actions.forEach((action) => {
+                    logger('Adding action');
+                    logger(action);
+                    let itemEl = document.createElement(action.elementDefinition.elementType);
+                    if (itemEl && this.menuContentEl) {
+                        browserUtil.addAttributes(itemEl, action.elementDefinition.elementAttributes);
+                        browserUtil.addRemoveClasses(itemEl, action.elementDefinition.elementClasses);
+
+                        itemEl.setAttribute(ContextualInformationHelper.SOURCE,context.source);
+                        itemEl.setAttribute(ContextualInformationHelper.TYPE,context.internalType);
+                        itemEl.setAttribute(ContextualInformationHelper.DISPLAYNAME,context.displayName);
+                        itemEl.setAttribute(ContextualInformationHelper.IDENTIFIER,context.identifier);
+                        itemEl.setAttribute(ContextualInformationHelper.DESCRIPTION,context.description);
+                        itemEl.setAttribute(EXTRA_ACTION_ATTRIBUTE_NAME, action.actionName);
+
+                        itemEl.addEventListener('click', (event:MouseEvent) => {
+                            this.hideContextMenu(event);
+                            action.handler(event);
+                        });
+                        itemEl.innerHTML = `${action.displayName}`;
+                        if (action.iconClasses) {
+                            itemEl.innerHTML += `&nbsp;&nbsp;<i class="${action.iconClasses}"></i>`;
+                        }
+                        this.menuContentEl.appendChild(itemEl);
+                        logger('new menu element is ');
+                        logger(this.menuContentEl);
+                        result = true;
+                    }
+                });
+            }
+        }
+        else {
+            logger(`building context menu - no actions for ${context.source}`);
+        }
+        return result;
+    }
+
+    public handleContextMenu(event:MouseEvent):any {
+        logger('Right click')
+        logger(event.target);
+        // are we over a context sensitive item?
+        // find a context if possible
+        // @ts-ignore
+        const context:ContextDetails|null =  this.findContextFromElement(event.target);
+        logger(context);
+        if (context && this.buildContextMenu(context)) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.showContextMenu(event);
+            return false;
+        }
+
+        // otherwise let the default behaviour happen
+        return true;
+    }
+
+    private hideContextMenu(event:MouseEvent):any {
+        if (this.menuDivEl) {
+            browserUtil.addRemoveClasses(this.menuDivEl,'d-none');
+        }
+    }
+
+    private showContextMenu(event:MouseEvent) {
+        if (this.menuDivEl) {
+            logger(`Showing context menu at ${event.pageX},${event.pageY}`);
+            browserUtil.addRemoveClasses(this.menuDivEl,'d-none',false);
+            this.menuDivEl.style.left = event.pageX + 'px';
+            this.menuDivEl.style.top = event.pageY + 'px';
+        }
+    }
 
 
 

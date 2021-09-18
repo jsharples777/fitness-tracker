@@ -61,10 +61,8 @@ router.post('/', (req, res) => {
 
 router.put('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.body._id}).then((result:DeleteResult) => {
+    MongoDataSource.getInstance().getDatabase().collection(collection).replaceOne({_id:req.body._id},req.body).then((result) => {
         logger(result);
-        MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
-            logger(value);
             let user;
             if (req.user) {
                 // @ts-ignore
@@ -74,12 +72,7 @@ router.put('/', (req, res) => {
             // @ts-ignore
             const message:DataMessage = {type:"update",stateName: "exerciseType",data:req.body, user:user,}
             socketManager.sendDataMessage(message);
-            res.json(value);
-        })
-        .catch((err) => {
-            logger(err);
-            res.status(400).json(err);
-        });
+            res.json(req.body);
     })
     .catch((err) => {
         logger(err);

@@ -60,4 +60,8 @@ export const BUTTON = {
     completeWorkout: 'completeWorkout'
 }
 
+export const INPUT = {
+    workoutName: 'workoutName'
+}
+
 

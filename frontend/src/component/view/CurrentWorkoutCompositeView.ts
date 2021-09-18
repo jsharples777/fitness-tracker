@@ -1,8 +1,7 @@
 import SidebarViewContainer from "../../ui-framework/container/SidebarViewContainer";
-import {ExerciseTypesView} from "./ExerciseTypesView";
 import {DataObjectDefinition} from "../../model/DataObjectTypeDefs";
 import {ObjectDefinitionRegistry} from "../../model/ObjectDefinitionRegistry";
-import {BUTTON, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "../../AppTypes";
+import {BUTTON, INPUT, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "../../AppTypes";
 import {FormDetailViewRenderer} from "../../ui-framework/view/renderer/FormDetailViewRenderer";
 import {DetailView} from "../../ui-framework/view/interface/DetailView";
 import {DetailViewImplementation} from "../../ui-framework/view/implementation/DetailViewImplementation";
@@ -11,7 +10,6 @@ import {BasicObjectDefinitionFactory} from "../../model/BasicObjectDefinitionFac
 import {Form} from "../../ui-framework/form/Form";
 import Controller from "../../Controller";
 import debug from "debug";
-import CurrentWorkoutSidebar from "../sidebar/CurrentWorkoutSidebar";
 import {StateManager} from "../../state/StateManager";
 import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
 import StateChangeListener from "../../state/StateChangeListener";
@@ -29,6 +27,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
     private currentWorkout:any = {};
     private workoutDef:DataObjectDefinition|null = null;
     private readonly stateManager:StateManager;
+    private workoutNameEl:HTMLInputElement|null = null;
 
     constructor(sideBar:SidebarViewContainer) {
         this.sideBar = sideBar;
@@ -42,6 +41,16 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
     }
 
     onDocumentLoaded() {
+        this.workoutNameEl = <HTMLInputElement|null>document.getElementById(INPUT.workoutName);
+        this.workoutNameEl?.addEventListener('blur',(event) => {
+           if (event.target) {
+               // @ts-ignore
+               this.currentWorkout.name = event.target.value;
+               this.saveWorkout();
+           }
+        });
+
+
         this.workoutDef = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.workouts);
         if (!this.workoutDef) throw new Error ('Workout definition not found');
 
@@ -99,6 +108,9 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
         logger(`Creating new current workout`);
         this.currentWorkout = ObjectDefinitionRegistry.getInstance().createInstance(STATE_NAMES.workouts);
         logger(this.currentWorkout);
+        this.currentWorkout.name = '';
+
+        if (this.workoutNameEl) this.workoutNameEl.value = '';
         Controller.getInstance().getStateManager().addNewItemToState(STATE_NAMES.workouts,this.currentWorkout,false);
         this.stateManager.setStateByName(STATE_NAMES.exerciseTypes,this.currentWorkout.exercises,true);
     }
@@ -125,6 +137,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
 
             if (this.currentWorkout) {
                 logger(`Workouts loaded found existing current workout`);
+                if (this.workoutNameEl && this.currentWorkout.name) this.workoutNameEl.value = this.currentWorkout.name;
                 this.stateManager.setStateByName(STATE_NAMES.exerciseTypes,this.currentWorkout.exercises,true);
             }
             else {

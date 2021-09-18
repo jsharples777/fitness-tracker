@@ -12,33 +12,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ App)
 /* harmony export */ });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
-/* harmony import */ var _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component/view/UserSearchView */ "./src/component/view/UserSearchView.ts");
-/* harmony import */ var _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./component/view/ChatLogsView */ "./src/component/view/ChatLogsView.ts");
-/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./component/sidebar/UserSearchSidebar */ "./src/component/sidebar/UserSearchSidebar.ts");
-/* harmony import */ var _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component/sidebar/ChatRoomsSidebar */ "./src/component/sidebar/ChatRoomsSidebar.ts");
-/* harmony import */ var _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component/sidebar/ExerciseTypesSidebar */ "./src/component/sidebar/ExerciseTypesSidebar.ts");
-/* harmony import */ var _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./component/view/ChatLogDetailView */ "./src/component/view/ChatLogDetailView.ts");
-/* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
-/* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
-/* harmony import */ var _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/ExerciseTypesCompositeView */ "./src/component/view/ExerciseTypesCompositeView.ts");
-/* harmony import */ var _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/sidebar/WorkoutSummarySidebar */ "./src/component/sidebar/WorkoutSummarySidebar.ts");
-/* harmony import */ var _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/view/WorkoutSummaryView */ "./src/component/view/WorkoutSummaryView.ts");
-/* harmony import */ var _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/sidebar/CurrentWorkoutSidebar */ "./src/component/sidebar/CurrentWorkoutSidebar.ts");
-/* harmony import */ var _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./component/view/CurrentWorkoutCompositeView */ "./src/component/view/CurrentWorkoutCompositeView.ts");
-/* harmony import */ var _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./component/view/WorkoutsViewUsingContext */ "./src/component/view/WorkoutsViewUsingContext.ts");
+/* harmony import */ var _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ui-framework/context/ContextualInformationHelper */ "./src/ui-framework/context/ContextualInformationHelper.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Controller */ "./src/Controller.ts");
+/* harmony import */ var _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./component/view/UserSearchView */ "./src/component/view/UserSearchView.ts");
+/* harmony import */ var _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./component/view/ChatLogsView */ "./src/component/view/ChatLogsView.ts");
+/* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AppTypes */ "./src/AppTypes.ts");
+/* harmony import */ var _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./component/sidebar/UserSearchSidebar */ "./src/component/sidebar/UserSearchSidebar.ts");
+/* harmony import */ var _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./component/sidebar/ChatRoomsSidebar */ "./src/component/sidebar/ChatRoomsSidebar.ts");
+/* harmony import */ var _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./component/sidebar/ExerciseTypesSidebar */ "./src/component/sidebar/ExerciseTypesSidebar.ts");
+/* harmony import */ var _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/view/ChatLogDetailView */ "./src/component/view/ChatLogDetailView.ts");
+/* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
+/* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
+/* harmony import */ var _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/view/ExerciseTypesCompositeView */ "./src/component/view/ExerciseTypesCompositeView.ts");
+/* harmony import */ var _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/sidebar/WorkoutSummarySidebar */ "./src/component/sidebar/WorkoutSummarySidebar.ts");
+/* harmony import */ var _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/view/WorkoutSummaryView */ "./src/component/view/WorkoutSummaryView.ts");
+/* harmony import */ var _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./component/sidebar/CurrentWorkoutSidebar */ "./src/component/sidebar/CurrentWorkoutSidebar.ts");
+/* harmony import */ var _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./component/view/CurrentWorkoutCompositeView */ "./src/component/view/CurrentWorkoutCompositeView.ts");
+/* harmony import */ var _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./component/view/WorkoutsViewUsingContext */ "./src/component/view/WorkoutsViewUsingContext.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'app api-ts';
 
-(debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
+localStorage.debug = 'context-helper';
 
-
-
+(debug__WEBPACK_IMPORTED_MODULE_1___default().log) = console.info.bind(console);
 
 
 
@@ -52,7 +51,10 @@ localStorage.debug = 'app api-ts';
 
 
 
-var logger = debug__WEBPACK_IMPORTED_MODULE_0___default()('app');
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('app');
 
 var App = /*#__PURE__*/function () {
   App.getInstance = function getInstance() {
@@ -71,58 +73,58 @@ var App = /*#__PURE__*/function () {
     this.handleShowChat = this.handleShowChat.bind(this);
     this.handleShowWorkoutSummary = this.handleShowWorkoutSummary.bind(this);
     this.handleShowCurrentWorkout = this.handleShowCurrentWorkout.bind(this);
-    _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().connectToApplication(this, window.localStorage);
+    _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().connectToApplication(this, window.localStorage);
   }
 
   var _proto = App.prototype;
 
   _proto.getCurrentUser = function getCurrentUser() {
-    return _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getLoggedInUserId();
+    return _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getLoggedInUserId();
   };
 
   _proto.setupNavigationItemHandling = function setupNavigationItemHandling() {
     // @ts-ignore
-    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch); // @ts-ignore
 
-    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes); // @ts-ignore
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes); // @ts-ignore
 
-    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.workoutSummary).addEventListener('click', this.handleShowWorkoutSummary); // @ts-ignore
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.NAVIGATION.workoutSummary).addEventListener('click', this.handleShowWorkoutSummary); // @ts-ignore
 
-    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.currentWorkout).addEventListener('click', this.handleShowCurrentWorkout); // @ts-ignore
+    document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.NAVIGATION.currentWorkout).addEventListener('click', this.handleShowCurrentWorkout); // @ts-ignore
 
-    this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.NAVIGATION.chatId); // @ts-ignore
+    this.chatNavigationItem = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.NAVIGATION.chatId); // @ts-ignore
 
     this.chatNavigationItem.addEventListener('click', this.handleShowChat);
   };
 
   _proto.setupUserSearchViews = function setupUserSearchViews() {
     // add the subviews for the user search
-    this.userSearchSidebar = new _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"]();
-    var recentSearches = new _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_2__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    this.userSearchSidebar = new _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_6__["default"]();
+    var recentSearches = new _component_view_UserSearchView__WEBPACK_IMPORTED_MODULE_3__["default"](_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getStateManager());
     this.userSearchSidebar.addView(recentSearches, {
-      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.recentSearches
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.recentSearches
     });
-    var favouriteUsers = new _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    var favouriteUsers = new _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_10__["default"](_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getStateManager());
     this.userSearchSidebar.addView(favouriteUsers, {
-      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.favourites
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.favourites
     });
-    var blockedUsers = new _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    var blockedUsers = new _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_11__["default"](_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getStateManager());
     this.userSearchSidebar.addView(blockedUsers, {
-      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.blocked
+      containerId: _component_sidebar_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.blocked
     });
     this.userSearchSidebar.onDocumentLoaded();
   };
 
   _proto.setupChatViews = function setupChatViews() {
     // add the views to the chat side bar
-    this.chatSidebar = new _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"]();
-    this.chatView = new _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_3__["default"]();
+    this.chatSidebar = new _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_7__["default"]();
+    this.chatView = new _component_view_ChatLogsView__WEBPACK_IMPORTED_MODULE_4__["default"]();
     this.chatSidebar.addView(this.chatView, {
-      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLogs
+      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_7__["default"].SidebarContainers.chatLogs
     });
-    var chatLogView = new _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__["default"](_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager());
+    var chatLogView = new _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_9__["default"](_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().getStateManager());
     this.chatSidebar.addView(chatLogView, {
-      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_6__["default"].SidebarContainers.chatLog
+      containerId: _component_sidebar_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_7__["default"].SidebarContainers.chatLog
     });
     this.chatView.addEventListener(chatLogView);
     this.chatSidebar.onDocumentLoaded();
@@ -135,19 +137,20 @@ var App = /*#__PURE__*/function () {
     this.setupUserSearchViews();
     this.setupChatViews();
     this.setupNavigationItemHandling();
-    this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"]();
-    new _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_11__.ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded(); //new WorkoutsView().onDocumentLoaded(); // carousel view
+    this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_8__["default"]();
+    new _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_12__.ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded(); //new WorkoutsView().onDocumentLoaded(); // carousel view
 
-    new _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_16__.WorkoutsViewUsingContext().onDocumentLoaded();
-    this.workoutSummarySidebar = new _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_12__["default"]();
-    this.workoutSummarySidebar.addView(new _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_13__.WorkoutSummaryView(), {
-      containerId: _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_12__["default"].SidebarContainers.container
+    new _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_17__.WorkoutsViewUsingContext().onDocumentLoaded();
+    this.workoutSummarySidebar = new _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__["default"]();
+    this.workoutSummarySidebar.addView(new _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_14__.WorkoutSummaryView(), {
+      containerId: _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__["default"].SidebarContainers.container
     });
     this.workoutSummarySidebar.onDocumentLoaded();
-    this.currentWorkoutSidebar = new _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_14__["default"]();
-    this.currentWorkoutView = new _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_15__.CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
+    this.currentWorkoutSidebar = new _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_15__["default"]();
+    this.currentWorkoutView = new _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_16__.CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
     this.currentWorkoutView.onDocumentLoaded();
-    _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise();
+    _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_0__.ContextualInformationHelper.getInstance().onDocumentLoaded();
+    _Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().onDocumentLoaded();
   };
 
   _proto.hideAllSideBars = function hideAllSideBars() {
@@ -162,9 +165,9 @@ var App = /*#__PURE__*/function () {
     event.preventDefault(); //this.hideAllSideBars();
     // prevent anything from happening if we are not logged in
 
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
       // @ts-ignore
-      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.login;
       return;
     }
 
@@ -176,9 +179,9 @@ var App = /*#__PURE__*/function () {
     event.preventDefault(); //this.hideAllSideBars();
     // prevent anything from happening if we are not logged in
 
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
       // @ts-ignore
-      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.login;
       return;
     }
 
@@ -191,9 +194,9 @@ var App = /*#__PURE__*/function () {
     event.preventDefault(); //this.hideAllSideBars();
     // prevent anything from happening if we are not logged in
 
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
       // @ts-ignore
-      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.login;
       return;
     }
 
@@ -205,9 +208,9 @@ var App = /*#__PURE__*/function () {
     event.preventDefault(); //this.hideAllSideBars();
     // prevent anything from happening if we are not logged in
 
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
       // @ts-ignore
-      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.login;
       return;
     }
 
@@ -219,9 +222,9 @@ var App = /*#__PURE__*/function () {
     //this.hideAllSideBars();
     // prevent anything from happening if we are not logged in
 
-    if (!_Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().isLoggedIn()) {
+    if (!_Controller__WEBPACK_IMPORTED_MODULE_2__["default"].getInstance().isLoggedIn()) {
       // @ts-ignore
-      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_4__.API_Config.login;
+      window.location.href = _AppTypes__WEBPACK_IMPORTED_MODULE_5__.API_Config.login;
       return;
     }
 
@@ -246,7 +249,7 @@ var App = /*#__PURE__*/function () {
   _proto.addingExerciseToCurrentWorkout = function addingExerciseToCurrentWorkout(exerciseType) {
     this.exerciseTypesSidebar.eventHide(null);
     this.currentWorkoutSidebar.eventShow(null);
-    this.currentWorkoutView.getStateManager().addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_4__.STATE_NAMES.exerciseTypes, exerciseType, false);
+    this.currentWorkoutView.getStateManager().addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_5__.STATE_NAMES.exerciseTypes, exerciseType, false);
   };
 
   _proto.showCurrentWorkout = function showCurrentWorkout() {
@@ -279,7 +282,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "DRAGGABLE": () => (/* binding */ DRAGGABLE),
 /* harmony export */   "VIEW_NAME": () => (/* binding */ VIEW_NAME),
 /* harmony export */   "VIEW_CONTAINER": () => (/* binding */ VIEW_CONTAINER),
-/* harmony export */   "BUTTON": () => (/* binding */ BUTTON)
+/* harmony export */   "BUTTON": () => (/* binding */ BUTTON),
+/* harmony export */   "INPUT": () => (/* binding */ INPUT)
 /* harmony export */ });
 var Decorator;
 
@@ -337,6 +341,9 @@ var VIEW_CONTAINER = {
 var BUTTON = {
   createNewExerciseType: 'addNewExerciseType',
   completeWorkout: 'completeWorkout'
+};
+var INPUT = {
+  workoutName: 'workoutName'
 };
 
 /***/ }),
@@ -480,6 +487,7 @@ var Controller = /*#__PURE__*/function () {
     cLogger(exerciseTypeDefinition);
     cLoggerDetail(_model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
     var workoutDefinition = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_11__.ObjectDefinitionRegistry.getInstance().addDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_8__.STATE_NAMES.workouts, 'Workout', true, true, true, '_id');
+    _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "name", "Name", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.text, false, "Give the workout a name");
     _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.boolean, true, "Have completed the workout");
     var exercisesFieldDefinition = _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_12__.BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_10__.FieldType.collection, true, "Exercises in this workout");
     exercisesFieldDefinition.idType = _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_14__.KeyType.collection;
@@ -493,7 +501,7 @@ var Controller = /*#__PURE__*/function () {
   */
   ;
 
-  _proto.initialise = function initialise() {
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
     cLogger('Initialising data state'); // listen for socket events
 
     var socketListerDelegate = new _SocketListenerDelegate__WEBPACK_IMPORTED_MODULE_5__["default"]();
@@ -2371,6 +2379,7 @@ var CurrentWorkoutCompositeView = /*#__PURE__*/function () {
   function CurrentWorkoutCompositeView(sideBar) {
     this.currentWorkout = {};
     this.workoutDef = null;
+    this.workoutNameEl = null;
     this.sideBar = sideBar;
     this.stateManager = new _state_MemoryBufferStateManager__WEBPACK_IMPORTED_MODULE_8__["default"]();
     this.stateManager.addChangeListenerForName(_AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.exerciseTypes, this);
@@ -2384,8 +2393,18 @@ var CurrentWorkoutCompositeView = /*#__PURE__*/function () {
   };
 
   _proto.onDocumentLoaded = function onDocumentLoaded() {
-    var _this = this;
+    var _this$workoutNameEl,
+        _this = this;
 
+    this.workoutNameEl = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_1__.INPUT.workoutName);
+    (_this$workoutNameEl = this.workoutNameEl) == null ? void 0 : _this$workoutNameEl.addEventListener('blur', function (event) {
+      if (event.target) {
+        // @ts-ignore
+        _this.currentWorkout.name = event.target.value;
+
+        _this.saveWorkout();
+      }
+    });
     this.workoutDef = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_0__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.workouts);
     if (!this.workoutDef) throw new Error('Workout definition not found');
     var exerciseTypes = new _CurrentWorkoutExercisesView__WEBPACK_IMPORTED_MODULE_12__.CurrentWorkoutExercisesView(this.stateManager);
@@ -2441,6 +2460,8 @@ var CurrentWorkoutCompositeView = /*#__PURE__*/function () {
     logger("Creating new current workout");
     this.currentWorkout = _model_ObjectDefinitionRegistry__WEBPACK_IMPORTED_MODULE_0__.ObjectDefinitionRegistry.getInstance().createInstance(_AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.workouts);
     logger(this.currentWorkout);
+    this.currentWorkout.name = '';
+    if (this.workoutNameEl) this.workoutNameEl.value = '';
     _Controller__WEBPACK_IMPORTED_MODULE_6__["default"].getInstance().getStateManager().addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.workouts, this.currentWorkout, false);
     this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.exerciseTypes, this.currentWorkout.exercises, true);
   };
@@ -2468,6 +2489,7 @@ var CurrentWorkoutCompositeView = /*#__PURE__*/function () {
 
       if (this.currentWorkout) {
         logger("Workouts loaded found existing current workout");
+        if (this.workoutNameEl && this.currentWorkout.name) this.workoutNameEl.value = this.currentWorkout.name;
         this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.exerciseTypes, this.currentWorkout.exercises, true);
       } else {
         logger("Workouts loaded no existing current workout, creating and saving");
@@ -2556,11 +2578,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _AppTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../AppTypes */ "./src/AppTypes.ts");
-/* harmony import */ var _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRenderer */ "./src/ui-framework/view/renderer/ListViewRenderer.ts");
-/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
-/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _Controller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Controller */ "./src/Controller.ts");
+/* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext.ts");
+/* harmony import */ var _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ui-framework/context/ContextualInformationHelper */ "./src/ui-framework/context/ContextualInformationHelper.ts");
+/* harmony import */ var _ui_framework_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRendererUsingContext */ "./src/ui-framework/view/renderer/ListViewRendererUsingContext.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -2592,7 +2616,9 @@ function _setPrototypeOf(o, p) {
 
 
 
-var logger = debug__WEBPACK_IMPORTED_MODULE_6___default()('current-workout-exercises-view');
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_5___default()('current-workout-exercises-view');
 var CurrentWorkoutExercisesView = /*#__PURE__*/function (_AbstractStatefulColl) {
   _inheritsLoose(CurrentWorkoutExercisesView, _AbstractStatefulColl);
 
@@ -2600,18 +2626,36 @@ var CurrentWorkoutExercisesView = /*#__PURE__*/function (_AbstractStatefulColl) 
     var _this;
 
     _this = _AbstractStatefulColl.call(this, CurrentWorkoutExercisesView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes) || this;
-    _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this));
+    _this.renderer = new _ui_framework_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_8__.ListViewRendererUsingContext(_assertThisInitialized(_this), _assertThisInitialized(_this));
+    _this.eventHandlerDelegate = new _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_6__.CollectionViewEventHandlerDelegateUsingContext(_assertThisInitialized(_this), _this.eventForwarder);
+    _this.getIdForItemInNamedCollection = _this.getIdForItemInNamedCollection.bind(_assertThisInitialized(_this));
+    _this.getItemId = _this.getItemId.bind(_assertThisInitialized(_this));
+    _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes, 'Exercise Types');
     return _this;
   }
 
   var _proto = CurrentWorkoutExercisesView.prototype;
+
+  _proto.getItemDescription = function getItemDescription(from, item) {
+    var buffer = '';
+    buffer += '<strong>' + item.name + '</strong>: ';
+
+    if (item.type === 'cardio') {
+      buffer += item.distance + ' km in ' + item.duration;
+    } else {
+      buffer += item.sets + ' sets of ' + item.reps + ' reps in ' + item.duration;
+    }
+
+    buffer += '<br/>';
+    return buffer;
+  };
 
   _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return true;
   };
 
   _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
-    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_5__.isSameMongo)(item1, item2);
+    return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__.isSameMongo)(item1, item2);
   };
 
   _proto.getIdForItemInNamedCollection = function getIdForItemInNamedCollection(name, item) {
@@ -2627,7 +2671,7 @@ var CurrentWorkoutExercisesView = /*#__PURE__*/function (_AbstractStatefulColl) 
   };
 
   _proto.itemDropped = function itemDropped(view, droppedItem) {
-    _Controller__WEBPACK_IMPORTED_MODULE_4__["default"].getInstance().addExerciseToCurrentWorkout(droppedItem);
+    _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().addExerciseToCurrentWorkout(droppedItem);
   };
 
   return CurrentWorkoutExercisesView;
@@ -2806,7 +2850,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../ui-framework/context/ContextualInformationHelper */ "./src/ui-framework/context/ContextualInformationHelper.ts");
 /* harmony import */ var _ui_framework_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../ui-framework/view/renderer/ListViewRendererUsingContext */ "./src/ui-framework/view/renderer/ListViewRendererUsingContext.ts");
 /* harmony import */ var _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext.ts");
 function _assertThisInitialized(self) {
@@ -2855,7 +2899,8 @@ var ExerciseTypesViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl
     _this.eventHandlerDelegate = new _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_9__.CollectionViewEventHandlerDelegateUsingContext(_assertThisInitialized(_this), _this.eventForwarder);
     _this.getIdForItemInNamedCollection = _this.getIdForItemInNamedCollection.bind(_assertThisInitialized(_this));
     _this.getItemId = _this.getItemId.bind(_assertThisInitialized(_this));
-    _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes, 'Exercise Types');
+    var context = _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes, 'Exercise Types');
+    _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_7__.ContextualInformationHelper.getInstance().addActionToContext(context, 'addToWorkout', 'Add To Workout', _this.eventHandlerDelegate.eventActionClicked, 'fas fa-arrow-alt-circle-right');
     return _this;
   }
 
@@ -3724,7 +3769,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_MiscFunctions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/MiscFunctions */ "./src/util/MiscFunctions.ts");
 /* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.esm.js");
 /* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../App */ "./src/App.ts");
-/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../ui-framework/context/ContextualInformationHelper */ "./src/ui-framework/context/ContextualInformationHelper.ts");
 /* harmony import */ var _ui_framework_view_renderer_CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../ui-framework/view/renderer/CarouselViewRendererUsingContext */ "./src/ui-framework/view/renderer/CarouselViewRendererUsingContext.ts");
 /* harmony import */ var _ui_framework_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext.ts");
 function _assertThisInitialized(self) {
@@ -3778,7 +3823,9 @@ var WorkoutsViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
     _this.chartRefs = [];
     _this.getIdForItemInNamedCollection = _this.getIdForItemInNamedCollection.bind(_assertThisInitialized(_this));
     _this.getItemId = _this.getItemId.bind(_assertThisInitialized(_this));
-    _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts, 'Workouts');
+    var context = _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts, 'Workouts');
+    _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__.ContextualInformationHelper.getInstance().addActionToContext(context, 'template', 'Copy exercises to Current Workout', _this.eventHandlerDelegate.eventActionClicked, 'fas fa-copy');
+    _ui_framework_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_11__.ContextualInformationHelper.getInstance().addActionToContext(context, 'continue', 'Continue Current Workout', _this.eventHandlerDelegate.eventActionClicked, 'fas fa-clipboard-list');
     return _this;
   }
 
@@ -3842,7 +3889,15 @@ var WorkoutsViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
   _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
     var summary = this.calculateExerciseSummary(item);
     var buffer = '';
-    buffer += "<h5 class=\"card-title\">" + moment__WEBPACK_IMPORTED_MODULE_6___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</h5>";
+    buffer += "<h5 class=\"card-title\">";
+
+    if (item.name) {
+      buffer += item.name + "</h5>";
+      buffer += "<h6 class=\"card-subtitle\">" + moment__WEBPACK_IMPORTED_MODULE_6___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</h6>";
+    } else {
+      buffer += moment__WEBPACK_IMPORTED_MODULE_6___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</h5>";
+    }
+
     buffer += "<ul class=\"list-group list-group-flush\">";
     buffer += "<li class=\"list-group-item\"><strong>Duration:</strong> " + summary.duration + "</li>";
     if (summary.weight > 0) buffer += "<li class=\"list-group-item\"><strong>Total Weight:</strong> " + summary.weight + "</li>";
@@ -4074,8 +4129,8 @@ WorkoutsViewUsingContext.DOMConfig = {
     }, {
       name: 'continue',
       buttonText: '',
-      iconClasses: 'fas fa-clipboard-list',
-      buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
+      iconClasses: 'text-white fas fa-clipboard-list',
+      buttonClasses: 'btn btn-warning btn-circle btn-md mr-2',
       attributes: [{
         name: 'data-toggle',
         value: "tooltip"
@@ -4093,221 +4148,6 @@ WorkoutsViewUsingContext.bgStrength = 'rgba(255, 0, 0, 0.2)';
 WorkoutsViewUsingContext.bgCardio = 'rgba(0, 50, 255, 0.2)';
 WorkoutsViewUsingContext.borderStrength = 'rgb(255, 50, 0)';
 WorkoutsViewUsingContext.borderCardio = 'rgb(0, 50 , 255)';
-
-/***/ }),
-
-/***/ "./src/context/ContextualInformationHelper.ts":
-/*!****************************************************!*\
-  !*** ./src/context/ContextualInformationHelper.ts ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "TogglePlacement": () => (/* binding */ TogglePlacement),
-/* harmony export */   "ContextualInformationHelper": () => (/* binding */ ContextualInformationHelper)
-/* harmony export */ });
-var TogglePlacement;
-
-(function (TogglePlacement) {
-  TogglePlacement[TogglePlacement["top"] = 0] = "top";
-  TogglePlacement[TogglePlacement["bottom"] = 1] = "bottom";
-  TogglePlacement[TogglePlacement["right"] = 2] = "right";
-  TogglePlacement[TogglePlacement["left"] = 3] = "left";
-})(TogglePlacement || (TogglePlacement = {}));
-
-var defaultIdentifier = function defaultIdentifier(name, item) {
-  return '';
-};
-
-var ContextualInformationHelper = /*#__PURE__*/function () {
-  ContextualInformationHelper.getInstance = function getInstance() {
-    if (!ContextualInformationHelper._instance) {
-      ContextualInformationHelper._instance = new ContextualInformationHelper();
-    }
-
-    return ContextualInformationHelper._instance;
-  };
-
-  function ContextualInformationHelper() {
-    this.registry = [];
-  }
-
-  var _proto = ContextualInformationHelper.prototype;
-
-  _proto.ensureInRegistry = function ensureInRegistry(source) {
-    var result;
-    var foundIndex = this.registry.findIndex(function (context) {
-      return context.source === source;
-    });
-
-    if (foundIndex < 0) {
-      result = {
-        source: source,
-        defaultType: {
-          internalType: '',
-          displayName: '',
-          identifier: defaultIdentifier,
-          description: defaultIdentifier
-        }
-      };
-      this.registry.push(result);
-    } else {
-      result = this.registry[foundIndex];
-    }
-
-    return result;
-  };
-
-  _proto.addContextFromView = function addContextFromView(view, internalType, displayName) {
-    var context = this.ensureInRegistry(view.getName());
-    context.defaultType.internalType = internalType;
-    context.defaultType.displayName = displayName;
-    context.defaultType.identifier = view.getItemId;
-    context.defaultType.description = view.getItemDescription;
-  };
-
-  _proto.addContextToElement = function addContextToElement(source, type, item, element, addTooltip, placement) {
-    if (addTooltip === void 0) {
-      addTooltip = false;
-    }
-
-    if (placement === void 0) {
-      placement = TogglePlacement.bottom;
-    }
-
-    var context = this.ensureInRegistry(source);
-    element.setAttribute(ContextualInformationHelper.SOURCE, context.source);
-    element.setAttribute(ContextualInformationHelper.TYPE, context.defaultType.internalType);
-    element.setAttribute(ContextualInformationHelper.DISPLAYNAME, context.defaultType.displayName);
-    element.setAttribute(ContextualInformationHelper.IDENTIFIER, context.defaultType.identifier(type, item));
-    element.setAttribute(ContextualInformationHelper.DESCRIPTION, context.defaultType.description(type, item));
-
-    if (addTooltip) {
-      element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE, ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE);
-      element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML, ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML_VALUE);
-
-      switch (placement) {
-        case TogglePlacement.bottom:
-          {
-            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_BOTTOM);
-            break;
-          }
-
-        case TogglePlacement.top:
-          {
-            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_TOP);
-            break;
-          }
-
-        case TogglePlacement.left:
-          {
-            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_LEFT);
-            break;
-          }
-
-        case TogglePlacement.right:
-          {
-            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_RIGHT);
-            break;
-          }
-      } // @ts-ignore
-
-
-      $('[data-toggle="tooltip"]').tooltip({
-        html: true
-      });
-    }
-  };
-
-  _proto.findContextFromElement = function findContextFromElement(element) {
-    // do we have context information in this element?
-    var result = null;
-    var source = element.getAttribute(ContextualInformationHelper.SOURCE);
-
-    if (source) {
-      var _type = element.getAttribute(ContextualInformationHelper.TYPE);
-
-      var name = element.getAttribute(ContextualInformationHelper.DISPLAYNAME);
-      var id = element.getAttribute(ContextualInformationHelper.IDENTIFIER);
-      var desc = element.getAttribute(ContextualInformationHelper.DESCRIPTION); // @ts-ignore
-
-      result = {
-        source: source,
-        internalType: _type,
-        displayName: name,
-        identifier: id,
-        description: desc
-      };
-    } else {
-      var parent = element.parentElement;
-
-      if (parent) {
-        result = this.findContextFromElement(parent);
-      }
-    }
-
-    return result;
-  };
-
-  _proto.findAllContextsFromElement = function findAllContextsFromElement(element, contexts) {
-    // do we have context information in this element?
-    var source = element.getAttribute(ContextualInformationHelper.SOURCE);
-
-    if (source) {
-      var _type2 = element.getAttribute(ContextualInformationHelper.TYPE);
-
-      var name = element.getAttribute(ContextualInformationHelper.DISPLAYNAME);
-      var id = element.getAttribute(ContextualInformationHelper.IDENTIFIER);
-      var desc = element.getAttribute(ContextualInformationHelper.DESCRIPTION); // @ts-ignore
-
-      var result = {
-        source: source,
-        internalType: _type2,
-        displayName: name,
-        identifier: id,
-        description: desc
-      };
-      contexts.push(result);
-    }
-
-    var parent = element.parentElement;
-
-    if (parent) {
-      this.findAllContextsFromElement(parent, contexts);
-    }
-  };
-
-  _proto.findContextFromEvent = function findContextFromEvent(event) {
-    var result = null;
-
-    if (event.target) {
-      var target = event.target; // @ts-ignore
-
-      result = this.findContextFromElement(event.target);
-    }
-
-    return result;
-  };
-
-  return ContextualInformationHelper;
-}();
-ContextualInformationHelper.SOURCE = 'context-source';
-ContextualInformationHelper.TYPE = 'context-type';
-ContextualInformationHelper.DISPLAYNAME = 'context-display-name';
-ContextualInformationHelper.IDENTIFIER = 'context-id';
-ContextualInformationHelper.DESCRIPTION = 'title';
-ContextualInformationHelper.BOOTSTRAP_TOGGLE = 'data-toggle';
-ContextualInformationHelper.BOOTSTRAP_PLACEMENT = 'data-placement';
-ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE = 'tooltip';
-ContextualInformationHelper.BOOTSTRAP_POPOVER_VALUE = 'popover';
-ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML = 'data-html';
-ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML_VALUE = 'true';
-ContextualInformationHelper.BOOTSTRAP_PLACEMENT_TOP = 'top';
-ContextualInformationHelper.BOOTSTRAP_PLACEMENT_BOTTOM = 'bottom';
-ContextualInformationHelper.BOOTSTRAP_PLACEMENT_RIGHT = 'right';
-ContextualInformationHelper.BOOTSTRAP_PLACEMENT_LEFT = 'left';
 
 /***/ }),
 
@@ -9091,6 +8931,353 @@ var SidebarViewContainer = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/ui-framework/context/ContextualInformationHelper.ts":
+/*!*****************************************************************!*\
+  !*** ./src/ui-framework/context/ContextualInformationHelper.ts ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TogglePlacement": () => (/* binding */ TogglePlacement),
+/* harmony export */   "ContextualInformationHelper": () => (/* binding */ ContextualInformationHelper)
+/* harmony export */ });
+/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_2___default()('context-helper');
+var TogglePlacement;
+
+(function (TogglePlacement) {
+  TogglePlacement[TogglePlacement["top"] = 0] = "top";
+  TogglePlacement[TogglePlacement["bottom"] = 1] = "bottom";
+  TogglePlacement[TogglePlacement["right"] = 2] = "right";
+  TogglePlacement[TogglePlacement["left"] = 3] = "left";
+})(TogglePlacement || (TogglePlacement = {}));
+
+var defaultIdentifier = function defaultIdentifier(name, item) {
+  return '';
+};
+
+var ContextualInformationHelper = /*#__PURE__*/function () {
+  ContextualInformationHelper.getInstance = function getInstance() {
+    if (!ContextualInformationHelper._instance) {
+      ContextualInformationHelper._instance = new ContextualInformationHelper();
+    }
+
+    return ContextualInformationHelper._instance;
+  };
+
+  function ContextualInformationHelper() {
+    this.registry = [];
+    this.menuDivEl = null;
+    this.menuContentEl = null;
+    this.handleContextMenu = this.handleContextMenu.bind(this);
+    this.hideContextMenu = this.hideContextMenu.bind(this);
+  }
+
+  var _proto = ContextualInformationHelper.prototype;
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    // @ts-ignore
+    document.addEventListener('click', this.hideContextMenu);
+    this.menuDivEl = document.getElementById('contextmenu');
+    this.menuContentEl = document.getElementById('contextMenuItems');
+  };
+
+  _proto.ensureInRegistry = function ensureInRegistry(source) {
+    var result;
+    var foundIndex = this.registry.findIndex(function (context) {
+      return context.source === source;
+    });
+
+    if (foundIndex < 0) {
+      result = {
+        source: source,
+        defaultType: {
+          internalType: '',
+          displayName: '',
+          identifier: defaultIdentifier,
+          description: defaultIdentifier,
+          actions: []
+        }
+      };
+      this.registry.push(result);
+    } else {
+      result = this.registry[foundIndex];
+    }
+
+    return result;
+  };
+
+  _proto.addContextFromView = function addContextFromView(view, internalType, displayName) {
+    var context = this.ensureInRegistry(view.getName());
+    context.view = view;
+    context.defaultType.internalType = internalType;
+    context.defaultType.displayName = displayName;
+    context.defaultType.identifier = view.getItemId;
+    context.defaultType.description = view.getItemDescription;
+    return context;
+  };
+
+  _proto.addContextToElement = function addContextToElement(source, type, item, element, addTooltip, placement) {
+    if (addTooltip === void 0) {
+      addTooltip = false;
+    }
+
+    if (placement === void 0) {
+      placement = TogglePlacement.bottom;
+    }
+
+    var context = this.ensureInRegistry(source);
+    element.setAttribute(ContextualInformationHelper.SOURCE, context.source);
+    element.setAttribute(ContextualInformationHelper.TYPE, context.defaultType.internalType);
+    element.setAttribute(ContextualInformationHelper.DISPLAYNAME, context.defaultType.displayName);
+    element.setAttribute(ContextualInformationHelper.IDENTIFIER, context.defaultType.identifier(type, item));
+    element.setAttribute(ContextualInformationHelper.DESCRIPTION, context.defaultType.description(type, item));
+
+    if (addTooltip) {
+      element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE, ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE);
+      element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML, ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML_VALUE);
+
+      switch (placement) {
+        case TogglePlacement.bottom:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_BOTTOM);
+            break;
+          }
+
+        case TogglePlacement.top:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_TOP);
+            break;
+          }
+
+        case TogglePlacement.left:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_LEFT);
+            break;
+          }
+
+        case TogglePlacement.right:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_RIGHT);
+            break;
+          }
+      } // @ts-ignore
+
+
+      $('[data-toggle="tooltip"]').tooltip({
+        html: true
+      });
+    }
+  };
+
+  _proto.findContextFromElement = function findContextFromElement(element) {
+    // do we have context information in this element?
+    var result = null;
+    var source = element.getAttribute(ContextualInformationHelper.SOURCE);
+
+    if (source) {
+      var _type = element.getAttribute(ContextualInformationHelper.TYPE);
+
+      var name = element.getAttribute(ContextualInformationHelper.DISPLAYNAME);
+      var id = element.getAttribute(ContextualInformationHelper.IDENTIFIER);
+      var desc = element.getAttribute(ContextualInformationHelper.DESCRIPTION); // @ts-ignore
+
+      result = {
+        source: source,
+        internalType: _type,
+        displayName: name,
+        identifier: id,
+        description: desc
+      };
+    } else {
+      var parent = element.parentElement;
+
+      if (parent) {
+        result = this.findContextFromElement(parent);
+      }
+    }
+
+    return result;
+  };
+
+  _proto.findAllContextsFromElement = function findAllContextsFromElement(element, contexts) {
+    // do we have context information in this element?
+    var source = element.getAttribute(ContextualInformationHelper.SOURCE);
+
+    if (source) {
+      var _type2 = element.getAttribute(ContextualInformationHelper.TYPE);
+
+      var name = element.getAttribute(ContextualInformationHelper.DISPLAYNAME);
+      var id = element.getAttribute(ContextualInformationHelper.IDENTIFIER);
+      var desc = element.getAttribute(ContextualInformationHelper.DESCRIPTION); // @ts-ignore
+
+      var result = {
+        source: source,
+        internalType: _type2,
+        displayName: name,
+        identifier: id,
+        description: desc
+      };
+      contexts.push(result);
+    }
+
+    var parent = element.parentElement;
+
+    if (parent) {
+      this.findAllContextsFromElement(parent, contexts);
+    }
+  };
+
+  _proto.findContextFromEvent = function findContextFromEvent(event) {
+    var result = null;
+
+    if (event.target) {
+      var target = event.target; // @ts-ignore
+
+      result = this.findContextFromElement(event.target);
+    }
+
+    return result;
+  };
+
+  _proto.addContextActionToContext = function addContextActionToContext(context, action) {
+    logger("Adding action to context " + context.source);
+    logger(action);
+    context.defaultType.actions.push(action);
+  };
+
+  _proto.addActionToContext = function addActionToContext(context, actionName, displayName, handler, icon) {
+    var action = {
+      actionName: actionName,
+      displayName: displayName,
+      handler: handler,
+      elementDefinition: {
+        elementType: 'a',
+        elementAttributes: [{
+          name: 'href',
+          value: '#'
+        }],
+        elementClasses: 'list-group-item list-group-item-action bg-dark text-white'
+      },
+      iconClasses: icon
+    };
+    this.addContextActionToContext(context, action);
+  };
+
+  _proto.buildContextMenu = function buildContextMenu(context) {
+    var _this = this;
+
+    logger("building context menu");
+    var result = false; // find the context for these details
+
+    var contextDef = this.ensureInRegistry(context.source);
+
+    if (contextDef.defaultType.actions.length > 0) {
+      if (this.menuContentEl && this.menuContentEl) {
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(this.menuContentEl);
+        contextDef.defaultType.actions.forEach(function (action) {
+          logger('Adding action');
+          logger(action);
+          var itemEl = document.createElement(action.elementDefinition.elementType);
+
+          if (itemEl && _this.menuContentEl) {
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(itemEl, action.elementDefinition.elementAttributes);
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(itemEl, action.elementDefinition.elementClasses);
+            itemEl.setAttribute(ContextualInformationHelper.SOURCE, context.source);
+            itemEl.setAttribute(ContextualInformationHelper.TYPE, context.internalType);
+            itemEl.setAttribute(ContextualInformationHelper.DISPLAYNAME, context.displayName);
+            itemEl.setAttribute(ContextualInformationHelper.IDENTIFIER, context.identifier);
+            itemEl.setAttribute(ContextualInformationHelper.DESCRIPTION, context.description);
+            itemEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.EXTRA_ACTION_ATTRIBUTE_NAME, action.actionName);
+            itemEl.addEventListener('click', function (event) {
+              _this.hideContextMenu(event);
+
+              action.handler(event);
+            });
+            itemEl.innerHTML = "" + action.displayName;
+
+            if (action.iconClasses) {
+              itemEl.innerHTML += "&nbsp;&nbsp;<i class=\"" + action.iconClasses + "\"></i>";
+            }
+
+            _this.menuContentEl.appendChild(itemEl);
+
+            logger('new menu element is ');
+            logger(_this.menuContentEl);
+            result = true;
+          }
+        });
+      }
+    } else {
+      logger("building context menu - no actions for " + context.source);
+    }
+
+    return result;
+  };
+
+  _proto.handleContextMenu = function handleContextMenu(event) {
+    logger('Right click');
+    logger(event.target); // are we over a context sensitive item?
+    // find a context if possible
+    // @ts-ignore
+
+    var context = this.findContextFromElement(event.target);
+    logger(context);
+
+    if (context && this.buildContextMenu(context)) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.showContextMenu(event);
+      return false;
+    } // otherwise let the default behaviour happen
+
+
+    return true;
+  };
+
+  _proto.hideContextMenu = function hideContextMenu(event) {
+    if (this.menuDivEl) {
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.menuDivEl, 'd-none');
+    }
+  };
+
+  _proto.showContextMenu = function showContextMenu(event) {
+    if (this.menuDivEl) {
+      logger("Showing context menu at " + event.pageX + "," + event.pageY);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(this.menuDivEl, 'd-none', false);
+      this.menuDivEl.style.left = event.pageX + 'px';
+      this.menuDivEl.style.top = event.pageY + 'px';
+    }
+  };
+
+  return ContextualInformationHelper;
+}();
+ContextualInformationHelper.SOURCE = 'context-source';
+ContextualInformationHelper.TYPE = 'context-type';
+ContextualInformationHelper.DISPLAYNAME = 'context-display-name';
+ContextualInformationHelper.IDENTIFIER = 'context-id';
+ContextualInformationHelper.DESCRIPTION = 'title';
+ContextualInformationHelper.BOOTSTRAP_TOGGLE = 'data-toggle';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT = 'data-placement';
+ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE = 'tooltip';
+ContextualInformationHelper.BOOTSTRAP_POPOVER_VALUE = 'popover';
+ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML = 'data-html';
+ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML_VALUE = 'true';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_TOP = 'top';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_BOTTOM = 'bottom';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_RIGHT = 'right';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_LEFT = 'left';
+
+/***/ }),
+
 /***/ "./src/ui-framework/form/AbstractForm.ts":
 /*!***********************************************!*\
   !*** ./src/ui-framework/form/AbstractForm.ts ***!
@@ -13174,7 +13361,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "CollectionViewEventHandlerDelegateUsingContext": () => (/* binding */ CollectionViewEventHandlerDelegateUsingContext)
 /* harmony export */ });
 /* harmony import */ var _CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CollectionViewEventHandlerDelegate */ "./src/ui-framework/view/delegate/CollectionViewEventHandlerDelegate.ts");
-/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/ui-framework/context/ContextualInformationHelper.ts");
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
@@ -13204,8 +13391,6 @@ var CollectionViewEventHandlerDelegateUsingContext = /*#__PURE__*/function (_Col
 
   _proto.getItemContext = function getItemContext(event) {
     var contextDetail = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_1__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
-    console.log('CONTEXT');
-    console.log(contextDetail);
     var context;
 
     if (contextDetail) {
@@ -14099,7 +14284,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/ui-framework/context/ContextualInformationHelper.ts");
 
 
 
@@ -14480,6 +14665,7 @@ var CarouselViewRendererUsingContext = /*#__PURE__*/function () {
         var itemEl = this.createDisplayElementForCollectionItem(collectionName, item);
         itemContainerEl.appendChild(itemEl);
         _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextToElement(this.view.getName(), collectionName, item, itemEl, true, _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.TogglePlacement.bottom);
+        itemEl.addEventListener('contextmenu', _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().handleContextMenu);
         itemIndex++;
       }
 
@@ -15145,7 +15331,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
 /* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/ui-framework/context/ContextualInformationHelper.ts");
 
 
 
@@ -15429,6 +15615,7 @@ var ListViewRendererUsingContext = /*#__PURE__*/function () {
       avLogger("view " + _this2.view.getName() + ":  Adding child " + _this2.view.getIdForItemInNamedCollection(collectionName, item));
       containerEl.appendChild(childEl);
       _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextToElement(_this2.view.getName(), collectionName, item, childEl, true);
+      childEl.addEventListener('contextmenu', _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().handleContextMenu);
     });
     $('[data-toggle="tooltip"]').tooltip();
   };
@@ -15533,6 +15720,34 @@ var BrowserUtil = /*#__PURE__*/function () {
     attributes.forEach(function (attribute) {
       element.removeAttribute(attribute);
     });
+  };
+
+  _proto.allElementsFromPoint = function allElementsFromPoint(x, y) {
+    var element,
+        elements = [];
+    var old_visibility = [];
+
+    while (true) {
+      element = document.elementFromPoint(x, y);
+
+      if (!element || element === document.documentElement) {
+        break;
+      }
+
+      elements.push(element); // @ts-ignore
+
+      old_visibility.push(element.style.visibility); // @ts-ignore
+
+      element.style.visibility = 'hidden'; // Temporarily hide the element (without changing the layout)
+    }
+
+    for (var k = 0; k < elements.length; k++) {
+      // @ts-ignore
+      elements[k].style.visibility = old_visibility[k];
+    }
+
+    elements.reverse();
+    return elements;
   };
 
   return BrowserUtil;

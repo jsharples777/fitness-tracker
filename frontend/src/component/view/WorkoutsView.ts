@@ -110,7 +110,7 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
                     name: 'continue',
                     buttonText: '',
                     iconClasses:'fas fa-clipboard-list',
-                    buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
+                    buttonClasses: 'btn btn-danger btn-circle btn-md mr-2',
                     attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Continue this current workout"}]
                 }
             ],
@@ -164,7 +164,14 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
     renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
         let summary = this.calculateExerciseSummary(item);
         let buffer = '';
-        buffer += `<h5 class="card-title">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+        buffer += `<h5 class="card-title">`;
+        if (item.name) {
+            buffer+= `${item.name}</h5>`;
+            buffer += `<h6 class="card-subtitle">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h6>`;
+        }
+        else {
+            buffer += `${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+        }
         buffer += `<ul class="list-group list-group-flush">`;
         buffer += `<li class="list-group-item"><strong>Duration:</strong> ${summary.duration}</li>`;
         if (summary.weight > 0)   buffer += `<li class="list-group-item"><strong>Total Weight:</strong> ${summary.weight}</li>`;

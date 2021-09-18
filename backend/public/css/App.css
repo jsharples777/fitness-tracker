@@ -339,6 +339,13 @@ i:hover {
     padding-top: 110px;
 }
 
+/* context menu */
+.context-menu {
+    position: absolute;
+    text-align: left;
+    z-index: 999; /* Stay on top */
+}
+
 
 /* keep the messages where they are (left or right) */
 @media(max-width : 30em){

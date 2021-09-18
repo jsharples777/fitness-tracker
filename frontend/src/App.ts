@@ -1,9 +1,9 @@
-import {Form} from "./ui-framework/form/Form";
-
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'app api-ts';
+import {ContextualInformationHelper} from "./ui-framework/context/ContextualInformationHelper";
+
+localStorage.debug = 'context-helper';
 
 import debug from 'debug';
 debug.log = console.info.bind(console);
@@ -11,7 +11,7 @@ debug.log = console.info.bind(console);
 import Controller from './Controller';
 import UserSearchView from "./component/view/UserSearchView";
 import ChatLogsView from "./component/view/ChatLogsView";
-import {API_Config, BUTTON, NAVIGATION, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "./AppTypes";
+import {API_Config, NAVIGATION, STATE_NAMES} from "./AppTypes";
 import {UnreadMessageCountListener} from "./socket/UnreadMessageCountListener";
 import UserSearchSidebar from "./component/sidebar/UserSearchSidebar";
 import ChatRoomsSidebar from "./component/sidebar/ChatRoomsSidebar";
@@ -19,25 +19,11 @@ import ExerciseTypesSidebar from "./component/sidebar/ExerciseTypesSidebar";
 import ChatLogDetailView from "./component/view/ChatLogDetailView";
 import FavouriteUserView from "./component/view/FavouriteUserView";
 import BlockedUserView from "./component/view/BlockedUserView";
-import {ExerciseTypesView} from "./component/view/ExerciseTypesView";
-import {ComparisonType, ConditionResponse, ValidationRule} from "./ui-framework/form/validation/ValidationTypeDefs";
-import {ValidationManager} from "./ui-framework/form/validation/ValidationManager";
-import {FormDetailViewRenderer} from "./ui-framework/view/renderer/FormDetailViewRenderer";
-import {ObjectDefinitionRegistry} from "./model/ObjectDefinitionRegistry";
-import {DataObjectDefinition} from "./model/DataObjectTypeDefs";
-import {DetailViewImplementation} from "./ui-framework/view/implementation/DetailViewImplementation";
-import {DetailView} from "./ui-framework/view/interface/DetailView";
-import {LinkedCollectionDetailController} from "./ui-framework/helper/LinkedCollectionDetailController";
-import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
-import {CreatedByPermissionChecker} from "./CreatedByPermissionChecker";
-import {WorkoutsView} from "./component/view/WorkoutsView";
 import {ExerciseTypesCompositeView} from "./component/view/ExerciseTypesCompositeView";
 import WorkoutSummarySidebar from "./component/sidebar/WorkoutSummarySidebar";
 import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
-import {v4} from "uuid";
-import {StateManager} from "./state/StateManager";
 import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
 
 
@@ -152,7 +138,8 @@ export default class App implements UnreadMessageCountListener {
         this.currentWorkoutView = new CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
         this.currentWorkoutView.onDocumentLoaded();
 
-        Controller.getInstance().initialise();
+        ContextualInformationHelper.getInstance().onDocumentLoaded();
+        Controller.getInstance().onDocumentLoaded();
 
     }
 

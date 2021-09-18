@@ -1,7 +1,7 @@
 import {CollectionViewListenerForwarder} from "./CollectionViewListenerForwarder";
 import {CollectionView} from "../interface/CollectionView";
 import {CollectionViewEventHandlerDelegate, ItemContext} from "./CollectionViewEventHandlerDelegate";
-import {ContextDetails, ContextualInformationHelper} from "../../../context/ContextualInformationHelper";
+import {ContextDetails, ContextualInformationHelper} from "../../context/ContextualInformationHelper";
 
 
 
@@ -14,9 +14,7 @@ export class CollectionViewEventHandlerDelegateUsingContext extends CollectionVi
 
     protected getItemContext(event:Event):ItemContext {
 
-        const contextDetail:ContextDetails = ContextualInformationHelper.getInstance().findContextFromEvent(event);
-        console.log('CONTEXT')
-        console.log(contextDetail);
+        const contextDetail:ContextDetails|null = ContextualInformationHelper.getInstance().findContextFromEvent(event);
 
         let context:ItemContext;
 

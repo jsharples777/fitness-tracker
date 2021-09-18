@@ -114,6 +114,7 @@ export default class Controller implements StateChangeListener,DataObjectListene
         cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
 
         let workoutDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.workouts,'Workout', true, true, true, '_id');
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "name", "Name", FieldType.text, false, "Give the workout a name");
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", FieldType.boolean, true, "Have completed the workout");
         let exercisesFieldDefinition:FieldDefinition = BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", FieldType.collection, true, "Exercises in this workout");
         exercisesFieldDefinition.idType = KeyType.collection;
@@ -129,7 +130,7 @@ export default class Controller implements StateChangeListener,DataObjectListene
     /*
         Get the base data for the application (users, entries)
     */
-    public initialise(): void {
+    public onDocumentLoaded(): void {
         cLogger('Initialising data state');
         // listen for socket events
         let socketListerDelegate = new SocketListenerDelegate();

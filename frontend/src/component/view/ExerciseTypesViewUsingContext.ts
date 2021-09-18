@@ -11,7 +11,7 @@ import {FIELD_CreatedBy} from "../../model/BasicObjectDefinitionFactory";
 
 import debug from 'debug';
 import {StateManager} from "../../state/StateManager";
-import {ContextualInformationHelper} from "../../context/ContextualInformationHelper";
+import {ContextDefinition, ContextualInformationHelper} from "../../ui-framework/context/ContextualInformationHelper";
 import {ListViewRendererUsingContext} from "../../ui-framework/view/renderer/ListViewRendererUsingContext";
 import {CollectionViewEventHandlerDelegateUsingContext} from "../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
 import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
@@ -83,8 +83,11 @@ export class ExerciseTypesViewUsingContext extends AbstractStatefulCollectionVie
         this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this,<CollectionViewListenerForwarder>this.eventForwarder);
         this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
         this.getItemId = this.getItemId.bind(this);
-        ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.exerciseTypes,'Exercise Types');
+
+        let context:ContextDefinition = ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.exerciseTypes,'Exercise Types');
+        ContextualInformationHelper.getInstance().addActionToContext(context,'addToWorkout','Add To Workout',this.eventHandlerDelegate.eventActionClicked,'fas fa-arrow-alt-circle-right');
     }
+
 
     getItemDescription(from: string, item: any): string {
         let buffer = '';
