@@ -60,7 +60,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
             },
             delete: {
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
-                iconClasses: 'text-black fas fa-sign-out-alt',
+                iconClasses: 'fas fa-trash-alt',
                 attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Delete this exercise from the workout."}]
             }
         }

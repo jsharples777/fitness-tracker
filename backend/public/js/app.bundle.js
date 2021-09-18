@@ -33,7 +33,7 @@ __webpack_require__.r(__webpack_exports__);
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-localStorage.debug = 'current-workout-composite-view';
+localStorage.debug = 'workouts-view';
 
 (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
 
@@ -2470,7 +2470,6 @@ var CurrentWorkoutCompositeView = /*#__PURE__*/function () {
     if (name === _AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.exerciseTypes) {
       logger("Added a new exercise to workout");
       logger(itemAdded);
-      console.log(itemAdded);
       this.currentWorkout.exercises.push(itemAdded);
       this.saveWorkout();
     }
@@ -2670,7 +2669,7 @@ CurrentWorkoutExercisesView.DOMConfig = {
     },
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
-      iconClasses: 'text-black fas fa-sign-out-alt',
+      iconClasses: 'fas fa-trash-alt',
       attributes: [{
         name: 'data-toggle',
         value: "tooltip"
@@ -2937,7 +2936,7 @@ ExerciseTypesView.DOMConfig = {
     },
     delete: {
       buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
-      iconClasses: 'text-black fas fa-sign-out-alt',
+      iconClasses: 'text-black fas fa-trash-alt',
       attributes: [{
         name: 'data-toggle',
         value: "tooltip"
@@ -3690,8 +3689,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_DurationFunctions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/DurationFunctions */ "./src/util/DurationFunctions.ts");
 /* harmony import */ var _util_MiscFunctions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../util/MiscFunctions */ "./src/util/MiscFunctions.ts");
 /* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.esm.js");
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../App */ "./src/App.ts");
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../App */ "./src/App.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -3728,7 +3726,6 @@ function _setPrototypeOf(o, p) {
 
 
 
-
 var logger = debug__WEBPACK_IMPORTED_MODULE_5___default()('workouts-view');
 var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
   _inheritsLoose(WorkoutsView, _AbstractStatefulColl);
@@ -3737,11 +3734,8 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
     var _this;
 
     _this = _AbstractStatefulColl.call(this, WorkoutsView.DOMConfig.collectionConfig, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts) || this;
-    _this.currentChart = null;
     _this.renderer = new _ui_framework_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_6__.CarouselViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this), WorkoutsView.DOMConfig);
-
-    _this.addEventCollectionListener(_assertThisInitialized(_this));
-
+    _this.chartRefs = [];
     return _this;
   }
 
@@ -3825,16 +3819,27 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
   };
 
   _proto.renderBackgroundForItemInNamedCollection = function renderBackgroundForItemInNamedCollection(containerEl, name, item) {
-    if (this.currentChart) this.currentChart.destroy(); // we are going to render a chart for the workout
+    /*
+    Remove a previous chart reference
+     */
+    var foundIndex = this.chartRefs.findIndex(function (ref) {
+      return ref._id === item._id;
+    });
+
+    if (foundIndex) {
+      //this.chartRefs[foundIndex].chart?.destroy();
+      logger("Removing old chart reference for workout " + item._id);
+      this.chartRefs.splice(foundIndex, 1);
+    }
+
+    logger("Rendering chart for");
+    logger(item); // we are going to render a chart for the workout
 
     if (item.exercises) {
       var dataSourceKeyId = this.getDataSourceKeyId();
       var resultDataKeyId = this.getIdForItemInNamedCollection(name, item);
-      var canvas = document.createElement('canvas');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_11__["default"].addAttributes(canvas, [{
-        name: 'style',
-        value: 'height:100%; width:100%'
-      }]);
+      var canvas = document.createElement('canvas'); //browserUtil.addAttributes(canvas,[{name:'style',value:'height:100%; width:100%'}]);
+
       canvas.setAttribute(this.collectionUIConfig.keyId, resultDataKeyId);
       canvas.setAttribute(dataSourceKeyId, this.collectionUIConfig.viewConfig.dataSourceId); // chart labels are the exercise names (shortened to 10 characters)
 
@@ -3879,10 +3884,19 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
           }
         }
       };
-      logger(config); // @ts-ignore
+      logger(config);
 
-      this.currentChart = new chart_js_auto__WEBPACK_IMPORTED_MODULE_10__["default"](canvas, config);
-      containerEl.appendChild(canvas);
+      try {
+        // @ts-ignore
+        var ref = {
+          _id: item._id,
+          chart: new chart_js_auto__WEBPACK_IMPORTED_MODULE_10__["default"](canvas, config)
+        };
+        this.chartRefs.push(ref);
+        containerEl.appendChild(canvas);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -3898,7 +3912,7 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
     if (actionName === WorkoutsView.DOMConfig.collectionConfig.extraActions[1].name) {
       // continue the current workout
-      _App__WEBPACK_IMPORTED_MODULE_12__["default"].getInstance().showCurrentWorkout();
+      _App__WEBPACK_IMPORTED_MODULE_11__["default"].getInstance().showCurrentWorkout();
     }
   };
 
@@ -3957,8 +3971,8 @@ WorkoutsView.DOMConfig = {
       textElementClasses: '',
       select: true,
       delete: {
-        buttonClasses: 'btn btn-warning btn-circle btn-md',
-        iconClasses: 'fas fa-trash text-white',
+        buttonClasses: 'btn btn-danger btn-circle btn-md',
+        iconClasses: 'fas fa-trash-alt text-white',
         attributes: [{
           name: 'data-toggle',
           value: "tooltip"
@@ -8813,6 +8827,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _alert_AlertListener__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../alert/AlertListener */ "./src/ui-framework/alert/AlertListener.ts");
 /* harmony import */ var _alert_AlertManager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
 /* harmony import */ var _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./validation/ValidationTypeDefs */ "./src/ui-framework/form/validation/ValidationTypeDefs.ts");
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
 function _extends() {
   _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
@@ -8837,6 +8852,7 @@ function _extends() {
 
 
 
+
 var logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form');
 var dlogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form-detail');
 var vlogger = debug__WEBPACK_IMPORTED_MODULE_1___default()('abstract-form-detail-validation');
@@ -8854,7 +8870,8 @@ var AbstractForm = /*#__PURE__*/function () {
     if (!this.containerEl) throw new Error("container " + containerId + " for form " + dataObjDef.id + " does not exist");
     this.map = [];
     this.dataObjDef = dataObjDef;
-    this.currentDataObj = {}; // sub-classes need to create the form and it's fields
+    this.currentDataObj = {};
+    this.id = (0,uuid__WEBPACK_IMPORTED_MODULE_6__["default"])(); // sub-classes need to create the form and it's fields
     // listen to ourselves
 
     this.addFormListener(this);
@@ -8941,7 +8958,7 @@ var AbstractForm = /*#__PURE__*/function () {
 
     if (this.uiDef) {
       var formEvent = {
-        formId: this.uiDef.id,
+        formId: this.id,
         target: this,
         eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.RESETTING
       };
@@ -8976,7 +8993,7 @@ var AbstractForm = /*#__PURE__*/function () {
 
 
       var formEvent = {
-        formId: this.uiDef.id,
+        formId: this.id,
         target: this,
         eventType: eventType
       };
@@ -8994,7 +9011,7 @@ var AbstractForm = /*#__PURE__*/function () {
     this.fields.forEach(function (field) {
       field.show(); // @ts-ignore
 
-      var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
+      var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
 
       if (response.ruleFailed) {
         // @ts-ignore
@@ -9008,7 +9025,6 @@ var AbstractForm = /*#__PURE__*/function () {
     var _this2 = this;
 
     logger("Checking display validation");
-    console.log('stuff');
     this.fields.forEach(function (field) {
       field.show();
       var currentValue = field.getValue();
@@ -9019,7 +9035,7 @@ var AbstractForm = /*#__PURE__*/function () {
       } else {
         // does the field fulfil any rules from the Validation manager
         // @ts-ignore
-        var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this2.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
+        var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this2.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
 
         if (response.ruleFailed) {
           // @ts-ignore
@@ -9028,7 +9044,7 @@ var AbstractForm = /*#__PURE__*/function () {
         } // @ts-ignore
 
 
-        response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this2.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
+        response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this2.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.hide);
 
         if (response.ruleFailed) {
           // @ts-ignore
@@ -9051,7 +9067,7 @@ var AbstractForm = /*#__PURE__*/function () {
       var eventType = _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CREATING; // inform the listeners
 
       var formEvent = {
-        formId: this.uiDef.id,
+        formId: this.id,
         target: this,
         eventType: eventType
       };
@@ -9077,7 +9093,7 @@ var AbstractForm = /*#__PURE__*/function () {
       var eventType = _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.MODIFYING; // inform the listeners
 
       var formEvent = {
-        formId: this.uiDef.id,
+        formId: this.id,
         target: this,
         eventType: eventType
       };
@@ -9123,7 +9139,7 @@ var AbstractForm = /*#__PURE__*/function () {
           } else {
             if (this.uiDef) {
               var formEvent = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLED
               };
@@ -9214,7 +9230,7 @@ var AbstractForm = /*#__PURE__*/function () {
               } else {
                 // does the field fulfil any rules from the Validation manager
                 // @ts-ignore
-                var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this3.uiDef.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
+                var response = _validation_ValidationManager__WEBPACK_IMPORTED_MODULE_2__.ValidationManager.getInstance().applyRulesToTargetField(_this3.id, field.getFieldDefinition(), _validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_5__.ConditionResponse.invalid);
 
                 if (response.ruleFailed) {
                   // @ts-ignore
@@ -9230,7 +9246,7 @@ var AbstractForm = /*#__PURE__*/function () {
             if (!allFieldsValid) {
               logger("Form is saving, checking validation - FAILED");
               var _formEvent = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVE_ABORTED
               };
@@ -9240,7 +9256,7 @@ var AbstractForm = /*#__PURE__*/function () {
               logger("formatted data object is");
               var formattedDataObject = this.getFormattedDataObject();
               var _formEvent2 = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.SAVED
               };
@@ -9256,13 +9272,7 @@ var AbstractForm = /*#__PURE__*/function () {
   };
 
   _proto.getId = function getId() {
-    var result = '';
-
-    if (this.uiDef) {
-      result = this.uiDef.id;
-    }
-
-    return result;
+    return this.id;
   };
 
   _proto.getFieldFromDataFieldId = function getFieldFromDataFieldId(dataFieldId) {
@@ -9293,14 +9303,14 @@ var AbstractForm = /*#__PURE__*/function () {
           {
             if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_3__.AlertType.confirmed) {
               var formEvent = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLED
               };
               this.informFormListeners(formEvent, this.currentDataObj);
             } else {
               var _formEvent3 = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.CANCELLING_ABORTED
               };
@@ -9314,14 +9324,14 @@ var AbstractForm = /*#__PURE__*/function () {
           {
             if (event.outcome === _alert_AlertListener__WEBPACK_IMPORTED_MODULE_3__.AlertType.confirmed) {
               var _formEvent4 = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETED
               };
               this.informFormListeners(_formEvent4, this.currentDataObj);
             } else {
               var _formEvent5 = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: _FormListener__WEBPACK_IMPORTED_MODULE_0__.FormEventType.DELETE_ABORTED
               };
@@ -9515,16 +9525,16 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     }
   };
 
-  _proto._initialise = function _initialise(displayOrder, hasDeleteButton, hideModiferFields) {
+  _proto._initialise = function _initialise(displayOrder, hasDeleteButton, hideModifierFields) {
     var _this2 = this;
 
-    if (hideModiferFields === void 0) {
-      hideModiferFields = false;
+    if (hideModifierFields === void 0) {
+      hideModifierFields = false;
     }
 
     logger("Initialising"); // ok, so given a Data Object definition we are going to create the form ui config
 
-    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModiferFields);
+    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
     logger(this.uiDef); // now we need to create all the form elements from the ui definition
 
     this.factoryElements = _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_3__.FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
@@ -10789,6 +10799,7 @@ var AbstractField = /*#__PURE__*/function () {
                 if (subElement.checked) {
                   logger(_this4.definition.id + " - getting value - rbg - checked " + subElement.value);
                   result = subElement.value;
+                  subElement.checked = true;
                 }
               });
             }
@@ -10884,23 +10895,23 @@ var AbstractField = /*#__PURE__*/function () {
 
         case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.select:
           {
-            console.log(this.definition.id + " - setting value - " + newValue);
+            logger(this.definition.id + " - setting value - " + newValue);
             var selectEl = this.element;
             var selectedIndex = -1;
 
             for (var index = 0; index < selectEl.options.length; index++) {
               // @ts-ignore
               var option = selectEl.options.item(index);
-              console.log(this.definition.id + " - option value - " + option.value);
+              logger(this.definition.id + " - option value - " + option.value);
 
               if (option.value === newValue) {
-                console.log(this.definition.id + " - option value - " + option.value + " - SELECTED");
+                logger(this.definition.id + " - option value - " + option.value + " - SELECTED");
                 option.selected = true;
                 selectedIndex = index;
               }
             }
 
-            console.log(this.definition.id + " - selected index " + selectedIndex);
+            logger(this.definition.id + " - selected index " + selectedIndex);
             selectEl.selectedIndex = selectedIndex;
             break;
           }
@@ -11319,7 +11330,7 @@ var ValidationManager = /*#__PURE__*/function () {
           values: condition.values
         });
         sourceField.addFieldListener(_this);
-      } else if (condition.values) {
+      } else if (condition.values && !condition.sourceDataFieldId) {
         // is this a value comparison?
         logger("Rule adding for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - values " + condition.values); // add a new value rule to the internal structure
 
@@ -11329,7 +11340,7 @@ var ValidationManager = /*#__PURE__*/function () {
         }); // @ts-ignore
 
         targetField.addFieldListener(_this);
-      } else if (condition.sourceDataFieldId) {
+      } else if (condition.sourceDataFieldId && !condition.values) {
         // is this a field vs field comparison
         logger("Rule adding for form " + form.getId() + " for target field " + rule.targetDataFieldId + " - source field " + condition.sourceDataFieldId);
 
@@ -11418,8 +11429,9 @@ var ValidationManager = /*#__PURE__*/function () {
     if (index < 0) {
       formRuleSet = {
         form: form,
-        rules: [convertedRule]
+        rules: []
       };
+      formRuleSet.rules.push(convertedRule);
       this.formRules.push(formRuleSet);
     } else {
       formRuleSet = this.formRules[index];
@@ -11608,7 +11620,7 @@ var ValidationManager = /*#__PURE__*/function () {
 
   _proto.doesFieldHaveValue = function doesFieldHaveValue(field, values) {
     var targetValue = field.getValue();
-    logger("does field " + field.getId() + " have value from " + values + " - current value is " + field.getValue());
+    logger("does field " + field.getId() + " have value from " + values + " - current value is " + targetValue);
 
     if (targetValue) {
       // split the values by commas
@@ -11616,7 +11628,7 @@ var ValidationManager = /*#__PURE__*/function () {
       var foundInValue = false;
       splits.forEach(function (split) {
         if (targetValue === split) {
-          logger("does field " + field.getId() + " have value from " + values + " - current value is " + field.getValue() + " - found in value(s)");
+          logger("does field " + field.getId() + " have value from " + values + " - current value is " + targetValue + " - found in value(s)");
           foundInValue = true;
         }
       });
@@ -11632,10 +11644,6 @@ var ValidationManager = /*#__PURE__*/function () {
       ruleFailed: true,
       message: field.getName() + " must be have a value in " + values
     };
-  };
-
-  _proto.doesTargetFieldHaveValue = function doesTargetFieldHaveValue(field, values) {
-    return this.doesFieldHaveValue(field, values);
   };
 
   _proto.doesSourceFieldHaveValue = function doesSourceFieldHaveValue(field, values) {
@@ -11735,11 +11743,11 @@ var ValidationManager = /*#__PURE__*/function () {
         flogger('field condition rule FAILED');
         response.ruleFailed = true; // only need messages for invalid responses
 
-        if (rule.response === _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.invalid) response.message = ruleCheck.message;
+        response.message = ruleCheck.message;
         return false;
       }
 
-      logger('field condition rule PASSED');
+      flogger('field condition rule PASSED');
       return true;
     }); // run each value comparison if we haven't already failed
 
@@ -11757,7 +11765,7 @@ var ValidationManager = /*#__PURE__*/function () {
           return false;
         }
 
-        logger('value condition rule PASSED');
+        flogger('value condition rule PASSED');
         return true;
       });
     }
@@ -11816,26 +11824,32 @@ var ValidationManager = /*#__PURE__*/function () {
   _proto.applyRulesToTargetField = function applyRulesToTargetField(formId, field, onlyRulesOfType) {
     var _this3 = this;
 
-    logger("Checking invalidation only rules for form " + formId + ", data field " + field.id); // which rules apply?
+    logger("Checking rules for form " + formId + ", data field " + field.id + " of type " + onlyRulesOfType); // which rules apply?
 
     var rules = this.getRulesForFieldChange(formId, field.id, false);
     var result = {
       ruleFailed: false
-    };
-    rules.every(function (rule) {
-      // we only want rules that make a field invalid
-      if (onlyRulesOfType && rule.response === onlyRulesOfType || !onlyRulesOfType) {
-        var response = _this3.executeRule(rule);
+    }; // get the rules for the field, filtered by the condition response type
 
-        if (response.ruleFailed) {
-          flogger("Rule failed for form " + formId + " with field " + field.displayName + " with message " + response.message);
-          result.ruleFailed = true;
-          result.message = response.message;
-          return false;
+    if (onlyRulesOfType) {
+      var ruleSubset = [];
+      rules.forEach(function (rule) {
+        if (rule.response === onlyRulesOfType) {
+          ruleSubset.push(rule);
         }
-      }
+      });
+      rules = ruleSubset;
+    }
 
-      return true;
+    rules.forEach(function (rule) {
+      // we only want rules that make a field hidden
+      var response = _this3.executeRule(rule);
+
+      if (response.ruleFailed) {
+        flogger("Rule failed for form " + formId + " with field " + field.displayName + " with message " + response.message);
+        result.ruleFailed = true;
+        result.message = response.message;
+      }
     });
     return result;
   };
@@ -13119,7 +13133,7 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
     compareWith[this.collectionUIConfig.keyId] = itemId;
     avLoggerDetails(compareWith);
     var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-    console.log(selectedItem);
+    avLogger(selectedItem);
 
     if (selectedItem) {
       var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);

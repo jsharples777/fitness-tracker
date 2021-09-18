@@ -65,7 +65,6 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
             exerciseTypeDetailView.initialise(startingDisplayOrder,false,true);
 
             const detailForm:Form|null = exerciseTypeDetailRenderer.getForm();
-
             if (detailForm) {
                 logger(`Setting up validation rules for ${detailForm.getId()}`);
                 logger(detailForm);
@@ -139,7 +138,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
         if (name === STATE_NAMES.exerciseTypes) {
             logger(`Added a new exercise to workout`);
             logger(itemAdded);
-            console.log(itemAdded);
+
             this.currentWorkout.exercises.push(itemAdded);
             this.saveWorkout();
         }

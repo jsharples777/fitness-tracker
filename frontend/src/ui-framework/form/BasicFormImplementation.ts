@@ -92,11 +92,11 @@ export class BasicFormImplementation extends AbstractForm {
         }
     }
 
-    protected _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModiferFields:boolean = false): void {
+    protected _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean = false): void {
         logger(`Initialising`);
 
         // ok, so given a Data Object definition we are going to create the form ui config
-        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hasDeleteButton,hideModiferFields);
+        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hasDeleteButton,hideModifierFields);
         logger(this.uiDef);
         // now we need to create all the form elements from the ui definition
         this.factoryElements = FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);

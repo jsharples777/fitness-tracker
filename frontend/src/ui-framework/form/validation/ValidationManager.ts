@@ -108,13 +108,13 @@ export class ValidationManager implements FieldListener {
                     values: condition.values
                 });
                 sourceField.addFieldListener(this);
-            } else if (condition.values) { // is this a value comparison?
+            } else if ((condition.values) && !(condition.sourceDataFieldId)) { // is this a value comparison?
                 logger(`Rule adding for form ${form.getId()} for target field ${rule.targetDataFieldId} - values ${condition.values}`);
                 // add a new value rule to the internal structure
                 convertedRule.valueConditions.push({values: condition.values, comparison: condition.comparison});
                 // @ts-ignore
                 targetField.addFieldListener(this);
-            } else if (condition.sourceDataFieldId) { // is this a field vs field comparison
+            } else if ((condition.sourceDataFieldId) && (!condition.values)) { // is this a field vs field comparison
                 logger(`Rule adding for form ${form.getId()} for target field ${rule.targetDataFieldId} - source field ${condition.sourceDataFieldId}`);
                 let sourceField: Field | undefined = form.getFieldFromDataFieldId(condition.sourceDataFieldId);
                 if (!sourceField) {
@@ -183,8 +183,9 @@ export class ValidationManager implements FieldListener {
         if (index < 0) {
             formRuleSet = {
                 form: form,
-                rules: [convertedRule]
+                rules: []
             }
+            formRuleSet.rules.push(convertedRule);
             this.formRules.push(formRuleSet)
         } else {
             formRuleSet = this.formRules[index];
@@ -333,14 +334,14 @@ export class ValidationManager implements FieldListener {
 
     private doesFieldHaveValue(field: Field, values: string): RuleCheck {
         let targetValue = field.getValue();
-        logger(`does field ${field.getId()} have value from ${values} - current value is ${field.getValue()}`);
+        logger(`does field ${field.getId()} have value from ${values} - current value is ${targetValue}`);
         if (targetValue) {
             // split the values by commas
             let splits:string[] = values.split(',');
             let foundInValue:boolean = false;
             splits.forEach((split) => {
                 if (targetValue === split) {
-                    logger(`does field ${field.getId()} have value from ${values} - current value is ${field.getValue()} - found in value(s)`);
+                    logger(`does field ${field.getId()} have value from ${values} - current value is ${targetValue} - found in value(s)`);
                     foundInValue = true;
                 }
             });
@@ -352,10 +353,6 @@ export class ValidationManager implements FieldListener {
             ruleFailed: true,
             message: `${field.getName()} must be have a value in ${values}`,
         };
-    }
-
-    private doesTargetFieldHaveValue(field: Field, values: string): RuleCheck {
-        return this.doesFieldHaveValue(field,values);
     }
 
     private doesSourceFieldHaveValue(field: Field, values: string): RuleCheck {
@@ -432,10 +429,10 @@ export class ValidationManager implements FieldListener {
                 flogger('field condition rule FAILED');
                 response.ruleFailed = true;
                 // only need messages for invalid responses
-                if (rule.response === ConditionResponse.invalid) response.message = ruleCheck.message;
+                response.message = ruleCheck.message;
                 return false;
             }
-            logger('field condition rule PASSED');
+            flogger('field condition rule PASSED');
             return true;
         });
         // run each value comparison if we haven't already failed
@@ -450,7 +447,7 @@ export class ValidationManager implements FieldListener {
                     response.message = ruleCheck.message;
                     return false;
                 }
-                logger('value condition rule PASSED');
+                flogger('value condition rule PASSED');
                 return true;
             });
         }
@@ -500,25 +497,34 @@ export class ValidationManager implements FieldListener {
     } // ignored, we might be causing
 
     public applyRulesToTargetField(formId:string, field:FieldDefinition,onlyRulesOfType:ConditionResponse|null) : RuleCheck {
-        logger(`Checking invalidation only rules for form ${formId}, data field ${field.id}`);
+        logger(`Checking rules for form ${formId}, data field ${field.id} of type ${onlyRulesOfType}`);
         // which rules apply?
-        const rules: _ValidationRule[] = this.getRulesForFieldChange(formId, field.id,false);
+        let rules: _ValidationRule[] = this.getRulesForFieldChange(formId, field.id,false);
 
         let result:RuleCheck = {
             ruleFailed:false
         }
 
-        rules.every((rule) => { // we only want rules that make a field invalid
-            if ((onlyRulesOfType && rule.response === onlyRulesOfType) || !onlyRulesOfType) {
-                let response: RuleResponse = this.executeRule(rule);
-                if (response.ruleFailed) {
-                    flogger(`Rule failed for form ${formId} with field ${field.displayName} with message ${response.message}`);
-                    result.ruleFailed = true;
-                    result.message = response.message;
-                    return false;
-                }
+        // get the rules for the field, filtered by the condition response type
+        if (onlyRulesOfType) {
+            let ruleSubset:_ValidationRule[] = [];
+            rules.forEach((rule) => {
+               if (rule.response === onlyRulesOfType) {
+                   ruleSubset.push(rule);
+               }
+            });
+            rules = ruleSubset;
+        }
+
+
+
+        rules.forEach((rule) => { // we only want rules that make a field hidden
+            let response: RuleResponse = this.executeRule(rule);
+            if (response.ruleFailed) {
+                flogger(`Rule failed for form ${formId} with field ${field.displayName} with message ${response.message}`);
+                result.ruleFailed = true;
+                result.message = response.message;
             }
-            return true;
         });
         return result;
     }

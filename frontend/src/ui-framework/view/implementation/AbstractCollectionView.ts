@@ -159,7 +159,7 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
         avLoggerDetails(compareWith);
 
         let selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
-        console.log(selectedItem);
+        avLogger(selectedItem);
         if (selectedItem) {
             const shouldSelect = (<CollectionViewListenerForwarder>(this.eventForwarder)).canSelectItem(this, selectedItem);
             avLoggerDetails(`view ${this.getName()}: Item with id ${itemId} attempting selected from ${dataSource} - ${shouldSelect}`);

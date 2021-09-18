@@ -89,11 +89,13 @@ export class AbstractField implements Field, FieldListener {
             switch (this.config.elementType) {
                 case (UIFieldType.radioGroup): {
                     logger(`${this.definition.id} - getting value - rbg`);
+
                     if (this.subElements) {
                         this.subElements.forEach((subElement) => {
                             if (subElement.checked) {
                                 logger(`${this.definition.id} - getting value - rbg - checked ${subElement.value}`);
                                 result = subElement.value;
+                                subElement.checked = true;
                             }
                         });
                     }
@@ -169,20 +171,20 @@ export class AbstractField implements Field, FieldListener {
                     break;
                 }
                 case (UIFieldType.select): {
-                    console.log(`${this.definition.id} - setting value - ${newValue}`);
+                    logger(`${this.definition.id} - setting value - ${newValue}`);
                     const selectEl:HTMLSelectElement = <HTMLSelectElement>this.element;
                     let selectedIndex = -1;
                     for (let index = 0;index < selectEl.options.length;index++) {
                         // @ts-ignore
                         const option:HTMLOptionElement = selectEl.options.item(index);
-                        console.log(`${this.definition.id} - option value - ${option.value}`);
+                        logger(`${this.definition.id} - option value - ${option.value}`);
                         if (option.value === newValue) {
-                            console.log(`${this.definition.id} - option value - ${option.value} - SELECTED`);
+                            logger(`${this.definition.id} - option value - ${option.value} - SELECTED`);
                             option.selected = true;
                             selectedIndex = index;
                         }
                     }
-                    console.log(`${this.definition.id} - selected index ${selectedIndex}`);
+                    logger(`${this.definition.id} - selected index ${selectedIndex}`);
                     selectEl.selectedIndex = selectedIndex;
                     break;
                 }

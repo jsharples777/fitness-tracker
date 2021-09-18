@@ -56,7 +56,7 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
             },
             delete: {
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
-                iconClasses: 'text-black fas fa-sign-out-alt',
+                iconClasses: 'text-black fas fa-trash-alt',
                 attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Delete this exercise type."}]
             },
             drag: {

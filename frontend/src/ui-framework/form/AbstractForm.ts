@@ -10,6 +10,7 @@ import {RuleCheck, ValidationManager} from "./validation/ValidationManager";
 import {AlertEvent, AlertListener, AlertType} from "../alert/AlertListener";
 import {AlertManager} from "../alert/AlertManager";
 import {ConditionResponse} from "./validation/ValidationTypeDefs";
+import {v4} from "uuid";
 
 const logger = debug('abstract-form');
 const dlogger = debug('abstract-form-detail');
@@ -29,6 +30,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     protected isInitialised:boolean = false;
     protected hasChangedBoolean:boolean = false;
     protected isDisplayOnly:boolean = false;
+    protected id:string;
 
 
     protected constructor(containerId: string, dataObjDef: DataObjectDefinition) {
@@ -38,6 +40,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
         this.map = [];
         this.dataObjDef = dataObjDef;
         this.currentDataObj = {};
+        this.id = v4();
         // sub-classes need to create the form and it's fields
 
         // listen to ourselves
@@ -132,7 +135,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
         // inform the listeners
         if (this.uiDef) {
             let formEvent: FormEvent = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: FormEventType.RESETTING
             }
@@ -161,7 +164,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             }
             // inform the listeners
             let formEvent: FormEvent = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: eventType
             }
@@ -176,7 +179,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
         this.fields.forEach((field) => {
             field.show();
             // @ts-ignore
-            let response = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.hide);
+            let response = ValidationManager.getInstance().applyRulesToTargetField(this.id, field.getFieldDefinition(),ConditionResponse.hide);
             if (response.ruleFailed) {
                 // @ts-ignore
                 field.hide();
@@ -188,7 +191,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
     protected checkFormValidationOnDisplay() {
         logger(`Checking display validation`);
-        console.log('stuff');
+
         this.fields.forEach((field) => {
             field.show();
             const currentValue = field.getValue();
@@ -198,14 +201,14 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             } else {
                 // does the field fulfil any rules from the Validation manager
                 // @ts-ignore
-                let response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.invalid);
+                let response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.id, field.getFieldDefinition(),ConditionResponse.invalid);
                 if (response.ruleFailed) {
                     // @ts-ignore
                     field.setInvalid(response.message);
                     vlogger(`Field ${field.getId()} is invalid from validation manager with message ${response.message}`);
                 }
                 // @ts-ignore
-                response = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.hide);
+                response = ValidationManager.getInstance().applyRulesToTargetField(this.id, field.getFieldDefinition(),ConditionResponse.hide);
                 if (response.ruleFailed) {
                     // @ts-ignore
                     field.hide();
@@ -227,7 +230,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             let eventType = FormEventType.CREATING;
             // inform the listeners
             let formEvent: FormEvent = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: eventType
             }
@@ -251,7 +254,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             let eventType = FormEventType.MODIFYING;
             // inform the listeners
             let formEvent: FormEvent = {
-                formId: this.uiDef.id,
+                formId: this.id,
                 target: this,
                 eventType: eventType
             }
@@ -291,7 +294,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                 else {
                     if (this.uiDef) {
                         let formEvent: FormEvent = {
-                            formId: this.uiDef.id,
+                            formId: this.id,
                             target: this,
                             eventType: FormEventType.CANCELLED
                         }
@@ -358,7 +361,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                         } else {
                             // does the field fulfil any rules from the Validation manager
                             // @ts-ignore
-                            const response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.uiDef.id, field.getFieldDefinition(),ConditionResponse.invalid);
+                            const response: RuleCheck = ValidationManager.getInstance().applyRulesToTargetField(this.id, field.getFieldDefinition(),ConditionResponse.invalid);
                             if (response.ruleFailed) {
                                 // @ts-ignore
                                 field.setInvalid(response.message);
@@ -374,7 +377,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                     if (!allFieldsValid) {
                         logger(`Form is saving, checking validation - FAILED`);
                         let formEvent: FormEvent = {
-                            formId: this.uiDef.id,
+                            formId: this.id,
                             target: this,
                             eventType: FormEventType.SAVE_ABORTED
                         }
@@ -384,7 +387,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                         logger(`formatted data object is`);
                         const formattedDataObject = this.getFormattedDataObject();
                         let formEvent: FormEvent = {
-                            formId: this.uiDef.id,
+                            formId: this.id,
                             target: this,
                             eventType: FormEventType.SAVED
                         }
@@ -399,11 +402,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
 
     getId(): string {
-        let result = '';
-        if (this.uiDef) {
-            result = this.uiDef.id;
-        }
-        return result;
+        return this.id;
     }
 
     getFieldFromDataFieldId(dataFieldId:string): Field | undefined {
@@ -428,7 +427,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                 case (FormEventType.CANCELLING): {
                     if (event.outcome === AlertType.confirmed) {
                         let formEvent: FormEvent = {
-                            formId: this.uiDef.id,
+                            formId: this.id,
                             target: this,
                             eventType: FormEventType.CANCELLED
                         }
@@ -436,7 +435,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                     }
                     else {
                         let formEvent: FormEvent = {
-                            formId: this.uiDef.id,
+                            formId: this.id,
                             target: this,
                             eventType: FormEventType.CANCELLING_ABORTED
                         }
@@ -447,7 +446,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                 case (FormEventType.DELETING): {
                     if (event.outcome === AlertType.confirmed) {
                         let formEvent: FormEvent = {
-                            formId: this.uiDef.id,
+                            formId: this.id,
                             target: this,
                             eventType: FormEventType.DELETED
                         }
@@ -455,7 +454,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                     }
                     else {
                         let formEvent: FormEvent = {
-                            formId: this.uiDef.id,
+                            formId: this.id,
                             target: this,
                             eventType: FormEventType.DELETE_ABORTED
                         }
