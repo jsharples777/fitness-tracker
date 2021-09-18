@@ -75,7 +75,6 @@ export class ExerciseTypesView extends AbstractStatefulCollectionView implements
     constructor(stateManager:StateManager) {
         super(ExerciseTypesView.DOMConfig, stateManager, STATE_NAMES.exerciseTypes);
         this.renderer = new ListViewRenderer(this, this);
-        this.addEventCollectionListener(this);
     }
 
 

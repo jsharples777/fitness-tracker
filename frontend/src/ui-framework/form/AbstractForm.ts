@@ -188,6 +188,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
 
     protected checkFormValidationOnDisplay() {
         logger(`Checking display validation`);
+        console.log('stuff');
         this.fields.forEach((field) => {
             field.show();
             const currentValue = field.getValue();

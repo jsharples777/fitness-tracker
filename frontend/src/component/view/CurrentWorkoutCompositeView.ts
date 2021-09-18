@@ -139,6 +139,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
         if (name === STATE_NAMES.exerciseTypes) {
             logger(`Added a new exercise to workout`);
             logger(itemAdded);
+            console.log(itemAdded);
             this.currentWorkout.exercises.push(itemAdded);
             this.saveWorkout();
         }

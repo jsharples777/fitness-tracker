@@ -41,7 +41,6 @@ export class CollectionViewListenerForwarder extends ViewListenerForwarder imple
         let result = true; // return false if cancelling delete
         if (!this.suppressEventEmits) {
             this.collectionViewListeners.forEach((listener) => {
-                console.log(listener);
                 if (!(listener.canSelectItem(view, selectedItem))) {
                     result = false;
                 }

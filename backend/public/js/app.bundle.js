@@ -2470,6 +2470,7 @@ var CurrentWorkoutCompositeView = /*#__PURE__*/function () {
     if (name === _AppTypes__WEBPACK_IMPORTED_MODULE_1__.STATE_NAMES.exerciseTypes) {
       logger("Added a new exercise to workout");
       logger(itemAdded);
+      console.log(itemAdded);
       this.currentWorkout.exercises.push(itemAdded);
       this.saveWorkout();
     }
@@ -2838,9 +2839,6 @@ var ExerciseTypesView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
     _this = _AbstractStatefulColl.call(this, ExerciseTypesView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.exerciseTypes) || this;
     _this.renderer = new _ui_framework_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_3__.ListViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this));
-
-    _this.addEventCollectionListener(_assertThisInitialized(_this));
-
     return _this;
   }
 
@@ -9010,6 +9008,7 @@ var AbstractForm = /*#__PURE__*/function () {
     var _this2 = this;
 
     logger("Checking display validation");
+    console.log('stuff');
     this.fields.forEach(function (field) {
       field.show();
       var currentValue = field.getValue();
@@ -12742,8 +12741,6 @@ var CollectionViewListenerForwarder = /*#__PURE__*/function (_ViewListenerForwar
 
     if (!this.suppressEventEmits) {
       this.collectionViewListeners.forEach(function (listener) {
-        console.log(listener);
-
         if (!listener.canSelectItem(view, selectedItem)) {
           result = false;
         }
