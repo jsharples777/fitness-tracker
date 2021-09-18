@@ -40,7 +40,7 @@ export default class Controller implements StateChangeListener,DataObjectListene
     protected stateManager: StateManager;
 
 
-    constructor() {}
+    private constructor() {}
 
     connectToApplication(applicationView: any, clientSideStorage: any) {
         this.applicationView = applicationView;

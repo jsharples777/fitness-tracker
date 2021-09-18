@@ -18,4 +18,5 @@ export interface DetailView extends View {
 
     initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean):void;
 
+
 }

@@ -227,4 +227,12 @@ export class FormDetailViewRenderer implements DetailViewRenderer,FormListener {
         return false;
     }
 
+    getItemDescription(from: string, item: any): string {
+        return "";
+    }
+
+    getItemId(from: string, item: any): string {
+        return "";
+    }
+
 }

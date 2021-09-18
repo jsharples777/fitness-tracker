@@ -45,6 +45,13 @@ export abstract class AbstractCollectionView extends AbstractView implements Col
 
     }
 
+    getItemId(from: string, item: any): string {
+        return this.getIdForItemInNamedCollection(from,item);
+    }
+
+    abstract getItemDescription(from: string, item: any): string;
+
+
     getCollectionUIConfig(): CollectionViewDOMConfig {
         return this.collectionUIConfig;
     }

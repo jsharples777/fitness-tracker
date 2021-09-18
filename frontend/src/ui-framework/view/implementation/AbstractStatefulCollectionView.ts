@@ -25,6 +25,10 @@ export default abstract class AbstractStatefulCollectionView extends AbstractCol
         this.stateManager.addChangeListenerForName(this.collectionName,this);
     }
 
+    public getItemDescription(from: string, item: any): string {
+        return "";
+    }
+
     public onDocumentLoaded() {
         super.onDocumentLoaded();
         this.addEventCollectionListener(this);

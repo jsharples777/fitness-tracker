@@ -24,12 +24,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_view_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./component/view/ChatLogDetailView */ "./src/component/view/ChatLogDetailView.ts");
 /* harmony import */ var _component_view_FavouriteUserView__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./component/view/FavouriteUserView */ "./src/component/view/FavouriteUserView.ts");
 /* harmony import */ var _component_view_BlockedUserView__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./component/view/BlockedUserView */ "./src/component/view/BlockedUserView.ts");
-/* harmony import */ var _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/WorkoutsView */ "./src/component/view/WorkoutsView.ts");
-/* harmony import */ var _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/view/ExerciseTypesCompositeView */ "./src/component/view/ExerciseTypesCompositeView.ts");
-/* harmony import */ var _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/sidebar/WorkoutSummarySidebar */ "./src/component/sidebar/WorkoutSummarySidebar.ts");
-/* harmony import */ var _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/view/WorkoutSummaryView */ "./src/component/view/WorkoutSummaryView.ts");
-/* harmony import */ var _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./component/sidebar/CurrentWorkoutSidebar */ "./src/component/sidebar/CurrentWorkoutSidebar.ts");
-/* harmony import */ var _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./component/view/CurrentWorkoutCompositeView */ "./src/component/view/CurrentWorkoutCompositeView.ts");
+/* harmony import */ var _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./component/view/ExerciseTypesCompositeView */ "./src/component/view/ExerciseTypesCompositeView.ts");
+/* harmony import */ var _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./component/sidebar/WorkoutSummarySidebar */ "./src/component/sidebar/WorkoutSummarySidebar.ts");
+/* harmony import */ var _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./component/view/WorkoutSummaryView */ "./src/component/view/WorkoutSummaryView.ts");
+/* harmony import */ var _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./component/sidebar/CurrentWorkoutSidebar */ "./src/component/sidebar/CurrentWorkoutSidebar.ts");
+/* harmony import */ var _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./component/view/CurrentWorkoutCompositeView */ "./src/component/view/CurrentWorkoutCompositeView.ts");
+/* harmony import */ var _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./component/view/WorkoutsViewUsingContext */ "./src/component/view/WorkoutsViewUsingContext.ts");
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
@@ -136,16 +136,16 @@ var App = /*#__PURE__*/function () {
     this.setupChatViews();
     this.setupNavigationItemHandling();
     this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_7__["default"]();
-    new _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_12__.ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded();
-    new _component_view_WorkoutsView__WEBPACK_IMPORTED_MODULE_11__.WorkoutsView().onDocumentLoaded(); // carousel view
+    new _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_11__.ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded(); //new WorkoutsView().onDocumentLoaded(); // carousel view
 
-    this.workoutSummarySidebar = new _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__["default"]();
-    this.workoutSummarySidebar.addView(new _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_14__.WorkoutSummaryView(), {
-      containerId: _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_13__["default"].SidebarContainers.container
+    new _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_16__.WorkoutsViewUsingContext().onDocumentLoaded();
+    this.workoutSummarySidebar = new _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_12__["default"]();
+    this.workoutSummarySidebar.addView(new _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_13__.WorkoutSummaryView(), {
+      containerId: _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_12__["default"].SidebarContainers.container
     });
     this.workoutSummarySidebar.onDocumentLoaded();
-    this.currentWorkoutSidebar = new _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_15__["default"]();
-    this.currentWorkoutView = new _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_16__.CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
+    this.currentWorkoutSidebar = new _component_sidebar_CurrentWorkoutSidebar__WEBPACK_IMPORTED_MODULE_14__["default"]();
+    this.currentWorkoutView = new _component_view_CurrentWorkoutCompositeView__WEBPACK_IMPORTED_MODULE_15__.CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
     this.currentWorkoutView.onDocumentLoaded();
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().initialise();
   };
@@ -1639,6 +1639,419 @@ BlockedUserView.DOMConfig = {
 
 /***/ }),
 
+/***/ "./src/component/view/CarouselViewRendererUsingContext.ts":
+/*!****************************************************************!*\
+  !*** ./src/component/view/CarouselViewRendererUsingContext.ts ***!
+  \****************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CarouselViewRendererUsingContext": () => (/* binding */ CarouselViewRendererUsingContext)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+
+
+
+
+var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('carousel-renderer');
+var CarouselViewRendererUsingContext = /*#__PURE__*/function () {
+  function CarouselViewRendererUsingContext(view, eventHandler, config) {
+    this.lastRenderedContainer = null;
+    this.lastRenderedCollectionName = null;
+    this.lastRenderedCollection = null;
+    this.previousWindowWidth = 0;
+    this.view = view;
+    this.eventHandler = eventHandler;
+    this.config = config;
+  }
+
+  var _proto = CarouselViewRendererUsingContext.prototype;
+
+  _proto.onDocumentLoaded = function onDocumentLoaded() {
+    var _this = this; // we need to track window resizing
+
+
+    this.previousWindowWidth = window.innerWidth;
+    window.addEventListener('resize', function (event) {
+      var newWindowWidth = window.innerWidth;
+      var reRenderRequired = false;
+
+      if (newWindowWidth < _this.previousWindowWidth) {
+        if (_this.previousWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+          if (newWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to large");
+          }
+        }
+
+        if (_this.previousWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+          if (newWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to medium");
+          }
+        }
+
+        if (_this.previousWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+          if (newWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+            // need to re-render carousel
+            reRenderRequired = true;
+            avLogger("window reduced and is now smaller or equal to small");
+          }
+        }
+      } else {
+        if (_this.previousWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+          if (newWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+            // need to re-render carousel
+            avLogger("window increased and is now larger than small");
+            reRenderRequired = true;
+          }
+        }
+
+        if (_this.previousWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+          if (newWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+            avLogger("window increased and is now larger than medium"); // need to re-render carousel
+
+            reRenderRequired = true;
+          }
+        }
+
+        if (_this.previousWindowWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+          if (newWindowWidth > _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+            avLogger("window increased and is now larger than large"); // need to re-render carousel
+
+            reRenderRequired = true;
+          }
+        }
+      }
+
+      _this.previousWindowWidth = newWindowWidth;
+
+      if (_this.lastRenderedContainer && _this.lastRenderedCollection && _this.lastRenderedCollectionName && reRenderRequired) {
+        _this.setDisplayElementsForCollectionInContainer(_this.lastRenderedContainer, _this.lastRenderedCollectionName, _this.lastRenderedCollection);
+      }
+    });
+  };
+
+  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
+    var _this2 = this;
+
+    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
+    avLogger("view " + this.view.getName() + ": creating carousel item");
+    avLogger(item);
+    var collectionConfig = this.view.getCollectionUIConfig();
+    var childEl = document.createElement(collectionConfig.resultsElementType);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.resultsClasses);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(childEl, collectionConfig.resultsElementAttributes);
+
+    if (collectionConfig.detail.background) {
+      var backgroundEl = document.createElement(collectionConfig.detail.background.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
+      childEl.appendChild(backgroundEl);
+      this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
+    } // the content may be structured
+
+
+    var textEl = childEl;
+
+    if (collectionConfig.detail.containerClasses) {
+      var contentEl = document.createElement('div');
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(contentEl, collectionConfig.detail.containerClasses);
+      textEl = document.createElement(collectionConfig.detail.textElementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(textEl, collectionConfig.detail.textElementClasses);
+      contentEl.appendChild(textEl);
+
+      if (collectionConfig.extraActions || collectionConfig.detail.delete) {
+        var buttonsEl = document.createElement(this.config.actionContainer.elementType);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(buttonsEl, this.config.actionContainer.elementClasses);
+        contentEl.appendChild(buttonsEl);
+
+        if (collectionConfig.extraActions) {
+          collectionConfig.extraActions.forEach(function (extraAction) {
+            var hasPermissionForAction = _this2.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
+
+            if (hasPermissionForAction) {
+              var action = document.createElement('button');
+              action.setAttribute('type', 'button');
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(action, extraAction.buttonClasses);
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(action, extraAction.attributes);
+
+              if (extraAction.buttonText) {
+                action.innerHTML = extraAction.buttonText;
+              }
+
+              if (extraAction.iconClasses) {
+                var iconEl = document.createElement('i');
+                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
+                iconEl.setAttribute(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+                action.appendChild(iconEl);
+              }
+
+              action.setAttribute(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
+              action.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                _this2.eventHandler.eventActionClicked(event);
+              });
+              buttonsEl.appendChild(action);
+            }
+          });
+        }
+
+        if (collectionConfig.detail.delete && collectionConfig && canDeleteItem) {
+          var deleteButtonEl = document.createElement('button');
+          deleteButtonEl.setAttribute('type', 'button');
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(deleteButtonEl, collectionConfig.detail.delete.buttonClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(deleteButtonEl, collectionConfig.detail.delete.attributes);
+
+          if (collectionConfig.detail.delete.buttonText) {
+            deleteButtonEl.innerHTML = collectionConfig.detail.delete.buttonText;
+          }
+
+          if (collectionConfig.detail.delete.iconClasses) {
+            var iconEl = document.createElement('i');
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(iconEl, collectionConfig.detail.delete.iconClasses);
+            deleteButtonEl.appendChild(iconEl);
+          }
+
+          deleteButtonEl.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            _this2.eventHandler.eventDeleteClickItem(event);
+          });
+          buttonsEl.appendChild(deleteButtonEl);
+        }
+      }
+
+      childEl.appendChild(contentEl);
+
+      if (collectionConfig.detail.drag) {
+        childEl.setAttribute('draggable', 'true');
+        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
+      } // add selection actions
+
+
+      if (collectionConfig.detail.select) {
+        childEl.addEventListener('click', this.eventHandler.eventClickItem);
+      }
+    }
+
+    var displayText = this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item); // add icons
+    // add modifiers for patient state
+
+    if (collectionConfig.modifiers) {
+      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
+      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
+
+      switch (modifier) {
+        case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.normal:
+          {
+            avLogger("view " + this.view.getName() + ": normal item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal);
+
+            if (collectionConfig.icons && collectionConfig.icons.normal) {
+              var _iconEl = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl, collectionConfig.icons.normal);
+              textEl.appendChild(_iconEl);
+            }
+
+            switch (secondModifier) {
+              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    var _iconEl2 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl2, collectionConfig.icons.warning);
+                    textEl.appendChild(_iconEl2);
+                  }
+
+                  break;
+                }
+
+              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.active) {
+                    var _iconEl3 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl3, collectionConfig.icons.active);
+                    textEl.appendChild(_iconEl3);
+                  }
+                }
+            }
+
+            break;
+          }
+
+        case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+          {
+            avLogger("view " + this.view.getName() + ": active item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active);
+
+            if (collectionConfig.icons && collectionConfig.icons.active) {
+              var _iconEl4 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl4, collectionConfig.icons.active);
+              textEl.appendChild(_iconEl4);
+            }
+
+            switch (secondModifier) {
+              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active, false);
+                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    var _iconEl5 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl5, collectionConfig.icons.warning);
+                    textEl.appendChild(_iconEl5);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+
+        case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.inactive:
+          {
+            avLogger("view " + this.view.getName() + ": inactive item");
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive);
+
+            if (collectionConfig.icons && collectionConfig.icons.inactive) {
+              var _iconEl6 = document.createElement('i');
+
+              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl6, collectionConfig.icons.inactive);
+              textEl.appendChild(_iconEl6);
+            }
+
+            switch (secondModifier) {
+              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.warning:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.warning) {
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive, false);
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
+
+                    var _iconEl7 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl7, collectionConfig.icons.warning);
+                    textEl.appendChild(_iconEl7);
+                  }
+
+                  break;
+                }
+
+              case _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.Modifier.active:
+                {
+                  if (collectionConfig.icons && collectionConfig.icons.active) {
+                    var _iconEl8 = document.createElement('i');
+
+                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(_iconEl8, collectionConfig.icons.active);
+                    textEl.appendChild(_iconEl8);
+                  }
+
+                  break;
+                }
+            }
+
+            break;
+          }
+      }
+    }
+
+    return childEl;
+  };
+
+  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
+    avLogger("view " + this.view.getName() + ": creating carousel results");
+    avLogger(newState); // remove the previous items from list
+
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].removeAllChildren(containerEl); // need to break the items up by row, and the last row is active (assumes increasing time order)
+
+    var numberOfResults = newState.length; // number of items per row depends on view port
+
+    var itemsPerRow = this.config.itemsPerRow.xlarge;
+
+    if (window.innerWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_LARGE) {
+      itemsPerRow = this.config.itemsPerRow.large;
+    }
+
+    if (window.innerWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_MEDIUM) {
+      itemsPerRow = this.config.itemsPerRow.medium;
+    }
+
+    if (window.innerWidth <= _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.SCREEN_WIDTH_SMALL) {
+      itemsPerRow = this.config.itemsPerRow.small;
+    }
+
+    var numberOfRows = Math.ceil(numberOfResults / itemsPerRow);
+    avLogger("view " + this.view.getName() + ": creating carousel with number of results per row of " + itemsPerRow + " with rows " + numberOfRows);
+
+    for (var rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
+      // create the row
+      var rowContainerEl = document.createElement(this.config.rowContainer.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes); //browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
+
+      var rowEl = document.createElement(this.config.row.elementType);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowEl, this.config.row.elementClasses);
+      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowEl, this.config.row.elementAttributes);
+      rowContainerEl.appendChild(rowEl); // if this the active row?
+
+      if (rowIndex === 0 && this.config.activeRowPosition === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.RowPosition.first || rowIndex === numberOfRows - 1 && this.config.activeRowPosition === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.RowPosition.last) {
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(rowContainerEl, this.config.activeRow.elementClasses);
+        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(rowContainerEl, this.config.activeRow.elementAttributes);
+      }
+
+      var itemIndex = rowIndex * itemsPerRow;
+
+      while (itemIndex < (rowIndex + 1) * itemsPerRow && itemIndex < numberOfResults) {
+        avLogger("rowIndex " + rowIndex + " item index " + itemIndex);
+        var item = newState[itemIndex];
+        var itemContainerEl = rowEl;
+
+        if (this.config.multipleItemsPerRowContainer) {
+          itemContainerEl = document.createElement(this.config.multipleItemsPerRowContainer.elementType);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addRemoveClasses(itemContainerEl, this.config.multipleItemsPerRowContainer.elementClasses);
+          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_2__["default"].addAttributes(itemContainerEl, this.config.multipleItemsPerRowContainer.elementAttributes);
+          rowEl.appendChild(itemContainerEl);
+        }
+
+        var itemEl = this.createDisplayElementForCollectionItem(collectionName, item);
+        itemContainerEl.appendChild(itemEl);
+        _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextToElement(this.view.getName(), collectionName, item, itemEl, true, _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.TogglePlacement.bottom);
+        itemIndex++;
+      }
+
+      containerEl.appendChild(rowContainerEl);
+    }
+
+    $('[data-toggle="tooltip"]').tooltip();
+    this.lastRenderedContainer = containerEl;
+    this.lastRenderedCollectionName = collectionName;
+    this.lastRenderedCollection = newState;
+  };
+
+  return CarouselViewRendererUsingContext;
+}();
+
+/***/ }),
+
 /***/ "./src/component/view/ChatLogDetailView.ts":
 /*!*************************************************!*\
   !*** ./src/component/view/ChatLogDetailView.ts ***!
@@ -2056,6 +2469,14 @@ var ChatLogDetailView = /*#__PURE__*/function () {
   _proto.render = function render() {};
 
   _proto.show = function show() {};
+
+  _proto.getItemDescription = function getItemDescription(from, item) {
+    return "";
+  };
+
+  _proto.getItemId = function getItemId(from, item) {
+    return "";
+  };
 
   return ChatLogDetailView;
 }();
@@ -3665,16 +4086,16 @@ WorkoutSummaryView.DOMConfig = {
 
 /***/ }),
 
-/***/ "./src/component/view/WorkoutsView.ts":
-/*!********************************************!*\
-  !*** ./src/component/view/WorkoutsView.ts ***!
-  \********************************************/
+/***/ "./src/component/view/WorkoutsViewUsingContext.ts":
+/*!********************************************************!*\
+  !*** ./src/component/view/WorkoutsViewUsingContext.ts ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "WorkoutsView": () => (/* binding */ WorkoutsView)
+/* harmony export */   "WorkoutsViewUsingContext": () => (/* binding */ WorkoutsViewUsingContext)
 /* harmony export */ });
 /* harmony import */ var _ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../ui-framework/view/implementation/AbstractStatefulCollectionView */ "./src/ui-framework/view/implementation/AbstractStatefulCollectionView.ts");
 /* harmony import */ var _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../ui-framework/ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
@@ -3683,13 +4104,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../util/EqualityFunctions */ "./src/util/EqualityFunctions.ts");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _ui_framework_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../ui-framework/view/renderer/CarouselViewRenderer */ "./src/ui-framework/view/renderer/CarouselViewRenderer.ts");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _util_DurationFunctions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/DurationFunctions */ "./src/util/DurationFunctions.ts");
-/* harmony import */ var _util_MiscFunctions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../util/MiscFunctions */ "./src/util/MiscFunctions.ts");
-/* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.esm.js");
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../App */ "./src/App.ts");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _util_DurationFunctions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../util/DurationFunctions */ "./src/util/DurationFunctions.ts");
+/* harmony import */ var _util_MiscFunctions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../util/MiscFunctions */ "./src/util/MiscFunctions.ts");
+/* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.esm.js");
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../App */ "./src/App.ts");
+/* harmony import */ var _ui_framework_alert_AlertManager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../ui-framework/alert/AlertManager */ "./src/ui-framework/alert/AlertManager.ts");
+/* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./src/context/ContextualInformationHelper.ts");
+/* harmony import */ var _CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./CarouselViewRendererUsingContext */ "./src/component/view/CarouselViewRendererUsingContext.ts");
 function _assertThisInitialized(self) {
   if (self === void 0) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
@@ -3726,20 +4149,45 @@ function _setPrototypeOf(o, p) {
 
 
 
-var logger = debug__WEBPACK_IMPORTED_MODULE_5___default()('workouts-view');
-var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
-  _inheritsLoose(WorkoutsView, _AbstractStatefulColl);
 
-  function WorkoutsView() {
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_5___default()('workouts-view');
+var WorkoutsViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
+  _inheritsLoose(WorkoutsViewUsingContext, _AbstractStatefulColl);
+
+  var _proto = WorkoutsViewUsingContext.prototype;
+
+  _proto.getItemDescription = function getItemDescription(from, item) {
+    var buffer = '';
+
+    if (item.exercises) {
+      item.exercises.forEach(function (exercise) {
+        buffer += "<strong>" + exercise.name + "</strong>:<ul> ";
+
+        if (exercise.type === 'cardio') {
+          buffer += "<li>" + exercise.distance + " in " + exercise.duration + "</li>";
+        } else {
+          buffer += "<li>" + exercise.sets + " sets with " + exercise.reps + " reps in " + exercise.duration + "</li>";
+        }
+
+        buffer += "</ul>";
+      });
+    }
+
+    return buffer;
+  };
+
+  function WorkoutsViewUsingContext() {
     var _this;
 
-    _this = _AbstractStatefulColl.call(this, WorkoutsView.DOMConfig.collectionConfig, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts) || this;
-    _this.renderer = new _ui_framework_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_6__.CarouselViewRenderer(_assertThisInitialized(_this), _assertThisInitialized(_this), WorkoutsView.DOMConfig);
+    _this = _AbstractStatefulColl.call(this, WorkoutsViewUsingContext.DOMConfig.collectionConfig, _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().getStateManager(), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts) || this;
+    _this.renderer = new _CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_13__.CarouselViewRendererUsingContext(_assertThisInitialized(_this), _assertThisInitialized(_this), WorkoutsViewUsingContext.DOMConfig);
     _this.chartRefs = [];
+    _this.getIdForItemInNamedCollection = _this.getIdForItemInNamedCollection.bind(_assertThisInitialized(_this));
+    _this.getItemId = _this.getItemId.bind(_assertThisInitialized(_this));
+    _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().addContextFromView(_assertThisInitialized(_this), _AppTypes__WEBPACK_IMPORTED_MODULE_2__.STATE_NAMES.workouts, 'Workouts');
     return _this;
   }
-
-  var _proto = WorkoutsView.prototype;
 
   _proto.canDeleteItem = function canDeleteItem(view, selectedItem) {
     return selectedItem.completed;
@@ -3747,6 +4195,10 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
 
   _proto.compareItemsForEquality = function compareItemsForEquality(item1, item2) {
     return (0,_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_4__.isSameMongo)(item1, item2);
+  };
+
+  _proto.getItemId = function getItemId(from, item) {
+    return this.getIdForItemInNamedCollection(from, item);
   };
 
   _proto.getIdForItemInNamedCollection = function getIdForItemInNamedCollection(name, item) {
@@ -3765,7 +4217,7 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
         var exercise = item.exercises[index];
         result.weight += exercise.weight;
         result.distance += exercise.distance;
-        result.duration = (0,_util_DurationFunctions__WEBPACK_IMPORTED_MODULE_8__.addDurations)(result.duration, exercise.duration);
+        result.duration = (0,_util_DurationFunctions__WEBPACK_IMPORTED_MODULE_7__.addDurations)(result.duration, exercise.duration);
       }
     }
 
@@ -3775,7 +4227,7 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
   _proto.renderDisplayForItemInNamedCollection = function renderDisplayForItemInNamedCollection(containerEl, name, item) {
     var summary = this.calculateExerciseSummary(item);
     var buffer = '';
-    buffer += "<h5 class=\"card-title\">" + moment__WEBPACK_IMPORTED_MODULE_7___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</h5>";
+    buffer += "<h5 class=\"card-title\">" + moment__WEBPACK_IMPORTED_MODULE_6___default()(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm') + "</h5>";
     buffer += "<ul class=\"list-group list-group-flush\">";
     buffer += "<li class=\"list-group-item\"><strong>Duration:</strong> " + summary.duration + "</li>";
     if (summary.weight > 0) buffer += "<li class=\"list-group-item\"><strong>Total Weight:</strong> " + summary.weight + "</li>";
@@ -3848,16 +4300,16 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
       var bgColour = [];
       var brColour = [];
       item.exercises.forEach(function (exercise) {
-        labels.push((0,_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_9__.truncateString)(exercise.name, 10));
+        labels.push((0,_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_8__.truncateString)(exercise.name, 10));
 
         if (exercise.type === 'cardio') {
           data.push(exercise.distance);
-          bgColour.push(WorkoutsView.bgCardio);
-          brColour.push(WorkoutsView.borderCardio);
+          bgColour.push(WorkoutsViewUsingContext.bgCardio);
+          brColour.push(WorkoutsViewUsingContext.borderCardio);
         } else {
           data.push(exercise.weight);
-          bgColour.push(WorkoutsView.bgStrength);
-          brColour.push(WorkoutsView.borderStrength);
+          bgColour.push(WorkoutsViewUsingContext.bgStrength);
+          brColour.push(WorkoutsViewUsingContext.borderStrength);
         }
       });
       var chartData = {
@@ -3890,7 +4342,7 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
         // @ts-ignore
         var ref = {
           _id: item._id,
-          chart: new chart_js_auto__WEBPACK_IMPORTED_MODULE_10__["default"](canvas, config)
+          chart: new chart_js_auto__WEBPACK_IMPORTED_MODULE_9__["default"](canvas, config)
         };
         this.chartRefs.push(ref);
         containerEl.appendChild(canvas);
@@ -3904,21 +4356,145 @@ var WorkoutsView = /*#__PURE__*/function (_AbstractStatefulColl) {
     _AbstractStatefulColl.prototype.itemAction.call(this, view, actionName, selectedItem); // @ts-ignore
 
 
-    if (actionName === WorkoutsView.DOMConfig.collectionConfig.extraActions[0].name) {
+    if (actionName === WorkoutsViewUsingContext.DOMConfig.collectionConfig.extraActions[0].name) {
       // add the current list of exercises to the current workout
       _Controller__WEBPACK_IMPORTED_MODULE_3__["default"].getInstance().addWorkoutExercisesToCurrentWorkout(selectedItem);
     } // @ts-ignore
 
 
-    if (actionName === WorkoutsView.DOMConfig.collectionConfig.extraActions[1].name) {
+    if (actionName === WorkoutsViewUsingContext.DOMConfig.collectionConfig.extraActions[1].name) {
       // continue the current workout
-      _App__WEBPACK_IMPORTED_MODULE_11__["default"].getInstance().showCurrentWorkout();
+      _App__WEBPACK_IMPORTED_MODULE_10__["default"].getInstance().showCurrentWorkout();
     }
   };
 
-  return WorkoutsView;
+  _proto.eventClickItem = function eventClickItem(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
+    console.log('CONTEXT');
+    console.log(context);
+
+    if (context) {
+      // @ts-ignore
+      var itemId = context.identifier; // @ts-ignore
+
+      var dataSource = context.source;
+
+      if (this.collectionUIConfig.keyType === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+        // @ts-ignore
+        itemId = parseInt(itemId);
+      } // @ts-ignore
+
+
+      logger("view " + this.getName() + ": Item with id " + itemId + " clicked from " + dataSource);
+      var compareWith = {}; // @ts-ignore
+
+      compareWith[this.collectionUIConfig.keyId] = itemId;
+      logger(compareWith);
+      var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
+      logger(selectedItem);
+
+      if (selectedItem) {
+        var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
+        logger("view " + this.getName() + ": Item with id " + itemId + " attempting selected from " + dataSource + " - " + shouldSelect);
+
+        if (shouldSelect) {
+          this.selectedItem = selectedItem;
+          logger(selectedItem);
+          this.eventForwarder.itemSelected(this, selectedItem);
+        }
+      }
+    }
+  };
+
+  _proto.eventDeleteClickItem = function eventDeleteClickItem(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
+    console.log('CONTEXT');
+    console.log(context);
+
+    if (context) {
+      // @ts-ignore
+      var itemId = context.identifier; // @ts-ignore
+
+      var dataSource = context.source;
+
+      if (this.collectionUIConfig.keyType === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+        // @ts-ignore
+        itemId = parseInt(itemId);
+      } // @ts-ignore
+
+
+      logger("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
+      var compareWith = {}; // @ts-ignore
+
+      compareWith[this.collectionUIConfig.keyId] = itemId;
+      logger(compareWith);
+      var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
+
+      if (selectedItem) {
+        var shouldDelete = this.eventForwarder.canDeleteItem(this, selectedItem);
+        logger("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource + " - " + shouldDelete);
+
+        if (shouldDelete) {
+          // do we need to confirm?
+          if (this.collectionUIConfig.detail.quickDelete) {
+            this.selectedItem = null;
+            this.eventForwarder.itemDeleted(this, selectedItem);
+          } else {
+            _ui_framework_alert_AlertManager__WEBPACK_IMPORTED_MODULE_11__.AlertManager.getInstance().startAlert(this, this.getName(), "Are you sure you want to delete this information?", selectedItem);
+          }
+        }
+      }
+    }
+  };
+
+  _proto.eventActionClicked = function eventActionClicked(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    var context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_12__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
+    console.log('CONTEXT');
+    console.log(context);
+
+    if (context) {
+      // @ts-ignore
+      var itemId = context.identifier; // @ts-ignore
+
+      var dataSource = context.source;
+
+      if (this.collectionUIConfig.keyType === _ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.KeyType.number) {
+        // @ts-ignore
+        itemId = parseInt(itemId);
+      } // @ts-ignore
+
+
+      var actionName = event.target.getAttribute(_ui_framework_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_1__.EXTRA_ACTION_ATTRIBUTE_NAME); // @ts-ignore
+
+      logger("view " + this.getName() + ": Item with id " + itemId + " attempting delete from " + dataSource);
+      var compareWith = {}; // @ts-ignore
+
+      compareWith[this.collectionUIConfig.keyId] = itemId;
+      logger(compareWith);
+      var selectedItem = this.getItemInNamedCollection(this.collectionName, compareWith);
+
+      if (selectedItem) {
+        var shouldSelect = this.eventForwarder.canSelectItem(this, selectedItem);
+        logger("view " + this.getName() + ": Item with id " + itemId + " attempting action " + actionName + " from " + dataSource + " - " + shouldSelect);
+
+        if (shouldSelect) {
+          this.selectedItem = selectedItem;
+          logger(selectedItem);
+          this.eventForwarder.itemAction(this, actionName, selectedItem);
+        }
+      }
+    }
+  };
+
+  return WorkoutsViewUsingContext;
 }(_ui_framework_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_0__["default"]);
-WorkoutsView.DOMConfig = {
+WorkoutsViewUsingContext.DOMConfig = {
   itemsPerRow: {
     small: 1,
     medium: 2,
@@ -4022,10 +4598,223 @@ WorkoutsView.DOMConfig = {
     }]
   }
 };
-WorkoutsView.bgStrength = 'rgba(255, 0, 0, 0.2)';
-WorkoutsView.bgCardio = 'rgba(0, 50, 255, 0.2)';
-WorkoutsView.borderStrength = 'rgb(255, 50, 0)';
-WorkoutsView.borderCardio = 'rgb(0, 50 , 255)';
+WorkoutsViewUsingContext.bgStrength = 'rgba(255, 0, 0, 0.2)';
+WorkoutsViewUsingContext.bgCardio = 'rgba(0, 50, 255, 0.2)';
+WorkoutsViewUsingContext.borderStrength = 'rgb(255, 50, 0)';
+WorkoutsViewUsingContext.borderCardio = 'rgb(0, 50 , 255)';
+
+/***/ }),
+
+/***/ "./src/context/ContextualInformationHelper.ts":
+/*!****************************************************!*\
+  !*** ./src/context/ContextualInformationHelper.ts ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TogglePlacement": () => (/* binding */ TogglePlacement),
+/* harmony export */   "ContextualInformationHelper": () => (/* binding */ ContextualInformationHelper)
+/* harmony export */ });
+var TogglePlacement;
+
+(function (TogglePlacement) {
+  TogglePlacement[TogglePlacement["top"] = 0] = "top";
+  TogglePlacement[TogglePlacement["bottom"] = 1] = "bottom";
+  TogglePlacement[TogglePlacement["right"] = 2] = "right";
+  TogglePlacement[TogglePlacement["left"] = 3] = "left";
+})(TogglePlacement || (TogglePlacement = {}));
+
+var defaultIdentifier = function defaultIdentifier(name, item) {
+  return '';
+};
+
+var ContextualInformationHelper = /*#__PURE__*/function () {
+  ContextualInformationHelper.getInstance = function getInstance() {
+    if (!ContextualInformationHelper._instance) {
+      ContextualInformationHelper._instance = new ContextualInformationHelper();
+    }
+
+    return ContextualInformationHelper._instance;
+  };
+
+  function ContextualInformationHelper() {
+    this.registry = [];
+  }
+
+  var _proto = ContextualInformationHelper.prototype;
+
+  _proto.ensureInRegistry = function ensureInRegistry(source) {
+    var result;
+    var foundIndex = this.registry.findIndex(function (context) {
+      return context.source === source;
+    });
+
+    if (foundIndex < 0) {
+      result = {
+        source: source,
+        internalType: '',
+        displayName: '',
+        identifier: defaultIdentifier,
+        description: defaultIdentifier
+      };
+      this.registry.push(result);
+    } else {
+      result = this.registry[foundIndex];
+    }
+
+    return result;
+  };
+
+  _proto.addContextFromView = function addContextFromView(view, internalType, displayName) {
+    var context = this.ensureInRegistry(view.getName());
+    context.internalType = internalType;
+    context.displayName = displayName;
+    context.identifier = view.getItemId;
+    context.description = view.getItemDescription;
+    console.log("registering");
+    console.log(context);
+  };
+
+  _proto.addContextToElement = function addContextToElement(source, type, item, element, addTooltip, placement) {
+    if (addTooltip === void 0) {
+      addTooltip = false;
+    }
+
+    if (placement === void 0) {
+      placement = TogglePlacement.bottom;
+    }
+
+    console.log("adding");
+    var context = this.ensureInRegistry(source);
+    element.setAttribute(ContextualInformationHelper.SOURCE, context.source);
+    element.setAttribute(ContextualInformationHelper.TYPE, context.internalType);
+    element.setAttribute(ContextualInformationHelper.DISPLAYNAME, context.displayName);
+    element.setAttribute(ContextualInformationHelper.IDENTIFIER, context.identifier(type, item));
+    element.setAttribute(ContextualInformationHelper.DESCRIPTION, context.description(type, item));
+
+    if (addTooltip) {
+      element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE, ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE);
+      element.setAttribute(ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML, ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML_VALUE);
+
+      switch (placement) {
+        case TogglePlacement.bottom:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_BOTTOM);
+            break;
+          }
+
+        case TogglePlacement.top:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_TOP);
+            break;
+          }
+
+        case TogglePlacement.left:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_LEFT);
+            break;
+          }
+
+        case TogglePlacement.right:
+          {
+            element.setAttribute(ContextualInformationHelper.BOOTSTRAP_PLACEMENT, ContextualInformationHelper.BOOTSTRAP_PLACEMENT_RIGHT);
+            break;
+          }
+      }
+
+      $('[data-toggle="tooltip"]').tooltip();
+    }
+  };
+
+  _proto.findContextFromElement = function findContextFromElement(element) {
+    // do we have context information in this element?
+    var result = null;
+    var source = element.getAttribute(ContextualInformationHelper.SOURCE);
+
+    if (source) {
+      var _type = element.getAttribute(ContextualInformationHelper.TYPE);
+
+      var name = element.getAttribute(ContextualInformationHelper.DISPLAYNAME);
+      var id = element.getAttribute(ContextualInformationHelper.IDENTIFIER);
+      var desc = element.getAttribute(ContextualInformationHelper.DESCRIPTION); // @ts-ignore
+
+      result = {
+        source: source,
+        internalType: _type,
+        displayName: name,
+        identifier: id,
+        description: desc
+      };
+    } else {
+      var parent = element.parentElement;
+
+      if (parent) {
+        result = this.findContextFromElement(parent);
+      }
+    }
+
+    return result;
+  };
+
+  _proto.findAllContextsFromElement = function findAllContextsFromElement(element, contexts) {
+    // do we have context information in this element?
+    var source = element.getAttribute(ContextualInformationHelper.SOURCE);
+
+    if (source) {
+      var _type2 = element.getAttribute(ContextualInformationHelper.TYPE);
+
+      var name = element.getAttribute(ContextualInformationHelper.DISPLAYNAME);
+      var id = element.getAttribute(ContextualInformationHelper.IDENTIFIER);
+      var desc = element.getAttribute(ContextualInformationHelper.DESCRIPTION); // @ts-ignore
+
+      var result = {
+        source: source,
+        internalType: _type2,
+        displayName: name,
+        identifier: id,
+        description: desc
+      };
+      contexts.push(result);
+    }
+
+    var parent = element.parentElement;
+
+    if (parent) {
+      this.findAllContextsFromElement(parent, contexts);
+    }
+  };
+
+  _proto.findContextFromEvent = function findContextFromEvent(event) {
+    var result = null;
+
+    if (event.target) {
+      var target = event.target; // @ts-ignore
+
+      result = this.findContextFromElement(event.target);
+    }
+
+    return result;
+  };
+
+  return ContextualInformationHelper;
+}();
+ContextualInformationHelper.SOURCE = 'context-source';
+ContextualInformationHelper.TYPE = 'context-type';
+ContextualInformationHelper.DISPLAYNAME = 'context-display-name';
+ContextualInformationHelper.IDENTIFIER = 'context-id';
+ContextualInformationHelper.DESCRIPTION = 'title';
+ContextualInformationHelper.BOOTSTRAP_TOGGLE = 'data-toggle';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT = 'data-placement';
+ContextualInformationHelper.BOOTSTRAP_TOOLTIP_VALUE = 'tooltip';
+ContextualInformationHelper.BOOTSTRAP_POPOVER_VALUE = 'popover';
+ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML = 'data-html';
+ContextualInformationHelper.BOOTSTRAP_TOGGLE_HTML_VALUE = 'true';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_TOP = 'top';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_BOTTOM = 'bottom';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_RIGHT = 'right';
+ContextualInformationHelper.BOOTSTRAP_PLACEMENT_LEFT = 'left';
 
 /***/ }),
 
@@ -13027,6 +13816,10 @@ var AbstractCollectionView = /*#__PURE__*/function (_AbstractView) {
 
   var _proto = AbstractCollectionView.prototype;
 
+  _proto.getItemId = function getItemId(from, item) {
+    return this.getIdForItemInNamedCollection(from, item);
+  };
+
   _proto.getCollectionUIConfig = function getCollectionUIConfig() {
     return this.collectionUIConfig;
   };
@@ -13299,6 +14092,10 @@ var AbstractStatefulCollectionView = /*#__PURE__*/function (_AbstractCollectionV
 
   var _proto = AbstractStatefulCollectionView.prototype;
 
+  _proto.getItemDescription = function getItemDescription(from, item) {
+    return "";
+  };
+
   _proto.onDocumentLoaded = function onDocumentLoaded() {
     _AbstractCollectionVi.prototype.onDocumentLoaded.call(this);
 
@@ -13410,6 +14207,14 @@ var AbstractView = /*#__PURE__*/function () {
   }
 
   var _proto = AbstractView.prototype;
+
+  _proto.getItemId = function getItemId(from, item) {
+    throw new Error("Method not implemented.");
+  };
+
+  _proto.getItemDescription = function getItemDescription(from, item) {
+    throw new Error("Method not implemented.");
+  };
 
   _proto.getUIConfig = function getUIConfig() {
     return this.uiConfig;
@@ -13544,6 +14349,14 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
     this.eventForwarder.addListener(listener);
   };
 
+  _proto.getItemId = function getItemId(name, item) {
+    return '';
+  };
+
+  _proto.getItemDescription = function getItemDescription(name, item) {
+    return '';
+  };
+
   _proto.clearDisplay = function clearDisplay() {
     this.renderer.reset();
   };
@@ -13624,477 +14437,6 @@ var DetailViewImplementation = /*#__PURE__*/function (_AbstractView) {
 
   return DetailViewImplementation;
 }(_AbstractView__WEBPACK_IMPORTED_MODULE_0__.AbstractView);
-
-/***/ }),
-
-/***/ "./src/ui-framework/view/renderer/CarouselViewRenderer.ts":
-/*!****************************************************************!*\
-  !*** ./src/ui-framework/view/renderer/CarouselViewRenderer.ts ***!
-  \****************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CarouselViewRenderer": () => (/* binding */ CarouselViewRenderer)
-/* harmony export */ });
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../ConfigurationTypes */ "./src/ui-framework/ConfigurationTypes.ts");
-
-
-
-var avLogger = debug__WEBPACK_IMPORTED_MODULE_0___default()('carousel-renderer');
-var CarouselViewRenderer = /*#__PURE__*/function () {
-  function CarouselViewRenderer(view, eventHandler, config) {
-    this.lastRenderedContainer = null;
-    this.lastRenderedCollectionName = null;
-    this.lastRenderedCollection = null;
-    this.previousWindowWidth = 0;
-    this.view = view;
-    this.eventHandler = eventHandler;
-    this.config = config;
-  }
-
-  var _proto = CarouselViewRenderer.prototype;
-
-  _proto.onDocumentLoaded = function onDocumentLoaded() {
-    var _this = this; // we need to track window resizing
-
-
-    this.previousWindowWidth = window.innerWidth;
-    window.addEventListener('resize', function (event) {
-      var newWindowWidth = window.innerWidth;
-      var reRenderRequired = false;
-
-      if (newWindowWidth < _this.previousWindowWidth) {
-        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
-          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
-            // need to re-render carousel
-            reRenderRequired = true;
-            avLogger("window reduced and is now smaller or equal to large");
-          }
-        }
-
-        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
-          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
-            // need to re-render carousel
-            reRenderRequired = true;
-            avLogger("window reduced and is now smaller or equal to medium");
-          }
-        }
-
-        if (_this.previousWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
-          if (newWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
-            // need to re-render carousel
-            reRenderRequired = true;
-            avLogger("window reduced and is now smaller or equal to small");
-          }
-        }
-      } else {
-        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
-          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
-            // need to re-render carousel
-            avLogger("window increased and is now larger than small");
-            reRenderRequired = true;
-          }
-        }
-
-        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
-          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
-            avLogger("window increased and is now larger than medium"); // need to re-render carousel
-
-            reRenderRequired = true;
-          }
-        }
-
-        if (_this.previousWindowWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
-          if (newWindowWidth > _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
-            avLogger("window increased and is now larger than large"); // need to re-render carousel
-
-            reRenderRequired = true;
-          }
-        }
-      }
-
-      _this.previousWindowWidth = newWindowWidth;
-
-      if (_this.lastRenderedContainer && _this.lastRenderedCollection && _this.lastRenderedCollectionName && reRenderRequired) {
-        _this.setDisplayElementsForCollectionInContainer(_this.lastRenderedContainer, _this.lastRenderedCollectionName, _this.lastRenderedCollection);
-      }
-    });
-  };
-
-  _proto.createDisplayElementForCollectionItem = function createDisplayElementForCollectionItem(collectionName, item) {
-    var _this2 = this;
-
-    var dataSourceKeyId = this.view.getDataSourceKeyId();
-    var resultDataKeyId = this.view.getIdForItemInNamedCollection(collectionName, item);
-    var canDeleteItem = this.view.hasPermissionToDeleteItemInNamedCollection(collectionName, item);
-    avLogger("view " + this.view.getName() + ": creating carousel item");
-    avLogger(item);
-    var collectionConfig = this.view.getCollectionUIConfig();
-    var childEl = document.createElement(collectionConfig.resultsElementType);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.resultsClasses);
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(childEl, collectionConfig.resultsElementAttributes);
-    childEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-    childEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-    if (collectionConfig.detail.background) {
-      var backgroundEl = document.createElement(collectionConfig.detail.background.elementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(backgroundEl, collectionConfig.detail.background.elementClasses);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(backgroundEl, collectionConfig.detail.background.elementAttributes);
-      backgroundEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-      backgroundEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-      childEl.appendChild(backgroundEl);
-      this.view.renderBackgroundForItemInNamedCollection(backgroundEl, collectionName, item);
-    } // the content may be structured
-
-
-    var textEl = childEl;
-
-    if (collectionConfig.detail.containerClasses) {
-      var contentEl = document.createElement('div');
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(contentEl, collectionConfig.detail.containerClasses);
-      contentEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-      contentEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-      textEl = document.createElement(collectionConfig.detail.textElementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(textEl, collectionConfig.detail.textElementClasses);
-      textEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-      textEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-      contentEl.appendChild(textEl);
-
-      if (collectionConfig.extraActions || collectionConfig.detail.delete) {
-        var buttonsEl = document.createElement(this.config.actionContainer.elementType);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(buttonsEl, this.config.actionContainer.elementClasses);
-        contentEl.appendChild(buttonsEl);
-
-        if (collectionConfig.extraActions) {
-          collectionConfig.extraActions.forEach(function (extraAction) {
-            var hasPermissionForAction = _this2.view.hasPermissionToActionItemInNamedCollection(extraAction.name, collectionName, item);
-
-            if (hasPermissionForAction) {
-              var action = document.createElement('button');
-              action.setAttribute('type', 'button');
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(action, extraAction.buttonClasses);
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(action, extraAction.attributes);
-
-              if (extraAction.buttonText) {
-                action.innerHTML = extraAction.buttonText;
-              }
-
-              if (extraAction.iconClasses) {
-                var iconEl = document.createElement('i');
-                _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, extraAction.iconClasses);
-                iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-                iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-                iconEl.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-                action.appendChild(iconEl);
-              }
-
-              action.setAttribute(collectionConfig.keyId, resultDataKeyId);
-              action.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-              action.setAttribute(_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.EXTRA_ACTION_ATTRIBUTE_NAME, extraAction.name);
-              action.addEventListener('click', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                _this2.eventHandler.eventActionClicked(event);
-              });
-              buttonsEl.appendChild(action);
-            }
-          });
-        }
-
-        if (collectionConfig.detail.delete && collectionConfig && canDeleteItem) {
-          var deleteButtonEl = document.createElement('button');
-          deleteButtonEl.setAttribute('type', 'button');
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(deleteButtonEl, collectionConfig.detail.delete.buttonClasses);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(deleteButtonEl, collectionConfig.detail.delete.attributes);
-
-          if (collectionConfig.detail.delete.buttonText) {
-            deleteButtonEl.innerHTML = collectionConfig.detail.delete.buttonText;
-          }
-
-          if (collectionConfig.detail.delete.iconClasses) {
-            var iconEl = document.createElement('i');
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(iconEl, collectionConfig.detail.delete.iconClasses);
-            iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-            iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-            deleteButtonEl.appendChild(iconEl);
-          }
-
-          deleteButtonEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-          deleteButtonEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-          deleteButtonEl.addEventListener('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            _this2.eventHandler.eventDeleteClickItem(event);
-          });
-          buttonsEl.appendChild(deleteButtonEl);
-        }
-      }
-
-      childEl.appendChild(contentEl);
-
-      if (collectionConfig.detail.drag) {
-        childEl.setAttribute('draggable', 'true');
-        childEl.addEventListener('dragstart', this.eventHandler.eventStartDrag);
-      } // add selection actions
-
-
-      if (collectionConfig.detail.select) {
-        childEl.addEventListener('click', this.eventHandler.eventClickItem);
-      }
-    } // add the key ids for selection
-
-
-    textEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-    textEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-    var displayText = this.view.renderDisplayForItemInNamedCollection(textEl, collectionName, item); // add icons
-    // add modifiers for patient state
-
-    if (collectionConfig.modifiers) {
-      var modifier = this.view.getModifierForItemInNamedCollection(collectionName, item);
-      var secondModifier = this.view.getSecondaryModifierForItemInNamedCollection(collectionName, item);
-
-      switch (modifier) {
-        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.normal:
-          {
-            avLogger("view " + this.view.getName() + ": normal item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal);
-
-            if (collectionConfig.icons && collectionConfig.icons.normal) {
-              var _iconEl = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl, collectionConfig.icons.normal);
-
-              _iconEl.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-              _iconEl.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-              textEl.appendChild(_iconEl);
-            }
-
-            switch (secondModifier) {
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.warning:
-                {
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.normal, false);
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
-
-                  if (collectionConfig.icons && collectionConfig.icons.warning) {
-                    var _iconEl2 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl2, collectionConfig.icons.warning);
-
-                    _iconEl2.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-                    _iconEl2.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl2);
-                  }
-
-                  break;
-                }
-
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.active:
-                {
-                  if (collectionConfig.icons && collectionConfig.icons.active) {
-                    var _iconEl3 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl3, collectionConfig.icons.active);
-
-                    _iconEl3.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-                    _iconEl3.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl3);
-                  }
-                }
-            }
-
-            break;
-          }
-
-        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.active:
-          {
-            avLogger("view " + this.view.getName() + ": active item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active);
-
-            if (collectionConfig.icons && collectionConfig.icons.active) {
-              var _iconEl4 = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl4, collectionConfig.icons.active);
-
-              _iconEl4.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-              _iconEl4.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-              textEl.appendChild(_iconEl4);
-            }
-
-            switch (secondModifier) {
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.warning:
-                {
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.active, false);
-                  _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
-
-                  if (collectionConfig.icons && collectionConfig.icons.warning) {
-                    var _iconEl5 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl5, collectionConfig.icons.warning);
-
-                    _iconEl5.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-                    _iconEl5.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl5);
-                  }
-
-                  break;
-                }
-            }
-
-            break;
-          }
-
-        case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.inactive:
-          {
-            avLogger("view " + this.view.getName() + ": inactive item");
-            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive);
-
-            if (collectionConfig.icons && collectionConfig.icons.inactive) {
-              var _iconEl6 = document.createElement('i');
-
-              _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl6, collectionConfig.icons.inactive);
-
-              _iconEl6.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-              _iconEl6.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-              textEl.appendChild(_iconEl6);
-            }
-
-            switch (secondModifier) {
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.warning:
-                {
-                  if (collectionConfig.icons && collectionConfig.icons.warning) {
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.inactive, false);
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(childEl, collectionConfig.modifiers.warning, true);
-
-                    var _iconEl7 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl7, collectionConfig.icons.warning);
-
-                    _iconEl7.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-                    _iconEl7.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl7);
-                  }
-
-                  break;
-                }
-
-              case _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.Modifier.active:
-                {
-                  if (collectionConfig.icons && collectionConfig.icons.active) {
-                    var _iconEl8 = document.createElement('i');
-
-                    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(_iconEl8, collectionConfig.icons.active);
-
-                    _iconEl8.setAttribute(collectionConfig.keyId, resultDataKeyId);
-
-                    _iconEl8.setAttribute(dataSourceKeyId, collectionConfig.viewConfig.dataSourceId);
-
-                    textEl.appendChild(_iconEl8);
-                  }
-
-                  break;
-                }
-            }
-
-            break;
-          }
-      }
-    }
-
-    return childEl;
-  };
-
-  _proto.setDisplayElementsForCollectionInContainer = function setDisplayElementsForCollectionInContainer(containerEl, collectionName, newState) {
-    avLogger("view " + this.view.getName() + ": creating carousel results");
-    avLogger(newState); // remove the previous items from list
-
-    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeAllChildren(containerEl); // need to break the items up by row, and the last row is active (assumes increasing time order)
-
-    var numberOfResults = newState.length; // number of items per row depends on view port
-
-    var itemsPerRow = this.config.itemsPerRow.xlarge;
-
-    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_LARGE) {
-      itemsPerRow = this.config.itemsPerRow.large;
-    }
-
-    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_MEDIUM) {
-      itemsPerRow = this.config.itemsPerRow.medium;
-    }
-
-    if (window.innerWidth <= _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.SCREEN_WIDTH_SMALL) {
-      itemsPerRow = this.config.itemsPerRow.small;
-    }
-
-    var numberOfRows = Math.ceil(numberOfResults / itemsPerRow);
-    avLogger("view " + this.view.getName() + ": creating carousel with number of results per row of " + itemsPerRow + " with rows " + numberOfRows);
-
-    for (var rowIndex = 0; rowIndex < numberOfRows; rowIndex++) {
-      // create the row
-      var rowContainerEl = document.createElement(this.config.rowContainer.elementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowContainerEl, this.config.rowContainer.elementClasses);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, this.config.rowContainer.elementAttributes); //browserUtil.addAttributes(rowContainerEl,[{name:'style',value:'display:block'}]);
-
-      var rowEl = document.createElement(this.config.row.elementType);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowEl, this.config.row.elementClasses);
-      _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowEl, this.config.row.elementAttributes);
-      rowContainerEl.appendChild(rowEl); // if this the active row?
-
-      if (rowIndex === 0 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.RowPosition.first || rowIndex === numberOfRows - 1 && this.config.activeRowPosition === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_2__.RowPosition.last) {
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(rowContainerEl, this.config.activeRow.elementClasses);
-        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(rowContainerEl, this.config.activeRow.elementAttributes);
-      }
-
-      var itemIndex = rowIndex * itemsPerRow;
-
-      while (itemIndex < (rowIndex + 1) * itemsPerRow && itemIndex < numberOfResults) {
-        avLogger("rowIndex " + rowIndex + " item index " + itemIndex);
-        var item = newState[itemIndex];
-        var itemContainerEl = rowEl;
-
-        if (this.config.multipleItemsPerRowContainer) {
-          itemContainerEl = document.createElement(this.config.multipleItemsPerRowContainer.elementType);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addRemoveClasses(itemContainerEl, this.config.multipleItemsPerRowContainer.elementClasses);
-          _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(itemContainerEl, this.config.multipleItemsPerRowContainer.elementAttributes);
-          rowEl.appendChild(itemContainerEl);
-        }
-
-        var itemEl = this.createDisplayElementForCollectionItem(collectionName, item);
-        itemContainerEl.appendChild(itemEl);
-        itemIndex++;
-      }
-
-      containerEl.appendChild(rowContainerEl);
-    }
-
-    $('[data-toggle="tooltip"]').tooltip();
-    this.lastRenderedContainer = containerEl;
-    this.lastRenderedCollectionName = collectionName;
-    this.lastRenderedCollection = newState;
-  };
-
-  return CarouselViewRenderer;
-}();
 
 /***/ }),
 
@@ -14348,6 +14690,14 @@ var FormDetailViewRenderer = /*#__PURE__*/function () {
     }
 
     return false;
+  };
+
+  _proto.getItemDescription = function getItemDescription(from, item) {
+    return "";
+  };
+
+  _proto.getItemId = function getItemId(from, item) {
+    return "";
   };
 
   return FormDetailViewRenderer;

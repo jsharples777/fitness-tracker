@@ -38,6 +38,7 @@ import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
 import {v4} from "uuid";
 import {StateManager} from "./state/StateManager";
+import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
 
 
 const logger = debug('app');
@@ -140,7 +141,8 @@ export default class App implements UnreadMessageCountListener {
         this.exerciseTypesSidebar = new ExerciseTypesSidebar();
         new ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded();
 
-        new WorkoutsView().onDocumentLoaded(); // carousel view
+        //new WorkoutsView().onDocumentLoaded(); // carousel view
+        new WorkoutsViewUsingContext().onDocumentLoaded();
 
         this.workoutSummarySidebar = new WorkoutSummarySidebar();
         this.workoutSummarySidebar.addView(new WorkoutSummaryView(),{containerId: WorkoutSummarySidebar.SidebarContainers.container});
