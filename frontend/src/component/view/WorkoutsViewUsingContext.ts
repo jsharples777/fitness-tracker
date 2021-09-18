@@ -145,14 +145,14 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
         let buffer = '';
         if (item.exercises) {
             item.exercises.forEach((exercise:any) => {
-                buffer += `<strong>${exercise.name}</strong>:<ul> `;
+                buffer += `<strong>${exercise.name}</strong>: `;
                 if (exercise.type === 'cardio') {
-                    buffer += `<li>${exercise.distance} in ${exercise.duration}</li>`;
+                    buffer += `${exercise.distance} km in ${exercise.duration}`;
                 }
                 else {
-                    buffer += `<li>${exercise.sets} sets with ${exercise.reps} reps in ${exercise.duration}</li>`;
+                    buffer += `${exercise.sets} sets of ${exercise.reps} reps in ${exercise.duration}`;
                 }
-                buffer += `</ul>`;
+                buffer += `<br/>`;
             });
         }
         return buffer;

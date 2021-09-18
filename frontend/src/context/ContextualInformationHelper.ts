@@ -105,12 +105,9 @@ export class ContextualInformationHelper {
         context.defaultType.displayName = displayName;
         context.defaultType.identifier = view.getItemId;
         context.defaultType.description = view.getItemDescription;
-        console.log("registering");
-        console.log(context);
     }
 
     public addContextToElement(source:string, type:string, item:any, element:HTMLElement, addTooltip:boolean = false,placement:TogglePlacement = TogglePlacement.bottom):void {
-        console.log("adding");
         const context:ContextDefinition = this.ensureInRegistry(source);
         element.setAttribute(ContextualInformationHelper.SOURCE,context.source);
         element.setAttribute(ContextualInformationHelper.TYPE,context.defaultType.internalType);

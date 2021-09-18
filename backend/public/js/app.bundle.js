@@ -2863,15 +2863,15 @@ var ExerciseTypesViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl
 
   _proto.getItemDescription = function getItemDescription(from, item) {
     var buffer = '';
-    buffer += "<strong>" + item.name + "</strong>:<ul> ";
+    buffer += '<strong>' + item.name + '</strong>: ';
 
     if (item.type === 'cardio') {
-      buffer += "<li>" + item.distance + " in " + item.duration + "</li>";
+      buffer += item.distance + ' km in ' + item.duration;
     } else {
-      buffer += "<li>" + item.sets + " sets with " + item.reps + " reps in " + item.duration + "</li>";
+      buffer += item.sets + ' sets of ' + item.reps + ' reps in ' + item.duration;
     }
 
-    buffer += "</ul>";
+    buffer += '<br/>';
     return buffer;
   };
 
@@ -2996,8 +2996,11 @@ ExerciseTypesViewUsingContext.DOMConfig = {
       name: 'data-placement',
       value: "right"
     }, {
+      name: 'data-html',
+      value: 'true'
+    }, {
       name: 'title',
-      value: "Add this exercise to the current workout."
+      value: "Add this <strong>exercise</strong> to the current workout."
     }]
   }]
 };
@@ -3786,15 +3789,15 @@ var WorkoutsViewUsingContext = /*#__PURE__*/function (_AbstractStatefulColl) {
 
     if (item.exercises) {
       item.exercises.forEach(function (exercise) {
-        buffer += "<strong>" + exercise.name + "</strong>:<ul> ";
+        buffer += "<strong>" + exercise.name + "</strong>: ";
 
         if (exercise.type === 'cardio') {
-          buffer += "<li>" + exercise.distance + " in " + exercise.duration + "</li>";
+          buffer += exercise.distance + " km in " + exercise.duration;
         } else {
-          buffer += "<li>" + exercise.sets + " sets with " + exercise.reps + " reps in " + exercise.duration + "</li>";
+          buffer += exercise.sets + " sets of " + exercise.reps + " reps in " + exercise.duration;
         }
 
-        buffer += "</ul>";
+        buffer += "<br/>";
       });
     }
 
@@ -4163,8 +4166,6 @@ var ContextualInformationHelper = /*#__PURE__*/function () {
     context.defaultType.displayName = displayName;
     context.defaultType.identifier = view.getItemId;
     context.defaultType.description = view.getItemDescription;
-    console.log("registering");
-    console.log(context);
   };
 
   _proto.addContextToElement = function addContextToElement(source, type, item, element, addTooltip, placement) {
@@ -4176,7 +4177,6 @@ var ContextualInformationHelper = /*#__PURE__*/function () {
       placement = TogglePlacement.bottom;
     }
 
-    console.log("adding");
     var context = this.ensureInRegistry(source);
     element.setAttribute(ContextualInformationHelper.SOURCE, context.source);
     element.setAttribute(ContextualInformationHelper.TYPE, context.defaultType.internalType);

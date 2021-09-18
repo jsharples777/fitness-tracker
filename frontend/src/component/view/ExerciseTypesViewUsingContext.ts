@@ -72,7 +72,7 @@ export class ExerciseTypesViewUsingContext extends AbstractStatefulCollectionVie
             name: 'addToWorkout',
             buttonClasses:'btn bg-primary text-white btn-circle btn-md mr-1',
             iconClasses:'fas fa-arrow-alt-circle-right',
-            attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Add this exercise to the current workout."}]
+            attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'data-html',value:'true'},{name:'title',value:"Add this <strong>exercise</strong> to the current workout."}]
         }]
     };
 
@@ -88,14 +88,14 @@ export class ExerciseTypesViewUsingContext extends AbstractStatefulCollectionVie
 
     getItemDescription(from: string, item: any): string {
         let buffer = '';
-        buffer += `<strong>${item.name}</strong>:<ul> `;
+        buffer += '<strong>' + item.name + '</strong>: ';
         if (item.type === 'cardio') {
-            buffer += `<li>${item.distance} in ${item.duration}</li>`;
+            buffer += item.distance + ' km in ' + item.duration;
         }
         else {
-            buffer += `<li>${item.sets} sets with ${item.reps} reps in ${item.duration}</li>`;
+            buffer += item.sets + ' sets of ' + item.reps + ' reps in ' + item.duration;
         }
-        buffer += `</ul>`;
+        buffer += '<br/>';
         return buffer;
     }
 
