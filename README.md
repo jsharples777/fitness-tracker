@@ -1,4 +1,4 @@
-# I'm Board      [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# Fitness Tracker     [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # Table of Contents
 - [Project Description](#project-description)
@@ -14,21 +14,24 @@
 
 
 # Project Description
-This [web application](https://im-board-beta.herokuapp.com/) allows the user to find board games from Board Game Geek and add them to a local collection.  From there they can manage that
-collection adding and removing as they choose.  They can also start a score sheet for a board game, which is maintained in the browser and has some simple display and math functionality built-in.  
-The user can run a timer on the scoresheet to track the game length and then save the score sheet for that board game and review them at a later date.
+This [web application](https://fitness-tracker-jps.herokuapp.com/) allows the user to register and start tracking their workouts.
 
-A new user can choose register and create a login with the Options menu, and then be able to manage their collections and scoresheets stored in a database.
+The user is presented with:
+1. A dashboard carousel showing their latest current workout and can scroll through and see their previous workouts.
+2. Through the navigation, and buttons on their workouts, they can access all types of exercise (cardio/strength) created by any user;
+3. Add their own named exercise, delete their own exercises, and edit the details on an exercise (distance and duration for cardio, sets/reps/weight and duration for strength based);
+4. They can easily add exercises to the current active workout by:
+    - clicking on the "transfer" button from the exercise type list;
+    - dragging an exercise type to the current workout if open;
+    - copying the exercises from a previous workout in the their dashboard in one easy click, or access the right click menu
+5. View a graphical summary of their last seven workouts to track their progress.   
 
 A logged in user also has access to:
-1.  A user search function (by username)
+1.  A user search function (by username) to find other users of the website
 2.  The ability to create chat sessions with users, including group chats
 3.  A user can leave a chat at any time
 4.  A user can note some users as favourites, and will be notified if a user in their favourite list logs in/out
 5.  A user can note some users as blocked, preventing those users from invite them to chat rooms and sending them messages
-
-Finally a user can start a score sheet, and if logged in, and make it collaborative, inviting other logged in users and allow all invited users to enter data and share that data during the game, and if they
-have the capability and a secure connection, join a video/audio chat session together.
 
 As a technical note, the chat sessions are persisted and offline messages are received on login.
 
@@ -46,13 +49,7 @@ If the user is idle, the session expires in 24 hours.
 
 `API_SERVER_URL` - URL of the server completing the API calls (default `blank`)
 
-`DB_HOST` - address of the MySQL server machine
-
-`DB_NAME` - the name of the database to use
-
-`DB_USER` - the username to login to the database
-
-`DB_PW` - the password of the database user
+`DB_URL` - address and access to the Mongo server machine 
 
 `DEBUG` - activate debug output (sub-options are space separated names (e.g. `server socket db api route message-queue`)
 
@@ -62,40 +59,27 @@ If the user is idle, the session expires in 24 hours.
 
 `MQ_INTERVAL` - Milliseconds between queue persistence (default `10000` - 10 seconds)
 
-`QL_SCHEMA` - configuration file for the QL API (default `./config/schema.ql`)
-
 `SM_EXPIRY_CHAT` - number of minutes to keep a chat room persisted with no activity (default `43200` - 30 days)
 
 `SM_EXPIRY_SCORESHEET` - number of minutes to keep a score sheet room persisted with no activity (default `60`)
-
-`URL_FindById` - URL for the BoardGameGeek.com XML2 API call for finding the details of a board game
-
-`URL_Search` - URL for the BoardGameGeek.com XML2 API call to search for board games by name 
 
 `VIEW_RELATIVE_PATH` - location of the handlebars files in production, should be set to `/../../`
 
 # User Story
 
 ```
-As a USER I want to be able to search for a board game by name, including partial matches
-THEN I can choose to save the displayed board game details into the browser storage
-As a USER I want to be able to create a score sheet for a board game in my collection
-THEN I want to save the scoresheet, along with player names and scores and the date played, against the board game
-As a USER I want to be able to review the scores for a given board game and delete those if I so choose
+As a USER I want to be able to keep track of my workouts, and once logged into the site
+THEN I can choose to view my previous workouts and/or add exercises to my new (current) workout
+As a USER I want to be able to create exercises types that I will add/update/delete to/from workouts
+THEN I want to be able to copy those exercises into the current workout via multiple easy to use means
+As a USER I want to be able to review a 7 workout summary to track my progress, displayed graphically
 
-As a USER if I choose to register with the site
-THEN previously browser stored board games and their scoresheets are loaded into my user account
 As a USER I want to be able to find other users of the site
 THEN I can save users as Favourites or, for privacy reasons, save a user to a Blocked
 THEN I want to be notified if a Favourite user logins/out to the site
 As a USER I want to be able to chat with another user, creating a chat conversation with that user
 THEN I can close the chat room if I so choose
 THEN I can also add another user, creating a group chat, by dragging them into the chat from the User Search
-As a USER I want to be able to start a scoresheet for a boardgame and invite other users to join in
-THEN the other users may accept/decline that invitation, and if accept, we can all modify the values on the scoresheet
-WITH those values shown on each of our views, with a Start/Stop timer we can use to track game played time
-As a USER if I receive an invitation to a scoresheet from a non-Blocked user, I want the option to decline
-OR if I am already in a scoresheet, don't interrupt me
 As a USER if I log off the site for a time, when I log back in, I want to receive any messages
 FROM non-Blocked users when I log back in, with notifications telling me what I have waiting to review
 ```
@@ -119,36 +103,26 @@ Please access the [Questions](#questions) section to send me an email, or access
 7. [Bootstrap](https://getbootstrap.com/)
 8. [Webpack](https://www.typescriptlang.org/)
 9. [Babel](https://babeljs.io/)
-10. [MySQL](https://www.mysql.com/)
-11. [MySQL2](https://www.npmjs.com/package/mysql2)
+10. [MongoDB](https://www.mongodb.com/)
+11. [Mongoose](https://mongoosejs.com/docs/)
 12. [DotENV](https://www.npmjs.com/package/dotenv)
 13. [Git-Crypt](https://github.com/AGWA/git-crypt)
 14. [Express](https://www.npmjs.com/package/express)
-15. [Sequelize](https://www.npmjs.com/package/sequelize)
-16. [Passport](https://www.npmjs.com/package/passport)
-17. [Socket.io](https://socket.io/)
-18. [Typescript](https://www.typescriptlang.org/)
-19. [ts-node](https://github.com/TypeStrong/ts-node)
-20. [tsc-watch](https://www.npmjs.com/package/tsc-watch)
-21. [ts-loader](https://github.com/TypeStrong/ts-loader)
-22. [GraphQL](https://graphql.org/)
-23. [XML2js](https://www.npmjs.com/package/xml2js)
-24. [Digital 7 Font](http://www.styleseven.com/)
-25. [Bootstrap 4 Round Buttons](https://www.geeksforgeeks.org/how-to-get-circular-buttons-in-bootstrap-4/)
-26. [Handsontable](https://handsontable.com/)
-27. [WebRTC](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
-28. [Peerjs](https://peerjs.com/)
-29. [Building a Video Chat App with Node.js + Socket.io + WebRTC](https://levelup.gitconnected.com/building-a-video-chat-app-with-node-js-socket-io-webrtc-26f46b213017)    
+15. [Passport](https://www.npmjs.com/package/passport)
+16. [Socket.io](https://socket.io/)
+17. [Typescript](https://www.typescriptlang.org/)
+18. [ts-node](https://github.com/TypeStrong/ts-node)
+19. [tsc-watch](https://www.npmjs.com/package/tsc-watch)
+20. [ts-loader](https://github.com/TypeStrong/ts-loader)
+21. [Chart.js](https://www.chartjs.org/)
+22. [Bootstrap 4 Round Buttons](https://www.geeksforgeeks.org/how-to-get-circular-buttons-in-bootstrap-4/)
 
-# Presentation
-
-[Google presentation](https://docs.google.com/presentation/d/e/2PACX-1vSBaqdvg4ZTpuB6GpLoLwKwSM5dcWEug-tOjSjeoyPgw2haPdZ1pLZzSmdO53QJc7D8F3QuIThFIwqG/pub?start=false&loop=false&delayms=10000)
 
 # Questions
 
 >  **Direct your questions about this project to:**
 >
->  *GitHub:* [Github Project Link](https://github.com/jsharples777/im-board)
+>  *GitHub:* [Github Project Link](https://github.com/jsharples777/fitness-tracker)
 >
 >  *Email:* [jamie.sharples@gmail.com](mailto:jamie.sharples@gmail.com)
 
