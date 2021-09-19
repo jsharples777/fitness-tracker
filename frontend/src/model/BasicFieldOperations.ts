@@ -19,14 +19,14 @@ type FieldNameValue = {
 export class BasicFieldOperations implements FieldFormatter, FieldRenderer, FieldValidator, FieldValueGenerator {
     private previousFieldValues: FieldNameValue[];
 
-    private static dateRegex: RegExp = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
+    private static dateRegex: RegExp = /^(0[1-9]|[12]\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
     private static emailRegex: RegExp = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/;
     private static shortTimeRegex: RegExp = /^([01]\d|2[0-3]):?([0-5]\d)$/;
     private static timeRegex: RegExp = /^([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/;
     private static dateTimeRegex: RegExp = /^(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}\s([01]\d|2[0-3]):?([0-5]\d):?([0-5]\d)$/;
     private static basicPasswordRegex: RegExp = /^[a-zA-Z0-9]{8,15}$/;
     private static integerRegex: RegExp = /^[+-]?\d+$/;
-    private static floatRegexp: RegExp = /^[+-]?\d+(\.\d+)?$/;
+private static floatRegexp: RegExp = /^[+-]?\d+(\.\d+)?$/;
     private static booleanRegexp: RegExp = /^true|false$/;
     private static durationRegexp: RegExp = /^(\d+:)?[0-5]?\d:[0-5]\d$/;
 
