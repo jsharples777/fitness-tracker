@@ -104,12 +104,6 @@ i:hover {
     overflow-y: auto;
 }
 
-.scroll-bgg-search {
-    height: 70vh;
-    max-height: 100vh;
-    overflow-y: auto;
-}
-
 .scroll-chatlogs {
     height: 30vh;
     max-height: 100vh;
@@ -117,8 +111,8 @@ i:hover {
 }
 
 .scroll-exercise-type-detail {
-    height: 45vh;
-    max-height: 45vh;
+    height: 40vh;
+    max-height: 40vh;
     overflow-y: auto;
 }
 
@@ -127,22 +121,6 @@ i:hover {
     max-height: 30vh;
     overflow-y: auto;
 }
-
-
-.scroll-score-sheet {
-    width: 100vw;
-    max-width:100vw;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-}
-
-.scroll-score-sheet-active {
-    width: 100%;
-    max-width: 200%;
-    overflow-x: auto;
-}
-
-
 
 /* The sidebar sty styles, left, right and bottom */
 .sidebar-left {

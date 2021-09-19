@@ -207,7 +207,12 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
             buffer += `<h6 class="card-subtitle">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h6>`;
         }
         else {
-            buffer += `${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+            if (item.completed) {
+                buffer += `${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+            } else {
+                buffer += 'Current</h5>';
+            }
+
         }
         buffer += `<ul class="list-group list-group-flush">`;
         buffer += `<li class="list-group-item"><strong>Duration:</strong> ${summary.duration}</li>`;

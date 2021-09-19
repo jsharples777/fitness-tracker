@@ -19,6 +19,8 @@ import {DefaultPermissionChecker} from "../../DefaultPermissionChecker";
 import {CurrentWorkoutExercisesView} from "./CurrentWorkoutExercisesView";
 import {DataObjectListener} from "../../model/DataObjectListener";
 import {DataObjectController} from "../../model/DataObjectController";
+import moment from "moment";
+import App from "../../App";
 
 const logger = debug('current-workout-composite-view');
 
@@ -88,8 +90,14 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
                 createExerciseType.addEventListener('click',(event) => {
                     logger(`Completing the workout`);
                     this.currentWorkout.completed = true;
+                    this.currentWorkout.createdOn = moment().format('YYYYMMDDHHmmss');
+                    if (detailForm) {
+                        detailForm.reset();
+                        detailForm.setReadOnly();
+                    }
                     this.saveWorkout();
                     this.createWorkout();
+                    App.getInstance().hideAllSideBars();
                 });
 
             }
@@ -118,6 +126,8 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
     private saveWorkout() {
         logger(`Saving current workout`);
         logger(this.currentWorkout);
+        this.currentWorkout.createdOn = moment().format('YYYYMMDDHHmmss');
+        this.currentWorkout.modifiedOn = moment().format('YYYYMMDDHHmmss');
 
         Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.workouts,this.currentWorkout,isSameMongo,false);
     }
