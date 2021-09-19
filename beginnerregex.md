@@ -402,16 +402,21 @@ The second group is the domain after the `@`:
 [\da-z\.-]+
 ```
 
+We the same process again, one or more of the set of valid characters for a domain, notably missing the underscore `_`.
+This regex group can match more than one domain qualifier, with the inclusion of the [escaped](#character-escapes) `.`,
+allowing for `domain.x.y.1` before the end of the email address with the third regex group.
+
 So this group would match `d0main1.te5t.f1uffy.this-i5-10ng` but not `d#main.te&t` as the `#` and `&` are not in the
-bracket.  There is a small problem with this regex in that it allows for `....` which is not a valid email address domain.  Ideally we need one other character *before* the `.`.  This can be accomplished with a modification to require at least one character and then an optional `.` as follows:
+bracket.  There is a small problem with this regex in that it allows for `....` which is not a valid email address domain.  Ideally we need one other character *before* the `.`.  
+
+This illustrates exactly why we have learnt about Regex **ourselves**.  To be able to see the possible problems and then correct it!
+
+This can be accomplished with a modification to require at least one of the valid characters `[\da-z-]+` and then an optional escaped `.` (`\.?`)  and ensuring that combination is present at least one or more times `+`:
 
 ```jsregexp
 ([\da-z-]+\.?)+
 ```
 
-We the same process again, one or more of the set of valid characters for a domain, notably missing the underscore `_`.
-This regex group can match more than one domain qualifier, with the inclusion of the [escaped](#character-escapes) `.`,
-allowing for `domain.x.y.1` before the end of the email address with the third regex group.
 
 Finally we have the end of domain qualifier group:
 
@@ -439,3 +444,46 @@ breakdown and explanation of how your regex is being used.
 >
 >  *Email:* [jamie.sharples@gmail.com](mailto:jamie.sharples@gmail.com)
 
+## Leap Years
+
+For those of you reading this, like me, who want to know the complete solution for the 29th of February and leap years, lets go a bit further and correct our existing regex.
+```jsregexp
+/^((0?[1-9]|[12]\d|31)\/(0?[13578]|1[02])\/(\d{2}|\d{4}) | 
+   (0?[1-9]|[12]\d|30)\/(0?[469]|11])\/(\d{2}|\d{4}) | 
+   (0?[1-9]|1\d|2[0-8])\/02\/(\d{2}|\d{4}) | 
+   (29\/02\/(\d{2})?([02468][048]|[13579][26])))$/
+```
+
+To actually make the correction work, the year has to be four digits, but can be just two digits for all our other cases (groups).
+
+Essentially, the current expression is wrong for the `00` case in the last group of our expression.  The `0` tens digit should only have the `[48]` options, so let us correct that by adding another [OR](#the-or-operator) option for the `0` case as follows:
+```jsregexp
+/^((0?[1-9]|[12]\d|31)\/(0?[13578]|1[02])\/(\d{2}|\d{4}) | 
+   (0?[1-9]|[12]\d|30)\/(0?[469]|11])\/(\d{2}|\d{4}) | 
+   (0?[1-9]|1\d|2[0-8])\/02\/(\d{2}|\d{4}) | 
+   (29\/02\/(\d{2})?(0[48]|[2468][048]|[13579][26])))$/
+```
+
+Now we need to solve for those century values for which the `00` value is actually a leap year.  Those values are where the year is divisible by 400.  Let us look at the valid centuries and try and find a pattern.
+```
+0000, 0400, 0800, 1200, 1600, 2000, 2400, 2800, 3200, 3600,....
+```
+
+This is a very similar pattern to when we were looking at the tens year values, except now we are looking at the thousands and hundreds places, with a fixed value of 00 at the end:
+1. if the thousands is `0` or an even number then 0, 4, or 8 are valid hundreds digits;
+2. if the thousands starts with an odd number, then 2 or 6 are valid hundreds digits.
+
+```jsregexp
+[02468][048]|[13579][26]00
+```
+
+If we create another group for the 29th of February with these options we have a *complete* solution (at least for an AD date value until the year 10k) formatted for better visibility.  To use the regex, make sure the extra white space that was added to format it for display is removed or it will be consider to be part of the pattern!
+```jsregexp
+/^(
+   (0?[1-9]|[12]\d|31)\/(0?[13578]|1[02])\/(\d{2}|\d{4}) | 
+   (0?[1-9]|[12]\d|30)\/(0?[469]|11])\/(\d{2}|\d{4}) | 
+   (0?[1-9]|1\d|2[0-8])\/02\/(\d{2}|\d{4}) | 
+   (29\/02\/(\d{2})?(0[48]|[2468][048]|[13579][26])) |
+   (29\/02\/([02468][048]|[13579][26])00) 
+   )$/
+```
