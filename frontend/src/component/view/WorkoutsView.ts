@@ -33,8 +33,8 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
         itemsPerRow: {
             small:1,
             medium:2,
-            large: 3,
-            xlarge: 4
+            large: 2,
+            xlarge: 2
         },
         rowContainer: {
             elementClasses: "carousel-item",
@@ -51,7 +51,7 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
         },
         multipleItemsPerRowContainer: {
             elementType: 'div',
-            elementClasses: 'col-sm-12 col-md-4 col-lg-3 mb-2',
+            elementClasses: 'col-sm-12 col-md-6 mb-2',
         },
         actionContainer: {
             elementType:'div',
