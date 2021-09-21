@@ -3,6 +3,8 @@ import {View} from "./View";
 
 export interface CollectionView extends View {
     getIdForItemInNamedCollection(name: string, item: any): string;
+    getItemInNamedCollection(name: string, item: any): any;
+    getCollectionName():string;
 
     renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void;
 

@@ -11,6 +11,10 @@ import {FIELD_CreatedBy} from "../../model/BasicObjectDefinitionFactory";
 
 import debug from 'debug';
 import {StateManager} from "../../state/StateManager";
+import {CollectionViewEventHandlerDelegateUsingContext} from "../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
+import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
+import {ContextualInformationHelper} from "../../ui-framework/context/ContextualInformationHelper";
+import {ListViewRendererUsingContext} from "../../ui-framework/view/renderer/ListViewRendererUsingContext";
 
 const logger = debug('current-workout-exercises-view');
 
@@ -60,7 +64,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
             },
             delete: {
                 buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
-                iconClasses: 'text-black fas fa-sign-out-alt',
+                iconClasses: 'fas fa-trash-alt',
                 attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Delete this exercise from the workout."}]
             }
         }
@@ -68,7 +72,24 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
 
     constructor(stateManager:StateManager) {
         super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exerciseTypes);
-        this.renderer = new ListViewRenderer(this, this);
+        this.renderer = new ListViewRendererUsingContext(this, this);
+        this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this,<CollectionViewListenerForwarder>this.eventForwarder);
+        this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
+        this.getItemId = this.getItemId.bind(this);
+        ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.exerciseTypes,'Exercise Types');
+    }
+
+    getItemDescription(from: string, item: any): string {
+        let buffer = '';
+        buffer += '<strong>' + item.name + '</strong>: ';
+        if (item.type === 'cardio') {
+            buffer += item.distance + ' km in ' + item.duration;
+        }
+        else {
+            buffer += item.sets + ' sets of ' + item.reps + ' reps in ' + item.duration;
+        }
+        buffer += '<br/>';
+        return buffer;
     }
 
 

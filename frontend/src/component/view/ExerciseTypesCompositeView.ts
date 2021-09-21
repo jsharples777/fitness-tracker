@@ -16,6 +16,7 @@ import debug from "debug";
 import {ComparisonType, ConditionResponse, ValidationRule} from "../../ui-framework/form/validation/ValidationTypeDefs";
 import {ValidationManager} from "../../ui-framework/form/validation/ValidationManager";
 import {ValidationHelper} from "../helper/ValidationHelper";
+import {ExerciseTypesViewUsingContext} from "./ExerciseTypesViewUsingContext";
 
 const logger = debug('exercise-types-composite-view');
 
@@ -27,7 +28,7 @@ export class ExerciseTypesCompositeView {
     }
 
     onDocumentLoaded() {
-        const exerciseTypes = new ExerciseTypesView(Controller.getInstance().getStateManager());
+        const exerciseTypes = new ExerciseTypesViewUsingContext(Controller.getInstance().getStateManager());
         this.sideBar.addView(exerciseTypes,{containerId:ExerciseTypesSidebar.SidebarContainers.container});
 
         const exerciseTypeDefinition:DataObjectDefinition|null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exerciseTypes);

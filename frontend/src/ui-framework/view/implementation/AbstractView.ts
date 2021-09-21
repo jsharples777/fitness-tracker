@@ -34,6 +34,13 @@ export abstract class AbstractView implements View {
 
     }
 
+    getItemId(from: string, item: any): string {
+        throw new Error("Method not implemented.");
+    }
+    getItemDescription(from: string, item: any): string {
+        throw new Error("Method not implemented.");
+    }
+
     getUIConfig(): ViewDOMConfig {
         return this.uiConfig;
     }

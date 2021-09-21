@@ -51,19 +51,19 @@ export class BasicFormImplementation extends AbstractForm {
                         let field: Field;
                         switch (fieldUIConfig.elementType) {
                             case UIFieldType.textarea: {
-                                field = new TextAreaField(this.uiDef.id, fieldUIConfig, fieldDef, <HTMLTextAreaElement>fieldEl);
+                                field = new TextAreaField(this.id, fieldUIConfig, fieldDef, <HTMLTextAreaElement>fieldEl);
                                 break;
                             }
                             case UIFieldType.radioGroup: {
-                                field = new RadioButtonGroupField(this.uiDef.id, fieldUIConfig, fieldDef, fieldEl, subElements);
+                                field = new RadioButtonGroupField(this.id, fieldUIConfig, fieldDef, fieldEl, subElements);
                                 break;
                             }
                             case UIFieldType.select: {
-                                field = new SelectField(this.uiDef.id, fieldUIConfig, fieldDef, <HTMLSelectElement>fieldEl);
+                                field = new SelectField(this.id, fieldUIConfig, fieldDef, <HTMLSelectElement>fieldEl);
                                 break;
                             }
                             default: {
-                                field = new InputField(this.uiDef.id, fieldUIConfig, fieldDef, <HTMLInputElement>fieldEl);
+                                field = new InputField(this.id, fieldUIConfig, fieldDef, <HTMLInputElement>fieldEl);
                                 break;
                             }
                         }
@@ -92,11 +92,11 @@ export class BasicFormImplementation extends AbstractForm {
         }
     }
 
-    protected _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModiferFields:boolean = false): void {
+    protected _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean = false): void {
         logger(`Initialising`);
 
         // ok, so given a Data Object definition we are going to create the form ui config
-        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hasDeleteButton,hideModiferFields);
+        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hasDeleteButton,hideModifierFields);
         logger(this.uiDef);
         // now we need to create all the form elements from the ui definition
         this.factoryElements = FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);

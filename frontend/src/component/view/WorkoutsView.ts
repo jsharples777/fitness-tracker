@@ -16,7 +16,6 @@ import moment from "moment";
 import {addDurations} from "../../util/DurationFunctions";
 import {truncateString} from "../../util/MiscFunctions";
 import Chart from 'chart.js/auto';
-import browserUtil from "../../util/BrowserUtil";
 import App from "../../App";
 
 const logger = debug('workouts-view');
@@ -26,6 +25,13 @@ type ExerciseSummary = {
     distance:number,
     duration:string
 }
+
+type ChartRef = {
+    _id:string,
+    chart:Chart|null
+}
+
+
 
 export class WorkoutsView extends AbstractStatefulCollectionView implements CollectionViewListener {
 
@@ -82,8 +88,8 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
                 textElementClasses: '',
                 select: true,
                 delete: {
-                    buttonClasses:'btn btn-warning btn-circle btn-md',
-                    iconClasses:'fas fa-trash text-white',
+                    buttonClasses:'btn btn-danger btn-circle btn-md',
+                    iconClasses:'fas fa-trash-alt text-white',
                     attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Delete this workout"}]
                 },
                 background: {
@@ -104,23 +110,22 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
                     name: 'continue',
                     buttonText: '',
                     iconClasses:'fas fa-clipboard-list',
-                    buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
+                    buttonClasses: 'btn btn-danger btn-circle btn-md mr-2',
                     attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Continue this current workout"}]
                 }
             ],
 
         },
-
-
     }
 
-    private currentChart:Chart|null = null;
+    private chartRefs:ChartRef[];
+
 
 
     constructor() {
         super(WorkoutsView.DOMConfig.collectionConfig, Controller.getInstance().getStateManager(), STATE_NAMES.workouts);
         this.renderer = new CarouselViewRenderer(this, this,WorkoutsView.DOMConfig);
-        this.addEventCollectionListener(this);
+        this.chartRefs = [];
     }
 
     canDeleteItem(view: View, selectedItem: any): boolean {
@@ -159,7 +164,14 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
     renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
         let summary = this.calculateExerciseSummary(item);
         let buffer = '';
-        buffer += `<h5 class="card-title">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+        buffer += `<h5 class="card-title">`;
+        if (item.name) {
+            buffer+= `${item.name}</h5>`;
+            buffer += `<h6 class="card-subtitle">${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h6>`;
+        }
+        else {
+            buffer += `${moment(item.createdOn, 'YYYYMMDDHHmmss').format('ddd, DD/MM/YYYY HH:mm')}</h5>`;
+        }
         buffer += `<ul class="list-group list-group-flush">`;
         buffer += `<li class="list-group-item"><strong>Duration:</strong> ${summary.duration}</li>`;
         if (summary.weight > 0)   buffer += `<li class="list-group-item"><strong>Total Weight:</strong> ${summary.weight}</li>`;
@@ -198,14 +210,27 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
     }
 
     renderBackgroundForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any) {
-        if (this.currentChart) this.currentChart.destroy();
+        /*
+        Remove a previous chart reference
+         */
+        let foundIndex = this.chartRefs.findIndex((ref:any) => ref._id === item._id);
+        if (foundIndex) {
+            //this.chartRefs[foundIndex].chart?.destroy();
+            logger(`Removing old chart reference for workout ${item._id}`);
+            this.chartRefs.splice(foundIndex,1);
+        }
+
+
+
+        logger(`Rendering chart for`);
+        logger(item);
         // we are going to render a chart for the workout
         if (item.exercises) {
             const dataSourceKeyId = this.getDataSourceKeyId();
             const resultDataKeyId = this.getIdForItemInNamedCollection(name, item);
 
             let canvas = document.createElement('canvas');
-            browserUtil.addAttributes(canvas,[{name:'style',value:'height:100%; width:100%'}]);
+            //browserUtil.addAttributes(canvas,[{name:'style',value:'height:100%; width:100%'}]);
             canvas.setAttribute(this.collectionUIConfig.keyId, resultDataKeyId);
             canvas.setAttribute(dataSourceKeyId, this.collectionUIConfig.viewConfig.dataSourceId);
             // chart labels are the exercise names (shortened to 10 characters)
@@ -257,10 +282,15 @@ export class WorkoutsView extends AbstractStatefulCollectionView implements Coll
             };
 
             logger(config);
-
-            // @ts-ignore
-            this.currentChart = new Chart(canvas,config);
-            containerEl.appendChild(canvas);
+            try {
+                // @ts-ignore
+                let ref:ChartRef = {_id:item._id, chart: new Chart(canvas, config)};
+                this.chartRefs.push(ref);
+                containerEl.appendChild(canvas);
+            }
+            catch (err) {
+                console.log(err);
+            }
 
         }
     }

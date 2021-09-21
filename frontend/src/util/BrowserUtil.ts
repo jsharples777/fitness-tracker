@@ -78,6 +78,28 @@ class BrowserUtil {
         });
     }
 
+    allElementsFromPoint(x:number, y:number) {
+        var element, elements = [];
+        var old_visibility = [];
+        while (true) {
+            element = document.elementFromPoint(x, y);
+            if (!element || element === document.documentElement) {
+                break;
+            }
+            elements.push(element);
+            // @ts-ignore
+            old_visibility.push(element.style.visibility);
+            // @ts-ignore
+            element.style.visibility = 'hidden'; // Temporarily hide the element (without changing the layout)
+        }
+        for (var k = 0; k < elements.length; k++) {
+            // @ts-ignore
+            elements[k].style.visibility = old_visibility[k];
+        }
+        elements.reverse();
+        return elements;
+    }
+
 }
 
 const browserUtil = new BrowserUtil();

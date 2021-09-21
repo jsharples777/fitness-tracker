@@ -23,6 +23,15 @@ export class DetailViewImplementation extends AbstractView implements DetailView
         this.eventForwarder.addListener(listener);
     }
 
+    public getItemId(name:string,item:any) {
+        return '';
+    }
+
+    public getItemDescription(name:string,item:any): string {
+        return '';
+    }
+
+
 
     public clearDisplay(): void {
         this.renderer.reset();

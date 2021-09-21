@@ -59,20 +59,14 @@ router.post('/', (req, res) => {
 
 router.put('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.body._id}).then((result:DeleteResult) => {
+    MongoDataSource.getInstance().getDatabase().collection(collection).replaceOne({_id:req.body._id},req.body).then((result) => {
         logger(result);
-        MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
-            res.json(req.body);
-        })
-            .catch((err) => {
-                logger(err);
-                res.status(400).json(err);
-            });
-    })
-        .catch((err) => {
-            logger(err);
-            res.status(400).json(err);
-        });
+        res.json(req.body);
+    }).
+    catch((err) => {
+    logger(err);
+        res.status(400).json(err);
+    });
 });
 
 router.delete('/:id', (req, res) => {

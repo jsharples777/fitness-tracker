@@ -411,6 +411,14 @@ class ChatLogDetailView implements View, ChatEventListener, CollectionViewListen
     show(): void {
     }
 
+    getItemDescription(from: string, item: any): string {
+        return "";
+    }
+
+    getItemId(from: string, item: any): string {
+        return "";
+    }
+
 }
 
 export default ChatLogDetailView;

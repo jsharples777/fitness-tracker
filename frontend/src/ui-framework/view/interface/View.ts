@@ -21,4 +21,7 @@ export interface View {
 
     render():void;
 
+    getItemId(from:string, item:any):string;
+    getItemDescription(from:string, item:any):string;
+
 }
