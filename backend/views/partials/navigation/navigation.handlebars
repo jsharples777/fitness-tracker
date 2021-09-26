@@ -1,43 +1,15 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="bottom" title="Show All Blog Posts" id="navigationItemShowAll"><h1>Fitness Tracker</h1></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-expanded="false"
-            aria-controls="navigation" aria-label="Toggle Navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div id="navigation" class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-            {{#if user}}
-                <li class="nav-item pr-2"><a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" title="Show the exercises available" id="navigationItemExerciseTypes">Exercises <i class="fas fa-star"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" title="Show a graphical summary of the last 7 days of workouts" id="navigationItemWorkoutSummary">Workout Summary <i class="fas fa-chart-line"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" title="Show the current active workout" id="navigationItemCurrentWorkout">Current Workout <i class="fas fa-clipboard-list"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" title="Show the user search" id="navigationItemUserSearch">User Search <i class="fas fa-search"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" title="Show the chat" id="navigationItemChat">Chat <i class="fas fa-inbox"></i></a></li>
-            {{else}}
-                <li class="nav-item pr-2"><a class="nav-link" href="/login" data-toggle="tooltip" data-placement="bottom" title="Show my collection" id="navigationItemExerciseTypes">Exercises <i class="fas fa-star"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="/login" data-toggle="tooltip" data-placement="bottom" title="Show a graphical summary of the last 7 days of workouts" id="navigationItemWorkoutSummary">Workout Summary <i class="fas fa-chart-line"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="/login" data-toggle="tooltip" data-placement="bottom" title="Show the current active workout" id="navigationItemCurrentWorkout">Current Workout <i class="fas fa-clipboard-list"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="/login" data-toggle="tooltip" data-placement="bottom" title="Show the user search, requires logging in." id="navigationItemUserSearch">User Search <i class="fas fa-search"></i></a></li>
-                <li class="nav-item pr-2"><a class="nav-link" href="/login" data-toggle="tooltip" data-placement="bottom" title="Show the chat, requires logging in" id="navigationItemChat">Chat <i class="fas fa-inbox"></i></a></li>
-            {{/if}}
+<ul id="navigation" class="mbsc-cloak">
+    <li id="navigationItemExerciseTypes">Exercises <i class="fas fa-star"></i></li>
+    <li id="navigationItemWorkoutSummary">Workout Summary <i class="fas fa-chart-line"></i></li>
+    <li id="navigationItemCurrentWorkout">Current Workout <i class="fas fa-clipboard-list"></i></li>
+    <li id="navigationItemUserSearch">User Search <i class="fas fa-search"></i></li>
+    <li id="navigationItemChat">Chat <i class="fas fa-inbox"></i></li>
+    <div class="mbsc-padding">
+        <ul id="submenu" class="mbsc-cloak">
+            <li data-icon="fas fa-user-plus" id="navigationItemRegister">Register <i class="fas fa-user-plus"></i></li>
+            <li data-icon="fas fa-sign-in-alt" {{#if user}}disabled{{/if}} href="/login" id="navigationItemRegister">Login <i class="fas fa-sign-in-alt"></i></li>
+            <li data-icon="fas fa-sign-out-alt" {{#if user}}{{else}}disabled{{/if}} href="/logout" id="navigationItemLogout" >Logout <i class="fas fa-sign-out-alt"></i></li>
         </ul>
-        <ul class="navbar-nav is-pulled-right">
-            <li class="nav-item dropdown">
-                <a href="#"
-                   class="nav-link dropdown-toggle"
-                   data-toggle="dropdown"
-                   role="button"
-                   aria-haspopup="true"
-                   aria-expanded="false">
-                    Options <i class="fas fa-cogs"></i> <span class="caret"></span>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="/register" id="navigationItemRegister">Register <i class="fas fa-user-plus"></i></a>
-                    <a class="dropdown-item {{#if user}}disabled{{/if}}" href="/login" id="navigationItemRegister" >Login <i class="fas fa-sign-in-alt"></i></a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item {{#if user}}{{else}}disabled{{/if}}" href="/logout" id="navigationItemLogout" >Logout <i class="fas fa-sign-out-alt"></i></a>
-                </div>
-            </li>
-        </ul>
-    </div>
-</nav>
+    </div></ul>
+</div>
 <div id="notifications" class="notifications"></div>

@@ -25,6 +25,7 @@ import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
 import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
+import mobiscroll from "@mobiscroll/javascript";
 
 
 const logger = debug('app');
@@ -244,5 +245,19 @@ export default class App implements UnreadMessageCountListener {
 
 
 $(function() {
+
+    mobiscroll.nav('#navigation', {
+        theme: 'ios',
+        themeVariant: 'dark',
+        type: 'bottom',
+        display: 'inline'
+    });
+    // @ts-ignore
+    mobiscroll.nav('#submenu', {
+        theme: 'ios',
+        themeVariant: 'dark',
+        type: 'hamburger'
+    });
+
     App.getInstance().onDocumentLoad();
 });
