@@ -232,7 +232,7 @@ export default class App implements UnreadMessageCountListener {
     }
 
     addingExerciseToCurrentWorkout(exerciseType:any) {
-        this.exerciseTypesSidebar.eventHide(null);
+        //this.exerciseTypesSidebar.eventHide(null);
         this.currentWorkoutSidebar.eventShow(null);
         this.currentWorkoutView.getStateManager().addNewItemToState(STATE_NAMES.exerciseTypes,exerciseType, false);
     }
