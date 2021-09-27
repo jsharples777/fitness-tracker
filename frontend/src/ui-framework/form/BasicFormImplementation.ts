@@ -12,6 +12,7 @@ import {SelectField} from "./field/SelectField";
 import {InputField} from "./field/InputField";
 import {MobiscrollFormConfigHelper} from "../helper/MobiscrollFormConfigHelper";
 import mobiscroll from "@mobiscroll/javascript";
+import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
 
 
 
@@ -97,7 +98,11 @@ export class BasicFormImplementation extends AbstractForm {
         logger(`Initialising`);
 
         // ok, so given a Data Object definition we are going to create the form ui config
-        this.uiDef = MobiscrollFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
+        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
+        const themeRendering = localStorage.getItem('app.theme');
+        if (themeRendering && themeRendering === 'mobiscroll') {
+            this.uiDef = MobiscrollFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
+        }
         logger(this.uiDef);
         // now we need to create all the form elements from the ui definition
         this.factoryElements = FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);

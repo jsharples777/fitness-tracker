@@ -246,6 +246,7 @@ export default class App implements UnreadMessageCountListener {
 $(function() {
     debug.log = console.info.bind(console);
     localStorage.debug = '';
+    localStorage.removeItem('app.theme');
     localStorage.setItem('app.theme','mobiscroll');
 
     mobiscroll.settings = {

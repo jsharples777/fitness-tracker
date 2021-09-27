@@ -32,18 +32,22 @@ export class AbstractField implements Field, FieldListener {
 
         // listen for our own change events
         this.handleChangeEvent = this.handleChangeEvent.bind(this);
+        this.resetEventListeners();
+        if (!this.subElements) {
+            this.element.addEventListener('change', this.handleChangeEvent);
+        }
+
+    }
+
+    public resetEventListeners() {
         if (this.subElements) {
             this.subElements.forEach((subElement) => {
-                console.log('add subelement');
+                console.log('add subelement listener');
                 console.log(subElement);
                 subElement.addEventListener('change', this.handleChangeEvent);
                 subElement.addEventListener('click', this.handleChangeEvent);
             });
         }
-        else {
-            this.element.addEventListener('change', this.handleChangeEvent);
-        }
-
     }
 
     isHidden(): boolean {
@@ -52,6 +56,7 @@ export class AbstractField implements Field, FieldListener {
 
 
     protected handleChangeEvent(event: Event) {
+        console.log(event);
         logger(`Handling change event`);
         if (this.config) {
             let value: string | null = this.getValue();
@@ -306,7 +311,8 @@ export class AbstractField implements Field, FieldListener {
                 this.clearReadOnly();
             }
         }
-        this.hidden = true;
+        this.resetEventListeners();
+        this.hidden = false;
     }
 
     clearReadOnly(): void {

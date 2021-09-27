@@ -264,6 +264,7 @@ var App = /*#__PURE__*/function () {
 $(function () {
   (debug__WEBPACK_IMPORTED_MODULE_1___default().log) = console.info.bind(console);
   localStorage.debug = '';
+  localStorage.removeItem('app.theme');
   localStorage.setItem('app.theme', 'mobiscroll');
   (_mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_18___default().settings) = {
     theme: 'ios',
@@ -9911,6 +9912,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _helper_MobiscrollFormConfigHelper__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../helper/MobiscrollFormConfigHelper */ "./src/ui-framework/helper/MobiscrollFormConfigHelper.ts");
 /* harmony import */ var _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mobiscroll/javascript */ "./node_modules/@mobiscroll/javascript/dist/js/mobiscroll.javascript.min.js");
 /* harmony import */ var _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../helper/BootstrapFormConfigHelper */ "./src/ui-framework/helper/BootstrapFormConfigHelper.ts");
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
@@ -9926,6 +9928,7 @@ function _setPrototypeOf(o, p) {
 
   return _setPrototypeOf(o, p);
 }
+
 
 
 
@@ -10051,7 +10054,13 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
 
     logger("Initialising"); // ok, so given a Data Object definition we are going to create the form ui config
 
-    this.uiDef = _helper_MobiscrollFormConfigHelper__WEBPACK_IMPORTED_MODULE_9__.MobiscrollFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
+    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_11__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
+    var themeRendering = localStorage.getItem('app.theme');
+
+    if (themeRendering && themeRendering === 'mobiscroll') {
+      this.uiDef = _helper_MobiscrollFormConfigHelper__WEBPACK_IMPORTED_MODULE_9__.MobiscrollFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
+    }
+
     logger(this.uiDef); // now we need to create all the form elements from the ui definition
 
     this.factoryElements = _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_2__.FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
@@ -11242,8 +11251,6 @@ __webpack_require__.r(__webpack_exports__);
 var logger = debug__WEBPACK_IMPORTED_MODULE_4___default()('abstract-field');
 var AbstractField = /*#__PURE__*/function () {
   function AbstractField(formId, config, fieldDef, element, subElements) {
-    var _this = this;
-
     if (subElements === void 0) {
       subElements = null;
     }
@@ -11261,20 +11268,27 @@ var AbstractField = /*#__PURE__*/function () {
     this.renderingHandler = new _event_handlers_RenderingEventListener__WEBPACK_IMPORTED_MODULE_3__.RenderingEventListener(formId, config, [this], subElements); // listen for our own change events
 
     this.handleChangeEvent = this.handleChangeEvent.bind(this);
+    this.resetEventListeners();
 
-    if (this.subElements) {
-      this.subElements.forEach(function (subElement) {
-        console.log('add subelement');
-        console.log(subElement);
-        subElement.addEventListener('change', _this.handleChangeEvent);
-        subElement.addEventListener('click', _this.handleChangeEvent);
-      });
-    } else {
+    if (!this.subElements) {
       this.element.addEventListener('change', this.handleChangeEvent);
     }
   }
 
   var _proto = AbstractField.prototype;
+
+  _proto.resetEventListeners = function resetEventListeners() {
+    var _this = this;
+
+    if (this.subElements) {
+      this.subElements.forEach(function (subElement) {
+        console.log('add subelement listener');
+        console.log(subElement);
+        subElement.addEventListener('change', _this.handleChangeEvent);
+        subElement.addEventListener('click', _this.handleChangeEvent);
+      });
+    }
+  };
 
   _proto.isHidden = function isHidden() {
     return this.hidden;
@@ -11283,6 +11297,7 @@ var AbstractField = /*#__PURE__*/function () {
   _proto.handleChangeEvent = function handleChangeEvent(event) {
     var _this2 = this;
 
+    console.log(event);
     logger("Handling change event");
 
     if (this.config) {
@@ -11587,7 +11602,8 @@ var AbstractField = /*#__PURE__*/function () {
       }
     }
 
-    this.hidden = true;
+    this.resetEventListeners();
+    this.hidden = false;
   };
 
   _proto.clearReadOnly = function clearReadOnly() {
@@ -12485,6 +12501,311 @@ var ConditionResponse;
   ConditionResponse[ConditionResponse["invalid"] = 2] = "invalid";
   ConditionResponse[ConditionResponse["valid"] = 3] = "valid";
 })(ConditionResponse || (ConditionResponse = {}));
+
+/***/ }),
+
+/***/ "./src/ui-framework/helper/BootstrapFormConfigHelper.ts":
+/*!**************************************************************!*\
+  !*** ./src/ui-framework/helper/BootstrapFormConfigHelper.ts ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BootstrapFormConfigHelper": () => (/* binding */ BootstrapFormConfigHelper)
+/* harmony export */ });
+/* harmony import */ var _model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../model/BasicFieldOperations */ "./src/model/BasicFieldOperations.ts");
+/* harmony import */ var _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../model/DataObjectTypeDefs */ "./src/model/DataObjectTypeDefs.ts");
+/* harmony import */ var _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../form/FormUITypeDefs */ "./src/ui-framework/form/FormUITypeDefs.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./RBGFieldOperations */ "./src/ui-framework/helper/RBGFieldOperations.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+
+
+
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_3___default()('bootstrap-form-config-helper');
+var BootstrapFormConfigHelper = /*#__PURE__*/function () {
+  BootstrapFormConfigHelper.getInstance = function getInstance() {
+    if (!BootstrapFormConfigHelper._instance) {
+      BootstrapFormConfigHelper._instance = new BootstrapFormConfigHelper();
+    }
+
+    return BootstrapFormConfigHelper._instance;
+  };
+
+  function BootstrapFormConfigHelper() {}
+
+  var _proto = BootstrapFormConfigHelper.prototype;
+
+  _proto.generateFormConfig = function generateFormConfig(dataObjDef, displayOrders, hasDeleteButton, hideModifierFields) {
+    if (hideModifierFields === void 0) {
+      hideModifierFields = false;
+    }
+
+    var fieldOperations = new _model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__.BasicFieldOperations();
+    var rbgFieldOperation = new _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__.RBGFieldOperations(); // create the Field UI config for each field
+
+    var fieldUIConfigs = [];
+    dataObjDef.fields.forEach(function (fieldDef, index) {
+      var fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.text;
+
+      switch (fieldDef.type) {
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.time:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.text:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.date:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.shortTime:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.duration:
+          {
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.datetime:
+          {
+            // is this the created or modified date
+            if (hideModifierFields) {
+              if (fieldDef.id === _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedOn) {
+                fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+              }
+
+              if (fieldDef.id === _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_ModifiedOn) {
+                fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+              }
+            }
+
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.userId:
+          {
+            if (hideModifierFields) {
+              fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+            } else {
+              fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.text;
+            }
+
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.integer:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.float:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.number;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.email:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.email;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.password:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.password;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.checkbox;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.textarea;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.select;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.radioGroup;
+            break;
+          }
+      } // see if the field was supplied with a display order
+
+
+      var displayOrder = displayOrders.find(function (value) {
+        return value.fieldId === fieldDef.id;
+      });
+      var displayOrderValue = index;
+
+      if (displayOrder) {
+        displayOrderValue = displayOrder.displayOrder;
+      } // construct the field ui config
+
+
+      var fieldUIConfig = {
+        field: fieldDef,
+        displayOrder: displayOrderValue,
+        elementType: fieldType,
+        elementClasses: 'form-control col-sm-9',
+        renderer: fieldOperations,
+        formatter: fieldOperations
+      };
+
+      if (fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id && fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid && fieldType !== _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden) {
+        // no labels, descriptions, container for id,uuid
+        fieldUIConfig.containedBy = {
+          elementType: 'div',
+          elementClasses: 'form-group row'
+        };
+        fieldUIConfig.label = {
+          label: fieldDef.displayName,
+          classes: 'col-md-12 col-lg-3 col-form-label'
+        };
+
+        if (fieldDef.description) {
+          // descriptions if the field has one
+          fieldUIConfig.describedBy = {
+            message: fieldDef.description,
+            elementType: 'small',
+            elementClasses: 'text-muted col-md-12 col-lg-9 offset-lg-3 mt-1'
+          };
+        }
+
+        if (!fieldDef.displayOnly) {
+          // no validator for readonly items
+          fieldUIConfig.validator = {
+            validator: fieldOperations,
+            messageDisplay: {
+              elementType: 'div',
+              elementClasses: 'invalid-feedback col-md-12 col-lg-9 offset-lg-3'
+            },
+            validClasses: 'is-valid',
+            invalidClasses: 'is-invalid'
+          };
+        }
+      } // text areas
+
+
+      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText) {
+        fieldUIConfig.textarea = {
+          rows: 5,
+          cols: 20
+        };
+      } // select
+
+
+      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice) {
+        // subelements are options, with no classes, no labels, and no other container
+        fieldUIConfig.subElement = {
+          element: {
+            elementType: 'option',
+            elementClasses: ''
+          }
+        };
+        fieldUIConfig.datasource = fieldDef.dataSource;
+      } // radio button group
+
+
+      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice) {
+        fieldUIConfig.subElement = {
+          element: {
+            elementType: 'input',
+            elementClasses: 'form-check-input',
+            elementAttributes: [{
+              name: 'type',
+              value: 'radio'
+            }]
+          },
+          container: {
+            elementType: 'div',
+            elementClasses: 'form-check form-check-inline'
+          },
+          label: {
+            label: 'label',
+            classes: 'form-check-label'
+          }
+        };
+        fieldUIConfig.renderer = rbgFieldOperation;
+        if (fieldUIConfig.validator) fieldUIConfig.validator.validator = rbgFieldOperation;
+        fieldUIConfig.formatter = rbgFieldOperation;
+        fieldUIConfig.datasource = fieldDef.dataSource;
+      }
+
+      fieldUIConfigs.push(fieldUIConfig);
+    }); // create a form with a single group and button container with Bootstrap styles
+
+    var fieldGroup = {
+      containedBy: {
+        elementType: 'div',
+        elementClasses: 'col-sm-12'
+      },
+      fields: fieldUIConfigs
+    };
+    var formConfig = {
+      id: dataObjDef.id,
+      displayName: dataObjDef.displayName,
+      formElement: {
+        elementType: 'form',
+        elementClasses: ''
+      },
+      fieldGroups: [fieldGroup],
+      unsavedChanges: {
+        elementType: 'div',
+        elementClasses: 'invalid-feedback text-right col-md-12 col-lg-9 offset-lg-3',
+        elementAttributes: [{
+          name: 'style',
+          value: 'display:block'
+        }],
+        innerHTML: "Pending changes to " + dataObjDef.displayName
+      },
+      buttonsContainedBy: {
+        elementType: 'div',
+        elementClasses: 'd-flex w-100 justify-space-between'
+      },
+      cancelButton: {
+        buttonText: 'Cancel  ',
+        buttonClasses: 'btn-info rounded p-1 mr-2 mt-2 w-100',
+        iconClasses: 'fas fa-ban'
+      },
+      submitButton: {
+        buttonText: 'Save  ',
+        buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
+        iconClasses: 'fas fa-save'
+      },
+      activeSave: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;'
+    }; // sort the fields into display order
+
+    formConfig.fieldGroups.forEach(function (group) {
+      group.fields.sort(function (a, b) {
+        return a.displayOrder - b.displayOrder;
+      });
+    });
+
+    if (hasDeleteButton) {
+      formConfig.deleteButton = {
+        buttonText: 'Delete  ',
+        buttonClasses: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
+        iconClasses: 'fas fa-trash-alt'
+      };
+    }
+
+    logger(formConfig);
+    return formConfig;
+  };
+
+  return BootstrapFormConfigHelper;
+}();
 
 /***/ }),
 

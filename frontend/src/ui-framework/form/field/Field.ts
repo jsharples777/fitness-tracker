@@ -29,4 +29,6 @@ export interface Field {
     setReadOnly():void;
     clearReadOnly():void;
 
+    resetEventListeners():void;
+
 }
