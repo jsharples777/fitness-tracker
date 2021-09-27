@@ -8,15 +8,15 @@ import {FIELD_CreatedOn, FIELD_ModifiedOn} from "../../model/BasicObjectDefiniti
 
 const logger = debug('bootstrap-form-config-helper');
 
-export class BootstrapFormConfigHelper {
+export class MobiscrollFormConfigHelper {
 
-    private static _instance: BootstrapFormConfigHelper;
+    private static _instance: MobiscrollFormConfigHelper;
 
-    public static getInstance(): BootstrapFormConfigHelper {
-        if (!(BootstrapFormConfigHelper._instance)) {
-            BootstrapFormConfigHelper._instance = new BootstrapFormConfigHelper();
+    public static getInstance(): MobiscrollFormConfigHelper {
+        if (!(MobiscrollFormConfigHelper._instance)) {
+            MobiscrollFormConfigHelper._instance = new MobiscrollFormConfigHelper();
         }
-        return BootstrapFormConfigHelper._instance;
+        return MobiscrollFormConfigHelper._instance;
     }
 
     private constructor() {
@@ -110,7 +110,8 @@ export class BootstrapFormConfigHelper {
                 field: fieldDef,
                 displayOrder:displayOrderValue,
                 elementType: fieldType,
-                elementClasses: 'form-control col-sm-9',
+                elementClasses: 'mbsc-col-sm-9',
+                elementAttributes:[{name:'mbsc-input', value:''},{name:'data-input-style', value:'box'},{name:"data-label-style",value:"floating"}],
                 renderer: fieldOperations,
                 formatter: fieldOperations,
             }
@@ -118,31 +119,40 @@ export class BootstrapFormConfigHelper {
             if ((fieldDef.type !== FieldType.id) && (fieldDef.type !== FieldType.uuid) && (fieldType !== UIFieldType.hidden)) { // no labels, descriptions, container for id,uuid
                 fieldUIConfig.containedBy = {
                     elementType: 'div',
-                    elementClasses: 'form-group row'
+                    elementClasses: ''
                 };
 
                 fieldUIConfig.label = {
                     label: fieldDef.displayName,
-                    classes: 'col-md-12 col-lg-3 col-form-label'
+                    classes: ''
                 };
                 if (fieldDef.description) { // descriptions if the field has one
-                    fieldUIConfig.describedBy = {
-                        message: fieldDef.description,
-                        elementType: 'small',
-                        elementClasses: 'text-muted col-md-12 col-lg-9 offset-lg-3 mt-1'
-                    }
+                    // fieldUIConfig.describedBy = {
+                    //     message: fieldDef.description,
+                    //     elementType: 'span',
+                    //     elementClasses: 'mbsc-desc mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3 mt-1'
+                    // }
                 }
                 if (!fieldDef.displayOnly) { // no validator for readonly items
                     fieldUIConfig.validator = {
                             validator: fieldOperations,
                             messageDisplay: {
                             elementType: 'div',
-                            elementClasses: 'invalid-feedback col-md-12 col-lg-9 offset-lg-3'
+                            elementClasses: 'mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3'
                         },
-                        validClasses: 'is-valid',
-                        invalidClasses: 'is-invalid',
+                        validClasses: '',
+                        invalidClasses: 'mbsc-err',
                     };
                 }
+            }
+
+            // hidden fields
+            if (fieldUIConfig.elementType === UIFieldType.hidden) {
+                delete fieldUIConfig.containedBy;
+                fieldUIConfig.elementAttributes = [];
+
+
+
             }
 
             // text areas
@@ -151,6 +161,8 @@ export class BootstrapFormConfigHelper {
                     rows: 5,
                     cols: 20
                 }
+                fieldUIConfig.elementAttributes = [{name:'mbsc-textarea', value:''},{name:'data-input-style', value:'box'}];
+
             }
             // select
             if (fieldDef.type === FieldType.choice) { // subelements are options, with no classes, no labels, and no other container
@@ -158,24 +170,24 @@ export class BootstrapFormConfigHelper {
                     element: {elementType: 'option', elementClasses: ''},
                 };
                 fieldUIConfig.datasource = fieldDef.dataSource;
+                fieldUIConfig.elementAttributes = [{name:'mbsc-dropdown', value:''},{name:'data-input-style', value:'box'}];
             }
             // radio button group
             if (fieldDef.type === FieldType.limitedChoice) {
                 fieldUIConfig.subElement = {
                     element: {
                         elementType: 'input',
-                        elementClasses: 'form-check-input',
-                        elementAttributes: [{name: 'type', value: 'radio'}]
+                        elementClasses: '',
+                        elementAttributes: [{name: 'mbsc-radio', value: ''},{name: 'type', value: 'radio'}]
                     },
                     container: {
                         elementType: 'div',
-                        elementClasses: 'form-check form-check-inline'
-                    },
-                    label: {
-                        label: 'label',
-                        classes: 'form-check-label',
-                    },
+                        elementClasses:''
+                    }
                 }
+                delete fieldUIConfig.label;
+                fieldUIConfig.elementAttributes = [];
+
                 fieldUIConfig.renderer = rbgFieldOperation;
                 if (fieldUIConfig.validator) fieldUIConfig.validator.validator = rbgFieldOperation;
                 fieldUIConfig.formatter = rbgFieldOperation;
@@ -190,7 +202,7 @@ export class BootstrapFormConfigHelper {
         const fieldGroup: FieldGroup = {
             containedBy: {
                 elementType: 'div',
-                elementClasses: 'col-sm-12',
+                elementClasses: 'mbsc-form-group mbsc-col-sm-12',
             },
             fields: fieldUIConfigs
         }
@@ -199,13 +211,14 @@ export class BootstrapFormConfigHelper {
             id: dataObjDef.id,
             displayName: dataObjDef.displayName,
             formElement: {
-                elementType:'form',
-                elementClasses:'',
+                elementType:'div',
+                elementClasses:'mbsc-form',
+                elementAttributes:[{name:'mbsc-form',value:''}]
             },
             fieldGroups: [fieldGroup],
             unsavedChanges: {
                 elementType: 'div',
-                elementClasses: 'invalid-feedback text-right col-md-12 col-lg-9 offset-lg-3',
+                elementClasses: 'mbsc-err-msg text-right mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3',
                 elementAttributes: [{name:'style',value:'display:block'}],
                 innerHTML: `Pending changes to ${dataObjDef.displayName}`,
             },
@@ -243,6 +256,7 @@ export class BootstrapFormConfigHelper {
 
 
         logger(formConfig);
+        console.log(formConfig);
         return formConfig;
     }
 }

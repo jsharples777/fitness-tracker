@@ -34,7 +34,10 @@ export class AbstractField implements Field, FieldListener {
         this.handleChangeEvent = this.handleChangeEvent.bind(this);
         if (this.subElements) {
             this.subElements.forEach((subElement) => {
+                console.log('add subelement');
+                console.log(subElement);
                 subElement.addEventListener('change', this.handleChangeEvent);
+                subElement.addEventListener('click', this.handleChangeEvent);
             });
         }
         else {

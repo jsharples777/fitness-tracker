@@ -5,9 +5,10 @@ import {Form} from "../Form";
 import {FieldGroup, FieldUIConfig, FormUIDefinition, UIFieldType} from "../FormUITypeDefs";
 import {FormEvent, FormEventType, FormListener} from "../FormListener";
 import {FieldListener} from "../field/FieldListener";
+import mobiscroll from "@mobiscroll/javascript";
 
 export type FormFactoryResponse = {
-    form: HTMLFormElement,
+    form: HTMLElement,
     unsavedMessage: HTMLElement,
     fields: HTMLInputElement[],
     textFields:HTMLTextAreaElement[],
@@ -63,11 +64,12 @@ export class FormElementFactory {
     }
 
     public createFormElements(form:Form, formListeners:FormListener[],formConfig:FormUIDefinition,fieldListeners:FieldListener[]):FormFactoryResponse {
-        let formEl:HTMLFormElement = document.createElement('form');
+        let formEl:HTMLElement = document.createElement(formConfig.formElement.elementType);
         formEl.setAttribute('id',formConfig.id);
         formEl.setAttribute('name',formConfig.displayName);
 
-        if (formConfig.classes) browserUtil.addRemoveClasses(formEl,formConfig.classes);
+        browserUtil.addRemoveClasses(formEl,formConfig.formElement.elementClasses);
+        browserUtil.addAttributes(formEl,formConfig.formElement.elementAttributes);
         // create each of the fields and collect them
         let formInputElements:HTMLInputElement[] = [];
         let formTAElements:HTMLTextAreaElement[] = [];

@@ -3,10 +3,9 @@
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
 import {ContextualInformationHelper} from "./ui-framework/context/ContextualInformationHelper";
 
-localStorage.debug = 'context-helper';
+
 
 import debug from 'debug';
-debug.log = console.info.bind(console);
 
 import Controller from './Controller';
 import UserSearchView from "./component/view/UserSearchView";
@@ -245,17 +244,22 @@ export default class App implements UnreadMessageCountListener {
 
 
 $(function() {
+    debug.log = console.info.bind(console);
+    localStorage.debug = '';
+    localStorage.setItem('app.theme','mobiscroll');
+
+    mobiscroll.settings = {
+        theme: 'ios',
+        themeVariant: 'light'
+    };
+
 
     mobiscroll.nav('#navigation', {
-        theme: 'ios',
-        themeVariant: 'dark',
         type: 'bottom',
         display: 'inline'
     });
     // @ts-ignore
     mobiscroll.nav('#submenu', {
-        theme: 'ios',
-        themeVariant: 'dark',
         type: 'hamburger'
     });
 

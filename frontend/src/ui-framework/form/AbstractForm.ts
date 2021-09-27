@@ -11,6 +11,7 @@ import {AlertEvent, AlertListener, AlertType} from "../alert/AlertListener";
 import {AlertManager} from "../alert/AlertManager";
 import {ConditionResponse} from "./validation/ValidationTypeDefs";
 import {v4} from "uuid";
+import mobiscroll, {Form as MobiForm} from "@mobiscroll/javascript";
 
 const logger = debug('abstract-form');
 const dlogger = debug('abstract-form-detail');
@@ -31,6 +32,7 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
     protected hasChangedBoolean:boolean = false;
     protected isDisplayOnly:boolean = false;
     protected id:string;
+    protected themedForm:MobiForm|null = null;
 
 
     protected constructor(containerId: string, dataObjDef: DataObjectDefinition) {
@@ -187,6 +189,8 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
             }
 
         });
+        this.refreshTheming();
+
     }
 
     protected checkFormValidationOnDisplay() {
@@ -216,8 +220,20 @@ export abstract class AbstractForm implements Form,FormListener,AlertListener,Fi
                 }
             }
         });
+        this.refreshTheming();
+    }
+
+    protected refreshTheming() {
+        if (this.themedForm) {
+            console.log('refreshing');
+            this.themedForm.refresh(false);
+
+        }
 
     }
+
+    protected abstract resetTheming():void;
+
 
     public startCreateNew(): any {
         this.clearUnsavedMessage();

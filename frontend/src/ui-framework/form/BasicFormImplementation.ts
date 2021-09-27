@@ -1,17 +1,19 @@
 import {AttributeFieldMapItem, DATA_ID_ATTRIBUTE, DisplayOrder, FieldUIConfig, UIFieldType} from "./FormUITypeDefs";
 import {AbstractForm} from "./AbstractForm";
-import {BootstrapFormConfigHelper} from "../helper/BootstrapFormConfigHelper";
 import {DataObjectDefinition, FieldDefinition} from "../../model/DataObjectTypeDefs";
 import {Field} from "./field/Field";
 import {FormElementFactory, FormFactoryResponse} from "./factory/FormElementFactory";
-import {AbstractField} from "./field/AbstractField";
+
 import debug from 'debug';
 import browserUtil from "../../util/BrowserUtil";
 import {TextAreaField} from "./field/TextAreaField";
 import {RadioButtonGroupField} from "./field/RadioButtonGroupField";
 import {SelectField} from "./field/SelectField";
 import {InputField} from "./field/InputField";
-import {isSame} from "../../util/EqualityFunctions";
+import {MobiscrollFormConfigHelper} from "../helper/MobiscrollFormConfigHelper";
+import mobiscroll from "@mobiscroll/javascript";
+
+
 
 const logger = debug('basic-form');
 const dlogger = debug('basic-form-detail');
@@ -86,17 +88,16 @@ export class BasicFormImplementation extends AbstractForm {
     protected setUnsavedMessage() {
         if (this.factoryElements && this.uiDef && this.uiDef.unsavedChanges.innerHTML) {
             this.factoryElements.unsavedMessage.innerHTML = this.uiDef.unsavedChanges.innerHTML;
-        }
-        else if (this.factoryElements) {
+        } else if (this.factoryElements) {
             this.factoryElements.unsavedMessage.innerHTML = 'Pending changes to save';
         }
     }
 
-    protected _initialise(displayOrder:DisplayOrder[],hasDeleteButton:boolean,hideModifierFields:boolean = false): void {
+    protected _initialise(displayOrder: DisplayOrder[], hasDeleteButton: boolean, hideModifierFields: boolean = false): void {
         logger(`Initialising`);
 
         // ok, so given a Data Object definition we are going to create the form ui config
-        this.uiDef = BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef,displayOrder,hasDeleteButton,hideModifierFields);
+        this.uiDef = MobiscrollFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
         logger(this.uiDef);
         // now we need to create all the form elements from the ui definition
         this.factoryElements = FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
@@ -104,7 +105,7 @@ export class BasicFormImplementation extends AbstractForm {
         // create field elements for each field element, and the basic map
         logger(`Converting field input elements to Field objects`);
         this.factoryElements.fields.forEach((fieldEl) => {
-            fieldEl.addEventListener('keyup',(event) => {
+            fieldEl.addEventListener('keyup', (event) => {
                 dlogger(`key up in form ${this.getName()}`);
                 this.hasChangedBoolean = true;
                 this.setUnsavedMessage();
@@ -114,7 +115,7 @@ export class BasicFormImplementation extends AbstractForm {
 
         logger(`Converting field text area elements to Field objects`);
         this.factoryElements.textFields.forEach((fieldEl) => {
-            fieldEl.addEventListener('keyup',(event) => {
+            fieldEl.addEventListener('keyup', (event) => {
                 dlogger(`key up in form ${this.getName()}`);
                 this.hasChangedBoolean = true;
                 this.setUnsavedMessage();
@@ -137,6 +138,7 @@ export class BasicFormImplementation extends AbstractForm {
         logger(this.map);
         logger('fields are');
         logger(this.fields);
+        if (this.factoryElements) this.resetTheming();
     }
 
     protected _reset(): void {
@@ -149,7 +151,7 @@ export class BasicFormImplementation extends AbstractForm {
     }
 
     protected renderField(fieldDef: FieldDefinition, currentValue: string): string {
-        let result:string = currentValue;
+        let result: string = currentValue;
         const field: Field | undefined = this.getFieldFromDataFieldId(fieldDef.id);
 
         if (field) {
@@ -225,8 +227,25 @@ export class BasicFormImplementation extends AbstractForm {
     }
 
     protected _visible(): void {
-        if (this.factoryElements) this.containerEl?.appendChild(this.factoryElements.form);
+        if (this.factoryElements) {
+            this.containerEl?.appendChild(this.factoryElements.form);
+        }
     }
+
+    protected resetTheming() {
+        const theme = localStorage.getItem('app.theme');
+        console.log(theme);
+        if (theme && theme === 'mobiscroll') {
+            console.log('resetting form');
+            // @ts-ignore
+            this.themedForm = mobiscroll.form(this.factoryElements.form, {
+                enhance: true
+            });
+
+        }
+
+    }
+
 
     protected setFieldValueToDataObject(dataObj: any, field: Field, currentValue: string | null): void {
         // find the attribute id from the map
@@ -290,7 +309,7 @@ export class BasicFormImplementation extends AbstractForm {
                 const currentObjId = this.getFieldFromDataFieldId(field.id)?.getValue();
                 const suppliedObjId = dataObj[field.id];
                 dlogger(`is same object id ${suppliedObjId} as current ${currentObjId}`);
-                if ((currentObjId && !suppliedObjId)||(currentObjId && !suppliedObjId)){
+                if ((currentObjId && !suppliedObjId) || (currentObjId && !suppliedObjId)) {
                     isSameObject = false;
                 }
                 if ((currentObjId && suppliedObjId) && (currentObjId == suppliedObjId)) {
@@ -313,16 +332,18 @@ export class BasicFormImplementation extends AbstractForm {
             // @ts-ignore
             this.factoryElements.submitButton.innerHTML = this.uiDef.submitButton.buttonText;
         }
+        if (this.themedForm) this.themedForm.refresh();
     }
 
     protected disableButtons() {
         if (this.factoryElements) {
             if (this.factoryElements.deleteButton) {
-                this.factoryElements.deleteButton.setAttribute('disabled','true');
+                this.factoryElements.deleteButton.setAttribute('disabled', 'true');
             }
-            this.factoryElements.cancelButton.setAttribute('disabled','true');
-            this.factoryElements.submitButton.setAttribute('disabled','true');
+            this.factoryElements.cancelButton.setAttribute('disabled', 'true');
+            this.factoryElements.submitButton.setAttribute('disabled', 'true');
         }
+        if (this.themedForm) this.themedForm.refresh();
     }
 
 

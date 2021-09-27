@@ -11,9 +11,6 @@
     width:30vw;
 }
 
-* {
-    font-family: 'Oxygen', sans-serif;
-}
 
 /* headings for the site using the new font */
 h1 {
@@ -28,7 +25,14 @@ h2 {
     font-size: 24px;
 }
 
+.mbsc-card-content {
+    padding: 1em;
+    overflow:auto;
+}
 
+[mbsc-form]:not(.mbsc-form) {
+    visibility:visible;
+}
 
 
 /*

@@ -37,9 +37,7 @@ __webpack_require__.r(__webpack_exports__);
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
 
-localStorage.debug = 'context-helper';
 
-(debug__WEBPACK_IMPORTED_MODULE_1___default().log) = console.info.bind(console);
 
 
 
@@ -264,16 +262,19 @@ var App = /*#__PURE__*/function () {
 
 
 $(function () {
-  _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_18___default().nav('#navigation', {
+  (debug__WEBPACK_IMPORTED_MODULE_1___default().log) = console.info.bind(console);
+  localStorage.debug = '';
+  localStorage.setItem('app.theme', 'mobiscroll');
+  (_mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_18___default().settings) = {
     theme: 'ios',
-    themeVariant: 'dark',
+    themeVariant: 'light'
+  };
+  _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_18___default().nav('#navigation', {
     type: 'bottom',
     display: 'inline'
   }); // @ts-ignore
 
   _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_18___default().nav('#submenu', {
-    theme: 'ios',
-    themeVariant: 'dark',
     type: 'hamburger'
   });
   App.getInstance().onDocumentLoad();
@@ -9369,6 +9370,7 @@ var AbstractForm = /*#__PURE__*/function () {
     this.isInitialised = false;
     this.hasChangedBoolean = false;
     this.isDisplayOnly = false;
+    this.themedForm = null;
     this.containerEl = document.getElementById(containerId);
     if (!this.containerEl) throw new Error("container " + containerId + " for form " + dataObjDef.id + " does not exist");
     this.map = [];
@@ -9522,6 +9524,7 @@ var AbstractForm = /*#__PURE__*/function () {
         vlogger("Field " + field.getId() + " is hidden from validation manager with message " + response.message);
       }
     });
+    this.refreshTheming();
   };
 
   _proto.checkFormValidationOnDisplay = function checkFormValidationOnDisplay() {
@@ -9556,6 +9559,14 @@ var AbstractForm = /*#__PURE__*/function () {
         }
       }
     });
+    this.refreshTheming();
+  };
+
+  _proto.refreshTheming = function refreshTheming() {
+    if (this.themedForm) {
+      console.log('refreshing');
+      this.themedForm.refresh(false);
+    }
   };
 
   _proto.startCreateNew = function startCreateNew() {
@@ -9889,15 +9900,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FormUITypeDefs */ "./src/ui-framework/form/FormUITypeDefs.ts");
 /* harmony import */ var _AbstractForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AbstractForm */ "./src/ui-framework/form/AbstractForm.ts");
-/* harmony import */ var _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helper/BootstrapFormConfigHelper */ "./src/ui-framework/helper/BootstrapFormConfigHelper.ts");
-/* harmony import */ var _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./factory/FormElementFactory */ "./src/ui-framework/form/factory/FormElementFactory.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
-/* harmony import */ var _field_TextAreaField__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./field/TextAreaField */ "./src/ui-framework/form/field/TextAreaField.ts");
-/* harmony import */ var _field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./field/RadioButtonGroupField */ "./src/ui-framework/form/field/RadioButtonGroupField.ts");
-/* harmony import */ var _field_SelectField__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./field/SelectField */ "./src/ui-framework/form/field/SelectField.ts");
-/* harmony import */ var _field_InputField__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./field/InputField */ "./src/ui-framework/form/field/InputField.ts");
+/* harmony import */ var _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./factory/FormElementFactory */ "./src/ui-framework/form/factory/FormElementFactory.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../util/BrowserUtil */ "./src/util/BrowserUtil.ts");
+/* harmony import */ var _field_TextAreaField__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./field/TextAreaField */ "./src/ui-framework/form/field/TextAreaField.ts");
+/* harmony import */ var _field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./field/RadioButtonGroupField */ "./src/ui-framework/form/field/RadioButtonGroupField.ts");
+/* harmony import */ var _field_SelectField__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./field/SelectField */ "./src/ui-framework/form/field/SelectField.ts");
+/* harmony import */ var _field_InputField__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./field/InputField */ "./src/ui-framework/form/field/InputField.ts");
+/* harmony import */ var _helper_MobiscrollFormConfigHelper__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../helper/MobiscrollFormConfigHelper */ "./src/ui-framework/helper/MobiscrollFormConfigHelper.ts");
+/* harmony import */ var _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @mobiscroll/javascript */ "./node_modules/@mobiscroll/javascript/dist/js/mobiscroll.javascript.min.js");
+/* harmony import */ var _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(_mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_10__);
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
@@ -9924,8 +9937,9 @@ function _setPrototypeOf(o, p) {
 
 
 
-var logger = debug__WEBPACK_IMPORTED_MODULE_4___default()('basic-form');
-var dlogger = debug__WEBPACK_IMPORTED_MODULE_4___default()('basic-form-detail');
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-form');
+var dlogger = debug__WEBPACK_IMPORTED_MODULE_3___default()('basic-form-detail');
 var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
   _inheritsLoose(BasicFormImplementation, _AbstractForm);
 
@@ -9979,25 +9993,25 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
             switch (fieldUIConfig.elementType) {
               case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.textarea:
                 {
-                  field = new _field_TextAreaField__WEBPACK_IMPORTED_MODULE_6__.TextAreaField(this.id, fieldUIConfig, fieldDef, fieldEl);
+                  field = new _field_TextAreaField__WEBPACK_IMPORTED_MODULE_5__.TextAreaField(this.id, fieldUIConfig, fieldDef, fieldEl);
                   break;
                 }
 
               case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.radioGroup:
                 {
-                  field = new _field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_7__.RadioButtonGroupField(this.id, fieldUIConfig, fieldDef, fieldEl, subElements);
+                  field = new _field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_6__.RadioButtonGroupField(this.id, fieldUIConfig, fieldDef, fieldEl, subElements);
                   break;
                 }
 
               case _FormUITypeDefs__WEBPACK_IMPORTED_MODULE_0__.UIFieldType.select:
                 {
-                  field = new _field_SelectField__WEBPACK_IMPORTED_MODULE_8__.SelectField(this.id, fieldUIConfig, fieldDef, fieldEl);
+                  field = new _field_SelectField__WEBPACK_IMPORTED_MODULE_7__.SelectField(this.id, fieldUIConfig, fieldDef, fieldEl);
                   break;
                 }
 
               default:
                 {
-                  field = new _field_InputField__WEBPACK_IMPORTED_MODULE_9__.InputField(this.id, fieldUIConfig, fieldDef, fieldEl);
+                  field = new _field_InputField__WEBPACK_IMPORTED_MODULE_8__.InputField(this.id, fieldUIConfig, fieldDef, fieldEl);
                   break;
                 }
             }
@@ -10037,10 +10051,10 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
 
     logger("Initialising"); // ok, so given a Data Object definition we are going to create the form ui config
 
-    this.uiDef = _helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_2__.BootstrapFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
+    this.uiDef = _helper_MobiscrollFormConfigHelper__WEBPACK_IMPORTED_MODULE_9__.MobiscrollFormConfigHelper.getInstance().generateFormConfig(this.dataObjDef, displayOrder, hasDeleteButton, hideModifierFields);
     logger(this.uiDef); // now we need to create all the form elements from the ui definition
 
-    this.factoryElements = _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_3__.FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
+    this.factoryElements = _factory_FormElementFactory__WEBPACK_IMPORTED_MODULE_2__.FormElementFactory.getInstance().createFormElements(this, this.formListeners, this.uiDef, this.fieldListeners);
     logger(this.factoryElements); // create field elements for each field element, and the basic map
 
     logger("Converting field input elements to Field objects");
@@ -10077,6 +10091,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
     logger(this.map);
     logger('fields are');
     logger(this.fields);
+    if (this.factoryElements) this.resetTheming();
   };
 
   _proto._reset = function _reset() {
@@ -10124,7 +10139,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       _this3.validateField(fieldDef);
     }); // delete button can go
 
-    if (this.factoryElements && this.factoryElements.deleteButton) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].addAttributes(this.factoryElements.deleteButton, [{
+    if (this.factoryElements && this.factoryElements.deleteButton) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addAttributes(this.factoryElements.deleteButton, [{
       name: 'style',
       value: 'display:none'
     }]);
@@ -10152,7 +10167,7 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       _this4.validateField(fieldDef);
     }); // delete button make visible again
 
-    if (this.factoryElements && this.factoryElements.deleteButton) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].removeAttributes(this.factoryElements.deleteButton, ['style']);
+    if (this.factoryElements && this.factoryElements.deleteButton) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].removeAttributes(this.factoryElements.deleteButton, ['style']);
   };
 
   _proto._displayOnly = function _displayOnly() {
@@ -10168,16 +10183,31 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       _this5.setFieldValueFromDataObject(fieldDef, fieldValue);
     }); // delete button can go
 
-    if (this.factoryElements && this.factoryElements.deleteButton) if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_5__["default"].addAttributes(this.factoryElements.deleteButton, [{
+    if (this.factoryElements && this.factoryElements.deleteButton) if (this.factoryElements) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_4__["default"].addAttributes(this.factoryElements.deleteButton, [{
       name: 'style',
       value: 'display:none'
     }]);
   };
 
   _proto._visible = function _visible() {
-    var _this$containerEl2;
+    if (this.factoryElements) {
+      var _this$containerEl2;
 
-    if (this.factoryElements) (_this$containerEl2 = this.containerEl) == null ? void 0 : _this$containerEl2.appendChild(this.factoryElements.form);
+      (_this$containerEl2 = this.containerEl) == null ? void 0 : _this$containerEl2.appendChild(this.factoryElements.form);
+    }
+  };
+
+  _proto.resetTheming = function resetTheming() {
+    var theme = localStorage.getItem('app.theme');
+    console.log(theme);
+
+    if (theme && theme === 'mobiscroll') {
+      console.log('resetting form'); // @ts-ignore
+
+      this.themedForm = _mobiscroll_javascript__WEBPACK_IMPORTED_MODULE_10___default().form(this.factoryElements.form, {
+        enhance: true
+      });
+    }
   };
 
   _proto.setFieldValueToDataObject = function setFieldValueToDataObject(dataObj, field, currentValue) {
@@ -10283,6 +10313,8 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
 
       this.factoryElements.submitButton.innerHTML = this.uiDef.submitButton.buttonText;
     }
+
+    if (this.themedForm) this.themedForm.refresh();
   };
 
   _proto.disableButtons = function disableButtons() {
@@ -10294,6 +10326,8 @@ var BasicFormImplementation = /*#__PURE__*/function (_AbstractForm) {
       this.factoryElements.cancelButton.setAttribute('disabled', 'true');
       this.factoryElements.submitButton.setAttribute('disabled', 'true');
     }
+
+    if (this.themedForm) this.themedForm.refresh();
   };
 
   _proto.clearReadOnly = function clearReadOnly() {
@@ -10950,7 +10984,7 @@ var FieldInputElementFactory = /*#__PURE__*/function () {
           labelEl.innerHTML = valueOption.name;
           containerEl.appendChild(labelEl);
         } else {
-          valueEl.innerHTML = valueOption.name;
+          containerEl.innerHTML += valueOption.name;
         }
 
         results.push(valueEl);
@@ -11074,10 +11108,11 @@ var FormElementFactory = /*#__PURE__*/function () {
   };
 
   _proto.createFormElements = function createFormElements(form, formListeners, formConfig, fieldListeners) {
-    var formEl = document.createElement('form');
+    var formEl = document.createElement(formConfig.formElement.elementType);
     formEl.setAttribute('id', formConfig.id);
     formEl.setAttribute('name', formConfig.displayName);
-    if (formConfig.classes) _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(formEl, formConfig.classes); // create each of the fields and collect them
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addRemoveClasses(formEl, formConfig.formElement.elementClasses);
+    _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_0__["default"].addAttributes(formEl, formConfig.formElement.elementAttributes); // create each of the fields and collect them
 
     var formInputElements = [];
     var formTAElements = [];
@@ -11229,7 +11264,10 @@ var AbstractField = /*#__PURE__*/function () {
 
     if (this.subElements) {
       this.subElements.forEach(function (subElement) {
+        console.log('add subelement');
+        console.log(subElement);
         subElement.addEventListener('change', _this.handleChangeEvent);
+        subElement.addEventListener('click', _this.handleChangeEvent);
       });
     } else {
       this.element.addEventListener('change', this.handleChangeEvent);
@@ -12450,307 +12488,6 @@ var ConditionResponse;
 
 /***/ }),
 
-/***/ "./src/ui-framework/helper/BootstrapFormConfigHelper.ts":
-/*!**************************************************************!*\
-  !*** ./src/ui-framework/helper/BootstrapFormConfigHelper.ts ***!
-  \**************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BootstrapFormConfigHelper": () => (/* binding */ BootstrapFormConfigHelper)
-/* harmony export */ });
-/* harmony import */ var _model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../model/BasicFieldOperations */ "./src/model/BasicFieldOperations.ts");
-/* harmony import */ var _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../model/DataObjectTypeDefs */ "./src/model/DataObjectTypeDefs.ts");
-/* harmony import */ var _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../form/FormUITypeDefs */ "./src/ui-framework/form/FormUITypeDefs.ts");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./RBGFieldOperations */ "./src/ui-framework/helper/RBGFieldOperations.ts");
-/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
-
-
-
-
-
-
-var logger = debug__WEBPACK_IMPORTED_MODULE_3___default()('bootstrap-form-config-helper');
-var BootstrapFormConfigHelper = /*#__PURE__*/function () {
-  BootstrapFormConfigHelper.getInstance = function getInstance() {
-    if (!BootstrapFormConfigHelper._instance) {
-      BootstrapFormConfigHelper._instance = new BootstrapFormConfigHelper();
-    }
-
-    return BootstrapFormConfigHelper._instance;
-  };
-
-  function BootstrapFormConfigHelper() {}
-
-  var _proto = BootstrapFormConfigHelper.prototype;
-
-  _proto.generateFormConfig = function generateFormConfig(dataObjDef, displayOrders, hasDeleteButton, hideModifierFields) {
-    if (hideModifierFields === void 0) {
-      hideModifierFields = false;
-    }
-
-    var fieldOperations = new _model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__.BasicFieldOperations();
-    var rbgFieldOperation = new _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__.RBGFieldOperations(); // create the Field UI config for each field
-
-    var fieldUIConfigs = [];
-    dataObjDef.fields.forEach(function (fieldDef, index) {
-      var fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.text;
-
-      switch (fieldDef.type) {
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.time:
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.text:
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.date:
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.shortTime:
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.duration:
-          {
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.datetime:
-          {
-            // is this the created or modified date
-            if (hideModifierFields) {
-              if (fieldDef.id === _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedOn) {
-                fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
-              }
-
-              if (fieldDef.id === _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_ModifiedOn) {
-                fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
-              }
-            }
-
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.userId:
-          {
-            if (hideModifierFields) {
-              fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
-            } else {
-              fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.text;
-            }
-
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid:
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.integer:
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.float:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.number;
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.email:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.email;
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.password:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.password;
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.checkbox;
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.textarea;
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.select;
-            break;
-          }
-
-        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice:
-          {
-            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.radioGroup;
-            break;
-          }
-      } // see if the field was supplied with a display order
-
-
-      var displayOrder = displayOrders.find(function (value) {
-        return value.fieldId === fieldDef.id;
-      });
-      var displayOrderValue = index;
-
-      if (displayOrder) {
-        displayOrderValue = displayOrder.displayOrder;
-      } // construct the field ui config
-
-
-      var fieldUIConfig = {
-        field: fieldDef,
-        displayOrder: displayOrderValue,
-        elementType: fieldType,
-        elementClasses: 'form-control col-sm-9',
-        renderer: fieldOperations,
-        formatter: fieldOperations
-      };
-
-      if (fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id && fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid && fieldType !== _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden) {
-        // no labels, descriptions, container for id,uuid
-        fieldUIConfig.containedBy = {
-          elementType: 'div',
-          elementClasses: 'form-group row'
-        };
-        fieldUIConfig.label = {
-          label: fieldDef.displayName,
-          classes: 'col-md-12 col-lg-3 col-form-label'
-        };
-
-        if (fieldDef.description) {
-          // descriptions if the field has one
-          fieldUIConfig.describedBy = {
-            message: fieldDef.description,
-            elementType: 'small',
-            elementClasses: 'text-muted col-md-12 col-lg-9 offset-lg-3 mt-1'
-          };
-        }
-
-        if (!fieldDef.displayOnly) {
-          // no validator for readonly items
-          fieldUIConfig.validator = {
-            validator: fieldOperations,
-            messageDisplay: {
-              elementType: 'div',
-              elementClasses: 'invalid-feedback col-md-12 col-lg-9 offset-lg-3'
-            },
-            validClasses: 'is-valid',
-            invalidClasses: 'is-invalid'
-          };
-        }
-      } // text areas
-
-
-      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText) {
-        fieldUIConfig.textarea = {
-          rows: 5,
-          cols: 20
-        };
-      } // select
-
-
-      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice) {
-        // subelements are options, with no classes, no labels, and no other container
-        fieldUIConfig.subElement = {
-          element: {
-            elementType: 'option',
-            elementClasses: ''
-          }
-        };
-        fieldUIConfig.datasource = fieldDef.dataSource;
-      } // radio button group
-
-
-      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice) {
-        fieldUIConfig.subElement = {
-          element: {
-            elementType: 'input',
-            elementClasses: 'form-check-input',
-            elementAttributes: [{
-              name: 'type',
-              value: 'radio'
-            }]
-          },
-          container: {
-            elementType: 'div',
-            elementClasses: 'form-check form-check-inline'
-          },
-          label: {
-            label: 'label',
-            classes: 'form-check-label'
-          }
-        };
-        fieldUIConfig.renderer = rbgFieldOperation;
-        if (fieldUIConfig.validator) fieldUIConfig.validator.validator = rbgFieldOperation;
-        fieldUIConfig.formatter = rbgFieldOperation;
-        fieldUIConfig.datasource = fieldDef.dataSource;
-      }
-
-      fieldUIConfigs.push(fieldUIConfig);
-    }); // create a form with a single group and button container with Bootstrap styles
-
-    var fieldGroup = {
-      containedBy: {
-        elementType: 'div',
-        elementClasses: 'col-sm-12'
-      },
-      fields: fieldUIConfigs
-    };
-    var formConfig = {
-      id: dataObjDef.id,
-      displayName: dataObjDef.displayName,
-      fieldGroups: [fieldGroup],
-      unsavedChanges: {
-        elementType: 'div',
-        elementClasses: 'invalid-feedback text-right col-md-12 col-lg-9 offset-lg-3',
-        elementAttributes: [{
-          name: 'style',
-          value: 'display:block'
-        }],
-        innerHTML: "Pending changes to " + dataObjDef.displayName
-      },
-      buttonsContainedBy: {
-        elementType: 'div',
-        elementClasses: 'd-flex w-100 justify-space-between'
-      },
-      cancelButton: {
-        buttonText: 'Cancel  ',
-        buttonClasses: 'btn-info rounded p-1 mr-2 mt-2 w-100',
-        iconClasses: 'fas fa-ban'
-      },
-      submitButton: {
-        buttonText: 'Save  ',
-        buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
-        iconClasses: 'fas fa-save'
-      },
-      activeSave: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;'
-    }; // sort the fields into display order
-
-    formConfig.fieldGroups.forEach(function (group) {
-      group.fields.sort(function (a, b) {
-        return a.displayOrder - b.displayOrder;
-      });
-    });
-
-    if (hasDeleteButton) {
-      formConfig.deleteButton = {
-        buttonText: 'Delete  ',
-        buttonClasses: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
-        iconClasses: 'fas fa-trash-alt'
-      };
-    }
-
-    logger(formConfig);
-    return formConfig;
-  };
-
-  return BootstrapFormConfigHelper;
-}();
-
-/***/ }),
-
 /***/ "./src/ui-framework/helper/LinkedCollectionDetailController.ts":
 /*!*********************************************************************!*\
   !*** ./src/ui-framework/helper/LinkedCollectionDetailController.ts ***!
@@ -13039,6 +12776,346 @@ var LinkedCollectionDetailController = /*#__PURE__*/function (_DataObjectControl
 
   return LinkedCollectionDetailController;
 }(_model_DataObjectController__WEBPACK_IMPORTED_MODULE_1__.DataObjectController);
+
+/***/ }),
+
+/***/ "./src/ui-framework/helper/MobiscrollFormConfigHelper.ts":
+/*!***************************************************************!*\
+  !*** ./src/ui-framework/helper/MobiscrollFormConfigHelper.ts ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MobiscrollFormConfigHelper": () => (/* binding */ MobiscrollFormConfigHelper)
+/* harmony export */ });
+/* harmony import */ var _model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../model/BasicFieldOperations */ "./src/model/BasicFieldOperations.ts");
+/* harmony import */ var _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../model/DataObjectTypeDefs */ "./src/model/DataObjectTypeDefs.ts");
+/* harmony import */ var _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../form/FormUITypeDefs */ "./src/ui-framework/form/FormUITypeDefs.ts");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./RBGFieldOperations */ "./src/ui-framework/helper/RBGFieldOperations.ts");
+/* harmony import */ var _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../model/BasicObjectDefinitionFactory */ "./src/model/BasicObjectDefinitionFactory.ts");
+
+
+
+
+
+
+var logger = debug__WEBPACK_IMPORTED_MODULE_3___default()('bootstrap-form-config-helper');
+var MobiscrollFormConfigHelper = /*#__PURE__*/function () {
+  MobiscrollFormConfigHelper.getInstance = function getInstance() {
+    if (!MobiscrollFormConfigHelper._instance) {
+      MobiscrollFormConfigHelper._instance = new MobiscrollFormConfigHelper();
+    }
+
+    return MobiscrollFormConfigHelper._instance;
+  };
+
+  function MobiscrollFormConfigHelper() {}
+
+  var _proto = MobiscrollFormConfigHelper.prototype;
+
+  _proto.generateFormConfig = function generateFormConfig(dataObjDef, displayOrders, hasDeleteButton, hideModifierFields) {
+    if (hideModifierFields === void 0) {
+      hideModifierFields = false;
+    }
+
+    var fieldOperations = new _model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_0__.BasicFieldOperations();
+    var rbgFieldOperation = new _RBGFieldOperations__WEBPACK_IMPORTED_MODULE_4__.RBGFieldOperations(); // create the Field UI config for each field
+
+    var fieldUIConfigs = [];
+    dataObjDef.fields.forEach(function (fieldDef, index) {
+      var fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.text;
+
+      switch (fieldDef.type) {
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.time:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.text:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.date:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.shortTime:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.duration:
+          {
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.datetime:
+          {
+            // is this the created or modified date
+            if (hideModifierFields) {
+              if (fieldDef.id === _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_CreatedOn) {
+                fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+              }
+
+              if (fieldDef.id === _model_BasicObjectDefinitionFactory__WEBPACK_IMPORTED_MODULE_5__.FIELD_ModifiedOn) {
+                fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+              }
+            }
+
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.userId:
+          {
+            if (hideModifierFields) {
+              fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+            } else {
+              fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.text;
+            }
+
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.integer:
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.float:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.number;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.email:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.email;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.password:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.password;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.boolean:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.checkbox;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.textarea;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.select;
+            break;
+          }
+
+        case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice:
+          {
+            fieldType = _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.radioGroup;
+            break;
+          }
+      } // see if the field was supplied with a display order
+
+
+      var displayOrder = displayOrders.find(function (value) {
+        return value.fieldId === fieldDef.id;
+      });
+      var displayOrderValue = index;
+
+      if (displayOrder) {
+        displayOrderValue = displayOrder.displayOrder;
+      } // construct the field ui config
+
+
+      var fieldUIConfig = {
+        field: fieldDef,
+        displayOrder: displayOrderValue,
+        elementType: fieldType,
+        elementClasses: 'mbsc-col-sm-9',
+        elementAttributes: [{
+          name: 'mbsc-input',
+          value: ''
+        }, {
+          name: 'data-input-style',
+          value: 'box'
+        }, {
+          name: "data-label-style",
+          value: "floating"
+        }],
+        renderer: fieldOperations,
+        formatter: fieldOperations
+      };
+
+      if (fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.id && fieldDef.type !== _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.uuid && fieldType !== _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden) {
+        // no labels, descriptions, container for id,uuid
+        fieldUIConfig.containedBy = {
+          elementType: 'div',
+          elementClasses: ''
+        };
+        fieldUIConfig.label = {
+          label: fieldDef.displayName,
+          classes: ''
+        };
+
+        if (fieldDef.description) {// descriptions if the field has one
+          // fieldUIConfig.describedBy = {
+          //     message: fieldDef.description,
+          //     elementType: 'span',
+          //     elementClasses: 'mbsc-desc mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3 mt-1'
+          // }
+        }
+
+        if (!fieldDef.displayOnly) {
+          // no validator for readonly items
+          fieldUIConfig.validator = {
+            validator: fieldOperations,
+            messageDisplay: {
+              elementType: 'div',
+              elementClasses: 'mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3'
+            },
+            validClasses: '',
+            invalidClasses: 'mbsc-err'
+          };
+        }
+      } // hidden fields
+
+
+      if (fieldUIConfig.elementType === _form_FormUITypeDefs__WEBPACK_IMPORTED_MODULE_2__.UIFieldType.hidden) {
+        delete fieldUIConfig.containedBy;
+        fieldUIConfig.elementAttributes = [];
+      } // text areas
+
+
+      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.largeText) {
+        fieldUIConfig.textarea = {
+          rows: 5,
+          cols: 20
+        };
+        fieldUIConfig.elementAttributes = [{
+          name: 'mbsc-textarea',
+          value: ''
+        }, {
+          name: 'data-input-style',
+          value: 'box'
+        }];
+      } // select
+
+
+      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.choice) {
+        // subelements are options, with no classes, no labels, and no other container
+        fieldUIConfig.subElement = {
+          element: {
+            elementType: 'option',
+            elementClasses: ''
+          }
+        };
+        fieldUIConfig.datasource = fieldDef.dataSource;
+        fieldUIConfig.elementAttributes = [{
+          name: 'mbsc-dropdown',
+          value: ''
+        }, {
+          name: 'data-input-style',
+          value: 'box'
+        }];
+      } // radio button group
+
+
+      if (fieldDef.type === _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_1__.FieldType.limitedChoice) {
+        fieldUIConfig.subElement = {
+          element: {
+            elementType: 'input',
+            elementClasses: '',
+            elementAttributes: [{
+              name: 'mbsc-radio',
+              value: ''
+            }, {
+              name: 'type',
+              value: 'radio'
+            }]
+          },
+          container: {
+            elementType: 'div',
+            elementClasses: ''
+          }
+        };
+        delete fieldUIConfig.label;
+        fieldUIConfig.elementAttributes = [];
+        fieldUIConfig.renderer = rbgFieldOperation;
+        if (fieldUIConfig.validator) fieldUIConfig.validator.validator = rbgFieldOperation;
+        fieldUIConfig.formatter = rbgFieldOperation;
+        fieldUIConfig.datasource = fieldDef.dataSource;
+      }
+
+      fieldUIConfigs.push(fieldUIConfig);
+    }); // create a form with a single group and button container with Bootstrap styles
+
+    var fieldGroup = {
+      containedBy: {
+        elementType: 'div',
+        elementClasses: 'mbsc-form-group mbsc-col-sm-12'
+      },
+      fields: fieldUIConfigs
+    };
+    var formConfig = {
+      id: dataObjDef.id,
+      displayName: dataObjDef.displayName,
+      formElement: {
+        elementType: 'div',
+        elementClasses: 'mbsc-form',
+        elementAttributes: [{
+          name: 'mbsc-form',
+          value: ''
+        }]
+      },
+      fieldGroups: [fieldGroup],
+      unsavedChanges: {
+        elementType: 'div',
+        elementClasses: 'mbsc-err-msg text-right mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3',
+        elementAttributes: [{
+          name: 'style',
+          value: 'display:block'
+        }],
+        innerHTML: "Pending changes to " + dataObjDef.displayName
+      },
+      buttonsContainedBy: {
+        elementType: 'div',
+        elementClasses: 'd-flex w-100 justify-space-between'
+      },
+      cancelButton: {
+        buttonText: 'Cancel  ',
+        buttonClasses: 'btn-info rounded p-1 mr-2 mt-2 w-100',
+        iconClasses: 'fas fa-ban'
+      },
+      submitButton: {
+        buttonText: 'Save  ',
+        buttonClasses: 'btn-primary rounded p-1 mt-2 w-100',
+        iconClasses: 'fas fa-save'
+      },
+      activeSave: '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;'
+    }; // sort the fields into display order
+
+    formConfig.fieldGroups.forEach(function (group) {
+      group.fields.sort(function (a, b) {
+        return a.displayOrder - b.displayOrder;
+      });
+    });
+
+    if (hasDeleteButton) {
+      formConfig.deleteButton = {
+        buttonText: 'Delete  ',
+        buttonClasses: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
+        iconClasses: 'fas fa-trash-alt'
+      };
+    }
+
+    logger(formConfig);
+    console.log(formConfig);
+    return formConfig;
+  };
+
+  return MobiscrollFormConfigHelper;
+}();
 
 /***/ }),
 

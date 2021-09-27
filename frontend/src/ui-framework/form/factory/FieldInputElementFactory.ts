@@ -227,7 +227,7 @@ export class FieldInputElementFactory {
                     labelEl.innerHTML = valueOption.name;
                     containerEl.appendChild(labelEl);
                 } else {
-                    valueEl.innerHTML = valueOption.name;
+                    containerEl.innerHTML += valueOption.name;
                 }
                 results.push(valueEl);
             }

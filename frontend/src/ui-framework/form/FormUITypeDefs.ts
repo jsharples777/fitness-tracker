@@ -99,7 +99,7 @@ export type FieldGroup = {
 export type FormUIDefinition = {
     id:string,
     displayName:string,
-    classes?:string,
+    formElement:BasicElement,
     unsavedChanges:BasicElement,
     fieldGroups:FieldGroup[],
     buttonsContainedBy?:BasicElement

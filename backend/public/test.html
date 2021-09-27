@@ -4,34 +4,134 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="mobiscroll.min.css" rel="stylesheet">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <title>Hello, world!</title>
+    <script src="mobiscroll.javascript.min.js"></script>
 </head>
 <body>
+<div mbsc-card="" class="mt-3 mbsc-comp mbsc-card mbsc-form mbsc-ios mbsc-form-hb mbsc-ltr" id="exerciseTypeContainer1">
+    <div class="mbsc-card-content  scroll-exercise-type-detail">
+        <div id="exerciseTypeDetail1">
+            <div id="exerciseType" name="Exercise" mbsc-form="">
+                <div class="mbsc-err-msg text-right mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3"
+                     style="display:block"></div>
+                <div class="mbsc-form-group mbsc-col-sm-12"><input type="hidden" id="exerciseType.field._id"
+                                                                   data-id="_id" name="_id" class="mbsc-col-sm-9"
+                                                                   value="2867c1f4-d8ed-4f6a-a602-7f7085231449">
+                    <div id="exerciseType.field.name.container"><label for="exerciseType.field.name">Name</label><input
+                            type="text" id="exerciseType.field.name" data-id="name" name="name" mbsc-input=""
+                            data-input-style="box" data-label-style="floating" class="mbsc-col-sm-9">
+                        <div id="exerciseType.field.name.error" style="display: none"
+                             class="mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3">
+                            <div id="exerciseType.field.name.error.message"></div>
+                        </div>
+                    </div>
+                    <div id="exerciseType.field.type.container">
+                        <div class="mbsc-col-sm-9" id="exerciseType.field.type" data-id="type" name="type">
+                            <div><input value="cardio" id="exerciseType.field.type.0" name="exerciseType.field.type"
+                                        mbsc-radio="" type="radio">Cardio
+                            </div>
+                            <div><input value="strength" id="exerciseType.field.type.1" name="exerciseType.field.type"
+                                        mbsc-radio="" type="radio">Strength
+                            </div>
+                        </div>
+                        <div id="exerciseType.field.type.error" style="display: none"
+                             class="mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3">
+                            <div id="exerciseType.field.type.error.message"></div>
+                        </div>
+                    </div>
+                    <div id="exerciseType.field.duration.container"><label
+                            for="exerciseType.field.duration">Duration</label><input type="text"
+                                                                                     id="exerciseType.field.duration"
+                                                                                     data-id="duration" name="duration"
+                                                                                     mbsc-input=""
+                                                                                     data-input-style="box"
+                                                                                     data-label-style="floating"
+                                                                                     class="mbsc-col-sm-9">
+                        <div id="exerciseType.field.duration.error" style="display: none"
+                             class="mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3">
+                            <div id="exerciseType.field.duration.error.message"></div>
+                        </div>
+                    </div>
+                    <div id="exerciseType.field.sets.container" style="display:none"><label
+                            for="exerciseType.field.sets">Sets</label><input type="number" id="exerciseType.field.sets"
+                                                                             data-id="sets" name="sets" mbsc-input=""
+                                                                             data-input-style="box"
+                                                                             data-label-style="floating"
+                                                                             class="mbsc-col-sm-9">
+                        <div id="exerciseType.field.sets.error" style="display: none"
+                             class="mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3">
+                            <div id="exerciseType.field.sets.error.message"></div>
+                        </div>
+                    </div>
+                    <div id="exerciseType.field.reps.container" style="display:none"><label
+                            for="exerciseType.field.reps">Repetitions</label><input type="number"
+                                                                                    id="exerciseType.field.reps"
+                                                                                    data-id="reps" name="reps"
+                                                                                    mbsc-input="" data-input-style="box"
+                                                                                    data-label-style="floating"
+                                                                                    class="mbsc-col-sm-9">
+                        <div id="exerciseType.field.reps.error" style="display: none"
+                             class="mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3">
+                            <div id="exerciseType.field.reps.error.message"></div>
+                        </div>
+                    </div>
+                    <div id="exerciseType.field.weight.container" style="display:none"><label
+                            for="exerciseType.field.weight">Weight</label><input type="number"
+                                                                                 id="exerciseType.field.weight"
+                                                                                 data-id="weight" name="weight"
+                                                                                 mbsc-input="" data-input-style="box"
+                                                                                 data-label-style="floating"
+                                                                                 class="mbsc-col-sm-9">
+                        <div id="exerciseType.field.weight.error" style="display: none"
+                             class="mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3">
+                            <div id="exerciseType.field.weight.error.message"></div>
+                        </div>
+                    </div>
+                    <div id="exerciseType.field.distance.container"><label
+                            for="exerciseType.field.distance">Distance</label><input type="number"
+                                                                                     id="exerciseType.field.distance"
+                                                                                     data-id="distance" name="distance"
+                                                                                     mbsc-input=""
+                                                                                     data-input-style="box"
+                                                                                     data-label-style="floating"
+                                                                                     class="mbsc-col-sm-9">
+                        <div id="exerciseType.field.distance.error" style="display: none"
+                             class="mbsc-err-msg mbsc-col-md-12 mbsc-col-lg-9 mbsc-offset-lg-3">
+                            <div id="exerciseType.field.distance.error.message"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="exerciseType.field.createdOn" data-id="createdOn" name="createdOn"
+                           class="mbsc-col-sm-9" disabled="true" readonly="true" value="19/09/2021 09:00:37"><input
+                            type="hidden" id="exerciseType.field.createdBy" data-id="createdBy" name="createdBy"
+                            class="mbsc-col-sm-9" disabled="true" readonly="true" value="jim"><input type="hidden"
+                                                                                                     id="exerciseType.field.modifiedBy"
+                                                                                                     data-id="modifiedBy"
+                                                                                                     name="modifiedBy"
+                                                                                                     class="mbsc-col-sm-9"
+                                                                                                     disabled="true"
+                                                                                                     readonly="true"
+                                                                                                     value="jim"><input
+                            type="hidden" id="exerciseType.field.modifiedOn" data-id="modifiedOn" name="modifiedOn"
+                            class="mbsc-col-sm-9" disabled="true" readonly="true" value="27/09/2021 10:02:54"></div>
+                <div class="d-flex w-100 justify-space-between">
+                    <button class="btn-info rounded p-1 mr-2 mt-2 w-100" id="exerciseType.cancelling">Cancel <i
+                            class="fas fa-ban"></i></button>
+                    <button class="btn-primary rounded p-1 mt-2 w-100" id="exerciseType.saving">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<br><br><br><br><br> <button type="button" class="btn btn-secondary" data-html="true" data-toggle="tooltip" data-placement="top" title="Tooltip<br/> on top">
-    Tooltip on top
-</button>
-<a data-toggle="tooltip" data-placement="top" id="form-field-6" data-html="true" title="Tooltip<br/>here" href="#"><span>Click</span> </a>
-
-<button type="button" class="btn bg-primary text-white btn-circle btn-md mr-1" data-toggle="tooltip" data-placement="right" data-html="true" title="Add this <strong>exercise</strong> to the current workout." view-extra-action="addToWorkout"></button>
-
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        $('[data-toggle="tooltip"]').tooltip();
-
-
-    });
+<script src="mobiscroll.javascript.min.js"></script>
+<script>
+    mobiscroll.settings = {
+        theme: 'ios',
+        themeVariant: 'light'
+    };
 </script>
 </body>
 </html>
