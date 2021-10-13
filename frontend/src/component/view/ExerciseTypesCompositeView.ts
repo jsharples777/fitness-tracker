@@ -1,22 +1,20 @@
-import SidebarViewContainer from "../../ui-framework/container/SidebarViewContainer";
-import {ExerciseTypesView} from "./ExerciseTypesView";
-import ExerciseTypesSidebar from "../sidebar/ExerciseTypesSidebar";
-import {DataObjectDefinition} from "../../model/DataObjectTypeDefs";
-import {ObjectDefinitionRegistry} from "../../model/ObjectDefinitionRegistry";
+
 import {BUTTON, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "../../AppTypes";
-import {FormDetailViewRenderer} from "../../ui-framework/view/renderer/FormDetailViewRenderer";
-import {CreatedByPermissionChecker} from "../../CreatedByPermissionChecker";
-import {DetailView} from "../../ui-framework/view/interface/DetailView";
-import {DetailViewImplementation} from "../../ui-framework/view/implementation/DetailViewImplementation";
-import {LinkedCollectionDetailController} from "../../ui-framework/helper/LinkedCollectionDetailController";
-import {BasicObjectDefinitionFactory} from "../../model/BasicObjectDefinitionFactory";
-import {Form} from "../../ui-framework/form/Form";
+
 import Controller from "../../Controller";
 import debug from "debug";
-import {ComparisonType, ConditionResponse, ValidationRule} from "../../ui-framework/form/validation/ValidationTypeDefs";
-import {ValidationManager} from "../../ui-framework/form/validation/ValidationManager";
+
 import {ValidationHelper} from "../helper/ValidationHelper";
 import {ExerciseTypesViewUsingContext} from "./ExerciseTypesViewUsingContext";
+import {CreatedByPermissionChecker} from "../../CreatedByPermissionChecker";
+import {
+    BasicObjectDefinitionFactory, BootstrapFormConfigHelper,
+    DataObjectDefinition, DetailView, DetailViewImplementation,
+    Form,
+    FormDetailViewRenderer, LinkedCollectionDetailController,
+    ObjectDefinitionRegistry, SidebarViewContainer
+} from "ui-framework-jps";
+import ExerciseTypesSidebar from "../sidebar/ExerciseTypesSidebar";
 
 const logger = debug('exercise-types-composite-view');
 
@@ -34,7 +32,7 @@ export class ExerciseTypesCompositeView {
         const exerciseTypeDefinition:DataObjectDefinition|null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exerciseTypes);
 
         if (exerciseTypeDefinition) {
-            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.exerciseTypeDetail,exerciseTypeDefinition,new CreatedByPermissionChecker());
+            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.exerciseTypeDetail,exerciseTypeDefinition,new CreatedByPermissionChecker(),BootstrapFormConfigHelper.getInstance());
 
             let exerciseTypeDetailView:DetailView = new DetailViewImplementation(
                 {

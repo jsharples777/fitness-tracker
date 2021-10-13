@@ -30,8 +30,7 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import connectFlash from 'connect-flash';
 
-// Sockets
-import socketManager from './socket/SocketManager';
+
 
 // Authentication middleware
 import mongoose from 'mongoose';
@@ -145,6 +144,7 @@ MongoDataSource.getInstance();
 import routes from './routes';
 app.use('/', routes);// add the middleware path routing
 import apiRoutes from './routes/api';
+import {SocketManager} from "server-socket-framework-jps";
 app.use('/api',apiRoutes);
 
 // Setup authentication
@@ -185,7 +185,7 @@ const httpServer = new http.Server(app);
 
 // setup the sockets manager with the server
 serverDebug('Setting up Socket manager');
-socketManager.connectToServer(httpServer);
+SocketManager.getInstance().connectToServer(httpServer);
 
 // setup the WebRTC peer server
 // @ts-ignore
@@ -230,6 +230,6 @@ if (isDevelopment) {
 httpServer.listen(port, () => {
     serverDebug(`Server started on port ${port}`);
     // start listening for socket events
-    socketManager.listen();
+    SocketManager.getInstance().listen();
 });
 

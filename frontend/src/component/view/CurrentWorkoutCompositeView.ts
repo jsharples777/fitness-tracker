@@ -1,26 +1,23 @@
-import SidebarViewContainer from "../../ui-framework/container/SidebarViewContainer";
-import {DataObjectDefinition} from "../../model/DataObjectTypeDefs";
-import {ObjectDefinitionRegistry} from "../../model/ObjectDefinitionRegistry";
+
 import {BUTTON, INPUT, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "../../AppTypes";
-import {FormDetailViewRenderer} from "../../ui-framework/view/renderer/FormDetailViewRenderer";
-import {DetailView} from "../../ui-framework/view/interface/DetailView";
-import {DetailViewImplementation} from "../../ui-framework/view/implementation/DetailViewImplementation";
-import {LinkedCollectionDetailController} from "../../ui-framework/helper/LinkedCollectionDetailController";
-import {BasicObjectDefinitionFactory} from "../../model/BasicObjectDefinitionFactory";
-import {Form} from "../../ui-framework/form/Form";
+
 import Controller from "../../Controller";
 import debug from "debug";
-import {StateManager} from "../../state/StateManager";
-import MemoryBufferStateManager from "../../state/MemoryBufferStateManager";
-import StateChangeListener from "../../state/StateChangeListener";
-import {isSameMongo} from "../../util/EqualityFunctions";
+
 import {ValidationHelper} from "../helper/ValidationHelper";
-import {DefaultPermissionChecker} from "../../DefaultPermissionChecker";
 import {CurrentWorkoutExercisesView} from "./CurrentWorkoutExercisesView";
-import {DataObjectListener} from "../../model/DataObjectListener";
-import {DataObjectController} from "../../model/DataObjectController";
+
 import moment from "moment";
 import App from "../../App";
+import {
+    BasicObjectDefinitionFactory, BootstrapFormConfigHelper,
+    DataObjectController,
+    DataObjectDefinition,
+    DataObjectListener, DefaultFormFieldPermissionChecker, DetailView, DetailViewImplementation,
+    Form,
+    FormDetailViewRenderer, isSameMongo, LinkedCollectionDetailController, MemoryBufferStateManager,
+    ObjectDefinitionRegistry, SidebarViewContainer, StateChangeListener, StateManager
+} from "ui-framework-jps";
 
 const logger = debug('current-workout-composite-view');
 
@@ -33,7 +30,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
 
     constructor(sideBar:SidebarViewContainer) {
         this.sideBar = sideBar;
-        this.stateManager = new MemoryBufferStateManager();
+        this.stateManager = new MemoryBufferStateManager(isSameMongo);
         this.stateManager.addChangeListenerForName(STATE_NAMES.exerciseTypes,this);
         Controller.getInstance().getStateManager().addChangeListenerForName(STATE_NAMES.workouts,this);
     }
@@ -62,7 +59,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
         const exerciseTypeDefinition:DataObjectDefinition|null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exerciseTypes);
 
         if (exerciseTypeDefinition) {
-            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.currentWorkoutDetail,exerciseTypeDefinition,new DefaultPermissionChecker());
+            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.currentWorkoutDetail,exerciseTypeDefinition,new DefaultFormFieldPermissionChecker(), BootstrapFormConfigHelper.getInstance());
 
             let exerciseTypeDetailView:DetailView = new DetailViewImplementation(
                 {
@@ -129,7 +126,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
         this.currentWorkout.createdOn = moment().format('YYYYMMDDHHmmss');
         this.currentWorkout.modifiedOn = moment().format('YYYYMMDDHHmmss');
 
-        Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.workouts,this.currentWorkout,isSameMongo,false);
+        Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.workouts,this.currentWorkout,false);
     }
 
     stateChanged(managerName: string, name: string, newValue: any): void {
@@ -202,12 +199,15 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
     update(controller:DataObjectController,typeName:string,dataObj:any):void {
         logger(`Updating exercise in workout from view`);
         logger(dataObj);
-        this.stateManager.updateItemInState(STATE_NAMES.exerciseTypes,dataObj,isSameMongo,false);
+        this.stateManager.updateItemInState(STATE_NAMES.exerciseTypes,dataObj,false);
     }
     delete(controller:DataObjectController,typeName:string,dataObj:any):void {
         logger(`Deleting exercise from workout from view`);
         logger(dataObj);
-        this.stateManager.removeItemFromState(STATE_NAMES.exerciseTypes,dataObj,isSameMongo,false);
+        this.stateManager.removeItemFromState(STATE_NAMES.exerciseTypes,dataObj,false);
+    }
+
+    filterResults(managerName: string, name: string, filterResults: any): void {
     }
 
 

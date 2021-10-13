@@ -1,5 +1,5 @@
-import {ObjectPermissionChecker} from "./ui-framework/view/interface/ObjectPermissionChecker";
-import Controller from "./Controller";
+import {ObjectPermissionChecker} from "ui-framework-jps";
+
 
 export class DefaultPermissionChecker implements ObjectPermissionChecker {
     hasPermissionToUpdateItem(item: any): boolean {

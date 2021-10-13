@@ -1,20 +1,21 @@
-import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {CollectionViewDOMConfig, KeyType, Modifier} from "../../ui-framework/ConfigurationTypes";
+
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
-import {ListViewRenderer} from "../../ui-framework/view/renderer/ListViewRenderer";
+
 import Controller from "../../Controller";
-import {isSameMongo} from "../../util/EqualityFunctions";
-import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
-import { CollectionView } from "../../ui-framework/view/interface/CollectionView";
-import { View } from "../../ui-framework/view/interface/View";
-import {FIELD_CreatedBy} from "../../model/BasicObjectDefinitionFactory";
+
 
 import debug from 'debug';
-import {StateManager} from "../../state/StateManager";
-import {CollectionViewEventHandlerDelegateUsingContext} from "../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
-import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
-import {ContextualInformationHelper} from "../../ui-framework/context/ContextualInformationHelper";
-import {ListViewRendererUsingContext} from "../../ui-framework/view/renderer/ListViewRendererUsingContext";
+import {
+    AbstractStatefulCollectionView,
+    CollectionViewDOMConfig,
+    CollectionViewEventHandlerDelegateUsingContext,
+    CollectionViewListener,
+    CollectionViewListenerForwarder,
+    ContextualInformationHelper, isSameMongo,
+    KeyType,
+    ListViewRendererUsingContext,
+    StateManager, View
+} from "ui-framework-jps";
 
 const logger = debug('current-workout-exercises-view');
 
@@ -29,9 +30,11 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
                 acceptTypes: [DRAGGABLE.typeExerciseType]
             }
         },
-        resultsElementType: 'a',
-        resultsElementAttributes: [{name: 'href', value: '#'}],
-        resultsClasses: 'list-group-item my-list-item truncate-notification list-group-item-action',
+        resultsElement: {
+            type: 'a',
+            attributes: [{name: 'href', value: '#'}],
+            classes: 'list-group-item my-list-item truncate-notification list-group-item-action',
+        },
         keyId: '_id',
         keyType: KeyType.string,
         modifiers: {
@@ -48,8 +51,10 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
         },
         detail: {
             containerClasses: 'd-flex w-100 justify-content-between',
-            textElementType: 'span',
-            textElementClasses: 'mb-1',
+            textElement: {
+                type: 'span',
+                classes: 'mb-1',
+            },
             select: true,
             icons:(name:string,item:any) => {
                 if (item.type) {
@@ -63,7 +68,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
                 return [];
             },
             delete: {
-                buttonClasses: 'btn bg-danger text-white btn-circle btn-md',
+                classes: 'btn bg-danger text-white btn-circle btn-md',
                 iconClasses: 'fas fa-trash-alt',
                 attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Delete this exercise from the workout."}]
             }

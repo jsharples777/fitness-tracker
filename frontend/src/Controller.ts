@@ -1,24 +1,25 @@
 import debug from 'debug';
-import MemoryBufferStateManager from "./state/MemoryBufferStateManager";
-import StateChangeListener from "./state/StateChangeListener";
-import {StateManager} from "./state/StateManager";
-import SocketManager from "./socket/SocketManager";
-import AsyncStateManagerWrapper from "./state/AsyncStateManagerWrapper";
-import {AggregateStateManager} from "./state/AggregateStateManager";
-import SocketListenerDelegate from "./SocketListenerDelegate";
-import {ChatManager} from "./socket/ChatManager";
-import {NotificationController} from "./socket/NotificationController";
 import {API_Config, STATE_NAMES} from "./AppTypes";
-import {RESTApiStateManager} from "./state/RESTApiStateManager";
-import {DataObjectDefinition, FieldDefinition, FieldType} from "./model/DataObjectTypeDefs";
-import {ObjectDefinitionRegistry} from "./model/ObjectDefinitionRegistry";
-import {BasicObjectDefinitionFactory} from "./model/BasicObjectDefinitionFactory";
-import {SimpleValueDataSource} from "./ui-framework/helper/SimpleValueDataSource";
-import {KeyType} from "./ui-framework/ConfigurationTypes";
-import {DataObjectListener} from "./model/DataObjectListener";
-import {DataObjectController} from "./model/DataObjectController";
-import {isSameMongo} from "./util/EqualityFunctions";
 import {v4} from "uuid";
+import SocketListenerDelegate from "./SocketListenerDelegate";
+import {
+    AggregateStateManager,
+    AsyncStateManagerWrapper,
+    BasicObjectDefinitionFactory, ChatManager,
+    DataObjectController,
+    DataObjectDefinition,
+    DataObjectListener,
+    FieldDefinition,
+    FieldType, isSame, isSameMongo,
+    KeyType,
+    MemoryBufferStateManager, NotificationController,
+    ObjectDefinitionRegistry,
+    RESTApiStateManager,
+    SimpleValueDataSource,
+    SocketManager,
+    StateChangeListener,
+    StateManager
+} from "ui-framework-jps";
 
 const cLogger = debug('controller-ts');
 const cLoggerDetail = debug('controller-ts-detail');
@@ -71,10 +72,10 @@ export default class Controller implements StateChangeListener,DataObjectListene
         ]);
 
 
-        let aggregateSM = AggregateStateManager.getInstance();
-        let memorySM = MemoryBufferStateManager.getInstance();
+        let aggregateSM = new AggregateStateManager(isSameMongo)
+        let memorySM = new MemoryBufferStateManager(isSameMongo)
 
-        let asyncSM = new AsyncStateManagerWrapper(aggregateSM, restSM);
+        let asyncSM = new AsyncStateManagerWrapper(aggregateSM, restSM,isSameMongo);
 
 
         aggregateSM.addStateManager(memorySM, [], false);
@@ -118,7 +119,7 @@ export default class Controller implements StateChangeListener,DataObjectListene
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", FieldType.boolean, true, "Have completed the workout");
         let exercisesFieldDefinition:FieldDefinition = BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", FieldType.collection, true, "Exercises in this workout");
         exercisesFieldDefinition.idType = KeyType.collection;
-        exercisesFieldDefinition.collectionOfDataObjectId = exerciseTypeDefinition.id;
+        exercisesFieldDefinition.linkedDataObjectId = exerciseTypeDefinition.id;
 
         cLogger(`Workout data object definition`);
         cLogger(workoutDefinition);
@@ -266,7 +267,7 @@ export default class Controller implements StateChangeListener,DataObjectListene
             case STATE_NAMES.exerciseTypes: {
                 cLogger(`Handling update exercise type`);
                 cLoggerDetail(dataObj);
-                this.stateManager.updateItemInState(typeName,dataObj,isSameMongo,false);
+                this.stateManager.updateItemInState(typeName,dataObj,false);
                 break;
             }
         }
@@ -285,6 +286,9 @@ export default class Controller implements StateChangeListener,DataObjectListene
                 this.addExerciseToCurrentWorkout(exercise);
             });
         }
+    }
+
+    filterResults(managerName: string, name: string, filterResults: any): void {
     }
 
 }

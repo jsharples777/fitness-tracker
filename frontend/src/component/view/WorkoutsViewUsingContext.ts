@@ -1,29 +1,24 @@
-import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {
-    CarouselDOMConfig,
-    EXTRA_ACTION_ATTRIBUTE_NAME,
-    KeyType,
-    Modifier,
-    RowPosition
-} from "../../ui-framework/ConfigurationTypes";
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import Controller from "../../Controller";
-import {isSameMongo} from "../../util/EqualityFunctions";
-import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
-import {View} from "../../ui-framework/view/interface/View";
 
 import debug from 'debug';
 import moment from "moment";
-import {addDurations} from "../../util/DurationFunctions";
-import {truncateString} from "../../util/MiscFunctions";
 import Chart from 'chart.js/auto';
 import App from "../../App";
-import {CollectionViewListenerForwarder} from "../../ui-framework/view/delegate/CollectionViewListenerForwarder";
-import {AlertManager} from "../../ui-framework/alert/AlertManager";
-import {ContextDefinition, ContextualInformationHelper} from "../../ui-framework/context/ContextualInformationHelper";
-import {CarouselViewRendererUsingContext} from "../../ui-framework/view/renderer/CarouselViewRendererUsingContext";
-import {AlertEvent, AlertListener, AlertType} from "../../ui-framework/alert/AlertListener";
-import {CollectionViewEventHandlerDelegateUsingContext} from "../../ui-framework/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
+import {
+    AbstractStatefulCollectionView, addDurations,
+    CarouselDOMConfig,
+    CarouselViewRendererUsingContext,
+    CollectionViewEventHandlerDelegateUsingContext,
+    CollectionViewListener,
+    CollectionViewListenerForwarder,
+    ContextDefinition,
+    ContextualInformationHelper, isSameMongo,
+    KeyType, Modifier,
+    RowPosition,
+    truncateString,
+    View
+} from "ui-framework-jps";
 
 const logger = debug('workouts-view');
 
@@ -51,25 +46,25 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
             xlarge: 4
         },
         rowContainer: {
-            elementClasses: "carousel-item",
-            elementType: 'div',
+            classes: "carousel-item",
+            type: 'div',
         },
         activeRow: {
-            elementType: '',
-            elementClasses: 'active',
+            type: '',
+            classes: 'active',
         },
         activeRowPosition:RowPosition.last,
         row: {
-            elementClasses: "row",
-            elementType: 'div',
+            classes: "row",
+            type: 'div',
         },
         multipleItemsPerRowContainer: {
-            elementType: 'div',
-            elementClasses: 'col-sm-12 col-md-4 col-lg-3 mb-2',
+            type: 'div',
+            classes: 'col-sm-12 col-md-4 col-lg-3 mb-2',
         },
         actionContainer: {
-            elementType:'div',
-            elementClasses:'card-footer d-flex w-100 justify-content-end'
+            type:'div',
+            classes:'card-footer d-flex w-100 justify-content-end'
         },
         collectionConfig: {
             viewConfig: {
@@ -80,8 +75,10 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
                     acceptFrom: [DRAGGABLE.fromExerciseTypes]
                 }
             },
-            resultsElementType: 'div',
-            resultsClasses: 'card',
+            resultsElement: {
+                type: 'div',
+                classes: 'card',
+            },
             keyId: '_id',
             keyType: KeyType.string,
             modifiers: {
@@ -92,34 +89,40 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
             },
             detail: {
                 containerClasses: 'card-body',
-                textElementType: 'div',
-                textElementClasses: '',
+                textElement: {
+                    classes: '',
+                    type: 'div'
+                },
                 select: true,
                 delete: {
-                    buttonClasses:'btn btn-danger btn-circle btn-md',
+                    classes:'btn btn-danger btn-circle btn-md',
                     iconClasses:'fas fa-trash-alt text-white',
                     attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Delete this workout"}]
                 },
                 background: {
-                    elementType:'div',
-                    elementClasses:'',
+                    type:'div',
+                    classes:'',
                 },
             },
             extraActions: [
                 {
                     name: 'template',
-                    buttonText: '',
-                    buttonClasses: 'btn btn-primary btn-circle btn-md mr-2',
-                    iconClasses: 'fas fa-copy',
-                    attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Add the exercises from this workout to the current workout."}]
+                    button: {
+                        text: '',
+                        classes: 'btn btn-primary btn-circle btn-md mr-2',
+                        iconClasses: 'fas fa-copy',
+                        attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Add the exercises from this workout to the current workout."}]
+                    },
 
                 },
                 {
                     name: 'continue',
-                    buttonText: '',
-                    iconClasses:'text-white fas fa-clipboard-list',
-                    buttonClasses: 'btn btn-warning btn-circle btn-md mr-2',
-                    attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Continue this current workout"}]
+                    button: {
+                        text: '',
+                        iconClasses:'text-white fas fa-clipboard-list',
+                        classes: 'btn btn-warning btn-circle btn-md mr-2',
+                        attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"top"},{name:'title',value:"Continue this current workout"}]
+                    },
                 }
             ],
 

@@ -3,8 +3,8 @@ import {MongoDataSource} from "../../db/MongoDataSource";
 const router = express.Router();
 import debug from 'debug';
 import {DeleteResult, Document, UpdateResult} from 'mongodb';
-import {DataMessage} from "../../socket/SocketTypes";
-import socketManager from "../../socket/SocketManager";
+import {DataMessage, SocketManager} from "server-socket-framework-jps";
+
 
 const logger = debug('api-exercise-types');
 
@@ -47,9 +47,9 @@ router.post('/', (req, res) => {
             user = req.user.id;
         }
         else { user = "-1"}
-        // @ts-ignore
+
         const message:DataMessage = {type:"create",stateName: "exerciseType",data:req.body, user:user,}
-        socketManager.sendDataMessage(message);
+        SocketManager.getInstance().sendDataMessage(message);
 
         res.json(req.body);
     })
@@ -71,7 +71,7 @@ router.put('/', (req, res) => {
             else { user = "-1"}
             // @ts-ignore
             const message:DataMessage = {type:"update",stateName: "exerciseType",data:req.body, user:user,}
-            socketManager.sendDataMessage(message);
+            SocketManager.getInstance().sendDataMessage(message);
             res.json(req.body);
     })
     .catch((err) => {
@@ -91,7 +91,7 @@ router.delete('/:id', (req, res) => {
         else { user = "-1"}
         // @ts-ignore
         const message:DataMessage = {type:"delete",stateName: "exerciseType",data:{ _id: req.params.id},user:user,}
-        socketManager.sendDataMessage(message);
+        SocketManager.getInstance().sendDataMessage(message);
         logger(result);
         res.json(result);
 

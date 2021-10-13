@@ -1,7 +1,14 @@
 //localStorage.debug = 'linked-controller api-ts exercise-types-view app controller-ts controller-ts-detail api-ts socket-ts user-search user-search-detail list-view-renderer';
 //localStorage.debug = 'collection-view-ts collection-view-ts-detail form-detail-view-renderer linked-controller linked-controller-detail exercise-types-view app validation-manager-rule-failure validation-manager';
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
-import {ContextualInformationHelper} from "./ui-framework/context/ContextualInformationHelper";
+
+
+import {
+    ChatLogsView,
+    ChatRoomsSidebar,
+    ContextualInformationHelper,
+    UnreadMessageCountListener, UserSearchSidebar
+} from "ui-framework-jps";
 
 localStorage.debug = 'context-helper';
 
@@ -9,22 +16,18 @@ import debug from 'debug';
 debug.log = console.info.bind(console);
 
 import Controller from './Controller';
-import UserSearchView from "./component/view/UserSearchView";
-import ChatLogsView from "./component/view/ChatLogsView";
 import {API_Config, NAVIGATION, STATE_NAMES} from "./AppTypes";
-import {UnreadMessageCountListener} from "./socket/UnreadMessageCountListener";
-import UserSearchSidebar from "./component/sidebar/UserSearchSidebar";
-import ChatRoomsSidebar from "./component/sidebar/ChatRoomsSidebar";
 import ExerciseTypesSidebar from "./component/sidebar/ExerciseTypesSidebar";
-import ChatLogDetailView from "./component/view/ChatLogDetailView";
-import FavouriteUserView from "./component/view/FavouriteUserView";
-import BlockedUserView from "./component/view/BlockedUserView";
 import {ExerciseTypesCompositeView} from "./component/view/ExerciseTypesCompositeView";
 import WorkoutSummarySidebar from "./component/sidebar/WorkoutSummarySidebar";
 import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
 import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
+import {BlockedUserView} from "ui-framework-jps/dist/framework/ui/chat/BlockedUserView";
+import {FavouriteUserView} from "ui-framework-jps/dist/framework/ui/chat/FavouriteUserView";
+import {ChatLogDetailView} from "ui-framework-jps/dist/framework/ui/chat/ChatLogDetailView";
+import {UserSearchView} from "ui-framework-jps/dist/framework/ui/chat/UserSearchView";
 
 
 const logger = debug('app');
@@ -93,25 +96,13 @@ export default class App implements UnreadMessageCountListener {
 
     private setupUserSearchViews() {
         // add the subviews for the user search
-        this.userSearchSidebar = new UserSearchSidebar();
-        const recentSearches = new UserSearchView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(recentSearches, {containerId: UserSearchSidebar.SidebarContainers.recentSearches});
-        const favouriteUsers = new FavouriteUserView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(favouriteUsers, {containerId: UserSearchSidebar.SidebarContainers.favourites});
-        const blockedUsers = new BlockedUserView(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.addView(blockedUsers, {containerId: UserSearchSidebar.SidebarContainers.blocked});
+        this.userSearchSidebar = UserSearchSidebar.getInstance(Controller.getInstance().getStateManager());
         this.userSearchSidebar.onDocumentLoaded();
     }
 
     private setupChatViews() {
         // add the views to the chat side bar
-        this.chatSidebar = new ChatRoomsSidebar();
-        this.chatView = new ChatLogsView();
-        this.chatSidebar.addView(this.chatView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLogs});
-
-        const chatLogView = new ChatLogDetailView(Controller.getInstance().getStateManager());
-        this.chatSidebar.addView(chatLogView, {containerId: ChatRoomsSidebar.SidebarContainers.chatLog});
-        this.chatView.addEventListener(chatLogView);
+        this.chatSidebar = ChatRoomsSidebar.getInstance(Controller.getInstance().getStateManager());
         this.chatSidebar.onDocumentLoaded();
     }
 

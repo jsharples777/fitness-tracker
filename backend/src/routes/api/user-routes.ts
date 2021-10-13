@@ -3,8 +3,7 @@ import {MongoDataSource} from "../../db/MongoDataSource";
 const router = express.Router();
 import debug from 'debug';
 import {DeleteResult, Document, UpdateResult} from 'mongodb';
-import {DataMessage} from "../../socket/SocketTypes";
-import socketManager from "../../socket/SocketManager";
+
 
 const logger = debug('api-users');
 

@@ -1,12 +1,14 @@
-import AbstractStatefulCollectionView from "../../ui-framework/view/implementation/AbstractStatefulCollectionView";
-import {CollectionViewDOMConfig, KeyType, Modifier} from "../../ui-framework/ConfigurationTypes";
+
 import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import Controller from "../../Controller";
-import {isSameMongo} from "../../util/EqualityFunctions";
-import {CollectionViewListener} from "../../ui-framework/view/interface/CollectionViewListener";
-import {View} from "../../ui-framework/view/interface/View";
 
 import {WorkoutSummaryRenderer} from "../renderer/WorkoutSummaryRenderer";
+import {
+    AbstractStatefulCollectionView,
+    CollectionViewDOMConfig,
+    CollectionViewListener, isSameMongo,
+    KeyType, View
+} from "ui-framework-jps";
 
 
 export class WorkoutSummaryView extends AbstractStatefulCollectionView implements CollectionViewListener {
@@ -16,14 +18,18 @@ export class WorkoutSummaryView extends AbstractStatefulCollectionView implement
             resultsContainerId: 'workoutSummaryChart',
             dataSourceId: VIEW_NAME.workoutSummary,
         },
-        resultsElementType: 'canvas',
-        resultsClasses: '',
+        resultsElement:{
+            type: 'canvas',
+            classes: '',
+        },
         keyId: '_id',
         keyType: KeyType.string,
         detail: {
             containerClasses: '',
-            textElementType: '',
-            textElementClasses: '',
+            textElement: {
+                type: '',
+                classes: '',
+            },
             select: false,
         },
     }

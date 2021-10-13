@@ -1,6 +1,5 @@
-import {Form} from "../../ui-framework/form/Form";
-import {ComparisonType, ConditionResponse, ValidationRule} from "../../ui-framework/form/validation/ValidationTypeDefs";
-import {ValidationManager} from "../../ui-framework/form/validation/ValidationManager";
+import {ComparisonType, ConditionResponse, Form, ValidationManager, ValidationRule} from "ui-framework-jps";
+
 
 export class ValidationHelper {
     private static _instance: ValidationHelper;

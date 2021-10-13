@@ -4,9 +4,8 @@ const router = express.Router();
 import passport from 'passport';
 import debug from 'debug';
 import MongoAccount from '../models/MongoAccount';
-import {DataMessage} from "../socket/SocketTypes";
-import socketManager from "../socket/SocketManager";
 import {ensureAuthenticated} from "./auth";
+import {DataMessage, SocketManager} from "server-socket-framework-jps";
 
 const routeDebug = debug('route');
 
@@ -40,7 +39,7 @@ router.post('/register', (req, res, next) => {
                 data:{ _id: account._id,username:(''+account.username)},
                 user:(''+account._id)
             };
-            socketManager.sendDataMessage(message);
+            SocketManager.getInstance().sendDataMessage(message);
 
             passport.authenticate('local')(req, res, () => {
                 req.session.save((err) => {
