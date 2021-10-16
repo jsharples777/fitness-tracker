@@ -1,9 +1,8 @@
 import debug from 'debug';
 import moment from "moment";
 import Chart from "chart.js/auto";
-import {CollectionViewRenderer} from "../../framework/ui/view/interface/CollectionViewRenderer";
-import {CollectionView} from "../../framework/ui/view/interface/CollectionView";
-import {CollectionViewEventHandler} from "../../framework/ui/view/interface/CollectionViewEventHandler";
+import {CollectionView, CollectionViewEventHandler, CollectionViewRenderer} from "ui-framework-jps";
+
 
 const avLogger = debug('workout-summary-renderer');
 

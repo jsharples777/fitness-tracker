@@ -1,12 +1,12 @@
-import {Form} from "../../framework/ui/form/Form";
 import {
+    ComparisonType,
     ConditionResponse,
+    Form,
+    FormMode,
     MultipleConditionLogic,
+    ValidationManager,
     ValidationRule
-} from "../../framework/ui/form/validation/ValidationTypeDefs";
-import {FormMode} from "../../framework/ui/form/FormUITypeDefs";
-import {ComparisonType} from "../../framework/CommonTypes";
-import {ValidationManager} from "../../framework/ui/form/validation/ValidationManager";
+} from "ui-framework-jps";
 
 
 export class ValidationHelper {

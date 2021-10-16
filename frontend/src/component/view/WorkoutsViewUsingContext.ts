@@ -5,17 +5,22 @@ import debug from 'debug';
 import moment from "moment";
 import Chart from 'chart.js/auto';
 import App from "../../App";
-import {ContextDefinition, ContextualInformationHelper} from "../../framework/ui/context/ContextualInformationHelper";
-import {AbstractStatefulCollectionView} from "../../framework/ui/view/implementation/AbstractStatefulCollectionView";
-import {CarouselDOMConfig, KeyType, Modifier, RowPosition} from "../../framework/ui/ConfigurationTypes";
-import {CollectionViewEventHandlerDelegateUsingContext} from "../../framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
-import {View} from "../../framework/ui/view/interface/View";
-import {truncateString} from "../../framework/util/MiscFunctions";
-import {addDurations} from "../../framework/util/DurationFunctions";
-import {CollectionViewListener} from "../../framework/ui/view/interface/CollectionViewListener";
-import {CarouselViewRendererUsingContext} from "../../framework/ui/view/renderer/CarouselViewRendererUsingContext";
-import {CollectionViewListenerForwarder} from "../../framework/ui/view/delegate/CollectionViewListenerForwarder";
-import {isSameMongo} from "../../framework/util/EqualityFunctions";
+import {
+    AbstractStatefulCollectionView,
+    addDurations,
+    CarouselDOMConfig,
+    CarouselViewRendererUsingContext,
+    CollectionViewEventHandlerDelegateUsingContext,
+    CollectionViewListener,
+    CollectionViewListenerForwarder,
+    ContextDefinition,
+    ContextualInformationHelper, isSameMongo,
+    KeyType, Modifier,
+    RowPosition,
+    truncateString,
+    View
+} from "ui-framework-jps";
+
 
 
 const logger = debug('workouts-view');

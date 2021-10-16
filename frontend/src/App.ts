@@ -17,11 +17,13 @@ import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
 import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
-import {ContextualInformationHelper} from "./framework/ui/context/ContextualInformationHelper";
-import {ChatRoomsSidebar} from "./framework/ui/chat/ChatRoomsSidebar";
-import {ChatLogsView} from "./framework/ui/chat/ChatLogsView";
-import {UnreadMessageCountListener} from "./framework/socket/UnreadMessageCountListener";
-import {UserSearchSidebar} from "./framework/ui/chat/UserSearchSidebar";
+import {
+    ChatLogsView,
+    ChatRoomsSidebar,
+    ContextualInformationHelper,
+    UnreadMessageCountListener, UserSearchSidebar
+} from "ui-framework-jps";
+
 
 
 const logger = debug('app');

@@ -2,23 +2,28 @@ import debug from 'debug';
 import {API_Config, STATE_NAMES} from "./AppTypes";
 import {v4} from "uuid";
 import SocketListenerDelegate from "./SocketListenerDelegate";
-import {KeyType} from "./framework/ui/ConfigurationTypes";
-import {DataObjectListener} from "./framework/model/DataObjectListener";
-import {DataObjectDefinition, FieldDefinition, FieldType} from "./framework/model/DataObjectTypeDefs";
-import {ObjectDefinitionRegistry} from "./framework/model/ObjectDefinitionRegistry";
-import {StateChangeListener} from "./framework/state/StateChangeListener";
-import {MemoryBufferStateManager} from "./framework/state/MemoryBufferStateManager";
-import {SimpleValueDataSource} from "./framework/ui/helper/SimpleValueDataSource";
-import {AggregateStateManager} from "./framework/state/AggregateStateManager";
-import {StateManager} from "./framework/state/StateManager";
-import {DataObjectController} from "./framework/model/DataObjectController";
-import {AsyncStateManagerWrapper} from "./framework/state/AsyncStateManagerWrapper";
-import {BasicObjectDefinitionFactory} from "./framework/model/BasicObjectDefinitionFactory";
-import {RESTApiStateManager} from "./framework/state/RESTApiStateManager";
-import {isSameMongo} from "./framework/util/EqualityFunctions";
-import {ChatManager} from "./framework/socket/ChatManager";
-import {NotificationController} from "./framework/socket/NotificationController";
-import {SocketManager} from "./framework/socket/SocketManager";
+import {
+    AggregateStateManager,
+    AsyncStateManagerWrapper,
+    BasicObjectDefinitionFactory,
+    ChatManager,
+    DataObjectController,
+    DataObjectDefinition,
+    DataObjectListener,
+    FieldDefinition,
+    FieldType,
+    isSameMongo,
+    KeyType,
+    MemoryBufferStateManager,
+    NotificationController,
+    ObjectDefinitionRegistry,
+    RESTApiStateManager,
+    SimpleValueDataSource,
+    SocketManager,
+    StateChangeListener,
+    StateManager
+} from "ui-framework-jps";
+
 
 
 const cLogger = debug('controller-ts');

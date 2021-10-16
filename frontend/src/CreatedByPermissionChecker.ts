@@ -1,6 +1,6 @@
 import Controller from "./Controller";
-import {Field} from "./framework/ui/form/field/Field";
-import {FormFieldPermissionChecker} from "./framework/ui/form/FormFieldPermissionChecker";
+import {Field, FormFieldPermissionChecker} from "ui-framework-jps";
+
 
 
 export class CreatedByPermissionChecker implements FormFieldPermissionChecker {
