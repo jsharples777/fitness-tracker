@@ -1,4 +1,5 @@
-import {SidebarLocation, SidebarPrefs, SidebarViewContainer} from "ui-framework-jps";
+import {SidebarViewContainer} from "../../framework/ui/container/SidebarViewContainer";
+import {SidebarLocation, SidebarPrefs} from "../../framework/ui/ConfigurationTypes";
 
 
 export default class CurrentWorkoutSidebar extends SidebarViewContainer {

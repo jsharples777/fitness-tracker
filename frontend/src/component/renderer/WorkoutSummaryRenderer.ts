@@ -1,21 +1,24 @@
 import debug from 'debug';
 import moment from "moment";
 import Chart from "chart.js/auto";
-import {CollectionView, CollectionViewEventHandler, CollectionViewRenderer} from "ui-framework-jps";
+import {CollectionViewRenderer} from "../../framework/ui/view/interface/CollectionViewRenderer";
+import {CollectionView} from "../../framework/ui/view/interface/CollectionView";
+import {CollectionViewEventHandler} from "../../framework/ui/view/interface/CollectionViewEventHandler";
 
 const avLogger = debug('workout-summary-renderer');
 
 export class WorkoutSummaryRenderer implements CollectionViewRenderer {
+
     protected view: CollectionView;
     protected eventHandler: CollectionViewEventHandler;
-    private currentChart:Chart|null = null;
+    private currentChart: Chart | null = null;
 
     constructor(view: CollectionView, eventHandler: CollectionViewEventHandler) {
         this.view = view;
         this.eventHandler = eventHandler;
     }
 
-    private generateRandomExerciseColourAndBorder(isStrength:boolean = true) : string[] {
+    private generateRandomExerciseColourAndBorder(isStrength: boolean = true): string[] {
         let red = 0;
         let blue = 0;
         let green = 50;
@@ -28,7 +31,7 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
         const background = `rgba(${red},${green},${blue},${transparency})`;
         const border = `rgb(${red},${green},${blue})`;
 
-        return [background,border];
+        return [background, border];
     }
 
     public createDisplayElementForCollectionItem(collectionName: string, item: any): HTMLElement {
@@ -121,7 +124,7 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
                     data.push(0);
                 }
             });
-            let dataset = {label: name, data: data, backgroundColor: bg, borderColor: br, borderWidth: 1, order:1};
+            let dataset = {label: name, data: data, backgroundColor: bg, borderColor: br, borderWidth: 1, order: 1};
             let lineDataSet = {label: name, data: data, backgroundColor: bg, borderColor: br, order: 0, type: 'line'};
             avLogger(dataset);
             datasets.push(dataset);
@@ -135,7 +138,7 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
         };
 
         let config = {
-            type:'bar',
+            type: 'bar',
             data: chartData,
             options: {
                 responsive: true,

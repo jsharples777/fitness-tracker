@@ -5,20 +5,18 @@ import Controller from "../../Controller";
 
 
 import debug from 'debug';
-import {
-    AbstractStatefulCollectionView,
-    CollectionViewDOMConfig,
-    CollectionViewEventHandlerDelegateUsingContext,
-    CollectionViewListener,
-    CollectionViewListenerForwarder,
-    ContextDefinition,
-    ContextualInformationHelper,
-    FIELD_CreatedBy, isSameMongo,
-    KeyType,
-    ListViewRendererUsingContext,
-    StateManager,
-    View
-} from "ui-framework-jps";
+import {ContextDefinition, ContextualInformationHelper} from "../../framework/ui/context/ContextualInformationHelper";
+import {AbstractStatefulCollectionView} from "../../framework/ui/view/implementation/AbstractStatefulCollectionView";
+import {CollectionViewDOMConfig, KeyType} from "../../framework/ui/ConfigurationTypes";
+import {CollectionViewEventHandlerDelegateUsingContext} from "../../framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
+import {View} from "../../framework/ui/view/interface/View";
+import {FIELD_CreatedBy} from "../../framework/model/BasicObjectDefinitionFactory";
+import {StateManager} from "../../framework/state/StateManager";
+import {CollectionViewListener} from "../../framework/ui/view/interface/CollectionViewListener";
+import {ListViewRendererUsingContext} from "../../framework/ui/view/renderer/ListViewRendererUsingContext";
+import {CollectionViewListenerForwarder} from "../../framework/ui/view/delegate/CollectionViewListenerForwarder";
+import {isSameMongo} from "../../framework/util/EqualityFunctions";
+
 
 
 const logger = debug('exercise-types-view');

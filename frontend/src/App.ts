@@ -3,17 +3,10 @@
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
 
 
-import {
-    ChatLogsView,
-    ChatRoomsSidebar,
-    ContextualInformationHelper,
-    UnreadMessageCountListener, UserSearchSidebar
-} from "ui-framework-jps";
 
-localStorage.debug = 'context-helper';
+
 
 import debug from 'debug';
-debug.log = console.info.bind(console);
 
 import Controller from './Controller';
 import {API_Config, NAVIGATION, STATE_NAMES} from "./AppTypes";
@@ -24,10 +17,11 @@ import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
 import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
-import {BlockedUserView} from "ui-framework-jps/dist/framework/ui/chat/BlockedUserView";
-import {FavouriteUserView} from "ui-framework-jps/dist/framework/ui/chat/FavouriteUserView";
-import {ChatLogDetailView} from "ui-framework-jps/dist/framework/ui/chat/ChatLogDetailView";
-import {UserSearchView} from "ui-framework-jps/dist/framework/ui/chat/UserSearchView";
+import {ContextualInformationHelper} from "./framework/ui/context/ContextualInformationHelper";
+import {ChatRoomsSidebar} from "./framework/ui/chat/ChatRoomsSidebar";
+import {ChatLogsView} from "./framework/ui/chat/ChatLogsView";
+import {UnreadMessageCountListener} from "./framework/socket/UnreadMessageCountListener";
+import {UserSearchSidebar} from "./framework/ui/chat/UserSearchSidebar";
 
 
 const logger = debug('app');
@@ -235,5 +229,8 @@ export default class App implements UnreadMessageCountListener {
 
 
 $(function() {
+    //localStorage.debug = 'abstract-field validation-manager validation-manager-rule-failure';
+    localStorage.debug = 'api-ts validation-manager-execute-rule validation-manager-rule-failure';
+    debug.log = console.info.bind(console);
     App.getInstance().onDocumentLoad();
 });

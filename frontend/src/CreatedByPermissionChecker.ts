@@ -1,5 +1,7 @@
 import Controller from "./Controller";
-import {Field, FormFieldPermissionChecker} from "ui-framework-jps";
+import {Field} from "./framework/ui/form/field/Field";
+import {FormFieldPermissionChecker} from "./framework/ui/form/FormFieldPermissionChecker";
+
 
 export class CreatedByPermissionChecker implements FormFieldPermissionChecker {
     hasPermissionToUpdateItem(item: any): boolean {

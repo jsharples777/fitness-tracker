@@ -1,4 +1,4 @@
-import {ObjectPermissionChecker} from "ui-framework-jps";
+import {ObjectPermissionChecker} from "./framework/ui/view/interface/ObjectPermissionChecker";
 
 
 export class DefaultPermissionChecker implements ObjectPermissionChecker {

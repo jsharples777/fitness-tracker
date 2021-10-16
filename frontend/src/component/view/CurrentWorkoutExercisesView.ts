@@ -5,17 +5,17 @@ import Controller from "../../Controller";
 
 
 import debug from 'debug';
-import {
-    AbstractStatefulCollectionView,
-    CollectionViewDOMConfig,
-    CollectionViewEventHandlerDelegateUsingContext,
-    CollectionViewListener,
-    CollectionViewListenerForwarder,
-    ContextualInformationHelper, isSameMongo,
-    KeyType,
-    ListViewRendererUsingContext,
-    StateManager, View
-} from "ui-framework-jps";
+import {ContextualInformationHelper} from "../../framework/ui/context/ContextualInformationHelper";
+import {AbstractStatefulCollectionView} from "../../framework/ui/view/implementation/AbstractStatefulCollectionView";
+import {CollectionViewDOMConfig, KeyType} from "../../framework/ui/ConfigurationTypes";
+import {StateManager} from "../../framework/state/StateManager";
+import {CollectionViewEventHandlerDelegateUsingContext} from "../../framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
+import {CollectionViewListener} from "../../framework/ui/view/interface/CollectionViewListener";
+import {ListViewRendererUsingContext} from "../../framework/ui/view/renderer/ListViewRendererUsingContext";
+import {CollectionViewListenerForwarder} from "../../framework/ui/view/delegate/CollectionViewListenerForwarder";
+import {isSameMongo} from "../../framework/util/EqualityFunctions";
+import {View} from "../../framework/ui/view/interface/View";
+
 
 const logger = debug('current-workout-exercises-view');
 

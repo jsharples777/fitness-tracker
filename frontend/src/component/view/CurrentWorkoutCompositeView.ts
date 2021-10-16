@@ -9,15 +9,24 @@ import {CurrentWorkoutExercisesView} from "./CurrentWorkoutExercisesView";
 
 import moment from "moment";
 import App from "../../App";
-import {
-    BasicObjectDefinitionFactory, BootstrapFormConfigHelper,
-    DataObjectController,
-    DataObjectDefinition,
-    DataObjectListener, DefaultFormFieldPermissionChecker, DetailView, DetailViewImplementation,
-    Form,
-    FormDetailViewRenderer, isSameMongo, LinkedCollectionDetailController, MemoryBufferStateManager,
-    ObjectDefinitionRegistry, SidebarViewContainer, StateChangeListener, StateManager
-} from "ui-framework-jps";
+import {FormDetailViewRenderer} from "../../framework/ui/view/renderer/FormDetailViewRenderer";
+import {BootstrapFormConfigHelper} from "../../framework/ui/helper/BootstrapFormConfigHelper";
+import {Form} from "../../framework/ui/form/Form";
+import {DataObjectListener} from "../../framework/model/DataObjectListener";
+import {DataObjectDefinition} from "../../framework/model/DataObjectTypeDefs";
+import {ObjectDefinitionRegistry} from "../../framework/model/ObjectDefinitionRegistry";
+import {DefaultFormFieldPermissionChecker} from "../../framework/ui/form/DefaultFormFieldPermissionChecker";
+import {StateChangeListener} from "../../framework/state/StateChangeListener";
+import {DetailViewImplementation} from "../../framework/ui/view/implementation/DetailViewImplementation";
+import {SidebarViewContainer} from "../../framework/ui/container/SidebarViewContainer";
+import {MemoryBufferStateManager} from "../../framework/state/MemoryBufferStateManager";
+import {LinkedCollectionDetailController} from "../../framework/ui/helper/LinkedCollectionDetailController";
+import {StateManager} from "../../framework/state/StateManager";
+import {DataObjectController} from "../../framework/model/DataObjectController";
+import {BasicObjectDefinitionFactory} from "../../framework/model/BasicObjectDefinitionFactory";
+import {DetailView} from "../../framework/ui/view/interface/DetailView";
+import {isSameMongo} from "../../framework/util/EqualityFunctions";
+
 
 const logger = debug('current-workout-composite-view');
 

@@ -4,7 +4,8 @@ import debug from 'debug';
 import Controller from "./Controller";
 
 import {STATE_NAMES} from "./AppTypes";
-import {isSameMongo, NotificationManager, NotificationType, SocketListener} from "ui-framework-jps";
+import {SocketListener} from "./framework/socket/SocketListener";
+import {NotificationManager, NotificationType} from "./framework/notification/NotificationManager";
 
 
 const slLogger = debug('socket-listener');

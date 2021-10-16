@@ -7,14 +7,18 @@ import debug from "debug";
 import {ValidationHelper} from "../helper/ValidationHelper";
 import {ExerciseTypesViewUsingContext} from "./ExerciseTypesViewUsingContext";
 import {CreatedByPermissionChecker} from "../../CreatedByPermissionChecker";
-import {
-    BasicObjectDefinitionFactory, BootstrapFormConfigHelper,
-    DataObjectDefinition, DetailView, DetailViewImplementation,
-    Form,
-    FormDetailViewRenderer, LinkedCollectionDetailController,
-    ObjectDefinitionRegistry, SidebarViewContainer
-} from "ui-framework-jps";
+
 import ExerciseTypesSidebar from "../sidebar/ExerciseTypesSidebar";
+import {FormDetailViewRenderer} from "../../framework/ui/view/renderer/FormDetailViewRenderer";
+import {BootstrapFormConfigHelper} from "../../framework/ui/helper/BootstrapFormConfigHelper";
+import {Form} from "../../framework/ui/form/Form";
+import {DataObjectDefinition} from "../../framework/model/DataObjectTypeDefs";
+import {ObjectDefinitionRegistry} from "../../framework/model/ObjectDefinitionRegistry";
+import {BasicObjectDefinitionFactory} from "../../framework/model/BasicObjectDefinitionFactory";
+import {DetailView} from "../../framework/ui/view/interface/DetailView";
+import {DetailViewImplementation} from "../../framework/ui/view/implementation/DetailViewImplementation";
+import {SidebarViewContainer} from "../../framework/ui/container/SidebarViewContainer";
+import {LinkedCollectionDetailController} from "../../framework/ui/helper/LinkedCollectionDetailController";
 
 const logger = debug('exercise-types-composite-view');
 
