@@ -2,7 +2,7 @@ import {
     ComparisonType,
     ConditionResponse,
     Form,
-    FormMode,
+    ViewMode,
     MultipleConditionLogic,
     ValidationManager,
     ValidationRule
@@ -25,7 +25,7 @@ export class ValidationHelper {
 
     public setupValidationForExerciseTypeDetailsForm(form: Form) {
         let rule: ValidationRule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'sets',
             response: ConditionResponse.show,
             conditions: [
@@ -36,9 +36,9 @@ export class ValidationHelper {
                 }
             ]
         };
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'reps',
             response: ConditionResponse.show,
             conditions: [
@@ -49,9 +49,9 @@ export class ValidationHelper {
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'weight',
             response: ConditionResponse.show,
             conditions: [
@@ -62,9 +62,9 @@ export class ValidationHelper {
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'reps',
             response: ConditionResponse.hide,
             conditions: [
@@ -75,9 +75,9 @@ export class ValidationHelper {
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'sets',
             response: ConditionResponse.hide,
             conditions: [
@@ -89,9 +89,9 @@ export class ValidationHelper {
             ]
         }
 
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'weight',
             response: ConditionResponse.hide,
             conditions: [
@@ -103,9 +103,9 @@ export class ValidationHelper {
             ]
         }
 
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'distance',
             response: ConditionResponse.show,
             conditions: [
@@ -116,9 +116,9 @@ export class ValidationHelper {
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'distance',
             response: ConditionResponse.hide,
             conditions: [
@@ -129,9 +129,9 @@ export class ValidationHelper {
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'sets',
             response: ConditionResponse.invalid,
             multipleConditionLogic: MultipleConditionLogic.failOnlyIfFinalConditionIsAFailAndPreviousConditionsAreNotFails,
@@ -149,7 +149,7 @@ export class ValidationHelper {
 
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
     }
 
 }
