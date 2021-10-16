@@ -1,11 +1,10 @@
-import {SidebarViewContainer} from "../../framework/ui/container/SidebarViewContainer";
-import {SidebarLocation, SidebarPrefs} from "../../framework/ui/ConfigurationTypes";
+import {SidebarLocation, SidebarPrefs, SidebarViewContainer} from "ui-framework-jps";
 
 
 export default class CurrentWorkoutSidebar extends SidebarViewContainer {
-    static SidebarPrefs:SidebarPrefs = {
-        id:'currentWorkoutSidebar',
-        expandedSize:'50%',
+    static sidebarPrefs: SidebarPrefs = {
+        id: 'currentWorkoutSidebar',
+        expandedSize: '50%',
         location: SidebarLocation.right
     }
 
@@ -16,6 +15,6 @@ export default class CurrentWorkoutSidebar extends SidebarViewContainer {
 
 
     constructor() {
-        super(CurrentWorkoutSidebar.SidebarPrefs);
+        super(CurrentWorkoutSidebar.sidebarPrefs);
     }
 }

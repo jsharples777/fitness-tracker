@@ -3,9 +3,6 @@
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
 
 
-
-
-
 import debug from 'debug';
 
 import Controller from './Controller';
@@ -17,11 +14,13 @@ import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
 import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
-import {ContextualInformationHelper} from "./framework/ui/context/ContextualInformationHelper";
-import {ChatRoomsSidebar} from "./framework/ui/chat/ChatRoomsSidebar";
-import {ChatLogsView} from "./framework/ui/chat/ChatLogsView";
-import {UnreadMessageCountListener} from "./framework/socket/UnreadMessageCountListener";
-import {UserSearchSidebar} from "./framework/ui/chat/UserSearchSidebar";
+import {
+    ChatLogsView,
+    ChatRoomsSidebar,
+    ContextualInformationHelper,
+    UnreadMessageCountListener,
+    UserSearchSidebar
+} from "ui-framework-jps";
 
 
 const logger = debug('app');
@@ -29,14 +28,6 @@ const logger = debug('app');
 export default class App implements UnreadMessageCountListener {
 
     private static _instance: App;
-
-    public static getInstance(): App {
-        if (!(App._instance)) {
-            App._instance = new App();
-        }
-        return App._instance;
-    }
-
     // @ts-ignore
     private exerciseTypesSidebar: ExerciseTypesSidebar;
     // @ts-ignore
@@ -51,7 +42,6 @@ export default class App implements UnreadMessageCountListener {
     private currentWorkoutView: CurrentWorkoutCompositeView;
     // @ts-ignore
     private chatView: ChatLogsView;
-
     // @ts-ignore
     private thisEl: HTMLDivElement | null;
     // @ts-ignore
@@ -68,36 +58,15 @@ export default class App implements UnreadMessageCountListener {
         Controller.getInstance().connectToApplication(this, window.localStorage);
     }
 
+    public static getInstance(): App {
+        if (!(App._instance)) {
+            App._instance = new App();
+        }
+        return App._instance;
+    }
+
     getCurrentUser() {
         return Controller.getInstance().getLoggedInUserId();
-    }
-
-    private setupNavigationItemHandling() {
-        // @ts-ignore
-        document.getElementById(NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch);
-        // @ts-ignore
-        document.getElementById(NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes);
-        // @ts-ignore
-        document.getElementById(NAVIGATION.workoutSummary).addEventListener('click', this.handleShowWorkoutSummary);
-        // @ts-ignore
-        document.getElementById(NAVIGATION.currentWorkout).addEventListener('click', this.handleShowCurrentWorkout);
-        // @ts-ignore
-        this.chatNavigationItem = document.getElementById(NAVIGATION.chatId);
-
-        // @ts-ignore
-        this.chatNavigationItem.addEventListener('click', this.handleShowChat);
-    }
-
-    private setupUserSearchViews() {
-        // add the subviews for the user search
-        this.userSearchSidebar = UserSearchSidebar.getInstance(Controller.getInstance().getStateManager());
-        this.userSearchSidebar.onDocumentLoaded();
-    }
-
-    private setupChatViews() {
-        // add the views to the chat side bar
-        this.chatSidebar = ChatRoomsSidebar.getInstance(Controller.getInstance().getStateManager());
-        this.chatSidebar.onDocumentLoaded();
     }
 
     onDocumentLoad() {
@@ -116,7 +85,7 @@ export default class App implements UnreadMessageCountListener {
         new WorkoutsViewUsingContext().onDocumentLoaded();
 
         this.workoutSummarySidebar = new WorkoutSummarySidebar();
-        this.workoutSummarySidebar.addView(new WorkoutSummaryView(),{containerId: WorkoutSummarySidebar.SidebarContainers.container});
+        this.workoutSummarySidebar.addView(new WorkoutSummaryView(), {containerId: WorkoutSummarySidebar.SidebarContainers.container});
         this.workoutSummarySidebar.onDocumentLoaded();
 
         this.currentWorkoutSidebar = new CurrentWorkoutSidebar();
@@ -127,7 +96,6 @@ export default class App implements UnreadMessageCountListener {
         Controller.getInstance().onDocumentLoaded();
 
     }
-
 
     hideAllSideBars() {
         this.chatSidebar.eventHide(null);
@@ -176,7 +144,6 @@ export default class App implements UnreadMessageCountListener {
         this.currentWorkoutSidebar.eventShow(event);
     }
 
-
     handleShowExerciseTypes(event: Event) {
         logger('Handling Show Exercise Types');
         event.preventDefault();
@@ -206,7 +173,6 @@ export default class App implements UnreadMessageCountListener {
         }
     }
 
-
     countChanged(newCount: number): void {
         //
         let buffer = 'Chat <i class="fas fa-inbox"></i>';
@@ -216,21 +182,48 @@ export default class App implements UnreadMessageCountListener {
         if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = `${buffer}`;
     }
 
-    addingExerciseToCurrentWorkout(exerciseType:any) {
+    addingExerciseToCurrentWorkout(exerciseType: any) {
         //this.exerciseTypesSidebar.eventHide(null);
         this.currentWorkoutSidebar.eventShow(null);
-        this.currentWorkoutView.getStateManager().addNewItemToState(STATE_NAMES.exerciseTypes,exerciseType, false);
+        this.currentWorkoutView.getStateManager().addNewItemToState(STATE_NAMES.exercises, exerciseType, false);
     }
 
     showCurrentWorkout() {
         this.currentWorkoutSidebar.eventShow(null);
     }
+
+    private setupNavigationItemHandling() {
+        // @ts-ignore
+        document.getElementById(NAVIGATION.userSearchId).addEventListener('click', this.handleShowUserSearch);
+        // @ts-ignore
+        document.getElementById(NAVIGATION.exerciseTypesId).addEventListener('click', this.handleShowExerciseTypes);
+        // @ts-ignore
+        document.getElementById(NAVIGATION.workoutSummary).addEventListener('click', this.handleShowWorkoutSummary);
+        // @ts-ignore
+        document.getElementById(NAVIGATION.currentWorkout).addEventListener('click', this.handleShowCurrentWorkout);
+        // @ts-ignore
+        this.chatNavigationItem = document.getElementById(NAVIGATION.chatId);
+
+        // @ts-ignore
+        this.chatNavigationItem.addEventListener('click', this.handleShowChat);
+    }
+
+    private setupUserSearchViews() {
+        // add the subviews for the user search
+        this.userSearchSidebar = UserSearchSidebar.getInstance(Controller.getInstance().getStateManager());
+        this.userSearchSidebar.onDocumentLoaded();
+    }
+
+    private setupChatViews() {
+        // add the views to the chat side bar
+        this.chatSidebar = ChatRoomsSidebar.getInstance(Controller.getInstance().getStateManager());
+        this.chatSidebar.onDocumentLoaded();
+    }
 }
 
 
-$(function() {
-    //localStorage.debug = 'abstract-field validation-manager validation-manager-rule-failure';
-    localStorage.debug = 'api-ts validation-manager-execute-rule validation-manager-rule-failure';
+$(function () {
+    localStorage.debug = 'api-ts-results controller-ts';
     debug.log = console.info.bind(console);
     App.getInstance().onDocumentLoad();
 });

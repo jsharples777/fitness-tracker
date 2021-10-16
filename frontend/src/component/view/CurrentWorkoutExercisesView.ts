@@ -1,20 +1,22 @@
-
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 
 import Controller from "../../Controller";
 
 
 import debug from 'debug';
-import {ContextualInformationHelper} from "../../framework/ui/context/ContextualInformationHelper";
-import {AbstractStatefulCollectionView} from "../../framework/ui/view/implementation/AbstractStatefulCollectionView";
-import {CollectionViewDOMConfig, KeyType} from "../../framework/ui/ConfigurationTypes";
-import {StateManager} from "../../framework/state/StateManager";
-import {CollectionViewEventHandlerDelegateUsingContext} from "../../framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
-import {CollectionViewListener} from "../../framework/ui/view/interface/CollectionViewListener";
-import {ListViewRendererUsingContext} from "../../framework/ui/view/renderer/ListViewRendererUsingContext";
-import {CollectionViewListenerForwarder} from "../../framework/ui/view/delegate/CollectionViewListenerForwarder";
-import {isSameMongo} from "../../framework/util/EqualityFunctions";
-import {View} from "../../framework/ui/view/interface/View";
+import {
+    AbstractStatefulCollectionView,
+    CollectionViewDOMConfig,
+    CollectionViewEventHandlerDelegateUsingContext,
+    CollectionViewListener,
+    CollectionViewListenerForwarder,
+    ContextualInformationHelper,
+    isSameMongo,
+    KeyType,
+    ListViewRendererUsingContext,
+    StateManager,
+    View
+} from "ui-framework-jps";
 
 
 const logger = debug('current-workout-exercises-view');
@@ -56,12 +58,11 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
                 classes: 'mb-1',
             },
             select: true,
-            icons:(name:string,item:any) => {
+            icons: (name: string, item: any) => {
                 if (item.type) {
                     if (item.type === 'cardio') {
                         return ['fas fa-running ml-2'];
-                    }
-                    else {
+                    } else {
                         return ['fas fa-dumbbell ml-2'];
                     }
                 }
@@ -70,18 +71,21 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
             delete: {
                 classes: 'btn bg-danger text-white btn-circle btn-md',
                 iconClasses: 'fas fa-trash-alt',
-                attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Delete this exercise from the workout."}]
+                attributes: [{name: 'data-toggle', value: "tooltip"}, {
+                    name: 'data-placement',
+                    value: "right"
+                }, {name: 'title', value: "Delete this exercise from the workout."}]
             }
         }
     };
 
-    constructor(stateManager:StateManager) {
-        super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exerciseTypes);
+    constructor(stateManager: StateManager) {
+        super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exercises);
         this.renderer = new ListViewRendererUsingContext(this, this);
-        this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this,<CollectionViewListenerForwarder>this.eventForwarder);
+        this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this, <CollectionViewListenerForwarder>this.eventForwarder);
         this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
         this.getItemId = this.getItemId.bind(this);
-        ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.exerciseTypes,'Exercise Types');
+        ContextualInformationHelper.getInstance().addContextFromView(this, STATE_NAMES.exercises, 'Exercises');
     }
 
     getItemDescription(from: string, item: any): string {
@@ -89,8 +93,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
         buffer += '<strong>' + item.name + '</strong>: ';
         if (item.type === 'cardio') {
             buffer += item.distance + ' km in ' + item.duration;
-        }
-        else {
+        } else {
             buffer += item.sets + ' sets of ' + item.reps + ' reps in ' + item.duration;
         }
         buffer += '<br/>';
@@ -102,8 +105,8 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
         return true;
     }
 
-    compareItemsForEquality(item1:any, item2:any) :boolean {
-        return isSameMongo(item1,item2);
+    compareItemsForEquality(item1: any, item2: any): boolean {
+        return isSameMongo(item1, item2);
     }
 
     getIdForItemInNamedCollection(name: string, item: any) {
@@ -111,7 +114,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
     }
 
     renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
-        containerEl.innerHTML =  item.name;
+        containerEl.innerHTML = item.name;
     }
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {

@@ -1,4 +1,3 @@
-
 import {BUTTON, INPUT, STATE_NAMES, VIEW_CONTAINER, VIEW_NAME} from "../../AppTypes";
 
 import Controller from "../../Controller";
@@ -9,39 +8,42 @@ import {CurrentWorkoutExercisesView} from "./CurrentWorkoutExercisesView";
 
 import moment from "moment";
 import App from "../../App";
-import {FormDetailViewRenderer} from "../../framework/ui/view/renderer/FormDetailViewRenderer";
-import {BootstrapFormConfigHelper} from "../../framework/ui/helper/BootstrapFormConfigHelper";
-import {Form} from "../../framework/ui/form/Form";
-import {DataObjectListener} from "../../framework/model/DataObjectListener";
-import {DataObjectDefinition} from "../../framework/model/DataObjectTypeDefs";
-import {ObjectDefinitionRegistry} from "../../framework/model/ObjectDefinitionRegistry";
-import {DefaultFormFieldPermissionChecker} from "../../framework/ui/form/DefaultFormFieldPermissionChecker";
-import {StateChangeListener} from "../../framework/state/StateChangeListener";
-import {DetailViewImplementation} from "../../framework/ui/view/implementation/DetailViewImplementation";
-import {SidebarViewContainer} from "../../framework/ui/container/SidebarViewContainer";
-import {MemoryBufferStateManager} from "../../framework/state/MemoryBufferStateManager";
-import {LinkedCollectionDetailController} from "../../framework/ui/helper/LinkedCollectionDetailController";
-import {StateManager} from "../../framework/state/StateManager";
-import {DataObjectController} from "../../framework/model/DataObjectController";
-import {BasicObjectDefinitionFactory} from "../../framework/model/BasicObjectDefinitionFactory";
-import {DetailView} from "../../framework/ui/view/interface/DetailView";
-import {isSameMongo} from "../../framework/util/EqualityFunctions";
+import {
+    BasicObjectDefinitionFactory,
+    BootstrapFormConfigHelper,
+    DataObjectController,
+    DataObjectDefinition,
+    DataObjectListener,
+    DefaultFormFieldPermissionChecker,
+    DetailView,
+    DetailViewImplementation,
+    Form,
+    FormDetailViewRenderer,
+    isSameMongo,
+    LinkedCollectionDetailController,
+    MemoryBufferStateManager,
+    ObjectDefinitionRegistry,
+    SidebarViewContainer,
+    StateChangeListener,
+    StateManager
+} from "ui-framework-jps";
 
 
 const logger = debug('current-workout-composite-view');
 
-export class CurrentWorkoutCompositeView implements StateChangeListener,DataObjectListener{
-    private sideBar:SidebarViewContainer;
-    private currentWorkout:any = {};
-    private workoutDef:DataObjectDefinition|null = null;
-    private readonly stateManager:StateManager;
-    private workoutNameEl:HTMLInputElement|null = null;
+export class CurrentWorkoutCompositeView implements StateChangeListener, DataObjectListener {
+    private sideBar: SidebarViewContainer;
+    private currentWorkout: any = {};
+    private workoutDef: DataObjectDefinition | null = null;
+    private readonly stateManager: StateManager;
+    private workoutNameEl: HTMLInputElement | null = null;
+    private workoutCaloriesEl: HTMLInputElement | null = null;
 
-    constructor(sideBar:SidebarViewContainer) {
+    constructor(sideBar: SidebarViewContainer) {
         this.sideBar = sideBar;
         this.stateManager = new MemoryBufferStateManager(isSameMongo);
-        this.stateManager.addChangeListenerForName(STATE_NAMES.exerciseTypes,this);
-        Controller.getInstance().getStateManager().addChangeListenerForName(STATE_NAMES.workouts,this);
+        this.stateManager.addChangeListenerForName(STATE_NAMES.exercises, this);
+        Controller.getInstance().getStateManager().addChangeListenerForName(STATE_NAMES.workouts, this);
     }
 
     getListenerName(): string {
@@ -49,39 +51,49 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
     }
 
     onDocumentLoaded() {
-        this.workoutNameEl = <HTMLInputElement|null>document.getElementById(INPUT.workoutName);
-        this.workoutNameEl?.addEventListener('blur',(event) => {
-           if (event.target) {
-               // @ts-ignore
-               this.currentWorkout.name = event.target.value;
-               this.saveWorkout();
-           }
+        this.workoutNameEl = <HTMLInputElement | null>document.getElementById(INPUT.workoutName);
+        this.workoutNameEl?.addEventListener('blur', (event) => {
+            if (event.target) {
+                // @ts-ignore
+                this.currentWorkout.name = event.target.value;
+                this.saveWorkout();
+            }
+        });
+
+        this.workoutCaloriesEl = <HTMLInputElement | null>document.getElementById('calories');
+        this.workoutCaloriesEl?.addEventListener('blur', (event) => {
+            if (event.target) {
+                // @ts-ignore
+                this.currentWorkout.calories = parseInt(event.target.value);
+                this.saveWorkout();
+            }
+
         });
 
 
         this.workoutDef = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.workouts);
-        if (!this.workoutDef) throw new Error ('Workout definition not found');
+        if (!this.workoutDef) throw new Error('Workout definition not found');
 
-        const exerciseTypes = new CurrentWorkoutExercisesView(this.stateManager);
-        this.sideBar.addView(exerciseTypes,{containerId:VIEW_CONTAINER.exerciseDropZone});
+        const exercises = new CurrentWorkoutExercisesView(this.stateManager);
+        this.sideBar.addView(exercises, {containerId: VIEW_CONTAINER.exerciseDropZone});
 
-        const exerciseTypeDefinition:DataObjectDefinition|null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exerciseTypes);
+        const exerciseDefinition: DataObjectDefinition | null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exercises);
 
-        if (exerciseTypeDefinition) {
-            let exerciseTypeDetailRenderer:FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.currentWorkoutDetail,exerciseTypeDefinition,new DefaultFormFieldPermissionChecker(), BootstrapFormConfigHelper.getInstance());
+        if (exerciseDefinition) {
+            let exerciseTypeDetailRenderer: FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.currentWorkoutDetail, exerciseDefinition, new DefaultFormFieldPermissionChecker(), BootstrapFormConfigHelper.getInstance());
 
-            let exerciseTypeDetailView:DetailView = new DetailViewImplementation(
+            let exerciseTypeDetailView: DetailView = new DetailViewImplementation(
                 {
                     resultsContainerId: VIEW_CONTAINER.currentWorkoutDetail,
                     dataSourceId: VIEW_NAME.exercises
-                },exerciseTypeDetailRenderer);
-            let viewLinker:LinkedCollectionDetailController = new LinkedCollectionDetailController(STATE_NAMES.exerciseTypes,exerciseTypes);
+                }, exerciseTypeDetailRenderer);
+            let viewLinker: LinkedCollectionDetailController = new LinkedCollectionDetailController(STATE_NAMES.exercises, exercises);
             viewLinker.addLinkedDetailView(exerciseTypeDetailView);
             this.sideBar.onDocumentLoaded();
-            let startingDisplayOrder = BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
-            exerciseTypeDetailView.initialise(startingDisplayOrder,false,true);
+            let startingDisplayOrder = BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseDefinition);
+            exerciseTypeDetailView.initialise(startingDisplayOrder, false, true);
 
-            const detailForm:Form|null = exerciseTypeDetailRenderer.getForm();
+            const detailForm: Form | null = exerciseTypeDetailRenderer.getForm();
             if (detailForm) {
                 logger(`Setting up validation rules for ${detailForm.getId()}`);
                 logger(detailForm);
@@ -93,7 +105,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
             logger(`Setting up button for completing the workout`);
             logger(createExerciseType);
             if (createExerciseType) {
-                createExerciseType.addEventListener('click',(event) => {
+                createExerciseType.addEventListener('click', (event) => {
                     logger(`Completing the workout`);
                     this.currentWorkout.completed = true;
                     this.currentWorkout.createdOn = moment().format('YYYYMMDDHHmmss');
@@ -117,27 +129,6 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
         return this.stateManager;
     }
 
-
-    private createWorkout() {
-        logger(`Creating new current workout`);
-        this.currentWorkout = ObjectDefinitionRegistry.getInstance().createInstance(STATE_NAMES.workouts);
-        logger(this.currentWorkout);
-        this.currentWorkout.name = '';
-
-        if (this.workoutNameEl) this.workoutNameEl.value = '';
-        Controller.getInstance().getStateManager().addNewItemToState(STATE_NAMES.workouts,this.currentWorkout,false);
-        this.stateManager.setStateByName(STATE_NAMES.exerciseTypes,this.currentWorkout.exercises,true);
-    }
-
-    private saveWorkout() {
-        logger(`Saving current workout`);
-        logger(this.currentWorkout);
-        this.currentWorkout.createdOn = moment().format('YYYYMMDDHHmmss');
-        this.currentWorkout.modifiedOn = moment().format('YYYYMMDDHHmmss');
-
-        Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.workouts,this.currentWorkout,false);
-    }
-
     stateChanged(managerName: string, name: string, newValue: any): void {
         logger(`${managerName},${name}`);
         if (name === STATE_NAMES.workouts) {
@@ -145,7 +136,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
             // is there a current workout?
             this.currentWorkout = null;
 
-            newValue.forEach((workout:any) => {
+            newValue.forEach((workout: any) => {
                 if (!workout.completed || (workout.completed === 'false')) {
                     this.currentWorkout = workout;
                 }
@@ -154,9 +145,8 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
             if (this.currentWorkout) {
                 logger(`Workouts loaded found existing current workout`);
                 if (this.workoutNameEl && this.currentWorkout.name) this.workoutNameEl.value = this.currentWorkout.name;
-                this.stateManager.setStateByName(STATE_NAMES.exerciseTypes,this.currentWorkout.exercises,true);
-            }
-            else {
+                this.stateManager.setStateByName(STATE_NAMES.exercises, this.currentWorkout.exercises, true);
+            } else {
                 logger(`Workouts loaded no existing current workout, creating and saving`);
                 this.createWorkout();
             }
@@ -164,7 +154,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
     }
 
     stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {
-        if (name === STATE_NAMES.exerciseTypes) {
+        if (name === STATE_NAMES.exercises) {
             logger(`Added a new exercise to workout`);
             logger(itemAdded);
 
@@ -174,51 +164,73 @@ export class CurrentWorkoutCompositeView implements StateChangeListener,DataObje
     }
 
     stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {
-        if (name === STATE_NAMES.exerciseTypes) {
+        if (name === STATE_NAMES.exercises) {
             // find the exercise in the current workout
-            let foundIndex = this.currentWorkout.exercises.findIndex((exercise:any) => exercise._id === itemRemoved._id);
+            let foundIndex = this.currentWorkout.exercises.findIndex((exercise: any) => exercise._id === itemRemoved._id);
             logger(`Removing exercise to workout at index ${foundIndex}`);
             logger(itemRemoved);
             if (foundIndex >= 0) {
-                this.currentWorkout.exercises.splice(foundIndex,1);
+                this.currentWorkout.exercises.splice(foundIndex, 1);
             }
             this.saveWorkout();
         }
     }
 
     stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {
-        if (name === STATE_NAMES.exerciseTypes) {
+        if (name === STATE_NAMES.exercises) {
             // find the exercise in the current workout
-            let foundIndex = this.currentWorkout.exercises.findIndex((exercise:any) => exercise._id === itemNewValue._id);
+            let foundIndex = this.currentWorkout.exercises.findIndex((exercise: any) => exercise._id === itemNewValue._id);
             logger(`Updating exercise to workout at index ${foundIndex}`);
             logger(itemNewValue);
             if (foundIndex >= 0) {
-                this.currentWorkout.exercises.splice(foundIndex,1,itemNewValue);
+                this.currentWorkout.exercises.splice(foundIndex, 1, itemNewValue);
             }
             this.saveWorkout();
         }
 
     }
 
-    create(controller:DataObjectController,typeName:string,dataObj:any):void {
+    create(controller: DataObjectController, typeName: string, dataObj: any): void {
         logger(`Added a new exercise to workout from view`);
         logger(dataObj);
-        this.stateManager.addNewItemToState(STATE_NAMES.exerciseTypes,dataObj,false);
+        this.stateManager.addNewItemToState(STATE_NAMES.exercises, dataObj, false);
     }
-    update(controller:DataObjectController,typeName:string,dataObj:any):void {
+
+    update(controller: DataObjectController, typeName: string, dataObj: any): void {
         logger(`Updating exercise in workout from view`);
         logger(dataObj);
-        this.stateManager.updateItemInState(STATE_NAMES.exerciseTypes,dataObj,false);
+        this.stateManager.updateItemInState(STATE_NAMES.exercises, dataObj, false);
     }
-    delete(controller:DataObjectController,typeName:string,dataObj:any):void {
+
+    delete(controller: DataObjectController, typeName: string, dataObj: any): void {
         logger(`Deleting exercise from workout from view`);
         logger(dataObj);
-        this.stateManager.removeItemFromState(STATE_NAMES.exerciseTypes,dataObj,false);
+        this.stateManager.removeItemFromState(STATE_NAMES.exercises, dataObj, false);
     }
 
     filterResults(managerName: string, name: string, filterResults: any): void {
     }
 
+    private createWorkout() {
+        logger(`Creating new current workout`);
+        this.currentWorkout = ObjectDefinitionRegistry.getInstance().createInstance(STATE_NAMES.workouts);
+        logger(this.currentWorkout);
+        this.currentWorkout.name = '';
+        this.currentWorkout.calories = 0;
+
+        if (this.workoutNameEl) this.workoutNameEl.value = '';
+        Controller.getInstance().getStateManager().addNewItemToState(STATE_NAMES.workouts, this.currentWorkout, false);
+        this.stateManager.setStateByName(STATE_NAMES.exerciseTypes, this.currentWorkout.exercises, true);
+    }
+
+    private saveWorkout() {
+        logger(`Saving current workout`);
+        logger(this.currentWorkout);
+        this.currentWorkout.createdOn = moment().format('YYYYMMDDHHmmss');
+        this.currentWorkout.modifiedOn = moment().format('YYYYMMDDHHmmss');
+
+        Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.workouts, this.currentWorkout, false);
+    }
 
 
 }

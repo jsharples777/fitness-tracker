@@ -2,30 +2,42 @@ import debug from 'debug';
 import {API_Config, STATE_NAMES} from "./AppTypes";
 import {v4} from "uuid";
 import SocketListenerDelegate from "./SocketListenerDelegate";
-import {KeyType} from "./framework/ui/ConfigurationTypes";
-import {DataObjectListener} from "./framework/model/DataObjectListener";
-import {DataObjectDefinition, FieldDefinition, FieldType} from "./framework/model/DataObjectTypeDefs";
-import {ObjectDefinitionRegistry} from "./framework/model/ObjectDefinitionRegistry";
-import {StateChangeListener} from "./framework/state/StateChangeListener";
-import {MemoryBufferStateManager} from "./framework/state/MemoryBufferStateManager";
-import {SimpleValueDataSource} from "./framework/ui/helper/SimpleValueDataSource";
-import {AggregateStateManager} from "./framework/state/AggregateStateManager";
-import {StateManager} from "./framework/state/StateManager";
-import {DataObjectController} from "./framework/model/DataObjectController";
-import {AsyncStateManagerWrapper} from "./framework/state/AsyncStateManagerWrapper";
-import {BasicObjectDefinitionFactory} from "./framework/model/BasicObjectDefinitionFactory";
-import {RESTApiStateManager} from "./framework/state/RESTApiStateManager";
-import {isSameMongo} from "./framework/util/EqualityFunctions";
-import {ChatManager} from "./framework/socket/ChatManager";
-import {NotificationController} from "./framework/socket/NotificationController";
-import {SocketManager} from "./framework/socket/SocketManager";
+import {
+    AggregateStateManager,
+    AsyncStateManagerWrapper,
+    BasicObjectDefinitionFactory,
+    ChatManager,
+    DataObjectController,
+    DataObjectDefinition,
+    DataObjectListener,
+    FieldDefinition,
+    FieldType,
+    isSameMongo,
+    KeyType,
+    MemoryBufferStateManager,
+    NotificationController,
+    ObjectDefinitionRegistry,
+    RESTApiStateManager,
+    SimpleValueDataSource,
+    SocketManager,
+    StateChangeListener,
+    StateManager
+} from "ui-framework-jps";
 
 
 const cLogger = debug('controller-ts');
 const cLoggerDetail = debug('controller-ts-detail');
 
-export default class Controller implements StateChangeListener,DataObjectListener {
+export default class Controller implements StateChangeListener, DataObjectListener {
     private static _instance: Controller;
+    protected applicationView: any;
+    protected clientSideStorage: any;
+    protected config: any;
+    // @ts-ignore
+    protected stateManager: StateManager;
+
+    private constructor() {
+    }
 
     public static getInstance(): Controller {
         if (!(Controller._instance)) {
@@ -34,15 +46,6 @@ export default class Controller implements StateChangeListener,DataObjectListene
         return Controller._instance;
     }
 
-    protected applicationView: any;
-    protected clientSideStorage: any;
-    protected config: any;
-    // @ts-ignore
-    protected stateManager: StateManager;
-
-
-    private constructor() {}
-
     connectToApplication(applicationView: any, clientSideStorage: any) {
         this.applicationView = applicationView;
         this.clientSideStorage = clientSideStorage;
@@ -50,35 +53,35 @@ export default class Controller implements StateChangeListener,DataObjectListene
         let restSM = RESTApiStateManager.getInstance();
         restSM.initialise([
             {
-                stateName:STATE_NAMES.users,
-                serverURL:'',
-                api:API_Config.users,
-                isActive:true,
-                find:false,
+                stateName: STATE_NAMES.users,
+                serverURL: '',
+                api: API_Config.users,
+                isActive: true,
+                find: false,
                 findAll: true,
                 create: true,
                 update: true,
                 destroy: true
             },
             {
-                stateName:STATE_NAMES.exerciseTypes,
-                serverURL:'',
-                api:API_Config.exerciseTypes,
-                isActive:true,
+                stateName: STATE_NAMES.exerciseTypes,
+                serverURL: '',
+                api: API_Config.exerciseTypes,
+                isActive: true,
                 idField: '_id',
-                find:false,
+                find: false,
                 findAll: true,
                 create: true,
                 update: true,
                 destroy: true
             },
             {
-                stateName:STATE_NAMES.workouts,
-                serverURL:'',
-                api:API_Config.workouts,
-                isActive:true,
+                stateName: STATE_NAMES.workouts,
+                serverURL: '',
+                api: API_Config.workouts,
+                isActive: true,
                 idField: '_id',
-                find:false,
+                find: false,
                 findAll: true,
                 create: true,
                 update: true,
@@ -90,7 +93,7 @@ export default class Controller implements StateChangeListener,DataObjectListene
         let aggregateSM = new AggregateStateManager(isSameMongo)
         let memorySM = new MemoryBufferStateManager(isSameMongo)
 
-        let asyncSM = new AsyncStateManagerWrapper(aggregateSM, restSM,isSameMongo);
+        let asyncSM = new AsyncStateManagerWrapper(aggregateSM, restSM, isSameMongo);
 
 
         aggregateSM.addStateManager(memorySM, [], false);
@@ -108,39 +111,6 @@ export default class Controller implements StateChangeListener,DataObjectListene
         this.setupDataObjectDefinitions();
 
         return this;
-    }
-
-    private setupDataObjectDefinitions() {
-        // create the object definitions for the exercise type and workout
-        let exerciseTypeDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.exerciseTypes,'Exercise', true, true, true, '_id');
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "name", "Name", FieldType.text, true, "Exercise name");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "type", "Type", FieldType.limitedChoice, true, "Choose cardio or strength",
-            new SimpleValueDataSource([
-                {name: 'Cardio', value: 'cardio'},
-                {name: 'Strength', value: 'strength'}
-            ]));
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "duration", "Duration", FieldType.duration, true, "Exercise time");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "sets", "Sets", FieldType.integer, false, "Number of sets");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "reps", "Repetitions", FieldType.integer, false, "Number of reps");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "weight", "Weight", FieldType.float, false, "Weight used");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "distance", "Distance", FieldType.float, false, "Distance travelled");
-
-        cLogger(`Exercise type data object definition`);
-        cLogger(exerciseTypeDefinition);
-        cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('exerciseType'));
-
-        let workoutDefinition:DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.workouts,'Workout', true, true, true, '_id');
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "name", "Name", FieldType.text, false, "Give the workout a name");
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", FieldType.boolean, true, "Have completed the workout");
-        let exercisesFieldDefinition:FieldDefinition = BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", FieldType.collection, true, "Exercises in this workout");
-        exercisesFieldDefinition.idType = KeyType.collection;
-        exercisesFieldDefinition.linkedDataObjectId = exerciseTypeDefinition.id;
-
-        cLogger(`Workout data object definition`);
-        cLogger(workoutDefinition);
-        cLoggerDetail(ObjectDefinitionRegistry.getInstance().findDefinition('workout'));
-
-
     }
 
     /*
@@ -230,11 +200,121 @@ export default class Controller implements StateChangeListener,DataObjectListene
         return this.getLoggedInUserId();
     }
 
-    stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {}
-    stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {}
-    stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {}
-    stateChanged(managerName: string, name: string, values: any) {}
+    stateChangedItemAdded(managerName: string, name: string, itemAdded: any): void {
+    }
 
+    stateChangedItemRemoved(managerName: string, name: string, itemRemoved: any): void {
+    }
+
+    stateChangedItemUpdated(managerName: string, name: string, itemUpdated: any, itemNewValue: any): void {
+    }
+
+    stateChanged(managerName: string, name: string, values: any) {
+    }
+
+    handleShowChat(roomName: string | null) {
+        this.applicationView.handleShowChat(roomName);
+    }
+
+    create(controller: DataObjectController, typeName: string, dataObj: any): void {
+        switch (typeName) {
+            case STATE_NAMES.exerciseTypes: {
+                cLogger(`Handling create new exercise type`);
+                cLoggerDetail(dataObj);
+                this.stateManager.addNewItemToState(typeName, dataObj, false);
+                break;
+            }
+        }
+    }
+
+    delete(controller: DataObjectController, typeName: string, dataObj: any): void {
+        switch (typeName) {
+            case STATE_NAMES.exerciseTypes: {
+                cLogger(`Handling delete exercise type - already managed by stateful collection view`);
+                cLoggerDetail(dataObj);
+                break;
+            }
+        }
+    }
+
+    update(controller: DataObjectController, typeName: string, dataObj: any): void {
+        switch (typeName) {
+            case STATE_NAMES.exerciseTypes: {
+                cLogger(`Handling update exercise type`);
+                cLoggerDetail(dataObj);
+                this.stateManager.updateItemInState(typeName, dataObj, false);
+                break;
+            }
+        }
+    }
+
+    addExerciseToCurrentWorkout(exerciseType: any): void {
+        let copyOfExercise = {...exerciseType};
+        copyOfExercise._id = v4(); // update the id to be unique for the workout
+        this.applicationView.addingExerciseToCurrentWorkout(copyOfExercise);
+    }
+
+    addWorkoutExercisesToCurrentWorkout(workout: any): void {
+        if (workout.exercises) {
+            workout.exercises.forEach((exercise: any) => {
+                this.addExerciseToCurrentWorkout(exercise);
+            });
+        }
+    }
+
+    filterResults(managerName: string, name: string, filterResults: any): void {
+    }
+
+    private setupDataObjectDefinitions() {
+        // create the object definitions for the exercise type and workout
+        let exerciseTypeDefinition: DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.exerciseTypes, 'Exercise', true, true, true, '_id');
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "name", "Name", FieldType.text, true, "Exercise name");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "type", "Type", FieldType.limitedChoice, true, "Choose cardio or strength",
+            new SimpleValueDataSource([
+                {name: 'Cardio', value: 'cardio'},
+                {name: 'Strength', value: 'strength'}
+            ]));
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "duration", "Duration", FieldType.duration, true, "Exercise time");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "sets", "Sets", FieldType.integer, false, "Number of sets");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "reps", "Repetitions", FieldType.integer, false, "Number of reps");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "weight", "Weight", FieldType.float, false, "Weight used");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseTypeDefinition, "distance", "Distance", FieldType.float, false, "Distance travelled");
+
+        cLogger(`Exercise type data object definition`);
+        cLogger(exerciseTypeDefinition);
+
+
+        // create the object definitions for the exercise type and workout
+        let exerciseDefinition: DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.exercises, 'Exercise', true, true, true, '_id');
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "completed", "Completed", FieldType.boolean, false, "Completed");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "name", "Name", FieldType.text, true, "Exercise name");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "type", "Type", FieldType.limitedChoice, true, "Choose cardio or strength",
+            new SimpleValueDataSource([
+                {name: 'Cardio', value: 'cardio'},
+                {name: 'Strength', value: 'strength'}
+            ]));
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "duration", "Duration", FieldType.duration, true, "Exercise time");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "sets", "Sets", FieldType.integer, false, "Number of sets");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "reps", "Repetitions", FieldType.integer, false, "Number of reps");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "weight", "Weight", FieldType.float, false, "Weight used");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "distance", "Distance", FieldType.float, false, "Distance travelled");
+        cLogger(`Exercise data object definition`);
+        cLogger(exerciseDefinition);
+
+
+        let workoutDefinition: DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.workouts, 'Workout', true, true, true, '_id');
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "name", "Name", FieldType.text, false, "Give the workout a name");
+        BasicObjectDefinitionFactory.getInstance().addNumericFieldToObjDefinition(workoutDefinition, "calories", "Calories", FieldType.integer, false, "Calories burned during workout");
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "completed", "Completed", FieldType.boolean, true, "Have completed the workout");
+        let exercisesFieldDefinition: FieldDefinition = BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(workoutDefinition, "exercises", "Exercises", FieldType.collection, true, "Exercises in this workout");
+        exercisesFieldDefinition.idType = KeyType.collection;
+        exercisesFieldDefinition.linkedDataObjectId = exerciseDefinition.id;
+
+        cLogger(`Workout data object definition`);
+        cLogger(workoutDefinition);
+
+
+    }
 
     /*
     *
@@ -249,61 +329,6 @@ export default class Controller implements StateChangeListener,DataObjectListene
             result = window.ENV.serverURL;
         }
         return result;
-    }
-
-
-    handleShowChat(roomName:string|null) {
-        this.applicationView.handleShowChat(roomName);
-    }
-
-    create(controller: DataObjectController, typeName: string, dataObj: any): void {
-        switch(typeName) {
-            case STATE_NAMES.exerciseTypes: {
-                cLogger(`Handling create new exercise type`);
-                cLoggerDetail(dataObj);
-                this.stateManager.addNewItemToState(typeName,dataObj,false);
-                break;
-            }
-        }
-    }
-
-    delete(controller: DataObjectController, typeName: string, dataObj: any): void {
-        switch(typeName) {
-            case STATE_NAMES.exerciseTypes: {
-                cLogger(`Handling delete exercise type - already managed by stateful collection view`);
-                cLoggerDetail(dataObj);
-                break;
-            }
-        }
-    }
-
-    update(controller: DataObjectController, typeName: string, dataObj: any): void {
-        switch(typeName) {
-            case STATE_NAMES.exerciseTypes: {
-                cLogger(`Handling update exercise type`);
-                cLoggerDetail(dataObj);
-                this.stateManager.updateItemInState(typeName,dataObj,false);
-                break;
-            }
-        }
-    }
-
-
-    addExerciseToCurrentWorkout(exerciseType:any):void {
-        let copyOfExercise = {...exerciseType};
-        copyOfExercise._id = v4(); // update the id to be unique for the workout
-        this.applicationView.addingExerciseToCurrentWorkout(copyOfExercise);
-    }
-
-    addWorkoutExercisesToCurrentWorkout(workout:any):void {
-        if (workout.exercises) {
-            workout.exercises.forEach((exercise:any) => {
-                this.addExerciseToCurrentWorkout(exercise);
-            });
-        }
-    }
-
-    filterResults(managerName: string, name: string, filterResults: any): void {
     }
 
 }

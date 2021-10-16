@@ -4,15 +4,15 @@ import debug from 'debug';
 import Controller from "./Controller";
 
 import {STATE_NAMES} from "./AppTypes";
-import {SocketListener} from "./framework/socket/SocketListener";
-import {NotificationManager, NotificationType} from "./framework/notification/NotificationManager";
+import {NotificationManager, NotificationType, SocketListener} from "ui-framework-jps";
 
 
 const slLogger = debug('socket-listener');
 
 export default class SocketListenerDelegate implements SocketListener {
 
-    public constructor() {}
+    public constructor() {
+    }
 
     public handleDataChangedByAnotherUser(message: any) {
         slLogger(`Handling data change ${message.type} on object type ${message.stateName} made by user ${message.user}`);
@@ -45,7 +45,7 @@ export default class SocketListenerDelegate implements SocketListener {
                 case "update": {
                     switch (message.stateName) {
                         case STATE_NAMES.exerciseTypes: {
-                            Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.exerciseTypes, stateObj,true);
+                            Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.exerciseTypes, stateObj, true);
                             break;
                         }
                     }
