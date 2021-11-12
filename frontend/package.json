@@ -8,7 +8,7 @@
     "compile.dev.watch": "tsc-watch",
     "build.prod": "webpack --mode production",
     "build.dev": "webpack --mode development",
-    "watch.dev": "webpack --mode development --watch",
+    "watch": "webpack --mode development --watch",
     "compile.dev.babel": "babel src --out-dir ../backend/public/js  --verbose --extensions '.jsx,.js,.ts,.tsx'",
     "watch.dev.babel": "babel src --out-dir ../backend/public/js --watch --verbose  --extensions '.jsx,.js,.ts,.tsx'",
     "lint": "eslint --ext js,jsx,tsx,ts --fix ."
