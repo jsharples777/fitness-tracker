@@ -286,6 +286,7 @@ export default class Controller implements StateChangeListener, DataObjectListen
 
         // create the object definitions for the exercise type and workout
         let exerciseDefinition: DataObjectDefinition = ObjectDefinitionRegistry.getInstance().addDefinition(STATE_NAMES.exercises, 'Exercise', true, true, true, '_id');
+        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "completed", "Completed", FieldType.boolean, false);
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "name", "Name", FieldType.text, true);
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "type", "Type", FieldType.limitedChoice, true, "Choose cardio or strength",
             new SimpleValueDataSource([
@@ -297,7 +298,6 @@ export default class Controller implements StateChangeListener, DataObjectListen
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "reps", "Repetitions", FieldType.integer, false);
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "weight", "Weight", FieldType.float, false);
         BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "distance", "Distance", FieldType.float, false);
-        BasicObjectDefinitionFactory.getInstance().addStringFieldToObjDefinition(exerciseDefinition, "completed", "Completed", FieldType.boolean, false);
         cLogger(`Exercise data object definition`);
         cLogger(exerciseDefinition);
 
