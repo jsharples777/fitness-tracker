@@ -120,7 +120,7 @@ export default class Controller implements StateChangeListener, DataObjectListen
         cLogger('Initialising data state');
         // listen for socket events
         let socketListerDelegate = new SocketListenerDelegate();
-        SocketManager.getInstance().setListener(socketListerDelegate);
+        SocketManager.getInstance().addListener(socketListerDelegate);
 
         // now that we have all the user we can setup the chat system but only if we are logged in
         cLogger(`Setting up chat system for user ${this.getLoggedInUserId()}: ${this.getLoggedInUsername()}`);
@@ -329,6 +329,9 @@ export default class Controller implements StateChangeListener, DataObjectListen
             result = window.ENV.serverURL;
         }
         return result;
+    }
+
+    foundResult(managerName: string, name: string, foundItem: any): void {
     }
 
 }

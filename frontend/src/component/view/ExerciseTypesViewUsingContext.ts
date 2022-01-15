@@ -96,7 +96,8 @@ export class ExerciseTypesViewUsingContext extends AbstractStatefulCollectionVie
                     name: 'title',
                     value: "Add this <strong>exercise</strong> to the current workout."
                 }]
-            }
+            },
+            confirm:false
         }]
     };
 

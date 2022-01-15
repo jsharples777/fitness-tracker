@@ -121,6 +121,7 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
                             value: "top"
                         }, {name: 'title', value: "Add the exercises from this workout to the current workout."}]
                     },
+                    confirm:false
 
                 },
                 {
@@ -134,6 +135,7 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
                             value: "top"
                         }, {name: 'title', value: "Continue this current workout"}]
                     },
+                    confirm:false
                 }
             ],
 

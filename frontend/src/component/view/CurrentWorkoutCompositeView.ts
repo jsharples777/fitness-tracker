@@ -14,9 +14,11 @@ import {
     DataObjectController,
     DataObjectDefinition,
     DataObjectListener,
-    DefaultFormFieldPermissionChecker,
+    DefaultFieldPermissionChecker,
     DetailView,
     DetailViewImplementation,
+    DetailViewRuntimeConfig,
+    ElementLocation,
     Form,
     FormDetailViewRenderer,
     isSameMongo,
@@ -80,7 +82,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
         const exerciseDefinition: DataObjectDefinition | null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exercises);
 
         if (exerciseDefinition) {
-            let exerciseTypeDetailRenderer: FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.currentWorkoutDetail, exerciseDefinition, new DefaultFormFieldPermissionChecker(), BootstrapFormConfigHelper.getInstance());
+            let exerciseTypeDetailRenderer: FormDetailViewRenderer = new FormDetailViewRenderer(VIEW_CONTAINER.currentWorkoutDetail, exerciseDefinition, new DefaultFieldPermissionChecker(), BootstrapFormConfigHelper.getInstance());
 
             let exerciseTypeDetailView: DetailView = new DetailViewImplementation(
                 {
@@ -91,7 +93,28 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
             viewLinker.addLinkedDetailView(exerciseTypeDetailView);
             this.sideBar.onDocumentLoaded();
             let startingDisplayOrder = BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseDefinition);
-            exerciseTypeDetailView.initialise(startingDisplayOrder, false, true);
+
+            let runtimeConfig:DetailViewRuntimeConfig = {
+                fieldDisplayOrders:startingDisplayOrder,
+                hideModifierFields:true,
+                hasExternalControl:false,
+                deleteButton: {
+                    classes: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
+                    iconClasses: 'fas fa-trash-alt'
+                },
+                cancelButton: {
+                    classes: 'btn-info rounded p-1 mr-2 mt-2 w-100',
+                    iconClasses: 'fas fa-ban'
+                },
+                saveButton: {
+                    classes: 'btn-primary rounded p-1 mt-2 w-100',
+                    iconClasses: 'fas fa-save'
+                },
+                buttonLocation:ElementLocation.top
+
+
+            }
+            exerciseTypeDetailView.initialise(runtimeConfig);
 
             const detailForm: Form | null = exerciseTypeDetailRenderer.getForm();
             if (detailForm) {
@@ -230,6 +253,9 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
         this.currentWorkout.modifiedOn = moment().format('YYYYMMDDHHmmss');
 
         Controller.getInstance().getStateManager().updateItemInState(STATE_NAMES.workouts, this.currentWorkout, false);
+    }
+
+    foundResult(managerName: string, name: string, foundItem: any): void {
     }
 
 

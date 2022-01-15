@@ -13,7 +13,7 @@ import {
     BootstrapFormConfigHelper,
     DataObjectDefinition,
     DetailView,
-    DetailViewImplementation,
+    DetailViewImplementation, DetailViewRuntimeConfig, ElementLocation,
     Form,
     FormDetailViewRenderer,
     LinkedCollectionDetailController,
@@ -49,7 +49,30 @@ export class ExerciseTypesCompositeView {
             viewLinker.addLinkedDetailView(exerciseTypeDetailView);
             this.sideBar.onDocumentLoaded();
             let startingDisplayOrder = BasicObjectDefinitionFactory.getInstance().generateStartingDisplayOrder(exerciseTypeDefinition);
-            exerciseTypeDetailView.initialise(startingDisplayOrder, false, true);
+
+            let runtimeConfig:DetailViewRuntimeConfig = {
+                fieldDisplayOrders:startingDisplayOrder,
+                hideModifierFields:true,
+                hasExternalControl:false,
+                deleteButton: {
+                    classes: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
+                    iconClasses: 'fas fa-trash-alt'
+                },
+                cancelButton: {
+                    classes: 'btn-info rounded p-1 mr-2 mt-2 w-100',
+                    iconClasses: 'fas fa-ban'
+                },
+                saveButton: {
+                    classes: 'btn-primary rounded p-1 mt-2 w-100',
+                    iconClasses: 'fas fa-save'
+                },
+                buttonLocation:ElementLocation.top
+
+
+            }
+
+
+            exerciseTypeDetailView.initialise(runtimeConfig);
 
             const detailForm: Form | null = exerciseTypeDetailRenderer.getForm();
 
