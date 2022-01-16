@@ -807,7 +807,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'strength'
+        values: 'cardio'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
@@ -818,7 +818,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'strength'
+        values: 'cardio'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
@@ -829,7 +829,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'strength'
+        values: 'cardio'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
@@ -840,7 +840,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'cardio'
+        values: 'strength'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
@@ -851,7 +851,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'cardio'
+        values: 'strength'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
@@ -862,7 +862,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'cardio'
+        values: 'strength'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
@@ -873,7 +873,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'cardio'
+        values: 'strength'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
@@ -884,7 +884,7 @@ class ValidationHelper {
       conditions: [{
         sourceDataFieldId: 'type',
         comparison: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ComparisonType.hasValue,
-        values: 'strength'
+        values: 'cardio'
       }]
     };
     ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.ValidationManager.getInstance().addRuleToView(form, rule);
