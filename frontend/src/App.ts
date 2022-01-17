@@ -221,9 +221,13 @@ export default class App implements UnreadMessageCountListener {
     }
 }
 
-
+/*
+const flogger = debug('validation-manager-rule-failure');
+const erLogger = debug('validation-manager-execute-rule');
+const merLogger = debug('validation-manager-multiple-condition-rule-results');
+ */
 $(function () {
-    localStorage.debug = 'api-ts-results controller-ts';
+    localStorage.debug = 'api-ts-results controller-ts validation-manager-rule-failure validation-manager-execute-rule validation-manager-multiple-condition-rule-results';
     debug.log = console.info.bind(console);
     App.getInstance().onDocumentLoad();
 });
