@@ -46341,10 +46341,12 @@ class ValidationManager {
             }
         }
         // for show and hide rules, we want the opposite effect (i.e. a success on conditions show cause the action)
-        // if ((response.response === ConditionResponse.hide) || (response.response === ConditionResponse.show)) {
-        //     response.ruleFailed = !response.ruleFailed;
-        //     erLogger(`Changing show/hide rule result to opposite boolean value to cause activation if the conditions were PASSED`);
-        // }
+        if ((response.response === _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.hide) || (response.response === _ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_0__.ConditionResponse.show)) {
+            if (response.ruleFailed === false) {
+                erLogger(`Changing show/hide rule result to opposite boolean value to cause activation if the conditions were PASSED`);
+                response.ruleFailed = true;
+            }
+        }
         return response;
     }
     getRulesForFieldChange(validatableView, dataFieldId, includeSourceFields) {
