@@ -124,11 +124,11 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
             }
 
             // setup the event handling for the create new exercise type button
-            let createExerciseType = <HTMLButtonElement>document.getElementById(BUTTON.completeWorkout);
+            let completeWorkout = <HTMLButtonElement>document.getElementById(BUTTON.completeWorkout);
             logger(`Setting up button for completing the workout`);
-            logger(createExerciseType);
-            if (createExerciseType) {
-                createExerciseType.addEventListener('click', (event) => {
+            logger(completeWorkout);
+            if (completeWorkout) {
+                completeWorkout.addEventListener('click', (event) => {
                     logger(`Completing the workout`);
                     this.currentWorkout.completed = true;
                     this.currentWorkout.createdOn = moment().format('YYYYMMDDHHmmss');
@@ -168,6 +168,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
             if (this.currentWorkout) {
                 logger(`Workouts loaded found existing current workout`);
                 if (this.workoutNameEl && this.currentWorkout.name) this.workoutNameEl.value = this.currentWorkout.name;
+                if (this.workoutCaloriesEl && this.currentWorkout.calories) this.workoutCaloriesEl.value = this.currentWorkout.calories;
                 this.stateManager.setStateByName(STATE_NAMES.exercises, this.currentWorkout.exercises, true);
             } else {
                 logger(`Workouts loaded no existing current workout, creating and saving`);
@@ -240,8 +241,11 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
         logger(this.currentWorkout);
         this.currentWorkout.name = '';
         this.currentWorkout.calories = 0;
+        this.currentWorkout.completed = false;
 
         if (this.workoutNameEl) this.workoutNameEl.value = '';
+        if (this.workoutCaloriesEl) this.workoutCaloriesEl.value = '';
+
         Controller.getInstance().getStateManager().addNewItemToState(STATE_NAMES.workouts, this.currentWorkout, false);
         this.stateManager.setStateByName(STATE_NAMES.exerciseTypes, this.currentWorkout.exercises, true);
     }

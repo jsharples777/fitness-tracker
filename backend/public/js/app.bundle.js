@@ -232,7 +232,7 @@ const merLogger = debug('validation-manager-multiple-condition-rule-results');
  */
 
 $(function () {
-  localStorage.debug = 'api-ts-results controller-ts validation-manager-rule-failure validation-manager-execute-rule validation-manager-multiple-condition-rule-results';
+  localStorage.debug = 'api-ts-results controller-ts current-workout-composite-view validation-manager-rule-failure validation-manager-execute-rule validation-manager-multiple-condition-rule-results';
   (debug__WEBPACK_IMPORTED_MODULE_0___default().log) = console.info.bind(console);
   App.getInstance().onDocumentLoad();
 });
@@ -1291,12 +1291,12 @@ class CurrentWorkoutCompositeView {
       } // setup the event handling for the create new exercise type button
 
 
-      let createExerciseType = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_0__.BUTTON.completeWorkout);
+      let completeWorkout = document.getElementById(_AppTypes__WEBPACK_IMPORTED_MODULE_0__.BUTTON.completeWorkout);
       logger(`Setting up button for completing the workout`);
-      logger(createExerciseType);
+      logger(completeWorkout);
 
-      if (createExerciseType) {
-        createExerciseType.addEventListener('click', event => {
+      if (completeWorkout) {
+        completeWorkout.addEventListener('click', event => {
           logger(`Completing the workout`);
           this.currentWorkout.completed = true;
           this.currentWorkout.createdOn = moment__WEBPACK_IMPORTED_MODULE_5___default()().format('YYYYMMDDHHmmss');
@@ -1336,6 +1336,7 @@ class CurrentWorkoutCompositeView {
       if (this.currentWorkout) {
         logger(`Workouts loaded found existing current workout`);
         if (this.workoutNameEl && this.currentWorkout.name) this.workoutNameEl.value = this.currentWorkout.name;
+        if (this.workoutCaloriesEl && this.currentWorkout.calories) this.workoutCaloriesEl.value = this.currentWorkout.calories;
         this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exercises, this.currentWorkout.exercises, true);
       } else {
         logger(`Workouts loaded no existing current workout, creating and saving`);
@@ -1409,7 +1410,9 @@ class CurrentWorkoutCompositeView {
     logger(this.currentWorkout);
     this.currentWorkout.name = '';
     this.currentWorkout.calories = 0;
+    this.currentWorkout.completed = false;
     if (this.workoutNameEl) this.workoutNameEl.value = '';
+    if (this.workoutCaloriesEl) this.workoutCaloriesEl.value = '';
     _Controller__WEBPACK_IMPORTED_MODULE_1__["default"].getInstance().getStateManager().addNewItemToState(_AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.workouts, this.currentWorkout, false);
     this.stateManager.setStateByName(_AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exerciseTypes, this.currentWorkout.exercises, true);
   }

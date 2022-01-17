@@ -47484,6 +47484,8 @@ class DefaultItemView {
             field.reset();
         });
         this.hasChangedBoolean = false;
+        if (this.containerEl)
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].scrollSmoothTo(this.containerEl);
     }
     setIsVisible(isVisible) {
         logger(`Changing visibility to ${isVisible}`);
@@ -47529,6 +47531,8 @@ class DefaultItemView {
             this.informListeners(itemEvent, this.currentDataObj);
         }
         this.clearReadOnly();
+        if (this.containerEl)
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].scrollSmoothTo(this.containerEl);
         return this.currentDataObj;
     }
     startUpdate(objectToEdit) {
@@ -47550,6 +47554,8 @@ class DefaultItemView {
             this.informListeners(itemEvent, this.currentDataObj);
         }
         this.clearReadOnly();
+        if (this.containerEl)
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].scrollSmoothTo(this.containerEl);
     }
     displayOnly(objectToView) {
         this.clearUnsavedMessage();
@@ -47562,6 +47568,8 @@ class DefaultItemView {
             this._displayOnly();
         }
         this.setReadOnly();
+        if (this.containerEl)
+            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_9__["default"].scrollSmoothTo(this.containerEl);
     }
     valuesChanged(name, event, values) {
         // catch form events for user leaving the Item View
@@ -50123,8 +50131,12 @@ class BrowserUtil {
         element.scrollIntoView({
             block: 'start',
             behavior: 'smooth',
+            inline: 'nearest'
         });
     }
+    /*
+    document.getElementById("yourDivID").scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
+     */
     scrollTo(element) {
         element.scrollIntoView({
             block: 'start',
