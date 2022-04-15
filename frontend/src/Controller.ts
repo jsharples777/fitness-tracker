@@ -6,7 +6,7 @@ import {
     AggregateStateManager,
     AsyncStateManagerWrapper,
     BasicObjectDefinitionFactory,
-    ChatManager,
+    ChatManager, copyObject,
     DataObjectController,
     DataObjectDefinition,
     DataObjectListener,
@@ -249,8 +249,9 @@ export default class Controller implements StateChangeListener, DataObjectListen
     }
 
     addExerciseToCurrentWorkout(exerciseType: any): void {
-        let copyOfExercise = {...exerciseType};
+        let copyOfExercise:any = copyObject(exerciseType);
         copyOfExercise._id = v4(); // update the id to be unique for the workout
+        copyOfExercise.completed = false;
         this.applicationView.addingExerciseToCurrentWorkout(copyOfExercise);
     }
 
