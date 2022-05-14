@@ -49,11 +49,6 @@ export class ExerciseTypesViewUsingContext extends AbstractStatefulCollectionVie
             active: '',
             warning: ''
         },
-        sorter: function (item1, item2) {
-            let result = 1;
-            if (item1.name < item2.name) result = -1;
-            return result;
-        },
         detail: {
             containerClasses: 'd-flex w-100 justify-content-between',
             textElement: {
@@ -61,16 +56,6 @@ export class ExerciseTypesViewUsingContext extends AbstractStatefulCollectionVie
                 classes: 'mb-1',
             },
             select: true,
-            icons: (name: string, item: any) => {
-                if (item.type) {
-                    if (item.type === 'cardio') {
-                        return ['fas fa-running ml-2'];
-                    } else {
-                        return ['fas fa-dumbbell ml-2'];
-                    }
-                }
-                return [];
-            },
             delete: {
                 classes: 'btn bg-danger text-white btn-circle btn-md',
                 iconClasses: 'text-black fas fa-trash-alt',
@@ -111,6 +96,25 @@ export class ExerciseTypesViewUsingContext extends AbstractStatefulCollectionVie
 
         let context: ContextDefinition = ContextualInformationHelper.getInstance().addContextFromView(this, STATE_NAMES.exerciseTypes, 'Exercise Types');
         ContextualInformationHelper.getInstance().addActionToContext(context, 'addToWorkout', 'Add To Workout', this.eventHandlerDelegate.eventActionClicked, 'fas fa-arrow-alt-circle-right');
+    }
+
+    applyDefaultSort(item1: any, item2: any): number {
+        let result = 1;
+        if (item1.name < item2.name) result = -1;
+        return result;
+    }
+
+    getItemIcons(name: string, item: any): string[] {
+
+            if (item.type) {
+                if (item.type === 'cardio') {
+                    return ['fas fa-running ml-2'];
+                } else {
+                    return ['fas fa-dumbbell ml-2'];
+                }
+            }
+            return [];
+
     }
 
 

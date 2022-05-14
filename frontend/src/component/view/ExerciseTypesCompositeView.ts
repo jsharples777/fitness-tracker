@@ -54,6 +54,7 @@ export class ExerciseTypesCompositeView {
                 fieldDisplayOrders:startingDisplayOrder,
                 hideModifierFields:true,
                 hasExternalControl:false,
+                autoscrollOnNewContent:true,
                 deleteButton: {
                     classes: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
                     iconClasses: 'fas fa-trash-alt'
@@ -89,7 +90,7 @@ export class ExerciseTypesCompositeView {
             if (createExerciseType) {
                 createExerciseType.addEventListener('click', (event) => {
                     logger(`Asking view linker to start a new object`);
-                    viewLinker.startNewObject();
+                    viewLinker.startNewObject({});
                 });
 
             }

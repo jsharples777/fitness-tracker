@@ -98,10 +98,10 @@ export default class App implements UnreadMessageCountListener {
     }
 
     hideAllSideBars() {
-        this.chatSidebar.eventHide(null);
-        this.userSearchSidebar.eventHide(null);
-        this.exerciseTypesSidebar.eventHide(null);
-        this.currentWorkoutSidebar.eventHide(null);
+        this.chatSidebar.hide();
+        this.userSearchSidebar.hide();
+        this.exerciseTypesSidebar.hide();
+        this.currentWorkoutSidebar.hide();
     }
 
     handleShowUserSearch(event: Event) {
@@ -114,7 +114,7 @@ export default class App implements UnreadMessageCountListener {
             window.location.href = API_Config.login;
             return;
         }
-        this.userSearchSidebar.eventShow(event);
+        this.userSearchSidebar.show();
     }
 
     handleShowWorkoutSummary(event: Event) {
@@ -128,7 +128,7 @@ export default class App implements UnreadMessageCountListener {
             return;
         }
         this.hideAllSideBars();
-        this.workoutSummarySidebar.eventShow(event);
+        this.workoutSummarySidebar.show();
     }
 
     handleShowCurrentWorkout(event: Event) {
@@ -141,7 +141,7 @@ export default class App implements UnreadMessageCountListener {
             window.location.href = API_Config.login;
             return;
         }
-        this.currentWorkoutSidebar.eventShow(event);
+        this.currentWorkoutSidebar.show();
     }
 
     handleShowExerciseTypes(event: Event) {
@@ -154,7 +154,7 @@ export default class App implements UnreadMessageCountListener {
             window.location.href = API_Config.login;
             return;
         }
-        this.exerciseTypesSidebar.eventShow(event);
+        this.exerciseTypesSidebar.show();
     }
 
     handleShowChat(roomName: string | null) {
@@ -167,7 +167,7 @@ export default class App implements UnreadMessageCountListener {
             window.location.href = API_Config.login;
             return;
         }
-        this.chatSidebar.eventShow(null);
+        this.chatSidebar.show();
         if (roomName) {
             this.chatView.selectChatRoom(roomName);
         }
@@ -184,12 +184,12 @@ export default class App implements UnreadMessageCountListener {
 
     addingExerciseToCurrentWorkout(exerciseType: any) {
         //this.exerciseTypesSidebar.eventHide(null);
-        this.currentWorkoutSidebar.eventShow(null);
+        this.currentWorkoutSidebar.show();
         this.currentWorkoutView.getStateManager().addNewItemToState(STATE_NAMES.exercises, exerciseType, false);
     }
 
     showCurrentWorkout() {
-        this.currentWorkoutSidebar.eventShow(null);
+        this.currentWorkoutSidebar.show();
     }
 
     private setupNavigationItemHandling() {

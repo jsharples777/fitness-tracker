@@ -29,6 +29,7 @@ import {
     StateChangeListener,
     StateManager
 } from "ui-framework-jps";
+import {DataObjectFactory} from "ui-framework-jps/dist/framework/model/DataObjectFactory";
 
 
 const logger = debug('current-workout-composite-view');
@@ -98,6 +99,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
                 fieldDisplayOrders:startingDisplayOrder,
                 hideModifierFields:true,
                 hasExternalControl:false,
+                autoscrollOnNewContent:true,
                 deleteButton: {
                     classes: 'btn-warning rounded p-1 mr-2 mt-2 w-100',
                     iconClasses: 'fas fa-trash-alt'
@@ -237,7 +239,8 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
 
     private createWorkout() {
         logger(`Creating new current workout`);
-        this.currentWorkout = ObjectDefinitionRegistry.getInstance().createInstance(STATE_NAMES.workouts);
+        const def = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.workouts);
+        this.currentWorkout = DataObjectFactory.getInstance().instance(def).getData();
         logger(this.currentWorkout);
         this.currentWorkout.name = '';
         this.currentWorkout.calories = 0;

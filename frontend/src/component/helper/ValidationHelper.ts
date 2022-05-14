@@ -32,7 +32,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         };
@@ -45,7 +45,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         }
@@ -58,7 +58,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         }
@@ -71,7 +71,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
@@ -84,7 +84,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
@@ -98,7 +98,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
@@ -112,7 +112,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
@@ -125,7 +125,7 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         }
@@ -139,11 +139,11 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 },
                 {
                     comparison: ComparisonType.greaterThan,
-                    values: '0'
+                    values: ['0']
                 }
 
 

@@ -58,16 +58,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
                 classes: 'mb-1',
             },
             select: true,
-            icons: (name: string, item: any) => {
-                if (item.type) {
-                    if (item.type === 'cardio') {
-                        return ['fas fa-running ml-2'];
-                    } else {
-                        return ['fas fa-dumbbell ml-2'];
-                    }
-                }
-                return [];
-            },
+
             delete: {
                 classes: 'btn bg-danger text-white btn-circle btn-md',
                 iconClasses: 'fas fa-trash-alt',
@@ -86,6 +77,17 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
         this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
         this.getItemId = this.getItemId.bind(this);
         ContextualInformationHelper.getInstance().addContextFromView(this, STATE_NAMES.exercises, 'Exercises');
+    }
+
+    getItemIcons(name: string, item: any): string[] {
+            if (item.type) {
+                if (item.type === 'cardio') {
+                    return ['fas fa-running ml-2'];
+                } else {
+                    return ['fas fa-dumbbell ml-2'];
+                }
+            }
+            return [];
     }
 
     getItemDescription(from: string, item: any): string {

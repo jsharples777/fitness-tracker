@@ -160,4 +160,13 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
         return [background, border];
     }
 
+    insertDisplayElementForCollectionItem(containerEl: HTMLElement, collectionName: string, item: any): void {
+    }
+
+    removeDisplayElementForCollectionItem(containerEl: HTMLElement, collectionName: string, item: any): void {
+    }
+
+    updateDisplayElementForCollectionItem(containerEl: HTMLElement, collectionName: string, item: any): void {
+    }
+
 }
