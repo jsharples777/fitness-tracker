@@ -3,7 +3,7 @@ import {MongoDataSource} from "../../db/MongoDataSource";
 const router = express.Router();
 import debug from 'debug';
 import {DeleteResult, Document, UpdateResult} from 'mongodb';
-import {DataMessage, SocketManager} from "server-socket-framework-jps";
+import {DataMessage, DataMessageType, SocketManager} from "server-socket-framework-jps";
 
 
 const logger = debug('api-exercise-types');
@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
         }
         else { user = "-1"}
 
-        const message:DataMessage = {type:"create",stateName: "exerciseType",data:req.body, user:user,}
+        const message:DataMessage = {type:DataMessageType.create,stateName: "exerciseType",data:req.body, user:user,}
         SocketManager.getInstance().sendDataMessage(message);
 
         res.json(req.body);

@@ -4,7 +4,7 @@ import {SidebarLocation, SidebarPrefs, SidebarViewContainer} from "ui-framework-
 export default class CurrentWorkoutSidebar extends SidebarViewContainer {
     static sidebarPrefs: SidebarPrefs = {
         id: 'currentWorkoutSidebar',
-        expandedSize: '50%',
+        expandedSize: '100%',
         location: SidebarLocation.right
     }
 

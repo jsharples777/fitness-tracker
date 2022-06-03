@@ -5,16 +5,16 @@ import Controller from "../../Controller";
 
 import debug from 'debug';
 import {
-    AbstractStatefulCollectionView,
+    AbstractStatefulCollectionView, BootstrapTableConfigHelper,
     CollectionViewDOMConfig,
     CollectionViewEventHandlerDelegateUsingContext,
     CollectionViewListener,
     CollectionViewListenerForwarder,
-    ContextualInformationHelper,
+    ContextualInformationHelper, DataObjectDefinition, DisplayOrder,
     isSameMongo,
     KeyType,
-    ListViewRendererUsingContext,
-    StateManager,
+    ListViewRendererUsingContext, ObjectDefinitionRegistry,
+    StateManager, TableUIConfig, TableViewRuntimeConfig, TabularViewRendererUsingContext,
     View
 } from "ui-framework-jps";
 
@@ -33,18 +33,29 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
             }
         },
         resultsElement: {
-            type: 'a',
+            type: 'tr',
             attributes: [{name: 'href', value: '#'}],
-            classes: 'list-group-item my-list-item truncate-notification list-group-item-action',
+            classes: '',
         },
+        // resultsElement: {
+        //     type: 'a',
+        //     attributes: [{name: 'href', value: '#'}],
+        //     classes: 'list-group-item my-list-item truncate-notification list-group-item-action',
+        // },
         keyId: '_id',
         keyType: KeyType.string,
         modifiers: {
             normal: '',
-            inactive: 'list-group-item-light',
-            active: 'list-group-item-primary',
+            inactive: 'table-secondary',
+            active: 'table-success',
             warning: ''
         },
+        // modifiers: {
+        //     normal: '',
+        //     inactive: 'list-group-item-light',
+        //     active: 'list-group-item-primary',
+        //     warning: ''
+        // },
         icons: {
             normal: '',
             inactive: '',
@@ -72,11 +83,37 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
 
     constructor(stateManager: StateManager) {
         super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exercises);
-        this.renderer = new ListViewRendererUsingContext(this, this);
-        this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this, <CollectionViewListenerForwarder>this.eventForwarder);
-        this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
-        this.getItemId = this.getItemId.bind(this);
-        ContextualInformationHelper.getInstance().addContextFromView(this, STATE_NAMES.exercises, 'Exercises');
+        //this.renderer = new ListViewRendererUsingContext(this, this);
+        const def: DataObjectDefinition | null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exercises);
+        if (def) {
+            const displayOrders: DisplayOrder[] = [];
+            displayOrders.push({fieldId: 'completed', displayOrder: 1});
+            displayOrders.push({fieldId: 'name', displayOrder: 2});
+            displayOrders.push({fieldId: 'type', displayOrder: 3});
+            displayOrders.push({fieldId: 'duration', displayOrder: 4});
+            displayOrders.push({fieldId: 'sets', displayOrder: 5});
+            displayOrders.push({fieldId: 'reps', displayOrder: 6});
+            displayOrders.push({fieldId: 'weight', displayOrder: 7});
+            displayOrders.push({fieldId: 'distance', displayOrder: 8});
+
+            const runtimeConfig: TableViewRuntimeConfig = {
+                fieldDisplayOrders: displayOrders,
+                itemDetailColumn: -1,
+                hasActions: true,
+                hideModifierFields: true,
+                editableFields: ['completed','duration','sets','reps','weight','distance']
+            }
+
+            const tableUIConfig: TableUIConfig = BootstrapTableConfigHelper.getInstance().generateTableConfig(def, runtimeConfig);
+
+            this.renderer = new TabularViewRendererUsingContext(this, this, tableUIConfig);
+
+
+            this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this, <CollectionViewListenerForwarder>this.eventForwarder);
+            this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
+            this.getItemId = this.getItemId.bind(this);
+            ContextualInformationHelper.getInstance().addContextFromView(this, STATE_NAMES.exercises, 'Exercises');
+        }
     }
 
     getItemIcons(name: string, item: any): string[] {

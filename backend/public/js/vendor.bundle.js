@@ -35589,6 +35589,285 @@ var BasicKeyAction;
 
 /***/ }),
 
+/***/ "./node_modules/ui-framework-jps/dist/framework/filter/CollectionFilterProcessor.js":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/ui-framework-jps/dist/framework/filter/CollectionFilterProcessor.js ***!
+  \******************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "CollectionFilterProcessor": () => (/* binding */ CollectionFilterProcessor)
+/* harmony export */ });
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
+/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _CommonTypes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../CommonTypes */ "./node_modules/ui-framework-jps/dist/framework/CommonTypes.js");
+/* harmony import */ var _Types__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Types */ "./node_modules/ui-framework-jps/dist/framework/filter/Types.js");
+
+
+
+const logger = debug__WEBPACK_IMPORTED_MODULE_0___default()('collection-view-processor');
+class CollectionFilterProcessor {
+    static hasConditionalMatch(collectionName, item, config, index) {
+        let result = false;
+        if (item) {
+            const conditionMatch = config.conditionMatch[index];
+            const fieldValue = item[conditionMatch.matchingFieldId];
+            if (fieldValue !== undefined) {
+                switch (conditionMatch.condition) {
+                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_1__.ComparisonType.equals: {
+                        if (fieldValue == conditionMatch.matchValue) {
+                            result = true;
+                        }
+                        break;
+                    }
+                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_1__.ComparisonType.lessThan: {
+                        if (fieldValue < conditionMatch.matchValue) {
+                            result = true;
+                        }
+                        break;
+                    }
+                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_1__.ComparisonType.lessThanEqual: {
+                        if (fieldValue <= conditionMatch.matchValue) {
+                            result = true;
+                        }
+                        break;
+                    }
+                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_1__.ComparisonType.greaterThan: {
+                        if (fieldValue > conditionMatch.matchValue) {
+                            result = true;
+                        }
+                        break;
+                    }
+                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_1__.ComparisonType.greaterThanEqual: {
+                        if (fieldValue >= conditionMatch.matchValue) {
+                            result = true;
+                        }
+                        break;
+                    }
+                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_1__.ComparisonType.isNotNull: {
+                        result = true;
+                        break;
+                    }
+                }
+                logger(`Conditional match for ${collectionName} item, field ${conditionMatch.matchingFieldId} with value ${fieldValue} against values ${conditionMatch.matchValue} - is match? ${result}`);
+            }
+            else {
+                if (conditionMatch.condition === _CommonTypes__WEBPACK_IMPORTED_MODULE_1__.ComparisonType.isNull) {
+                    logger(`Conditional match for ${collectionName} item, field ${conditionMatch.matchingFieldId} has NO field value for null condition - TRUE`);
+                    result = true;
+                }
+                else {
+                    logger(`Conditional match for ${collectionName} item, field ${conditionMatch.matchingFieldId} has NO field value against values ${conditionMatch.matchValue}`);
+                }
+            }
+        }
+        return result;
+    }
+    static hasConditionalMatchOrNoMatchNeeded(collectionName, item, config) {
+        let result = true;
+        if (config.conditionMatch.length > 0) {
+            if (item) {
+                let conditionalMatchResults = [];
+                config.conditionMatch.forEach((exactMatch, index) => {
+                    conditionalMatchResults.push(CollectionFilterProcessor.hasConditionalMatch(collectionName, item, config, index));
+                });
+                // what logic are we applying to conditional matches>?
+                if (conditionalMatchResults.length > 1) {
+                    if (!config.conditionalMatchLogicType) {
+                        config.conditionalMatchLogicType = _Types__WEBPACK_IMPORTED_MODULE_2__.MatchLogicType.AND;
+                    }
+                    if (config.conditionalMatchLogicType === _Types__WEBPACK_IMPORTED_MODULE_2__.MatchLogicType.AND) {
+                        result = true;
+                        conditionalMatchResults.forEach((itemResult) => {
+                            result = result && itemResult;
+                        });
+                    }
+                    if (config.conditionalMatchLogicType === _Types__WEBPACK_IMPORTED_MODULE_2__.MatchLogicType.OR) {
+                        result = false;
+                        conditionalMatchResults.forEach((itemResult, index) => {
+                            const exactMatch = config.exactMatch[index];
+                            if (exactMatch.isStrictMatch) {
+                                result = result && itemResult;
+                            }
+                            else {
+                                result = result || itemResult;
+                            }
+                        });
+                    }
+                }
+                else {
+                    result = conditionalMatchResults[0];
+                }
+            }
+        }
+        else {
+            logger(`No conditional match needed, sending true`);
+            result = true;
+        }
+        return result;
+    }
+    static hasExactMatch(collectionName, item, config, index) {
+        let result = false;
+        if (item) {
+            const exactMatch = config.exactMatch[index];
+            const fieldValue = item[exactMatch.matchingFieldId];
+            if (fieldValue !== undefined) {
+                exactMatch.matchValues.forEach((matchValue) => {
+                    if (fieldValue == matchValue)
+                        result = true;
+                });
+                logger(`Exact match for ${collectionName} item, field ${exactMatch.matchingFieldId} with value ${fieldValue} against values ${exactMatch.matchValues} - is match? ${result}`);
+            }
+            else {
+                logger(`Exact match for ${collectionName} item, field ${exactMatch.matchingFieldId} has NO field value against values ${exactMatch.matchValues}`);
+            }
+        }
+        return result;
+    }
+    static hasExactMatchOrNoExactMatchNeeded(collectionName, item, config) {
+        let result = true;
+        if (config.exactMatch.length > 0) {
+            if (item) {
+                let exactMatchResults = [];
+                config.exactMatch.forEach((exactMatch, index) => {
+                    exactMatchResults.push(CollectionFilterProcessor.hasExactMatch(collectionName, item, config, index));
+                });
+                // what logic are we applying to exact matches>?
+                if (exactMatchResults.length > 1) {
+                    if (!config.exactMatchLogicType) {
+                        config.exactMatchLogicType = _Types__WEBPACK_IMPORTED_MODULE_2__.MatchLogicType.AND;
+                    }
+                    if (config.exactMatchLogicType === _Types__WEBPACK_IMPORTED_MODULE_2__.MatchLogicType.AND) {
+                        result = true;
+                        exactMatchResults.forEach((itemResult) => {
+                            result = result && itemResult;
+                        });
+                    }
+                    if (config.exactMatchLogicType === _Types__WEBPACK_IMPORTED_MODULE_2__.MatchLogicType.OR) {
+                        result = false;
+                        exactMatchResults.forEach((itemResult, index) => {
+                            const exactMatch = config.exactMatch[index];
+                            if (exactMatch.isStrictMatch) {
+                                result = result && itemResult;
+                            }
+                            else {
+                                result = result || itemResult;
+                            }
+                        });
+                    }
+                }
+                else {
+                    result = exactMatchResults[0];
+                }
+            }
+        }
+        else {
+            logger(`No exact match needed, sending true`);
+            result = true;
+        }
+        return result;
+    }
+    static hasPartialMatch(collectionName, item, partialMatch) {
+        let result = false;
+        if (item) {
+            const filterValue = partialMatch.filter.trim().toLowerCase();
+            let done = false;
+            let counter = 0;
+            while (!done) {
+                if (counter < partialMatch.matchingFieldIds.length) {
+                    const fieldId = partialMatch.matchingFieldIds[counter];
+                    const fieldValue = item[fieldId];
+                    if (fieldValue !== undefined) {
+                        let fieldValueString = fieldValue + '';
+                        fieldValueString = fieldValueString.toLowerCase();
+                        if (fieldValueString.includes(filterValue)) {
+                            logger(`Partial match for ${collectionName} item found in field ${fieldId} with filter ${filterValue}`);
+                            result = true;
+                            done = true;
+                        }
+                    }
+                    counter++;
+                }
+                else {
+                    logger(`Partial match for ${collectionName} item not found in matching fields`);
+                    done = true;
+                }
+            }
+        }
+        return result;
+    }
+    static hasPartialMatchOrNoPartialMatchNeeded(collectionName, item, config) {
+        let result = false;
+        if (config.contains.length > 0) {
+            if (item) {
+                config.contains.forEach((partialMatch) => {
+                    if (CollectionFilterProcessor.hasPartialMatch(collectionName, item, partialMatch)) {
+                        result = true;
+                    }
+                });
+            }
+        }
+        else {
+            logger(`No partial match needed, sending true`);
+            result = true;
+        }
+        return result;
+    }
+    static doesItemMatchFilterConfig(collectionName, item, config) {
+        return CollectionFilterProcessor.hasExactMatchOrNoExactMatchNeeded(collectionName, item, config) &&
+            CollectionFilterProcessor.hasPartialMatchOrNoPartialMatchNeeded(collectionName, item, config) &&
+            CollectionFilterProcessor.hasConditionalMatchOrNoMatchNeeded(collectionName, item, config);
+    }
+    static getFilteredState(collectionName, currentState, filter, onlyDisplayWithFilter = false) {
+        let filteredState = [];
+        // do we have a filter?
+        if (filter) {
+            if (currentState) {
+                currentState.forEach((item) => {
+                    if (CollectionFilterProcessor.doesItemMatchFilterConfig(collectionName, item, filter)) {
+                        filteredState.push(item);
+                    }
+                });
+            }
+        }
+        else {
+            // do we only show content with a filter?
+            if (onlyDisplayWithFilter) {
+                filteredState = [];
+            }
+            else {
+                filteredState = currentState;
+            }
+        }
+        return filteredState;
+    }
+}
+//# sourceMappingURL=CollectionFilterProcessor.js.map
+
+/***/ }),
+
+/***/ "./node_modules/ui-framework-jps/dist/framework/filter/Types.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/ui-framework-jps/dist/framework/filter/Types.js ***!
+  \**********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "MatchLogicType": () => (/* binding */ MatchLogicType)
+/* harmony export */ });
+var MatchLogicType;
+(function (MatchLogicType) {
+    MatchLogicType[MatchLogicType["AND"] = 0] = "AND";
+    MatchLogicType[MatchLogicType["OR"] = 1] = "OR";
+})(MatchLogicType || (MatchLogicType = {}));
+//# sourceMappingURL=Types.js.map
+
+/***/ }),
+
 /***/ "./node_modules/ui-framework-jps/dist/framework/jsx/JSXParser.js":
 /*!***********************************************************************!*\
   !*** ./node_modules/ui-framework-jps/dist/framework/jsx/JSXParser.js ***!
@@ -40218,6 +40497,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _delegate_StateChangedDelegate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../delegate/StateChangedDelegate */ "./node_modules/ui-framework-jps/dist/framework/state/delegate/StateChangedDelegate.js");
 /* harmony import */ var _CommonTypes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../CommonTypes */ "./node_modules/ui-framework-jps/dist/framework/CommonTypes.js");
 /* harmony import */ var _delegate_StateContextDelegate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../delegate/StateContextDelegate */ "./node_modules/ui-framework-jps/dist/framework/state/delegate/StateContextDelegate.js");
+/* harmony import */ var _filter_Types__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../filter/Types */ "./node_modules/ui-framework-jps/dist/framework/filter/Types.js");
+/* harmony import */ var _filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../filter/CollectionFilterProcessor */ "./node_modules/ui-framework-jps/dist/framework/filter/CollectionFilterProcessor.js");
+
+
 
 
 
@@ -40283,66 +40566,34 @@ class AbstractStateManager {
         let results = [];
         const state = this._getState(name);
         try {
-            state.value.forEach((item) => {
-                let isMatch = false;
-                filters.forEach((filter) => {
-                    smLogger(`filter, finding state value for ${state.name} with filter and item`);
-                    smLoggerDetail(filter);
-                    smLoggerDetail(filter);
-                    if (!isMatch) { // don't bother with other filters if we have already failed
-                        let attributeValue = item[filter.attributeName];
-                        smLoggerDetail(`filter, finding state value for ${state.name} with attribute value ${attributeValue}`);
-                        if (filter.evaluator) {
-                            isMatch = filter.evaluator(item, filter);
-                            smLoggerDetail(`filter (evaluator), with attribute ${attributeValue}`);
-                        }
-                        else {
-                            switch (filter.comparison) {
-                                case _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.isNull: {
-                                    smLoggerDetail(`filter (is Null), with attribute ${attributeValue}`);
-                                    isMatch = !(attributeValue);
-                                    break;
-                                }
-                                case _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.isNotNull: {
-                                    smLoggerDetail(`filter (is Not Null), with attribute ${attributeValue}`);
-                                    if (attributeValue) {
-                                        isMatch = true;
-                                    }
-                                    break;
-                                }
-                                case _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.equals: {
-                                    smLoggerDetail(`filter (===), with attribute ${attributeValue} and filter value ${filter.value}`);
-                                    isMatch = ((attributeValue) && (attributeValue === filter.value));
-                                    break;
-                                }
-                                case _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.lessThan: {
-                                    smLoggerDetail(`filter (<), with attribute ${attributeValue} and filter value ${filter.value}`);
-                                    isMatch = ((attributeValue) && (attributeValue < filter.value));
-                                    break;
-                                }
-                                case _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.greaterThan: {
-                                    smLoggerDetail(`filter (>), with attribute ${attributeValue} and filter value ${filter.value}`);
-                                    isMatch = ((attributeValue) && (attributeValue > filter.value));
-                                    break;
-                                }
-                                case _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.lessThanEqual: {
-                                    smLoggerDetail(`filter (<=), with attribute ${attributeValue} and filter value ${filter.value}`);
-                                    isMatch = ((attributeValue) && (attributeValue <= filter.value));
-                                    break;
-                                }
-                                case _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.greaterThanEqual: {
-                                    smLoggerDetail(`filter (>=), with attribute ${attributeValue} and filter value ${filter.value}`);
-                                    isMatch = ((attributeValue) && (attributeValue >= filter.value));
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                });
-                smLoggerDetail(`filter, finding state value for ${state.name} is match? ${isMatch}`);
-                if (isMatch)
-                    results.push(item);
+            // convert the FilterItem to the collection view processor filter
+            const collectionFilter = {
+                conditionMatch: [],
+                conditionalMatchLogicType: _filter_Types__WEBPACK_IMPORTED_MODULE_5__.MatchLogicType.AND,
+                contains: [],
+                exactMatch: [],
+                exactMatchLogicType: _filter_Types__WEBPACK_IMPORTED_MODULE_5__.MatchLogicType.AND
+            };
+            filters.forEach((filter) => {
+                if (filter.comparison === _CommonTypes__WEBPACK_IMPORTED_MODULE_3__.ComparisonType.equals) {
+                    const collectionFilterItem = {
+                        isStrictMatch: true,
+                        matchValues: [filter.value],
+                        matchingFieldId: filter.attributeName
+                    };
+                    collectionFilter.exactMatch.push(collectionFilterItem);
+                }
+                else {
+                    const collectionFilterItem = {
+                        condition: filter.comparison,
+                        isStrictMatch: false,
+                        matchValue: filter.value,
+                        matchingFieldId: filter.attributeName
+                    };
+                    collectionFilter.conditionMatch.push(collectionFilterItem);
+                }
             });
+            results = _filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_6__.CollectionFilterProcessor.getFilteredState(name, state.value, collectionFilter, true);
         }
         catch (err) {
             smLogger(`filter, state value for ${state.name} is not any array`);
@@ -42064,7 +42315,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SCREEN_WIDTH_LARGE": () => (/* binding */ SCREEN_WIDTH_LARGE),
 /* harmony export */   "SCREEN_WIDTH_MEDIUM": () => (/* binding */ SCREEN_WIDTH_MEDIUM),
 /* harmony export */   "SCREEN_WIDTH_SMALL": () => (/* binding */ SCREEN_WIDTH_SMALL),
-/* harmony export */   "MatchLogicType": () => (/* binding */ MatchLogicType),
 /* harmony export */   "CollectionViewSorterDirection": () => (/* binding */ CollectionViewSorterDirection)
 /* harmony export */ });
 const EXTRA_ACTION_ATTRIBUTE_NAME = 'view-extra-action';
@@ -42116,11 +42366,6 @@ var RowPosition;
 const SCREEN_WIDTH_LARGE = 992;
 const SCREEN_WIDTH_MEDIUM = 769;
 const SCREEN_WIDTH_SMALL = 415;
-var MatchLogicType;
-(function (MatchLogicType) {
-    MatchLogicType[MatchLogicType["AND"] = 0] = "AND";
-    MatchLogicType[MatchLogicType["OR"] = 1] = "OR";
-})(MatchLogicType || (MatchLogicType = {}));
 var CollectionViewSorterDirection;
 (function (CollectionViewSorterDirection) {
     CollectionViewSorterDirection[CollectionViewSorterDirection["ascending"] = -1] = "ascending";
@@ -44156,7 +44401,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _view_implementation_AbstractCollectionView__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../view/implementation/AbstractCollectionView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/AbstractCollectionView.js");
-/* harmony import */ var _helper_CollectionViewProcessor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../helper/CollectionViewProcessor */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/CollectionViewProcessor.js");
+/* harmony import */ var _filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../filter/CollectionFilterProcessor */ "./node_modules/ui-framework-jps/dist/framework/filter/CollectionFilterProcessor.js");
 
 
 
@@ -44427,7 +44672,7 @@ class ContextualInformationHelper {
             if (view.hasFilter()) {
                 const currentFilter = view.getCurrentFilter();
                 if (currentFilter) {
-                    if (!_helper_CollectionViewProcessor__WEBPACK_IMPORTED_MODULE_4__.CollectionViewProcessor.doesItemMatchFilterConfig(collectionName, item, currentFilter)) {
+                    if (!_filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_4__.CollectionFilterProcessor.doesItemMatchFilterConfig(collectionName, item, currentFilter)) {
                         shouldDisplayTheNewItem = false;
                     }
                 }
@@ -46850,242 +47095,6 @@ class CollectionViewFilterHelper {
 
 /***/ }),
 
-/***/ "./node_modules/ui-framework-jps/dist/framework/ui/helper/CollectionViewProcessor.js":
-/*!*******************************************************************************************!*\
-  !*** ./node_modules/ui-framework-jps/dist/framework/ui/helper/CollectionViewProcessor.js ***!
-  \*******************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CollectionViewProcessor": () => (/* binding */ CollectionViewProcessor)
-/* harmony export */ });
-/* harmony import */ var _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../ConfigurationTypes */ "./node_modules/ui-framework-jps/dist/framework/ui/ConfigurationTypes.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! debug */ "./node_modules/debug/src/browser.js");
-/* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _CommonTypes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../CommonTypes */ "./node_modules/ui-framework-jps/dist/framework/CommonTypes.js");
-
-
-
-const logger = debug__WEBPACK_IMPORTED_MODULE_1___default()('collection-view-processor');
-class CollectionViewProcessor {
-    static hasConditionalMatch(collectionName, item, config, index) {
-        let result = false;
-        if (item) {
-            const conditionMatch = config.conditionMatch[index];
-            const fieldValue = item[conditionMatch.matchingFieldId];
-            if (fieldValue !== undefined) {
-                switch (conditionMatch.condition) {
-                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ComparisonType.equals: {
-                        if (fieldValue == conditionMatch.matchValue) {
-                            result = true;
-                        }
-                        break;
-                    }
-                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ComparisonType.lessThan: {
-                        if (fieldValue < conditionMatch.matchValue) {
-                            result = true;
-                        }
-                        break;
-                    }
-                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ComparisonType.lessThanEqual: {
-                        if (fieldValue <= conditionMatch.matchValue) {
-                            result = true;
-                        }
-                        break;
-                    }
-                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ComparisonType.greaterThan: {
-                        if (fieldValue > conditionMatch.matchValue) {
-                            result = true;
-                        }
-                        break;
-                    }
-                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ComparisonType.greaterThanEqual: {
-                        if (fieldValue >= conditionMatch.matchValue) {
-                            result = true;
-                        }
-                        break;
-                    }
-                    case _CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ComparisonType.isNotNull: {
-                        result = true;
-                        break;
-                    }
-                }
-                logger(`Conditional match for ${collectionName} item, field ${conditionMatch.matchingFieldId} with value ${fieldValue} against values ${conditionMatch.matchValue} - is match? ${result}`);
-            }
-            else {
-                if (conditionMatch.condition === _CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ComparisonType.isNull) {
-                    logger(`Conditional match for ${collectionName} item, field ${conditionMatch.matchingFieldId} has NO field value for null condition - TRUE`);
-                    result = true;
-                }
-                else {
-                    logger(`Conditional match for ${collectionName} item, field ${conditionMatch.matchingFieldId} has NO field value against values ${conditionMatch.matchValue}`);
-                }
-            }
-        }
-        return result;
-    }
-    static hasConditionalMatchOrNoMatchNeeded(collectionName, item, config) {
-        let result = true;
-        if (config.conditionMatch.length > 0) {
-            if (item) {
-                let conditionalMatchResults = [];
-                config.conditionMatch.forEach((exactMatch, index) => {
-                    conditionalMatchResults.push(CollectionViewProcessor.hasConditionalMatch(collectionName, item, config, index));
-                });
-                // what logic are we applying to conditional matches>?
-                if (conditionalMatchResults.length > 1) {
-                    if (!config.conditionalMatchLogicType) {
-                        config.conditionalMatchLogicType = _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.MatchLogicType.AND;
-                    }
-                    if (config.conditionalMatchLogicType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.MatchLogicType.AND) {
-                        result = true;
-                        conditionalMatchResults.forEach((itemResult) => {
-                            result = result && itemResult;
-                        });
-                    }
-                    if (config.conditionalMatchLogicType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.MatchLogicType.OR) {
-                        result = false;
-                        conditionalMatchResults.forEach((itemResult, index) => {
-                            const exactMatch = config.exactMatch[index];
-                            if (exactMatch.isStrictMatch) {
-                                result = result && itemResult;
-                            }
-                            else {
-                                result = result || itemResult;
-                            }
-                        });
-                    }
-                }
-                else {
-                    result = conditionalMatchResults[0];
-                }
-            }
-        }
-        else {
-            logger(`No conditional match needed, sending true`);
-            result = true;
-        }
-        return result;
-    }
-    static hasExactMatch(collectionName, item, config, index) {
-        let result = false;
-        if (item) {
-            const exactMatch = config.exactMatch[index];
-            const fieldValue = item[exactMatch.matchingFieldId];
-            if (fieldValue !== undefined) {
-                exactMatch.matchValues.forEach((matchValue) => {
-                    if (fieldValue == matchValue)
-                        result = true;
-                });
-                logger(`Exact match for ${collectionName} item, field ${exactMatch.matchingFieldId} with value ${fieldValue} against values ${exactMatch.matchValues} - is match? ${result}`);
-            }
-            else {
-                logger(`Exact match for ${collectionName} item, field ${exactMatch.matchingFieldId} has NO field value against values ${exactMatch.matchValues}`);
-            }
-        }
-        return result;
-    }
-    static hasExactMatchOrNoExactMatchNeeded(collectionName, item, config) {
-        let result = true;
-        if (config.exactMatch.length > 0) {
-            if (item) {
-                let exactMatchResults = [];
-                config.exactMatch.forEach((exactMatch, index) => {
-                    exactMatchResults.push(CollectionViewProcessor.hasExactMatch(collectionName, item, config, index));
-                });
-                // what logic are we applying to exact matches>?
-                if (exactMatchResults.length > 1) {
-                    if (!config.exactMatchLogicType) {
-                        config.exactMatchLogicType = _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.MatchLogicType.AND;
-                    }
-                    if (config.exactMatchLogicType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.MatchLogicType.AND) {
-                        result = true;
-                        exactMatchResults.forEach((itemResult) => {
-                            result = result && itemResult;
-                        });
-                    }
-                    if (config.exactMatchLogicType === _ConfigurationTypes__WEBPACK_IMPORTED_MODULE_0__.MatchLogicType.OR) {
-                        result = false;
-                        exactMatchResults.forEach((itemResult, index) => {
-                            const exactMatch = config.exactMatch[index];
-                            if (exactMatch.isStrictMatch) {
-                                result = result && itemResult;
-                            }
-                            else {
-                                result = result || itemResult;
-                            }
-                        });
-                    }
-                }
-                else {
-                    result = exactMatchResults[0];
-                }
-            }
-        }
-        else {
-            logger(`No exact match needed, sending true`);
-            result = true;
-        }
-        return result;
-    }
-    static hasPartialMatch(collectionName, item, partialMatch) {
-        let result = false;
-        if (item) {
-            const filterValue = partialMatch.filter.trim().toLowerCase();
-            let done = false;
-            let counter = 0;
-            while (!done) {
-                if (counter < partialMatch.matchingFieldIds.length) {
-                    const fieldId = partialMatch.matchingFieldIds[counter];
-                    const fieldValue = item[fieldId];
-                    if (fieldValue !== undefined) {
-                        let fieldValueString = fieldValue + '';
-                        fieldValueString = fieldValueString.toLowerCase();
-                        if (fieldValueString.includes(filterValue)) {
-                            logger(`Partial match for ${collectionName} item found in field ${fieldId} with filter ${filterValue}`);
-                            result = true;
-                            done = true;
-                        }
-                    }
-                    counter++;
-                }
-                else {
-                    logger(`Partial match for ${collectionName} item not found in matching fields`);
-                    done = true;
-                }
-            }
-        }
-        return result;
-    }
-    static hasPartialMatchOrNoPartialMatchNeeded(collectionName, item, config) {
-        let result = false;
-        if (config.contains.length > 0) {
-            if (item) {
-                config.contains.forEach((partialMatch) => {
-                    if (CollectionViewProcessor.hasPartialMatch(collectionName, item, partialMatch)) {
-                        result = true;
-                    }
-                });
-            }
-        }
-        else {
-            logger(`No partial match needed, sending true`);
-            result = true;
-        }
-        return result;
-    }
-    static doesItemMatchFilterConfig(collectionName, item, config) {
-        return CollectionViewProcessor.hasExactMatchOrNoExactMatchNeeded(collectionName, item, config) &&
-            CollectionViewProcessor.hasPartialMatchOrNoPartialMatchNeeded(collectionName, item, config) &&
-            CollectionViewProcessor.hasConditionalMatchOrNoMatchNeeded(collectionName, item, config);
-    }
-}
-//# sourceMappingURL=CollectionViewProcessor.js.map
-
-/***/ }),
-
 /***/ "./node_modules/ui-framework-jps/dist/framework/ui/helper/ColourEditor.js":
 /*!********************************************************************************!*\
   !*** ./node_modules/ui-framework-jps/dist/framework/ui/helper/ColourEditor.js ***!
@@ -49195,7 +49204,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../delegate/CollectionViewListenerForwarder */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewListenerForwarder.js");
 /* harmony import */ var _delegate_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../delegate/CollectionViewEventHandlerDelegate */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewEventHandlerDelegate.js");
-/* harmony import */ var _helper_CollectionViewProcessor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../helper/CollectionViewProcessor */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/CollectionViewProcessor.js");
+/* harmony import */ var _filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../filter/CollectionFilterProcessor */ "./node_modules/ui-framework-jps/dist/framework/filter/CollectionFilterProcessor.js");
 
 
 
@@ -49382,7 +49391,7 @@ class AbstractCollectionView extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__.
             if (currentState) {
                 currentState.forEach((item) => {
                     // @ts-ignore
-                    if (_helper_CollectionViewProcessor__WEBPACK_IMPORTED_MODULE_6__.CollectionViewProcessor.doesItemMatchFilterConfig(this.collectionName, item, this.filter)) {
+                    if (_filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_6__.CollectionFilterProcessor.doesItemMatchFilterConfig(this.collectionName, item, this.filter)) {
                         filteredState.push(item);
                     }
                 });
@@ -49405,7 +49414,7 @@ class AbstractCollectionView extends _AbstractView__WEBPACK_IMPORTED_MODULE_0__.
         if (this.viewEl && this.renderer) {
             if (this.isVisible) {
                 avLogger('rendering visible state with filtering and sorting as required');
-                let filteredState = this.getFilteredState(newState);
+                let filteredState = _filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_6__.CollectionFilterProcessor.getFilteredState(name, newState, this.filter, this.onlyDisplayWithFilter);
                 // do we have a sorter?
                 if (this.sorterConfig && (filteredState.length > 0)) {
                     filteredState = filteredState.sort(this.useSorter);
@@ -51102,6 +51111,7 @@ class DefaultItemView {
     isAutoScroll() {
         let result = false;
         if (this.uiDef) {
+            dlogger(`${this.uiDef.displayName} - Autoscroll is set to ${this.uiDef.autoscrollOnNewContent}`);
             if (this.uiDef.autoscrollOnNewContent === true)
                 result = true;
         }
@@ -51960,12 +51970,12 @@ class FormDetailViewRenderer {
             this.form.initialise(runtimeConfig);
     }
     displayItemReadonly(dataObject) {
-        var _a, _b;
         this.isNewItem = false;
-        if (this.form)
+        if (this.form) {
             this.form.displayOnly(dataObject);
-        if ((_a = this.form) === null || _a === void 0 ? void 0 : _a.isAutoScroll())
-            (_b = this.form) === null || _b === void 0 ? void 0 : _b.scrollToTop();
+            if (this.form.isAutoScroll())
+                this.form.scrollToTop();
+        }
     }
     getName() {
         return this.objDef.displayName;
@@ -51989,12 +51999,12 @@ class FormDetailViewRenderer {
         throw new Error("Method not implemented.");
     }
     clearDisplay() {
-        var _a, _b;
         this.isNewItem = false;
-        if (this.form)
+        if (this.form) {
             this.form.reset();
-        if ((_a = this.form) === null || _a === void 0 ? void 0 : _a.isAutoScroll())
-            (_b = this.form) === null || _b === void 0 ? void 0 : _b.scrollToTop();
+            if (this.form.isAutoScroll())
+                this.form.scrollToTop();
+        }
     }
     clearReadOnly() {
         if (this.form)
@@ -52011,46 +52021,49 @@ class FormDetailViewRenderer {
         return result;
     }
     createItem(dataObj) {
-        var _a, _b, _c;
+        var _a;
         this.currentItem = {};
         logger(`Creating new item with form ${(_a = this.form) === null || _a === void 0 ? void 0 : _a.getId()}`);
         if (this.form) {
             this.isNewItem = true;
             this.currentItem = this.form.startCreateNew(dataObj);
+            if (this.form.isAutoScroll())
+                this.form.scrollToTop();
         }
         if (!_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].isMobileDevice())
             $('[data-toggle="tooltip"]').tooltip();
-        if ((_b = this.form) === null || _b === void 0 ? void 0 : _b.isAutoScroll())
-            (_c = this.form) === null || _c === void 0 ? void 0 : _c.scrollToTop();
         return this.currentItem;
     }
     displayItem(dataObj) {
-        var _a, _b;
         this.currentItem = dataObj;
         this.isNewItem = false;
         if (this.hasPermissionToUpdateItem(dataObj)) {
-            if (this.form)
+            if (this.form) {
                 this.form.startUpdate(dataObj);
+                if (this.form.isAutoScroll())
+                    this.form.scrollToTop();
+            }
         }
         else {
-            if (this.form)
+            if (this.form) {
                 this.form.displayOnly(dataObj);
+                if (this.form.isAutoScroll())
+                    this.form.scrollToTop();
+            }
         }
         if (!_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_3__["default"].isMobileDevice())
             $('[data-toggle="tooltip"]').tooltip();
-        if ((_a = this.form) === null || _a === void 0 ? void 0 : _a.isAutoScroll())
-            (_b = this.form) === null || _b === void 0 ? void 0 : _b.scrollToTop();
     }
     hide() {
         if (this.form)
             this.form.setIsVisible(false);
     }
     show() {
-        var _a, _b;
-        if (this.form)
+        if (this.form) {
             this.form.setIsVisible(true);
-        if ((_a = this.form) === null || _a === void 0 ? void 0 : _a.isAutoScroll())
-            (_b = this.form) === null || _b === void 0 ? void 0 : _b.scrollToTop();
+            if (this.form.isAutoScroll())
+                this.form.scrollToTop();
+        }
     }
     render() {
         this.displayItem(this.currentItem);
@@ -52077,7 +52090,7 @@ class FormDetailViewRenderer {
         return result;
     }
     itemViewEvent(name, event, formValues) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a;
         // catch form events for user leaving the form
         switch (event.eventType) {
             case (_CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ItemEventType.CANCELLING): {
@@ -52093,8 +52106,10 @@ class FormDetailViewRenderer {
                 this.currentItem = formValues;
                 if (this.forwarder && this.view)
                     this.forwarder.cancelled(this.view, this.currentItem);
-                if ((_a = this.form) === null || _a === void 0 ? void 0 : _a.isAutoScroll())
-                    (_b = this.form) === null || _b === void 0 ? void 0 : _b.scrollToTop();
+                if (this.form) {
+                    if (this.form.isAutoScroll())
+                        this.form.scrollToTop();
+                }
                 break;
             }
             case (_CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ItemEventType.DELETING): {
@@ -52110,21 +52125,25 @@ class FormDetailViewRenderer {
                 this.currentItem = formValues;
                 if (this.forwarder && this.view)
                     this.forwarder.deletedItem(this.view, this.currentItem);
-                if ((_c = this.form) === null || _c === void 0 ? void 0 : _c.isAutoScroll())
-                    (_d = this.form) === null || _d === void 0 ? void 0 : _d.scrollToTop();
+                if (this.form) {
+                    if (this.form.isAutoScroll())
+                        this.form.scrollToTop();
+                }
                 // user is deleting the object, will become invisible
                 break;
             }
             case (_CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ItemEventType.SAVE_ABORTED): {
-                if ((_e = this.form) === null || _e === void 0 ? void 0 : _e.isAutoScroll())
-                    (_f = this.form) === null || _f === void 0 ? void 0 : _f.scrollToTop();
+                if (this.form) {
+                    if (this.form.isAutoScroll())
+                        this.form.scrollToTop();
+                }
                 logger(`Form save cancelled`);
                 break;
             }
             case (_CommonTypes__WEBPACK_IMPORTED_MODULE_2__.ItemEventType.SAVED): {
                 logger(`Form is saved with data`);
                 if (this.form) {
-                    let formattedObj = (_g = this.form) === null || _g === void 0 ? void 0 : _g.getFormattedDataObject();
+                    let formattedObj = (_a = this.form) === null || _a === void 0 ? void 0 : _a.getFormattedDataObject();
                     if (this.isNewItem) {
                         if (this.forwarder && this.view)
                             this.forwarder.saveNewItem(this.view, formattedObj);
@@ -52134,8 +52153,10 @@ class FormDetailViewRenderer {
                             this.forwarder.updateItem(this.view, formattedObj);
                     }
                     this.isNewItem = false;
-                    if (this.form.isAutoScroll())
-                        (_h = this.form) === null || _h === void 0 ? void 0 : _h.scrollToTop();
+                    if (this.form) {
+                        if (this.form.isAutoScroll())
+                            this.form.scrollToTop();
+                    }
                 }
                 break;
             }
@@ -52869,6 +52890,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var debug__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(debug__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../context/ContextualInformationHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/context/ContextualInformationHelper.js");
 /* harmony import */ var _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../model/DataObjectTypeDefs */ "./node_modules/ui-framework-jps/dist/framework/model/DataObjectTypeDefs.js");
+/* harmony import */ var _model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../model/BasicFieldOperations */ "./node_modules/ui-framework-jps/dist/framework/model/BasicFieldOperations.js");
+
 
 
 
@@ -53014,11 +53037,71 @@ class TabularViewRendererUsingContext {
                             }
                             tdEl.appendChild(textEl);
                             textEl.addEventListener('blur', (event) => {
-                                loggerEvent(`Checkbox with field ${column.field.id} changed to value ${textEl.value}`);
+                                loggerEvent(`field ${column.field.id} changed to value ${textEl.value}`);
                                 const fieldId = column.field.id;
                                 const context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
                                 if (context) {
                                     this.view.setFieldValue(context.identifier, fieldId, textEl.value);
+                                }
+                            });
+                            break;
+                        }
+                    }
+                    case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__.FieldType.integer:
+                    case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__.FieldType.float: {
+                        if (isEditable) {
+                            let textEl = document.createElement('input');
+                            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(textEl, [{ name: 'type', value: 'number' }]);
+                            if (fieldValue) {
+                                textEl.value = fieldValue;
+                            }
+                            tdEl.appendChild(textEl);
+                            textEl.addEventListener('blur', (event) => {
+                                loggerEvent(`field ${column.field.id} changed to value ${textEl.value}`);
+                                const fieldId = column.field.id;
+                                const context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
+                                if (context) {
+                                    if (_model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_5__.BasicFieldOperations.getInstance().isValidValue(column.field, textEl.value)) {
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addClasses(textEl, 'is-valid');
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeClasses(textEl, 'is-invalid');
+                                        this.view.setFieldValue(context.identifier, fieldId, textEl.value);
+                                    }
+                                    else {
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addClasses(textEl, 'is-invalid');
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeClasses(textEl, 'is-valid');
+                                    }
+                                }
+                            });
+                            break;
+                        }
+                    }
+                    case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__.FieldType.time:
+                    case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__.FieldType.shortTime:
+                    case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__.FieldType.date:
+                    case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__.FieldType.datetime:
+                    case _model_DataObjectTypeDefs__WEBPACK_IMPORTED_MODULE_4__.FieldType.duration: {
+                        if (isEditable) {
+                            let textEl = document.createElement('input');
+                            _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addAttributes(textEl, [{ name: 'type', value: 'text' }]);
+                            if (fieldValue) {
+                                textEl.value = fieldValue;
+                            }
+                            tdEl.appendChild(textEl);
+                            textEl.addEventListener('blur', (event) => {
+                                loggerEvent(`field ${column.field.id} changed to value ${textEl.value}`);
+                                const fieldId = column.field.id;
+                                const context = _context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().findContextFromEvent(event);
+                                if (context) {
+                                    // validate the value
+                                    if (_model_BasicFieldOperations__WEBPACK_IMPORTED_MODULE_5__.BasicFieldOperations.getInstance().isValidValue(column.field, textEl.value)) {
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addClasses(textEl, 'is-valid');
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeClasses(textEl, 'is-invalid');
+                                        this.view.setFieldValue(context.identifier, fieldId, textEl.value);
+                                    }
+                                    else {
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].addClasses(textEl, 'is-invalid');
+                                        _util_BrowserUtil__WEBPACK_IMPORTED_MODULE_1__["default"].removeClasses(textEl, 'is-valid');
+                                    }
                                 }
                             });
                             break;
@@ -53716,79 +53799,80 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "SCREEN_WIDTH_MEDIUM": () => (/* reexport safe */ _framework_ui_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_39__.SCREEN_WIDTH_MEDIUM),
 /* harmony export */   "ElementLocation": () => (/* reexport safe */ _framework_ui_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_39__.ElementLocation),
 /* harmony export */   "CollectionViewSorterDirection": () => (/* reexport safe */ _framework_ui_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_39__.CollectionViewSorterDirection),
-/* harmony export */   "MatchLogicType": () => (/* reexport safe */ _framework_ui_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_39__.MatchLogicType),
-/* harmony export */   "AlertType": () => (/* reexport safe */ _framework_ui_alert_AlertListener__WEBPACK_IMPORTED_MODULE_40__.AlertType),
-/* harmony export */   "AlertManager": () => (/* reexport safe */ _framework_ui_alert_AlertManager__WEBPACK_IMPORTED_MODULE_41__.AlertManager),
-/* harmony export */   "FileUploadType": () => (/* reexport safe */ _framework_ui_file_upload_FileUploadListener__WEBPACK_IMPORTED_MODULE_42__.FileUploadType),
-/* harmony export */   "FileUploadManager": () => (/* reexport safe */ _framework_ui_file_upload_FileUploadManager__WEBPACK_IMPORTED_MODULE_43__.FileUploadManager),
-/* harmony export */   "CollectionUIConfigController": () => (/* reexport safe */ _framework_ui_config_CollectionUIConfigController__WEBPACK_IMPORTED_MODULE_44__.CollectionUIConfigController),
-/* harmony export */   "BlockedUserView": () => (/* reexport safe */ _framework_ui_chat_BlockedUserView__WEBPACK_IMPORTED_MODULE_45__.BlockedUserView),
-/* harmony export */   "ChatLogDetailView": () => (/* reexport safe */ _framework_ui_chat_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_46__.ChatLogDetailView),
-/* harmony export */   "ChatLogsView": () => (/* reexport safe */ _framework_ui_chat_ChatLogsView__WEBPACK_IMPORTED_MODULE_47__.ChatLogsView),
-/* harmony export */   "ChatRoomsSidebar": () => (/* reexport safe */ _framework_ui_chat_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_48__.ChatRoomsSidebar),
-/* harmony export */   "STATE_NAMES": () => (/* reexport safe */ _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_49__.STATE_NAMES),
-/* harmony export */   "DRAGGABLE": () => (/* reexport safe */ _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_49__.DRAGGABLE),
-/* harmony export */   "VIEW_NAME": () => (/* reexport safe */ _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_49__.VIEW_NAME),
-/* harmony export */   "FavouriteUserView": () => (/* reexport safe */ _framework_ui_chat_FavouriteUserView__WEBPACK_IMPORTED_MODULE_50__.FavouriteUserView),
-/* harmony export */   "UserSearchSidebar": () => (/* reexport safe */ _framework_ui_chat_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_51__.UserSearchSidebar),
-/* harmony export */   "UserSearchView": () => (/* reexport safe */ _framework_ui_chat_UserSearchView__WEBPACK_IMPORTED_MODULE_52__.UserSearchView),
-/* harmony export */   "SidebarViewContainer": () => (/* reexport safe */ _framework_ui_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_53__.SidebarViewContainer),
-/* harmony export */   "TabularViewContainer": () => (/* reexport safe */ _framework_ui_container_TabularViewContainer__WEBPACK_IMPORTED_MODULE_54__.TabularViewContainer),
-/* harmony export */   "ContextualInformationHelper": () => (/* reexport safe */ _framework_ui_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_55__.ContextualInformationHelper),
-/* harmony export */   "ItemViewElementFactory": () => (/* reexport safe */ _framework_ui_factory_ItemViewElementFactory__WEBPACK_IMPORTED_MODULE_56__.ItemViewElementFactory),
-/* harmony export */   "BasicFormImplementation": () => (/* reexport safe */ _framework_ui_form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_57__.BasicFormImplementation),
-/* harmony export */   "AbstractField": () => (/* reexport safe */ _framework_ui_field_AbstractField__WEBPACK_IMPORTED_MODULE_58__.AbstractField),
-/* harmony export */   "InputField": () => (/* reexport safe */ _framework_ui_field_InputField__WEBPACK_IMPORTED_MODULE_59__.InputField),
-/* harmony export */   "TextAreaField": () => (/* reexport safe */ _framework_ui_field_TextAreaField__WEBPACK_IMPORTED_MODULE_60__.TextAreaField),
-/* harmony export */   "SelectField": () => (/* reexport safe */ _framework_ui_field_SelectField__WEBPACK_IMPORTED_MODULE_61__.SelectField),
-/* harmony export */   "RadioButtonGroupField": () => (/* reexport safe */ _framework_ui_field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_62__.RadioButtonGroupField),
-/* harmony export */   "ColourInputField": () => (/* reexport safe */ _framework_ui_field_ColourInputField__WEBPACK_IMPORTED_MODULE_63__.ColourInputField),
-/* harmony export */   "ConditionResponse": () => (/* reexport safe */ _framework_ui_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_64__.ConditionResponse),
-/* harmony export */   "MultipleConditionLogic": () => (/* reexport safe */ _framework_ui_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_64__.MultipleConditionLogic),
-/* harmony export */   "ValidationManager": () => (/* reexport safe */ _framework_ui_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_65__.ValidationManager),
-/* harmony export */   "ValidationHelperFunctions": () => (/* reexport safe */ _framework_ui_validation_ValidationHelperFunctions__WEBPACK_IMPORTED_MODULE_66__.ValidationHelperFunctions),
-/* harmony export */   "BootstrapFormConfigHelper": () => (/* reexport safe */ _framework_ui_helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_67__.BootstrapFormConfigHelper),
-/* harmony export */   "FormConfigHelperFunctions": () => (/* reexport safe */ _framework_ui_helper_FormConfigHelperFunctions__WEBPACK_IMPORTED_MODULE_68__.FormConfigHelperFunctions),
-/* harmony export */   "BootstrapTableConfigHelper": () => (/* reexport safe */ _framework_ui_helper_BootstrapTableConfigHelper__WEBPACK_IMPORTED_MODULE_69__.BootstrapTableConfigHelper),
-/* harmony export */   "LimitedChoiceTextRenderer": () => (/* reexport safe */ _framework_ui_helper_LimitedChoiceTextRenderer__WEBPACK_IMPORTED_MODULE_70__.LimitedChoiceTextRenderer),
-/* harmony export */   "LinkedCollectionDetailController": () => (/* reexport safe */ _framework_ui_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_71__.LinkedCollectionDetailController),
-/* harmony export */   "RBGFieldOperations": () => (/* reexport safe */ _framework_ui_helper_RBGFieldOperations__WEBPACK_IMPORTED_MODULE_72__.RBGFieldOperations),
-/* harmony export */   "SimpleValueDataSource": () => (/* reexport safe */ _framework_ui_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_73__.SimpleValueDataSource),
-/* harmony export */   "ColourEditor": () => (/* reexport safe */ _framework_ui_helper_ColourEditor__WEBPACK_IMPORTED_MODULE_74__.ColourEditor),
-/* harmony export */   "CollectionViewFilterHelper": () => (/* reexport safe */ _framework_ui_helper_CollectionViewFilterHelper__WEBPACK_IMPORTED_MODULE_75__.CollectionViewFilterHelper),
-/* harmony export */   "DefaultItemView": () => (/* reexport safe */ _framework_ui_view_item_DefaultItemView__WEBPACK_IMPORTED_MODULE_76__.DefaultItemView),
-/* harmony export */   "DefaultFieldPermissionChecker": () => (/* reexport safe */ _framework_ui_view_item_DefaultFieldPermissionChecker__WEBPACK_IMPORTED_MODULE_77__.DefaultFieldPermissionChecker),
-/* harmony export */   "AbstractView": () => (/* reexport safe */ _framework_ui_view_implementation_AbstractView__WEBPACK_IMPORTED_MODULE_78__.AbstractView),
-/* harmony export */   "AbstractCollectionView": () => (/* reexport safe */ _framework_ui_view_implementation_AbstractCollectionView__WEBPACK_IMPORTED_MODULE_79__.AbstractCollectionView),
-/* harmony export */   "AbstractStatefulCollectionView": () => (/* reexport safe */ _framework_ui_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_80__.AbstractStatefulCollectionView),
-/* harmony export */   "DataObjectCollectionView": () => (/* reexport safe */ _framework_ui_view_implementation_DataObjectCollectionView__WEBPACK_IMPORTED_MODULE_81__.DataObjectCollectionView),
-/* harmony export */   "DefaultPermissionChecker": () => (/* reexport safe */ _framework_ui_view_implementation_DefaultPermissionChecker__WEBPACK_IMPORTED_MODULE_82__.DefaultPermissionChecker),
-/* harmony export */   "DetailViewImplementation": () => (/* reexport safe */ _framework_ui_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_83__.DetailViewImplementation),
-/* harmony export */   "CarouselViewRenderer": () => (/* reexport safe */ _framework_ui_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_84__.CarouselViewRenderer),
-/* harmony export */   "CarouselViewRendererUsingContext": () => (/* reexport safe */ _framework_ui_view_renderer_CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_85__.CarouselViewRendererUsingContext),
-/* harmony export */   "FormDetailViewRenderer": () => (/* reexport safe */ _framework_ui_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_86__.FormDetailViewRenderer),
-/* harmony export */   "ListViewRenderer": () => (/* reexport safe */ _framework_ui_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_87__.ListViewRenderer),
-/* harmony export */   "ListViewRendererUsingContext": () => (/* reexport safe */ _framework_ui_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_88__.ListViewRendererUsingContext),
-/* harmony export */   "TabularViewRendererUsingContext": () => (/* reexport safe */ _framework_ui_view_renderer_TabularViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_89__.TabularViewRendererUsingContext),
-/* harmony export */   "ViewListenerForwarder": () => (/* reexport safe */ _framework_ui_view_delegate_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_90__.ViewListenerForwarder),
-/* harmony export */   "DetailViewListenerForwarder": () => (/* reexport safe */ _framework_ui_view_delegate_DetailViewListenerForwarder__WEBPACK_IMPORTED_MODULE_91__.DetailViewListenerForwarder),
-/* harmony export */   "CollectionViewListenerForwarder": () => (/* reexport safe */ _framework_ui_view_delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_92__.CollectionViewListenerForwarder),
-/* harmony export */   "CollectionViewEventHandlerDelegate": () => (/* reexport safe */ _framework_ui_view_delegate_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_93__.CollectionViewEventHandlerDelegate),
-/* harmony export */   "CollectionViewEventHandlerDelegateUsingContext": () => (/* reexport safe */ _framework_ui_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_94__.CollectionViewEventHandlerDelegateUsingContext),
-/* harmony export */   "truncateString": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_95__.truncateString),
-/* harmony export */   "convertHexToNumber": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_95__.convertHexToNumber),
-/* harmony export */   "convertSingleHexToNumber": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_95__.convertSingleHexToNumber),
-/* harmony export */   "isHexValueDark": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_95__.isHexValueDark),
-/* harmony export */   "copyObject": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_95__.copyObject),
-/* harmony export */   "isSameMongo": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_96__.isSameMongo),
-/* harmony export */   "isSame": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_96__.isSame),
-/* harmony export */   "isSameUsername": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_96__.isSameUsername),
-/* harmony export */   "isSameRoom": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_96__.isSameRoom),
-/* harmony export */   "addDurations": () => (/* reexport safe */ _framework_util_DurationFunctions__WEBPACK_IMPORTED_MODULE_97__.addDurations),
-/* harmony export */   "BrowserUtil": () => (/* reexport safe */ _framework_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_98__.BrowserUtil),
-/* harmony export */   "getElementOffset": () => (/* reexport safe */ _framework_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_98__.getElementOffset),
-/* harmony export */   "BasicTableRowImplementation": () => (/* reexport safe */ _framework_ui_table_BasicTableRowImplementation__WEBPACK_IMPORTED_MODULE_99__.BasicTableRowImplementation),
-/* harmony export */   "KeyBindingManager": () => (/* reexport safe */ _framework_ui_key_binding_manager_KeyBindingManager__WEBPACK_IMPORTED_MODULE_100__.KeyBindingManager)
+/* harmony export */   "MatchLogicType": () => (/* reexport safe */ _framework_filter_Types__WEBPACK_IMPORTED_MODULE_40__.MatchLogicType),
+/* harmony export */   "CollectionFilterProcessor": () => (/* reexport safe */ _framework_filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_41__.CollectionFilterProcessor),
+/* harmony export */   "AlertType": () => (/* reexport safe */ _framework_ui_alert_AlertListener__WEBPACK_IMPORTED_MODULE_42__.AlertType),
+/* harmony export */   "AlertManager": () => (/* reexport safe */ _framework_ui_alert_AlertManager__WEBPACK_IMPORTED_MODULE_43__.AlertManager),
+/* harmony export */   "FileUploadType": () => (/* reexport safe */ _framework_ui_file_upload_FileUploadListener__WEBPACK_IMPORTED_MODULE_44__.FileUploadType),
+/* harmony export */   "FileUploadManager": () => (/* reexport safe */ _framework_ui_file_upload_FileUploadManager__WEBPACK_IMPORTED_MODULE_45__.FileUploadManager),
+/* harmony export */   "CollectionUIConfigController": () => (/* reexport safe */ _framework_ui_config_CollectionUIConfigController__WEBPACK_IMPORTED_MODULE_46__.CollectionUIConfigController),
+/* harmony export */   "BlockedUserView": () => (/* reexport safe */ _framework_ui_chat_BlockedUserView__WEBPACK_IMPORTED_MODULE_47__.BlockedUserView),
+/* harmony export */   "ChatLogDetailView": () => (/* reexport safe */ _framework_ui_chat_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_48__.ChatLogDetailView),
+/* harmony export */   "ChatLogsView": () => (/* reexport safe */ _framework_ui_chat_ChatLogsView__WEBPACK_IMPORTED_MODULE_49__.ChatLogsView),
+/* harmony export */   "ChatRoomsSidebar": () => (/* reexport safe */ _framework_ui_chat_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_50__.ChatRoomsSidebar),
+/* harmony export */   "STATE_NAMES": () => (/* reexport safe */ _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_51__.STATE_NAMES),
+/* harmony export */   "DRAGGABLE": () => (/* reexport safe */ _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_51__.DRAGGABLE),
+/* harmony export */   "VIEW_NAME": () => (/* reexport safe */ _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_51__.VIEW_NAME),
+/* harmony export */   "FavouriteUserView": () => (/* reexport safe */ _framework_ui_chat_FavouriteUserView__WEBPACK_IMPORTED_MODULE_52__.FavouriteUserView),
+/* harmony export */   "UserSearchSidebar": () => (/* reexport safe */ _framework_ui_chat_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_53__.UserSearchSidebar),
+/* harmony export */   "UserSearchView": () => (/* reexport safe */ _framework_ui_chat_UserSearchView__WEBPACK_IMPORTED_MODULE_54__.UserSearchView),
+/* harmony export */   "SidebarViewContainer": () => (/* reexport safe */ _framework_ui_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_55__.SidebarViewContainer),
+/* harmony export */   "TabularViewContainer": () => (/* reexport safe */ _framework_ui_container_TabularViewContainer__WEBPACK_IMPORTED_MODULE_56__.TabularViewContainer),
+/* harmony export */   "ContextualInformationHelper": () => (/* reexport safe */ _framework_ui_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_57__.ContextualInformationHelper),
+/* harmony export */   "ItemViewElementFactory": () => (/* reexport safe */ _framework_ui_factory_ItemViewElementFactory__WEBPACK_IMPORTED_MODULE_58__.ItemViewElementFactory),
+/* harmony export */   "BasicFormImplementation": () => (/* reexport safe */ _framework_ui_form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_59__.BasicFormImplementation),
+/* harmony export */   "AbstractField": () => (/* reexport safe */ _framework_ui_field_AbstractField__WEBPACK_IMPORTED_MODULE_60__.AbstractField),
+/* harmony export */   "InputField": () => (/* reexport safe */ _framework_ui_field_InputField__WEBPACK_IMPORTED_MODULE_61__.InputField),
+/* harmony export */   "TextAreaField": () => (/* reexport safe */ _framework_ui_field_TextAreaField__WEBPACK_IMPORTED_MODULE_62__.TextAreaField),
+/* harmony export */   "SelectField": () => (/* reexport safe */ _framework_ui_field_SelectField__WEBPACK_IMPORTED_MODULE_63__.SelectField),
+/* harmony export */   "RadioButtonGroupField": () => (/* reexport safe */ _framework_ui_field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_64__.RadioButtonGroupField),
+/* harmony export */   "ColourInputField": () => (/* reexport safe */ _framework_ui_field_ColourInputField__WEBPACK_IMPORTED_MODULE_65__.ColourInputField),
+/* harmony export */   "ConditionResponse": () => (/* reexport safe */ _framework_ui_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_66__.ConditionResponse),
+/* harmony export */   "MultipleConditionLogic": () => (/* reexport safe */ _framework_ui_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_66__.MultipleConditionLogic),
+/* harmony export */   "ValidationManager": () => (/* reexport safe */ _framework_ui_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_67__.ValidationManager),
+/* harmony export */   "ValidationHelperFunctions": () => (/* reexport safe */ _framework_ui_validation_ValidationHelperFunctions__WEBPACK_IMPORTED_MODULE_68__.ValidationHelperFunctions),
+/* harmony export */   "BootstrapFormConfigHelper": () => (/* reexport safe */ _framework_ui_helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_69__.BootstrapFormConfigHelper),
+/* harmony export */   "FormConfigHelperFunctions": () => (/* reexport safe */ _framework_ui_helper_FormConfigHelperFunctions__WEBPACK_IMPORTED_MODULE_70__.FormConfigHelperFunctions),
+/* harmony export */   "BootstrapTableConfigHelper": () => (/* reexport safe */ _framework_ui_helper_BootstrapTableConfigHelper__WEBPACK_IMPORTED_MODULE_71__.BootstrapTableConfigHelper),
+/* harmony export */   "LimitedChoiceTextRenderer": () => (/* reexport safe */ _framework_ui_helper_LimitedChoiceTextRenderer__WEBPACK_IMPORTED_MODULE_72__.LimitedChoiceTextRenderer),
+/* harmony export */   "LinkedCollectionDetailController": () => (/* reexport safe */ _framework_ui_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_73__.LinkedCollectionDetailController),
+/* harmony export */   "RBGFieldOperations": () => (/* reexport safe */ _framework_ui_helper_RBGFieldOperations__WEBPACK_IMPORTED_MODULE_74__.RBGFieldOperations),
+/* harmony export */   "SimpleValueDataSource": () => (/* reexport safe */ _framework_ui_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_75__.SimpleValueDataSource),
+/* harmony export */   "ColourEditor": () => (/* reexport safe */ _framework_ui_helper_ColourEditor__WEBPACK_IMPORTED_MODULE_76__.ColourEditor),
+/* harmony export */   "CollectionViewFilterHelper": () => (/* reexport safe */ _framework_ui_helper_CollectionViewFilterHelper__WEBPACK_IMPORTED_MODULE_77__.CollectionViewFilterHelper),
+/* harmony export */   "DefaultItemView": () => (/* reexport safe */ _framework_ui_view_item_DefaultItemView__WEBPACK_IMPORTED_MODULE_78__.DefaultItemView),
+/* harmony export */   "DefaultFieldPermissionChecker": () => (/* reexport safe */ _framework_ui_view_item_DefaultFieldPermissionChecker__WEBPACK_IMPORTED_MODULE_79__.DefaultFieldPermissionChecker),
+/* harmony export */   "AbstractView": () => (/* reexport safe */ _framework_ui_view_implementation_AbstractView__WEBPACK_IMPORTED_MODULE_80__.AbstractView),
+/* harmony export */   "AbstractCollectionView": () => (/* reexport safe */ _framework_ui_view_implementation_AbstractCollectionView__WEBPACK_IMPORTED_MODULE_81__.AbstractCollectionView),
+/* harmony export */   "AbstractStatefulCollectionView": () => (/* reexport safe */ _framework_ui_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_82__.AbstractStatefulCollectionView),
+/* harmony export */   "DataObjectCollectionView": () => (/* reexport safe */ _framework_ui_view_implementation_DataObjectCollectionView__WEBPACK_IMPORTED_MODULE_83__.DataObjectCollectionView),
+/* harmony export */   "DefaultPermissionChecker": () => (/* reexport safe */ _framework_ui_view_implementation_DefaultPermissionChecker__WEBPACK_IMPORTED_MODULE_84__.DefaultPermissionChecker),
+/* harmony export */   "DetailViewImplementation": () => (/* reexport safe */ _framework_ui_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_85__.DetailViewImplementation),
+/* harmony export */   "CarouselViewRenderer": () => (/* reexport safe */ _framework_ui_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_86__.CarouselViewRenderer),
+/* harmony export */   "CarouselViewRendererUsingContext": () => (/* reexport safe */ _framework_ui_view_renderer_CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_87__.CarouselViewRendererUsingContext),
+/* harmony export */   "FormDetailViewRenderer": () => (/* reexport safe */ _framework_ui_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_88__.FormDetailViewRenderer),
+/* harmony export */   "ListViewRenderer": () => (/* reexport safe */ _framework_ui_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_89__.ListViewRenderer),
+/* harmony export */   "ListViewRendererUsingContext": () => (/* reexport safe */ _framework_ui_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_90__.ListViewRendererUsingContext),
+/* harmony export */   "TabularViewRendererUsingContext": () => (/* reexport safe */ _framework_ui_view_renderer_TabularViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_91__.TabularViewRendererUsingContext),
+/* harmony export */   "ViewListenerForwarder": () => (/* reexport safe */ _framework_ui_view_delegate_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_92__.ViewListenerForwarder),
+/* harmony export */   "DetailViewListenerForwarder": () => (/* reexport safe */ _framework_ui_view_delegate_DetailViewListenerForwarder__WEBPACK_IMPORTED_MODULE_93__.DetailViewListenerForwarder),
+/* harmony export */   "CollectionViewListenerForwarder": () => (/* reexport safe */ _framework_ui_view_delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_94__.CollectionViewListenerForwarder),
+/* harmony export */   "CollectionViewEventHandlerDelegate": () => (/* reexport safe */ _framework_ui_view_delegate_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_95__.CollectionViewEventHandlerDelegate),
+/* harmony export */   "CollectionViewEventHandlerDelegateUsingContext": () => (/* reexport safe */ _framework_ui_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_96__.CollectionViewEventHandlerDelegateUsingContext),
+/* harmony export */   "truncateString": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_97__.truncateString),
+/* harmony export */   "convertHexToNumber": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_97__.convertHexToNumber),
+/* harmony export */   "convertSingleHexToNumber": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_97__.convertSingleHexToNumber),
+/* harmony export */   "isHexValueDark": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_97__.isHexValueDark),
+/* harmony export */   "copyObject": () => (/* reexport safe */ _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_97__.copyObject),
+/* harmony export */   "isSameMongo": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_98__.isSameMongo),
+/* harmony export */   "isSame": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_98__.isSame),
+/* harmony export */   "isSameUsername": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_98__.isSameUsername),
+/* harmony export */   "isSameRoom": () => (/* reexport safe */ _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_98__.isSameRoom),
+/* harmony export */   "addDurations": () => (/* reexport safe */ _framework_util_DurationFunctions__WEBPACK_IMPORTED_MODULE_99__.addDurations),
+/* harmony export */   "BrowserUtil": () => (/* reexport safe */ _framework_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_100__.BrowserUtil),
+/* harmony export */   "getElementOffset": () => (/* reexport safe */ _framework_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_100__.getElementOffset),
+/* harmony export */   "BasicTableRowImplementation": () => (/* reexport safe */ _framework_ui_table_BasicTableRowImplementation__WEBPACK_IMPORTED_MODULE_101__.BasicTableRowImplementation),
+/* harmony export */   "KeyBindingManager": () => (/* reexport safe */ _framework_ui_key_binding_manager_KeyBindingManager__WEBPACK_IMPORTED_MODULE_102__.KeyBindingManager)
 /* harmony export */ });
 /* harmony import */ var _framework_CommonTypes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./framework/CommonTypes */ "./node_modules/ui-framework-jps/dist/framework/CommonTypes.js");
 /* harmony import */ var _framework_model_AbstractFieldOperations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./framework/model/AbstractFieldOperations */ "./node_modules/ui-framework-jps/dist/framework/model/AbstractFieldOperations.js");
@@ -53830,67 +53914,69 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _framework_state_helper_StateTimingManager__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./framework/state/helper/StateTimingManager */ "./node_modules/ui-framework-jps/dist/framework/state/helper/StateTimingManager.js");
 /* harmony import */ var _framework_jsx_JSXParser__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./framework/jsx/JSXParser */ "./node_modules/ui-framework-jps/dist/framework/jsx/JSXParser.js");
 /* harmony import */ var _framework_ui_ConfigurationTypes__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./framework/ui/ConfigurationTypes */ "./node_modules/ui-framework-jps/dist/framework/ui/ConfigurationTypes.js");
-/* harmony import */ var _framework_ui_alert_AlertListener__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./framework/ui/alert/AlertListener */ "./node_modules/ui-framework-jps/dist/framework/ui/alert/AlertListener.js");
-/* harmony import */ var _framework_ui_alert_AlertManager__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./framework/ui/alert/AlertManager */ "./node_modules/ui-framework-jps/dist/framework/ui/alert/AlertManager.js");
-/* harmony import */ var _framework_ui_file_upload_FileUploadListener__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./framework/ui/file-upload/FileUploadListener */ "./node_modules/ui-framework-jps/dist/framework/ui/file-upload/FileUploadListener.js");
-/* harmony import */ var _framework_ui_file_upload_FileUploadManager__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./framework/ui/file-upload/FileUploadManager */ "./node_modules/ui-framework-jps/dist/framework/ui/file-upload/FileUploadManager.js");
-/* harmony import */ var _framework_ui_config_CollectionUIConfigController__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./framework/ui/config/CollectionUIConfigController */ "./node_modules/ui-framework-jps/dist/framework/ui/config/CollectionUIConfigController.js");
-/* harmony import */ var _framework_ui_chat_BlockedUserView__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./framework/ui/chat/BlockedUserView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/BlockedUserView.js");
-/* harmony import */ var _framework_ui_chat_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./framework/ui/chat/ChatLogDetailView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatLogDetailView.js");
-/* harmony import */ var _framework_ui_chat_ChatLogsView__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./framework/ui/chat/ChatLogsView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatLogsView.js");
-/* harmony import */ var _framework_ui_chat_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./framework/ui/chat/ChatRoomsSidebar */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatRoomsSidebar.js");
-/* harmony import */ var _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./framework/ui/chat/ChatTypes */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatTypes.js");
-/* harmony import */ var _framework_ui_chat_FavouriteUserView__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./framework/ui/chat/FavouriteUserView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/FavouriteUserView.js");
-/* harmony import */ var _framework_ui_chat_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./framework/ui/chat/UserSearchSidebar */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/UserSearchSidebar.js");
-/* harmony import */ var _framework_ui_chat_UserSearchView__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./framework/ui/chat/UserSearchView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/UserSearchView.js");
-/* harmony import */ var _framework_ui_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./framework/ui/container/SidebarViewContainer */ "./node_modules/ui-framework-jps/dist/framework/ui/container/SidebarViewContainer.js");
-/* harmony import */ var _framework_ui_container_TabularViewContainer__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./framework/ui/container/TabularViewContainer */ "./node_modules/ui-framework-jps/dist/framework/ui/container/TabularViewContainer.js");
-/* harmony import */ var _framework_ui_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./framework/ui/context/ContextualInformationHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/context/ContextualInformationHelper.js");
-/* harmony import */ var _framework_ui_factory_ItemViewElementFactory__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./framework/ui/factory/ItemViewElementFactory */ "./node_modules/ui-framework-jps/dist/framework/ui/factory/ItemViewElementFactory.js");
-/* harmony import */ var _framework_ui_form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_57__ = __webpack_require__(/*! ./framework/ui/form/BasicFormImplementation */ "./node_modules/ui-framework-jps/dist/framework/ui/form/BasicFormImplementation.js");
-/* harmony import */ var _framework_ui_field_AbstractField__WEBPACK_IMPORTED_MODULE_58__ = __webpack_require__(/*! ./framework/ui/field/AbstractField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/AbstractField.js");
-/* harmony import */ var _framework_ui_field_InputField__WEBPACK_IMPORTED_MODULE_59__ = __webpack_require__(/*! ./framework/ui/field/InputField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/InputField.js");
-/* harmony import */ var _framework_ui_field_TextAreaField__WEBPACK_IMPORTED_MODULE_60__ = __webpack_require__(/*! ./framework/ui/field/TextAreaField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/TextAreaField.js");
-/* harmony import */ var _framework_ui_field_SelectField__WEBPACK_IMPORTED_MODULE_61__ = __webpack_require__(/*! ./framework/ui/field/SelectField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/SelectField.js");
-/* harmony import */ var _framework_ui_field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_62__ = __webpack_require__(/*! ./framework/ui/field/RadioButtonGroupField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/RadioButtonGroupField.js");
-/* harmony import */ var _framework_ui_field_ColourInputField__WEBPACK_IMPORTED_MODULE_63__ = __webpack_require__(/*! ./framework/ui/field/ColourInputField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/ColourInputField.js");
-/* harmony import */ var _framework_ui_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_64__ = __webpack_require__(/*! ./framework/ui/validation/ValidationTypeDefs */ "./node_modules/ui-framework-jps/dist/framework/ui/validation/ValidationTypeDefs.js");
-/* harmony import */ var _framework_ui_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_65__ = __webpack_require__(/*! ./framework/ui/validation/ValidationManager */ "./node_modules/ui-framework-jps/dist/framework/ui/validation/ValidationManager.js");
-/* harmony import */ var _framework_ui_validation_ValidationHelperFunctions__WEBPACK_IMPORTED_MODULE_66__ = __webpack_require__(/*! ./framework/ui/validation/ValidationHelperFunctions */ "./node_modules/ui-framework-jps/dist/framework/ui/validation/ValidationHelperFunctions.js");
-/* harmony import */ var _framework_ui_helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_67__ = __webpack_require__(/*! ./framework/ui/helper/BootstrapFormConfigHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/BootstrapFormConfigHelper.js");
-/* harmony import */ var _framework_ui_helper_FormConfigHelperFunctions__WEBPACK_IMPORTED_MODULE_68__ = __webpack_require__(/*! ./framework/ui/helper/FormConfigHelperFunctions */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/FormConfigHelperFunctions.js");
-/* harmony import */ var _framework_ui_helper_BootstrapTableConfigHelper__WEBPACK_IMPORTED_MODULE_69__ = __webpack_require__(/*! ./framework/ui/helper/BootstrapTableConfigHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/BootstrapTableConfigHelper.js");
-/* harmony import */ var _framework_ui_helper_LimitedChoiceTextRenderer__WEBPACK_IMPORTED_MODULE_70__ = __webpack_require__(/*! ./framework/ui/helper/LimitedChoiceTextRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/LimitedChoiceTextRenderer.js");
-/* harmony import */ var _framework_ui_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_71__ = __webpack_require__(/*! ./framework/ui/helper/LinkedCollectionDetailController */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/LinkedCollectionDetailController.js");
-/* harmony import */ var _framework_ui_helper_RBGFieldOperations__WEBPACK_IMPORTED_MODULE_72__ = __webpack_require__(/*! ./framework/ui/helper/RBGFieldOperations */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/RBGFieldOperations.js");
-/* harmony import */ var _framework_ui_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_73__ = __webpack_require__(/*! ./framework/ui/helper/SimpleValueDataSource */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/SimpleValueDataSource.js");
-/* harmony import */ var _framework_ui_helper_ColourEditor__WEBPACK_IMPORTED_MODULE_74__ = __webpack_require__(/*! ./framework/ui/helper/ColourEditor */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/ColourEditor.js");
-/* harmony import */ var _framework_ui_helper_CollectionViewFilterHelper__WEBPACK_IMPORTED_MODULE_75__ = __webpack_require__(/*! ./framework/ui/helper/CollectionViewFilterHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/CollectionViewFilterHelper.js");
-/* harmony import */ var _framework_ui_view_item_DefaultItemView__WEBPACK_IMPORTED_MODULE_76__ = __webpack_require__(/*! ./framework/ui/view/item/DefaultItemView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/item/DefaultItemView.js");
-/* harmony import */ var _framework_ui_view_item_DefaultFieldPermissionChecker__WEBPACK_IMPORTED_MODULE_77__ = __webpack_require__(/*! ./framework/ui/view/item/DefaultFieldPermissionChecker */ "./node_modules/ui-framework-jps/dist/framework/ui/view/item/DefaultFieldPermissionChecker.js");
-/* harmony import */ var _framework_ui_view_implementation_AbstractView__WEBPACK_IMPORTED_MODULE_78__ = __webpack_require__(/*! ./framework/ui/view/implementation/AbstractView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/AbstractView.js");
-/* harmony import */ var _framework_ui_view_implementation_AbstractCollectionView__WEBPACK_IMPORTED_MODULE_79__ = __webpack_require__(/*! ./framework/ui/view/implementation/AbstractCollectionView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/AbstractCollectionView.js");
-/* harmony import */ var _framework_ui_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_80__ = __webpack_require__(/*! ./framework/ui/view/implementation/AbstractStatefulCollectionView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/AbstractStatefulCollectionView.js");
-/* harmony import */ var _framework_ui_view_implementation_DataObjectCollectionView__WEBPACK_IMPORTED_MODULE_81__ = __webpack_require__(/*! ./framework/ui/view/implementation/DataObjectCollectionView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/DataObjectCollectionView.js");
-/* harmony import */ var _framework_ui_view_implementation_DefaultPermissionChecker__WEBPACK_IMPORTED_MODULE_82__ = __webpack_require__(/*! ./framework/ui/view/implementation/DefaultPermissionChecker */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/DefaultPermissionChecker.js");
-/* harmony import */ var _framework_ui_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_83__ = __webpack_require__(/*! ./framework/ui/view/implementation/DetailViewImplementation */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/DetailViewImplementation.js");
-/* harmony import */ var _framework_ui_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_84__ = __webpack_require__(/*! ./framework/ui/view/renderer/CarouselViewRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/CarouselViewRenderer.js");
-/* harmony import */ var _framework_ui_view_renderer_CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_85__ = __webpack_require__(/*! ./framework/ui/view/renderer/CarouselViewRendererUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/CarouselViewRendererUsingContext.js");
-/* harmony import */ var _framework_ui_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_86__ = __webpack_require__(/*! ./framework/ui/view/renderer/FormDetailViewRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/FormDetailViewRenderer.js");
-/* harmony import */ var _framework_ui_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_87__ = __webpack_require__(/*! ./framework/ui/view/renderer/ListViewRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/ListViewRenderer.js");
-/* harmony import */ var _framework_ui_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_88__ = __webpack_require__(/*! ./framework/ui/view/renderer/ListViewRendererUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/ListViewRendererUsingContext.js");
-/* harmony import */ var _framework_ui_view_renderer_TabularViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_89__ = __webpack_require__(/*! ./framework/ui/view/renderer/TabularViewRendererUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/TabularViewRendererUsingContext.js");
-/* harmony import */ var _framework_ui_view_delegate_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_90__ = __webpack_require__(/*! ./framework/ui/view/delegate/ViewListenerForwarder */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/ViewListenerForwarder.js");
-/* harmony import */ var _framework_ui_view_delegate_DetailViewListenerForwarder__WEBPACK_IMPORTED_MODULE_91__ = __webpack_require__(/*! ./framework/ui/view/delegate/DetailViewListenerForwarder */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/DetailViewListenerForwarder.js");
-/* harmony import */ var _framework_ui_view_delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_92__ = __webpack_require__(/*! ./framework/ui/view/delegate/CollectionViewListenerForwarder */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewListenerForwarder.js");
-/* harmony import */ var _framework_ui_view_delegate_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_93__ = __webpack_require__(/*! ./framework/ui/view/delegate/CollectionViewEventHandlerDelegate */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewEventHandlerDelegate.js");
-/* harmony import */ var _framework_ui_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_94__ = __webpack_require__(/*! ./framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext.js");
-/* harmony import */ var _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_95__ = __webpack_require__(/*! ./framework/util/MiscFunctions */ "./node_modules/ui-framework-jps/dist/framework/util/MiscFunctions.js");
-/* harmony import */ var _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_96__ = __webpack_require__(/*! ./framework/util/EqualityFunctions */ "./node_modules/ui-framework-jps/dist/framework/util/EqualityFunctions.js");
-/* harmony import */ var _framework_util_DurationFunctions__WEBPACK_IMPORTED_MODULE_97__ = __webpack_require__(/*! ./framework/util/DurationFunctions */ "./node_modules/ui-framework-jps/dist/framework/util/DurationFunctions.js");
-/* harmony import */ var _framework_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_98__ = __webpack_require__(/*! ./framework/util/BrowserUtil */ "./node_modules/ui-framework-jps/dist/framework/util/BrowserUtil.js");
-/* harmony import */ var _framework_ui_table_BasicTableRowImplementation__WEBPACK_IMPORTED_MODULE_99__ = __webpack_require__(/*! ./framework/ui/table/BasicTableRowImplementation */ "./node_modules/ui-framework-jps/dist/framework/ui/table/BasicTableRowImplementation.js");
-/* harmony import */ var _framework_ui_key_binding_manager_KeyBindingManager__WEBPACK_IMPORTED_MODULE_100__ = __webpack_require__(/*! ./framework/ui/key-binding-manager/KeyBindingManager */ "./node_modules/ui-framework-jps/dist/framework/ui/key-binding-manager/KeyBindingManager.js");
+/* harmony import */ var _framework_filter_Types__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./framework/filter/Types */ "./node_modules/ui-framework-jps/dist/framework/filter/Types.js");
+/* harmony import */ var _framework_filter_CollectionFilterProcessor__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./framework/filter/CollectionFilterProcessor */ "./node_modules/ui-framework-jps/dist/framework/filter/CollectionFilterProcessor.js");
+/* harmony import */ var _framework_ui_alert_AlertListener__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./framework/ui/alert/AlertListener */ "./node_modules/ui-framework-jps/dist/framework/ui/alert/AlertListener.js");
+/* harmony import */ var _framework_ui_alert_AlertManager__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./framework/ui/alert/AlertManager */ "./node_modules/ui-framework-jps/dist/framework/ui/alert/AlertManager.js");
+/* harmony import */ var _framework_ui_file_upload_FileUploadListener__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./framework/ui/file-upload/FileUploadListener */ "./node_modules/ui-framework-jps/dist/framework/ui/file-upload/FileUploadListener.js");
+/* harmony import */ var _framework_ui_file_upload_FileUploadManager__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./framework/ui/file-upload/FileUploadManager */ "./node_modules/ui-framework-jps/dist/framework/ui/file-upload/FileUploadManager.js");
+/* harmony import */ var _framework_ui_config_CollectionUIConfigController__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./framework/ui/config/CollectionUIConfigController */ "./node_modules/ui-framework-jps/dist/framework/ui/config/CollectionUIConfigController.js");
+/* harmony import */ var _framework_ui_chat_BlockedUserView__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./framework/ui/chat/BlockedUserView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/BlockedUserView.js");
+/* harmony import */ var _framework_ui_chat_ChatLogDetailView__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./framework/ui/chat/ChatLogDetailView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatLogDetailView.js");
+/* harmony import */ var _framework_ui_chat_ChatLogsView__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./framework/ui/chat/ChatLogsView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatLogsView.js");
+/* harmony import */ var _framework_ui_chat_ChatRoomsSidebar__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./framework/ui/chat/ChatRoomsSidebar */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatRoomsSidebar.js");
+/* harmony import */ var _framework_ui_chat_ChatTypes__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./framework/ui/chat/ChatTypes */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/ChatTypes.js");
+/* harmony import */ var _framework_ui_chat_FavouriteUserView__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./framework/ui/chat/FavouriteUserView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/FavouriteUserView.js");
+/* harmony import */ var _framework_ui_chat_UserSearchSidebar__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./framework/ui/chat/UserSearchSidebar */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/UserSearchSidebar.js");
+/* harmony import */ var _framework_ui_chat_UserSearchView__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./framework/ui/chat/UserSearchView */ "./node_modules/ui-framework-jps/dist/framework/ui/chat/UserSearchView.js");
+/* harmony import */ var _framework_ui_container_SidebarViewContainer__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./framework/ui/container/SidebarViewContainer */ "./node_modules/ui-framework-jps/dist/framework/ui/container/SidebarViewContainer.js");
+/* harmony import */ var _framework_ui_container_TabularViewContainer__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./framework/ui/container/TabularViewContainer */ "./node_modules/ui-framework-jps/dist/framework/ui/container/TabularViewContainer.js");
+/* harmony import */ var _framework_ui_context_ContextualInformationHelper__WEBPACK_IMPORTED_MODULE_57__ = __webpack_require__(/*! ./framework/ui/context/ContextualInformationHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/context/ContextualInformationHelper.js");
+/* harmony import */ var _framework_ui_factory_ItemViewElementFactory__WEBPACK_IMPORTED_MODULE_58__ = __webpack_require__(/*! ./framework/ui/factory/ItemViewElementFactory */ "./node_modules/ui-framework-jps/dist/framework/ui/factory/ItemViewElementFactory.js");
+/* harmony import */ var _framework_ui_form_BasicFormImplementation__WEBPACK_IMPORTED_MODULE_59__ = __webpack_require__(/*! ./framework/ui/form/BasicFormImplementation */ "./node_modules/ui-framework-jps/dist/framework/ui/form/BasicFormImplementation.js");
+/* harmony import */ var _framework_ui_field_AbstractField__WEBPACK_IMPORTED_MODULE_60__ = __webpack_require__(/*! ./framework/ui/field/AbstractField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/AbstractField.js");
+/* harmony import */ var _framework_ui_field_InputField__WEBPACK_IMPORTED_MODULE_61__ = __webpack_require__(/*! ./framework/ui/field/InputField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/InputField.js");
+/* harmony import */ var _framework_ui_field_TextAreaField__WEBPACK_IMPORTED_MODULE_62__ = __webpack_require__(/*! ./framework/ui/field/TextAreaField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/TextAreaField.js");
+/* harmony import */ var _framework_ui_field_SelectField__WEBPACK_IMPORTED_MODULE_63__ = __webpack_require__(/*! ./framework/ui/field/SelectField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/SelectField.js");
+/* harmony import */ var _framework_ui_field_RadioButtonGroupField__WEBPACK_IMPORTED_MODULE_64__ = __webpack_require__(/*! ./framework/ui/field/RadioButtonGroupField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/RadioButtonGroupField.js");
+/* harmony import */ var _framework_ui_field_ColourInputField__WEBPACK_IMPORTED_MODULE_65__ = __webpack_require__(/*! ./framework/ui/field/ColourInputField */ "./node_modules/ui-framework-jps/dist/framework/ui/field/ColourInputField.js");
+/* harmony import */ var _framework_ui_validation_ValidationTypeDefs__WEBPACK_IMPORTED_MODULE_66__ = __webpack_require__(/*! ./framework/ui/validation/ValidationTypeDefs */ "./node_modules/ui-framework-jps/dist/framework/ui/validation/ValidationTypeDefs.js");
+/* harmony import */ var _framework_ui_validation_ValidationManager__WEBPACK_IMPORTED_MODULE_67__ = __webpack_require__(/*! ./framework/ui/validation/ValidationManager */ "./node_modules/ui-framework-jps/dist/framework/ui/validation/ValidationManager.js");
+/* harmony import */ var _framework_ui_validation_ValidationHelperFunctions__WEBPACK_IMPORTED_MODULE_68__ = __webpack_require__(/*! ./framework/ui/validation/ValidationHelperFunctions */ "./node_modules/ui-framework-jps/dist/framework/ui/validation/ValidationHelperFunctions.js");
+/* harmony import */ var _framework_ui_helper_BootstrapFormConfigHelper__WEBPACK_IMPORTED_MODULE_69__ = __webpack_require__(/*! ./framework/ui/helper/BootstrapFormConfigHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/BootstrapFormConfigHelper.js");
+/* harmony import */ var _framework_ui_helper_FormConfigHelperFunctions__WEBPACK_IMPORTED_MODULE_70__ = __webpack_require__(/*! ./framework/ui/helper/FormConfigHelperFunctions */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/FormConfigHelperFunctions.js");
+/* harmony import */ var _framework_ui_helper_BootstrapTableConfigHelper__WEBPACK_IMPORTED_MODULE_71__ = __webpack_require__(/*! ./framework/ui/helper/BootstrapTableConfigHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/BootstrapTableConfigHelper.js");
+/* harmony import */ var _framework_ui_helper_LimitedChoiceTextRenderer__WEBPACK_IMPORTED_MODULE_72__ = __webpack_require__(/*! ./framework/ui/helper/LimitedChoiceTextRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/LimitedChoiceTextRenderer.js");
+/* harmony import */ var _framework_ui_helper_LinkedCollectionDetailController__WEBPACK_IMPORTED_MODULE_73__ = __webpack_require__(/*! ./framework/ui/helper/LinkedCollectionDetailController */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/LinkedCollectionDetailController.js");
+/* harmony import */ var _framework_ui_helper_RBGFieldOperations__WEBPACK_IMPORTED_MODULE_74__ = __webpack_require__(/*! ./framework/ui/helper/RBGFieldOperations */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/RBGFieldOperations.js");
+/* harmony import */ var _framework_ui_helper_SimpleValueDataSource__WEBPACK_IMPORTED_MODULE_75__ = __webpack_require__(/*! ./framework/ui/helper/SimpleValueDataSource */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/SimpleValueDataSource.js");
+/* harmony import */ var _framework_ui_helper_ColourEditor__WEBPACK_IMPORTED_MODULE_76__ = __webpack_require__(/*! ./framework/ui/helper/ColourEditor */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/ColourEditor.js");
+/* harmony import */ var _framework_ui_helper_CollectionViewFilterHelper__WEBPACK_IMPORTED_MODULE_77__ = __webpack_require__(/*! ./framework/ui/helper/CollectionViewFilterHelper */ "./node_modules/ui-framework-jps/dist/framework/ui/helper/CollectionViewFilterHelper.js");
+/* harmony import */ var _framework_ui_view_item_DefaultItemView__WEBPACK_IMPORTED_MODULE_78__ = __webpack_require__(/*! ./framework/ui/view/item/DefaultItemView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/item/DefaultItemView.js");
+/* harmony import */ var _framework_ui_view_item_DefaultFieldPermissionChecker__WEBPACK_IMPORTED_MODULE_79__ = __webpack_require__(/*! ./framework/ui/view/item/DefaultFieldPermissionChecker */ "./node_modules/ui-framework-jps/dist/framework/ui/view/item/DefaultFieldPermissionChecker.js");
+/* harmony import */ var _framework_ui_view_implementation_AbstractView__WEBPACK_IMPORTED_MODULE_80__ = __webpack_require__(/*! ./framework/ui/view/implementation/AbstractView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/AbstractView.js");
+/* harmony import */ var _framework_ui_view_implementation_AbstractCollectionView__WEBPACK_IMPORTED_MODULE_81__ = __webpack_require__(/*! ./framework/ui/view/implementation/AbstractCollectionView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/AbstractCollectionView.js");
+/* harmony import */ var _framework_ui_view_implementation_AbstractStatefulCollectionView__WEBPACK_IMPORTED_MODULE_82__ = __webpack_require__(/*! ./framework/ui/view/implementation/AbstractStatefulCollectionView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/AbstractStatefulCollectionView.js");
+/* harmony import */ var _framework_ui_view_implementation_DataObjectCollectionView__WEBPACK_IMPORTED_MODULE_83__ = __webpack_require__(/*! ./framework/ui/view/implementation/DataObjectCollectionView */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/DataObjectCollectionView.js");
+/* harmony import */ var _framework_ui_view_implementation_DefaultPermissionChecker__WEBPACK_IMPORTED_MODULE_84__ = __webpack_require__(/*! ./framework/ui/view/implementation/DefaultPermissionChecker */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/DefaultPermissionChecker.js");
+/* harmony import */ var _framework_ui_view_implementation_DetailViewImplementation__WEBPACK_IMPORTED_MODULE_85__ = __webpack_require__(/*! ./framework/ui/view/implementation/DetailViewImplementation */ "./node_modules/ui-framework-jps/dist/framework/ui/view/implementation/DetailViewImplementation.js");
+/* harmony import */ var _framework_ui_view_renderer_CarouselViewRenderer__WEBPACK_IMPORTED_MODULE_86__ = __webpack_require__(/*! ./framework/ui/view/renderer/CarouselViewRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/CarouselViewRenderer.js");
+/* harmony import */ var _framework_ui_view_renderer_CarouselViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_87__ = __webpack_require__(/*! ./framework/ui/view/renderer/CarouselViewRendererUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/CarouselViewRendererUsingContext.js");
+/* harmony import */ var _framework_ui_view_renderer_FormDetailViewRenderer__WEBPACK_IMPORTED_MODULE_88__ = __webpack_require__(/*! ./framework/ui/view/renderer/FormDetailViewRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/FormDetailViewRenderer.js");
+/* harmony import */ var _framework_ui_view_renderer_ListViewRenderer__WEBPACK_IMPORTED_MODULE_89__ = __webpack_require__(/*! ./framework/ui/view/renderer/ListViewRenderer */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/ListViewRenderer.js");
+/* harmony import */ var _framework_ui_view_renderer_ListViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_90__ = __webpack_require__(/*! ./framework/ui/view/renderer/ListViewRendererUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/ListViewRendererUsingContext.js");
+/* harmony import */ var _framework_ui_view_renderer_TabularViewRendererUsingContext__WEBPACK_IMPORTED_MODULE_91__ = __webpack_require__(/*! ./framework/ui/view/renderer/TabularViewRendererUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/renderer/TabularViewRendererUsingContext.js");
+/* harmony import */ var _framework_ui_view_delegate_ViewListenerForwarder__WEBPACK_IMPORTED_MODULE_92__ = __webpack_require__(/*! ./framework/ui/view/delegate/ViewListenerForwarder */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/ViewListenerForwarder.js");
+/* harmony import */ var _framework_ui_view_delegate_DetailViewListenerForwarder__WEBPACK_IMPORTED_MODULE_93__ = __webpack_require__(/*! ./framework/ui/view/delegate/DetailViewListenerForwarder */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/DetailViewListenerForwarder.js");
+/* harmony import */ var _framework_ui_view_delegate_CollectionViewListenerForwarder__WEBPACK_IMPORTED_MODULE_94__ = __webpack_require__(/*! ./framework/ui/view/delegate/CollectionViewListenerForwarder */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewListenerForwarder.js");
+/* harmony import */ var _framework_ui_view_delegate_CollectionViewEventHandlerDelegate__WEBPACK_IMPORTED_MODULE_95__ = __webpack_require__(/*! ./framework/ui/view/delegate/CollectionViewEventHandlerDelegate */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewEventHandlerDelegate.js");
+/* harmony import */ var _framework_ui_view_delegate_CollectionViewEventHandlerDelegateUsingContext__WEBPACK_IMPORTED_MODULE_96__ = __webpack_require__(/*! ./framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext */ "./node_modules/ui-framework-jps/dist/framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext.js");
+/* harmony import */ var _framework_util_MiscFunctions__WEBPACK_IMPORTED_MODULE_97__ = __webpack_require__(/*! ./framework/util/MiscFunctions */ "./node_modules/ui-framework-jps/dist/framework/util/MiscFunctions.js");
+/* harmony import */ var _framework_util_EqualityFunctions__WEBPACK_IMPORTED_MODULE_98__ = __webpack_require__(/*! ./framework/util/EqualityFunctions */ "./node_modules/ui-framework-jps/dist/framework/util/EqualityFunctions.js");
+/* harmony import */ var _framework_util_DurationFunctions__WEBPACK_IMPORTED_MODULE_99__ = __webpack_require__(/*! ./framework/util/DurationFunctions */ "./node_modules/ui-framework-jps/dist/framework/util/DurationFunctions.js");
+/* harmony import */ var _framework_util_BrowserUtil__WEBPACK_IMPORTED_MODULE_100__ = __webpack_require__(/*! ./framework/util/BrowserUtil */ "./node_modules/ui-framework-jps/dist/framework/util/BrowserUtil.js");
+/* harmony import */ var _framework_ui_table_BasicTableRowImplementation__WEBPACK_IMPORTED_MODULE_101__ = __webpack_require__(/*! ./framework/ui/table/BasicTableRowImplementation */ "./node_modules/ui-framework-jps/dist/framework/ui/table/BasicTableRowImplementation.js");
+/* harmony import */ var _framework_ui_key_binding_manager_KeyBindingManager__WEBPACK_IMPORTED_MODULE_102__ = __webpack_require__(/*! ./framework/ui/key-binding-manager/KeyBindingManager */ "./node_modules/ui-framework-jps/dist/framework/ui/key-binding-manager/KeyBindingManager.js");
 
 /* models */
 
@@ -53935,6 +54021,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* ui */
+
+
 
 
 

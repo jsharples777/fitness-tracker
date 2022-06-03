@@ -81,7 +81,9 @@ class App {
     this.exerciseTypesSidebar = new _component_sidebar_ExerciseTypesSidebar__WEBPACK_IMPORTED_MODULE_3__["default"]();
     new _component_view_ExerciseTypesCompositeView__WEBPACK_IMPORTED_MODULE_4__.ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded(); //new WorkoutsView().onDocumentLoaded(); // carousel view
 
-    new _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_9__.WorkoutsViewUsingContext().onDocumentLoaded();
+    const workoutsView = new _component_view_WorkoutsViewUsingContext__WEBPACK_IMPORTED_MODULE_9__.WorkoutsViewUsingContext();
+    workoutsView.onDocumentLoaded();
+    workoutsView.show();
     this.workoutSummarySidebar = new _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_5__["default"]();
     this.workoutSummarySidebar.addView(new _component_view_WorkoutSummaryView__WEBPACK_IMPORTED_MODULE_6__.WorkoutSummaryView(), {
       containerId: _component_sidebar_WorkoutSummarySidebar__WEBPACK_IMPORTED_MODULE_5__["default"].SidebarContainers.container
@@ -1107,7 +1109,7 @@ __webpack_require__.r(__webpack_exports__);
 class CurrentWorkoutSidebar extends ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.SidebarViewContainer {
   static sidebarPrefs = {
     id: 'currentWorkoutSidebar',
-    expandedSize: '50%',
+    expandedSize: '100%',
     location: ui_framework_jps__WEBPACK_IMPORTED_MODULE_0__.SidebarLocation.right
   };
   static SidebarContainers = {
@@ -1473,21 +1475,32 @@ class CurrentWorkoutExercisesView extends ui_framework_jps__WEBPACK_IMPORTED_MOD
       }
     },
     resultsElement: {
-      type: 'a',
+      type: 'tr',
       attributes: [{
         name: 'href',
         value: '#'
       }],
-      classes: 'list-group-item my-list-item truncate-notification list-group-item-action'
+      classes: ''
     },
+    // resultsElement: {
+    //     type: 'a',
+    //     attributes: [{name: 'href', value: '#'}],
+    //     classes: 'list-group-item my-list-item truncate-notification list-group-item-action',
+    // },
     keyId: '_id',
     keyType: ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.KeyType.string,
     modifiers: {
       normal: '',
-      inactive: 'list-group-item-light',
-      active: 'list-group-item-primary',
+      inactive: 'table-secondary',
+      active: 'table-success',
       warning: ''
     },
+    // modifiers: {
+    //     normal: '',
+    //     inactive: 'list-group-item-light',
+    //     active: 'list-group-item-primary',
+    //     warning: ''
+    // },
     icons: {
       normal: '',
       inactive: '',
@@ -1519,12 +1532,58 @@ class CurrentWorkoutExercisesView extends ui_framework_jps__WEBPACK_IMPORTED_MOD
   };
 
   constructor(stateManager) {
-    super(CurrentWorkoutExercisesView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exercises);
-    this.renderer = new ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.ListViewRendererUsingContext(this, this);
-    this.eventHandlerDelegate = new ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.CollectionViewEventHandlerDelegateUsingContext(this, this.eventForwarder);
-    this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
-    this.getItemId = this.getItemId.bind(this);
-    ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextFromView(this, _AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exercises, 'Exercises');
+    super(CurrentWorkoutExercisesView.DOMConfig, stateManager, _AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exercises); //this.renderer = new ListViewRendererUsingContext(this, this);
+
+    const def = ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.ObjectDefinitionRegistry.getInstance().findDefinition(_AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exercises);
+
+    if (def) {
+      const displayOrders = [];
+      displayOrders.push({
+        fieldId: 'completed',
+        displayOrder: 1
+      });
+      displayOrders.push({
+        fieldId: 'name',
+        displayOrder: 2
+      });
+      displayOrders.push({
+        fieldId: 'type',
+        displayOrder: 3
+      });
+      displayOrders.push({
+        fieldId: 'duration',
+        displayOrder: 4
+      });
+      displayOrders.push({
+        fieldId: 'sets',
+        displayOrder: 5
+      });
+      displayOrders.push({
+        fieldId: 'reps',
+        displayOrder: 6
+      });
+      displayOrders.push({
+        fieldId: 'weight',
+        displayOrder: 7
+      });
+      displayOrders.push({
+        fieldId: 'distance',
+        displayOrder: 8
+      });
+      const runtimeConfig = {
+        fieldDisplayOrders: displayOrders,
+        itemDetailColumn: -1,
+        hasActions: true,
+        hideModifierFields: true,
+        editableFields: ['completed', 'duration', 'sets', 'reps', 'weight', 'distance']
+      };
+      const tableUIConfig = ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.BootstrapTableConfigHelper.getInstance().generateTableConfig(def, runtimeConfig);
+      this.renderer = new ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.TabularViewRendererUsingContext(this, this, tableUIConfig);
+      this.eventHandlerDelegate = new ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.CollectionViewEventHandlerDelegateUsingContext(this, this.eventForwarder);
+      this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
+      this.getItemId = this.getItemId.bind(this);
+      ui_framework_jps__WEBPACK_IMPORTED_MODULE_3__.ContextualInformationHelper.getInstance().addContextFromView(this, _AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exercises, 'Exercises');
+    }
   }
 
   getItemIcons(name, item) {
@@ -2142,6 +2201,7 @@ class WorkoutsViewUsingContext extends ui_framework_jps__WEBPACK_IMPORTED_MODULE
   }
 
   renderDisplayForItemInNamedCollection(containerEl, name, item) {
+    console.log('x');
     let summary = this.calculateExerciseSummary(item);
     let buffer = '';
     buffer += `<h5 class="card-title">`;
@@ -2169,7 +2229,7 @@ class WorkoutsViewUsingContext extends ui_framework_jps__WEBPACK_IMPORTED_MODULE
     return item.completed;
   }
 
-  hasPermissionToActionItemInNamedCollection(actionName, name, item) {
+  hasPermissionForActionOnItemInNamedCollection(actionName, name, item) {
     let result = false;
 
     if (actionName === 'template') {

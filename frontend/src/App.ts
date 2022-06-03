@@ -82,7 +82,9 @@ export default class App implements UnreadMessageCountListener {
         new ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded();
 
         //new WorkoutsView().onDocumentLoaded(); // carousel view
-        new WorkoutsViewUsingContext().onDocumentLoaded();
+        const workoutsView = new WorkoutsViewUsingContext();
+        workoutsView.onDocumentLoaded();
+        workoutsView.show();
 
         this.workoutSummarySidebar = new WorkoutSummarySidebar();
         this.workoutSummarySidebar.addView(new WorkoutSummaryView(), {containerId: WorkoutSummarySidebar.SidebarContainers.container});
@@ -91,6 +93,7 @@ export default class App implements UnreadMessageCountListener {
         this.currentWorkoutSidebar = new CurrentWorkoutSidebar();
         this.currentWorkoutView = new CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
         this.currentWorkoutView.onDocumentLoaded();
+
 
         ContextualInformationHelper.getInstance().onDocumentLoaded();
         Controller.getInstance().onDocumentLoaded();

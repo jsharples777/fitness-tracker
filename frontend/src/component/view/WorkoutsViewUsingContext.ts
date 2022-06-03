@@ -195,6 +195,7 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
     }
 
     renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+        console.log('x');
         let summary = this.calculateExerciseSummary(item);
         let buffer = '';
         buffer += `<h5 class="card-title">`;
@@ -221,7 +222,7 @@ export class WorkoutsViewUsingContext extends AbstractStatefulCollectionView imp
         return (item.completed);
     }
 
-    hasPermissionToActionItemInNamedCollection(actionName: string, name: string, item: any): boolean {
+    hasPermissionForActionOnItemInNamedCollection(actionName: string, name: string, item: any): boolean {
         let result = false;
         if (actionName === 'template') {
             if ((item.completed) && (item.completed === true)) {
