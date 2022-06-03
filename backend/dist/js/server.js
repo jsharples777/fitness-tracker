@@ -45,8 +45,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const express_session_1 = __importDefault(require("express-session"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const connect_flash_1 = __importDefault(require("connect-flash"));
-// Sockets
-const SocketManager_1 = __importDefault(require("./socket/SocketManager"));
 // Authentication middleware
 const mongoose_1 = __importDefault(require("mongoose"));
 const passport_1 = __importDefault(require("passport"));
@@ -137,6 +135,7 @@ MongoDataSource_1.MongoDataSource.getInstance();
 const routes_1 = __importDefault(require("./routes"));
 app.use('/', routes_1.default); // add the middleware path routing
 const api_1 = __importDefault(require("./routes/api"));
+const server_socket_framework_jps_1 = require("server-socket-framework-jps");
 app.use('/api', api_1.default);
 // Setup authentication
 serverDebug('Setting up Account model and authentication with Passport');
@@ -171,7 +170,7 @@ serverDebug('Create HTTP Server');
 const httpServer = new http_1.default.Server(app);
 // setup the sockets manager with the server
 serverDebug('Setting up Socket manager');
-SocketManager_1.default.connectToServer(httpServer);
+server_socket_framework_jps_1.SocketManager.getInstance().connectToServer(httpServer);
 // setup the WebRTC peer server
 // @ts-ignore
 const peerServer = peer_1.ExpressPeerServer(httpServer, { debug: 2, allow_discovery: true });
@@ -213,6 +212,6 @@ else {
 httpServer.listen(port, () => {
     serverDebug(`Server started on port ${port}`);
     // start listening for socket events
-    SocketManager_1.default.listen();
+    server_socket_framework_jps_1.SocketManager.getInstance().listen();
 });
 //# sourceMappingURL=server.js.map
