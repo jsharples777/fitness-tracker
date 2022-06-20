@@ -1224,6 +1224,7 @@ class CurrentWorkoutCompositeView {
   workoutDef = null;
   workoutNameEl = null;
   workoutCaloriesEl = null;
+  isExecutingModify = false;
 
   constructor(sideBar) {
     this.sideBar = sideBar;
@@ -1298,6 +1299,7 @@ class CurrentWorkoutCompositeView {
       if (detailForm) {
         logger(`Setting up validation rules for ${detailForm.getId()}`);
         logger(detailForm);
+        detailForm.addListener(this);
         _helper_ValidationHelper__WEBPACK_IMPORTED_MODULE_3__.ValidationHelper.getInstance().setupValidationForExerciseTypeDetailsForm(detailForm);
       } // setup the event handling for the create new exercise type button
 
@@ -1438,6 +1440,27 @@ class CurrentWorkoutCompositeView {
   }
 
   foundResult(managerName, name, foundItem) {}
+
+  fieldAction(name, event) {}
+
+  itemViewEvent(name, event, rowValues) {
+    switch (event.eventType) {
+      case ui_framework_jps__WEBPACK_IMPORTED_MODULE_7__.ItemEventType.MODIFYING:
+        {
+          if (!this.isExecutingModify) {
+            this.isExecutingModify = true;
+            this.stateManager.updateItemInState(_AppTypes__WEBPACK_IMPORTED_MODULE_0__.STATE_NAMES.exercises, rowValues, false);
+            this.isExecutingModify = false;
+          }
+
+          break;
+        }
+    }
+
+    return false;
+  }
+
+  itemViewHasChanged(name) {}
 
 }
 

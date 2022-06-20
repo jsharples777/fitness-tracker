@@ -21,7 +21,7 @@ import {
     ElementLocation,
     Form,
     FormDetailViewRenderer,
-    isSameMongo,
+    isSameMongo, ItemEvent, ItemEventType, ItemViewListener,
     LinkedCollectionDetailController,
     MemoryBufferStateManager,
     ObjectDefinitionRegistry,
@@ -34,13 +34,14 @@ import {DataObjectFactory} from "ui-framework-jps/dist/framework/model/DataObjec
 
 const logger = debug('current-workout-composite-view');
 
-export class CurrentWorkoutCompositeView implements StateChangeListener, DataObjectListener {
+export class CurrentWorkoutCompositeView implements StateChangeListener, ItemViewListener,DataObjectListener {
     private sideBar: SidebarViewContainer;
     private currentWorkout: any = {};
     private workoutDef: DataObjectDefinition | null = null;
     private readonly stateManager: StateManager;
     private workoutNameEl: HTMLInputElement | null = null;
     private workoutCaloriesEl: HTMLInputElement | null = null;
+    private isExecutingModify: boolean = false;
 
     constructor(sideBar: SidebarViewContainer) {
         this.sideBar = sideBar;
@@ -122,6 +123,7 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
             if (detailForm) {
                 logger(`Setting up validation rules for ${detailForm.getId()}`);
                 logger(detailForm);
+                detailForm.addListener(this);
                 ValidationHelper.getInstance().setupValidationForExerciseTypeDetailsForm(detailForm);
             }
 
@@ -263,6 +265,27 @@ export class CurrentWorkoutCompositeView implements StateChangeListener, DataObj
     }
 
     foundResult(managerName: string, name: string, foundItem: any): void {
+    }
+
+    fieldAction(name: string, event: ItemEvent): void {
+    }
+
+    itemViewEvent(name: string, event: ItemEvent, rowValues?: any): boolean {
+        switch (event.eventType) {
+            case ItemEventType.MODIFYING: {
+                if (!this.isExecutingModify) {
+                    this.isExecutingModify = true;
+                    this.stateManager.updateItemInState(STATE_NAMES.exercises, rowValues, false);
+                    this.isExecutingModify = false;
+                }
+                break;
+            }
+        }
+
+        return false;
+    }
+
+    itemViewHasChanged(name: string): void {
     }
 
 
