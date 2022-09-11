@@ -3,9 +3,6 @@
 //localStorage.debug = 'validation-manager validation-manager-rule-failure abstract-form-detail-validation';
 
 
-
-
-
 import debug from 'debug';
 
 import Controller from './Controller';
@@ -17,11 +14,13 @@ import {WorkoutSummaryView} from "./component/view/WorkoutSummaryView";
 import CurrentWorkoutSidebar from "./component/sidebar/CurrentWorkoutSidebar";
 import {CurrentWorkoutCompositeView} from "./component/view/CurrentWorkoutCompositeView";
 import {WorkoutsViewUsingContext} from "./component/view/WorkoutsViewUsingContext";
-import {ContextualInformationHelper} from "./framework/ui/context/ContextualInformationHelper";
-import {ChatRoomsSidebar} from "./framework/ui/chat/ChatRoomsSidebar";
-import {ChatLogsView} from "./framework/ui/chat/ChatLogsView";
-import {UnreadMessageCountListener} from "./framework/socket/UnreadMessageCountListener";
-import {UserSearchSidebar} from "./framework/ui/chat/UserSearchSidebar";
+import {
+    ChatLogsView,
+    ChatRoomsSidebar,
+    ContextualInformationHelper,
+    UnreadMessageCountListener,
+    UserSearchSidebar
+} from "ui-framework-jps";
 
 
 const logger = debug('app');
@@ -29,14 +28,6 @@ const logger = debug('app');
 export default class App implements UnreadMessageCountListener {
 
     private static _instance: App;
-
-    public static getInstance(): App {
-        if (!(App._instance)) {
-            App._instance = new App();
-        }
-        return App._instance;
-    }
-
     // @ts-ignore
     private exerciseTypesSidebar: ExerciseTypesSidebar;
     // @ts-ignore
@@ -51,7 +42,6 @@ export default class App implements UnreadMessageCountListener {
     private currentWorkoutView: CurrentWorkoutCompositeView;
     // @ts-ignore
     private chatView: ChatLogsView;
-
     // @ts-ignore
     private thisEl: HTMLDivElement | null;
     // @ts-ignore
@@ -68,8 +58,141 @@ export default class App implements UnreadMessageCountListener {
         Controller.getInstance().connectToApplication(this, window.localStorage);
     }
 
+    public static getInstance(): App {
+        if (!(App._instance)) {
+            App._instance = new App();
+        }
+        return App._instance;
+    }
+
     getCurrentUser() {
         return Controller.getInstance().getLoggedInUserId();
+    }
+
+    onDocumentLoad() {
+        logger('document loaded');
+        // @ts-ignore
+        this.thisEl = document.getElementById('root');
+
+        this.setupUserSearchViews();
+        this.setupChatViews();
+        this.setupNavigationItemHandling();
+
+        this.exerciseTypesSidebar = new ExerciseTypesSidebar();
+        new ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded();
+
+        //new WorkoutsView().onDocumentLoaded(); // carousel view
+        const workoutsView = new WorkoutsViewUsingContext();
+        workoutsView.onDocumentLoaded();
+        workoutsView.show();
+
+        this.workoutSummarySidebar = new WorkoutSummarySidebar();
+        this.workoutSummarySidebar.addView(new WorkoutSummaryView(), {containerId: WorkoutSummarySidebar.SidebarContainers.container});
+        this.workoutSummarySidebar.onDocumentLoaded();
+
+        this.currentWorkoutSidebar = new CurrentWorkoutSidebar();
+        this.currentWorkoutView = new CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
+        this.currentWorkoutView.onDocumentLoaded();
+
+
+        ContextualInformationHelper.getInstance().onDocumentLoaded();
+        Controller.getInstance().onDocumentLoaded();
+
+    }
+
+    hideAllSideBars() {
+        this.chatSidebar.hide();
+        this.userSearchSidebar.hide();
+        this.exerciseTypesSidebar.hide();
+        this.currentWorkoutSidebar.hide();
+    }
+
+    handleShowUserSearch(event: Event) {
+        logger('Handling Show User Search');
+        event.preventDefault();
+        //this.hideAllSideBars();
+        // prevent anything from happening if we are not logged in
+        if (!Controller.getInstance().isLoggedIn()) {
+            // @ts-ignore
+            window.location.href = API_Config.login;
+            return;
+        }
+        this.userSearchSidebar.show();
+    }
+
+    handleShowWorkoutSummary(event: Event) {
+        logger('Handling Show Workout Summary');
+        event.preventDefault();
+        //this.hideAllSideBars();
+        // prevent anything from happening if we are not logged in
+        if (!Controller.getInstance().isLoggedIn()) {
+            // @ts-ignore
+            window.location.href = API_Config.login;
+            return;
+        }
+        this.hideAllSideBars();
+        this.workoutSummarySidebar.show();
+    }
+
+    handleShowCurrentWorkout(event: Event) {
+        logger('Handling Show Current Workout');
+        event.preventDefault();
+        //this.hideAllSideBars();
+        // prevent anything from happening if we are not logged in
+        if (!Controller.getInstance().isLoggedIn()) {
+            // @ts-ignore
+            window.location.href = API_Config.login;
+            return;
+        }
+        this.currentWorkoutSidebar.show();
+    }
+
+    handleShowExerciseTypes(event: Event) {
+        logger('Handling Show Exercise Types');
+        event.preventDefault();
+        //this.hideAllSideBars();
+        // prevent anything from happening if we are not logged in
+        if (!Controller.getInstance().isLoggedIn()) {
+            // @ts-ignore
+            window.location.href = API_Config.login;
+            return;
+        }
+        this.exerciseTypesSidebar.show();
+    }
+
+    handleShowChat(roomName: string | null) {
+        logger('Handling Show Chat');
+        //event.preventDefault();
+        //this.hideAllSideBars();
+        // prevent anything from happening if we are not logged in
+        if (!Controller.getInstance().isLoggedIn()) {
+            // @ts-ignore
+            window.location.href = API_Config.login;
+            return;
+        }
+        this.chatSidebar.show();
+        if (roomName) {
+            this.chatView.selectChatRoom(roomName);
+        }
+    }
+
+    countChanged(newCount: number): void {
+        //
+        let buffer = 'Chat <i class="fas fa-inbox"></i>';
+        if (newCount > 0) {
+            buffer += ` <span class="badge badge-pill badge-primary">&nbsp;${newCount}&nbsp;</span>`;
+        }
+        if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = `${buffer}`;
+    }
+
+    addingExerciseToCurrentWorkout(exerciseType: any) {
+        //this.exerciseTypesSidebar.eventHide(null);
+        this.currentWorkoutSidebar.show();
+        this.currentWorkoutView.getStateManager().addNewItemToState(STATE_NAMES.exercises, exerciseType, false);
+    }
+
+    showCurrentWorkout() {
+        this.currentWorkoutSidebar.show();
     }
 
     private setupNavigationItemHandling() {
@@ -99,138 +222,15 @@ export default class App implements UnreadMessageCountListener {
         this.chatSidebar = ChatRoomsSidebar.getInstance(Controller.getInstance().getStateManager());
         this.chatSidebar.onDocumentLoaded();
     }
-
-    onDocumentLoad() {
-        logger('document loaded');
-        // @ts-ignore
-        this.thisEl = document.getElementById('root');
-
-        this.setupUserSearchViews();
-        this.setupChatViews();
-        this.setupNavigationItemHandling();
-
-        this.exerciseTypesSidebar = new ExerciseTypesSidebar();
-        new ExerciseTypesCompositeView(this.exerciseTypesSidebar).onDocumentLoaded();
-
-        //new WorkoutsView().onDocumentLoaded(); // carousel view
-        new WorkoutsViewUsingContext().onDocumentLoaded();
-
-        this.workoutSummarySidebar = new WorkoutSummarySidebar();
-        this.workoutSummarySidebar.addView(new WorkoutSummaryView(),{containerId: WorkoutSummarySidebar.SidebarContainers.container});
-        this.workoutSummarySidebar.onDocumentLoaded();
-
-        this.currentWorkoutSidebar = new CurrentWorkoutSidebar();
-        this.currentWorkoutView = new CurrentWorkoutCompositeView(this.currentWorkoutSidebar);
-        this.currentWorkoutView.onDocumentLoaded();
-
-        ContextualInformationHelper.getInstance().onDocumentLoaded();
-        Controller.getInstance().onDocumentLoaded();
-
-    }
-
-
-    hideAllSideBars() {
-        this.chatSidebar.eventHide(null);
-        this.userSearchSidebar.eventHide(null);
-        this.exerciseTypesSidebar.eventHide(null);
-        this.currentWorkoutSidebar.eventHide(null);
-    }
-
-    handleShowUserSearch(event: Event) {
-        logger('Handling Show User Search');
-        event.preventDefault();
-        //this.hideAllSideBars();
-        // prevent anything from happening if we are not logged in
-        if (!Controller.getInstance().isLoggedIn()) {
-            // @ts-ignore
-            window.location.href = API_Config.login;
-            return;
-        }
-        this.userSearchSidebar.eventShow(event);
-    }
-
-    handleShowWorkoutSummary(event: Event) {
-        logger('Handling Show Workout Summary');
-        event.preventDefault();
-        //this.hideAllSideBars();
-        // prevent anything from happening if we are not logged in
-        if (!Controller.getInstance().isLoggedIn()) {
-            // @ts-ignore
-            window.location.href = API_Config.login;
-            return;
-        }
-        this.hideAllSideBars();
-        this.workoutSummarySidebar.eventShow(event);
-    }
-
-    handleShowCurrentWorkout(event: Event) {
-        logger('Handling Show Current Workout');
-        event.preventDefault();
-        //this.hideAllSideBars();
-        // prevent anything from happening if we are not logged in
-        if (!Controller.getInstance().isLoggedIn()) {
-            // @ts-ignore
-            window.location.href = API_Config.login;
-            return;
-        }
-        this.currentWorkoutSidebar.eventShow(event);
-    }
-
-
-    handleShowExerciseTypes(event: Event) {
-        logger('Handling Show Exercise Types');
-        event.preventDefault();
-        //this.hideAllSideBars();
-        // prevent anything from happening if we are not logged in
-        if (!Controller.getInstance().isLoggedIn()) {
-            // @ts-ignore
-            window.location.href = API_Config.login;
-            return;
-        }
-        this.exerciseTypesSidebar.eventShow(event);
-    }
-
-    handleShowChat(roomName: string | null) {
-        logger('Handling Show Chat');
-        //event.preventDefault();
-        //this.hideAllSideBars();
-        // prevent anything from happening if we are not logged in
-        if (!Controller.getInstance().isLoggedIn()) {
-            // @ts-ignore
-            window.location.href = API_Config.login;
-            return;
-        }
-        this.chatSidebar.eventShow(null);
-        if (roomName) {
-            this.chatView.selectChatRoom(roomName);
-        }
-    }
-
-
-    countChanged(newCount: number): void {
-        //
-        let buffer = 'Chat <i class="fas fa-inbox"></i>';
-        if (newCount > 0) {
-            buffer += ` <span class="badge badge-pill badge-primary">&nbsp;${newCount}&nbsp;</span>`;
-        }
-        if (this.chatNavigationItem) this.chatNavigationItem.innerHTML = `${buffer}`;
-    }
-
-    addingExerciseToCurrentWorkout(exerciseType:any) {
-        //this.exerciseTypesSidebar.eventHide(null);
-        this.currentWorkoutSidebar.eventShow(null);
-        this.currentWorkoutView.getStateManager().addNewItemToState(STATE_NAMES.exerciseTypes,exerciseType, false);
-    }
-
-    showCurrentWorkout() {
-        this.currentWorkoutSidebar.eventShow(null);
-    }
 }
 
-
-$(function() {
-    //localStorage.debug = 'abstract-field validation-manager validation-manager-rule-failure';
-    localStorage.debug = 'api-ts validation-manager-execute-rule validation-manager-rule-failure';
+/*
+const flogger = debug('validation-manager-rule-failure');
+const erLogger = debug('validation-manager-execute-rule');
+const merLogger = debug('validation-manager-multiple-condition-rule-results');
+ */
+$(function () {
+    localStorage.debug = 'api-ts-results controller-ts current-workout-composite-view validation-manager-rule-failure validation-manager-execute-rule validation-manager-multiple-condition-rule-results';
     debug.log = console.info.bind(console);
     App.getInstance().onDocumentLoad();
 });

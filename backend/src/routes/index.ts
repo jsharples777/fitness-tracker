@@ -1,11 +1,11 @@
 import express from 'express';
-const router = express.Router();
-
 import passport from 'passport';
 import debug from 'debug';
 import MongoAccount from '../models/MongoAccount';
 import {ensureAuthenticated} from "./auth";
-import {DataMessage, SocketManager} from "server-socket-framework-jps";
+import {DataMessage, DataMessageType, SocketManager} from "server-socket-framework-jps";
+
+const router = express.Router();
 
 const routeDebug = debug('route');
 
@@ -34,7 +34,7 @@ router.post('/register', (req, res, next) => {
             }
             routeDebug('Registered');
             const message:DataMessage = {
-                type:"create",
+                type:DataMessageType.create,
                 stateName: "user",
                 data:{ _id: account._id,username:(''+account.username)},
                 user:(''+account._id)

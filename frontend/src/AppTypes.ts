@@ -10,6 +10,7 @@ export const STATE_NAMES = {
     chatLogs: 'chatLog',
     exerciseTypes: 'exerciseType',
     workouts: 'workout',
+    exercises: 'exercises',
     recentUserSearches: 'recentUserSearch'
 }
 
@@ -25,7 +26,7 @@ export const NAVIGATION = {
     userSearchId: 'navigationItemUserSearch',
     exerciseTypesId: 'navigationItemExerciseTypes',
     chatId: 'navigationItemChat',
-    workoutSummary:'navigationItemWorkoutSummary',
+    workoutSummary: 'navigationItemWorkoutSummary',
     currentWorkout: 'navigationItemCurrentWorkout',
 }
 
@@ -46,13 +47,13 @@ export const VIEW_NAME = {
     userSearch: 'userSearch',
     workouts: 'workouts',
     workoutSummary: 'workoutSummary',
-    exercises:'exercises'
+    exercises: 'exercises'
 }
 
 export const VIEW_CONTAINER = {
-    exerciseTypeDetail:"exerciseTypeDetail",
+    exerciseTypeDetail: "exerciseTypeDetail",
     currentWorkoutDetail: 'workoutDetail',
-    exerciseDropZone:'exerciseDropZone'
+    exerciseDropZone: 'exerciseDropZone'
 }
 
 export const BUTTON = {

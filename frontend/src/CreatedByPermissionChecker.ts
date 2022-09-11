@@ -1,9 +1,8 @@
 import Controller from "./Controller";
-import {Field} from "./framework/ui/form/field/Field";
-import {FormFieldPermissionChecker} from "./framework/ui/form/FormFieldPermissionChecker";
+import {Field, ViewFieldPermissionChecker} from "ui-framework-jps";
 
 
-export class CreatedByPermissionChecker implements FormFieldPermissionChecker {
+export class CreatedByPermissionChecker implements ViewFieldPermissionChecker {
     hasPermissionToUpdateItem(item: any): boolean {
         let result = false;
         if (item.createdBy) {

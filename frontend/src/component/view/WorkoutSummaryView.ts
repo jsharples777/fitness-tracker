@@ -1,14 +1,15 @@
-
 import {STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 import Controller from "../../Controller";
 
 import {WorkoutSummaryRenderer} from "../renderer/WorkoutSummaryRenderer";
-import {AbstractStatefulCollectionView} from "../../framework/ui/view/implementation/AbstractStatefulCollectionView";
-import {CollectionViewDOMConfig, KeyType} from "../../framework/ui/ConfigurationTypes";
-import {CollectionViewListener} from "../../framework/ui/view/interface/CollectionViewListener";
-import {isSameMongo} from "../../framework/util/EqualityFunctions";
-import {View} from "../../framework/ui/view/interface/View";
-
+import {
+    AbstractStatefulCollectionView,
+    CollectionViewDOMConfig,
+    CollectionViewListener,
+    isSameMongo,
+    KeyType,
+    View
+} from "ui-framework-jps";
 
 
 export class WorkoutSummaryView extends AbstractStatefulCollectionView implements CollectionViewListener {
@@ -18,7 +19,7 @@ export class WorkoutSummaryView extends AbstractStatefulCollectionView implement
             resultsContainerId: 'workoutSummaryChart',
             dataSourceId: VIEW_NAME.workoutSummary,
         },
-        resultsElement:{
+        resultsElement: {
             type: 'canvas',
             classes: '',
         },
@@ -53,7 +54,8 @@ export class WorkoutSummaryView extends AbstractStatefulCollectionView implement
     }
 
 
-    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {}
+    renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
+    }
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {
         return false;
@@ -63,7 +65,8 @@ export class WorkoutSummaryView extends AbstractStatefulCollectionView implement
         return false;
     }
 
-    renderBackgroundForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any) {}
+    renderBackgroundForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any) {
+    }
 
 }
 

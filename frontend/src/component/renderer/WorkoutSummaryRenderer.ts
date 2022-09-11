@@ -1,9 +1,8 @@
 import debug from 'debug';
 import moment from "moment";
 import Chart from "chart.js/auto";
-import {CollectionViewRenderer} from "../../framework/ui/view/interface/CollectionViewRenderer";
-import {CollectionView} from "../../framework/ui/view/interface/CollectionView";
-import {CollectionViewEventHandler} from "../../framework/ui/view/interface/CollectionViewEventHandler";
+import {CollectionView, CollectionViewEventHandler, CollectionViewRenderer} from "ui-framework-jps";
+
 
 const avLogger = debug('workout-summary-renderer');
 
@@ -16,22 +15,6 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
     constructor(view: CollectionView, eventHandler: CollectionViewEventHandler) {
         this.view = view;
         this.eventHandler = eventHandler;
-    }
-
-    private generateRandomExerciseColourAndBorder(isStrength: boolean = true): string[] {
-        let red = 0;
-        let blue = 0;
-        let green = 50;
-
-        const newColour = Math.floor(Math.random() * 100) + 155;
-        if (isStrength) red = newColour;
-        if (!isStrength) blue = newColour;
-        const transparency = 0.4;
-
-        const background = `rgba(${red},${green},${blue},${transparency})`;
-        const border = `rgb(${red},${green},${blue})`;
-
-        return [background, border];
     }
 
     public createDisplayElementForCollectionItem(collectionName: string, item: any): HTMLElement {
@@ -159,6 +142,31 @@ export class WorkoutSummaryRenderer implements CollectionViewRenderer {
     }
 
     onDocumentLoaded(): void {
+    }
+
+    private generateRandomExerciseColourAndBorder(isStrength: boolean = true): string[] {
+        let red = 0;
+        let blue = 0;
+        let green = 50;
+
+        const newColour = Math.floor(Math.random() * 100) + 155;
+        if (isStrength) red = newColour;
+        if (!isStrength) blue = newColour;
+        const transparency = 0.4;
+
+        const background = `rgba(${red},${green},${blue},${transparency})`;
+        const border = `rgb(${red},${green},${blue})`;
+
+        return [background, border];
+    }
+
+    insertDisplayElementForCollectionItem(containerEl: HTMLElement, collectionName: string, item: any): void {
+    }
+
+    removeDisplayElementForCollectionItem(containerEl: HTMLElement, collectionName: string, item: any): void {
+    }
+
+    updateDisplayElementForCollectionItem(containerEl: HTMLElement, collectionName: string, item: any): void {
     }
 
 }

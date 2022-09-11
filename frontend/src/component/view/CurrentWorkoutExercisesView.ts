@@ -1,20 +1,22 @@
-
 import {DRAGGABLE, STATE_NAMES, VIEW_NAME} from "../../AppTypes";
 
 import Controller from "../../Controller";
 
 
 import debug from 'debug';
-import {ContextualInformationHelper} from "../../framework/ui/context/ContextualInformationHelper";
-import {AbstractStatefulCollectionView} from "../../framework/ui/view/implementation/AbstractStatefulCollectionView";
-import {CollectionViewDOMConfig, KeyType} from "../../framework/ui/ConfigurationTypes";
-import {StateManager} from "../../framework/state/StateManager";
-import {CollectionViewEventHandlerDelegateUsingContext} from "../../framework/ui/view/delegate/CollectionViewEventHandlerDelegateUsingContext";
-import {CollectionViewListener} from "../../framework/ui/view/interface/CollectionViewListener";
-import {ListViewRendererUsingContext} from "../../framework/ui/view/renderer/ListViewRendererUsingContext";
-import {CollectionViewListenerForwarder} from "../../framework/ui/view/delegate/CollectionViewListenerForwarder";
-import {isSameMongo} from "../../framework/util/EqualityFunctions";
-import {View} from "../../framework/ui/view/interface/View";
+import {
+    AbstractStatefulCollectionView, BootstrapTableConfigHelper,
+    CollectionViewDOMConfig,
+    CollectionViewEventHandlerDelegateUsingContext,
+    CollectionViewListener,
+    CollectionViewListenerForwarder,
+    ContextualInformationHelper, DataObjectDefinition, DisplayOrder,
+    isSameMongo,
+    KeyType,
+    ListViewRendererUsingContext, ObjectDefinitionRegistry,
+    StateManager, TableUIConfig, TableViewRuntimeConfig, TabularViewRendererUsingContext,
+    View
+} from "ui-framework-jps";
 
 
 const logger = debug('current-workout-exercises-view');
@@ -31,18 +33,29 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
             }
         },
         resultsElement: {
-            type: 'a',
+            type: 'tr',
             attributes: [{name: 'href', value: '#'}],
-            classes: 'list-group-item my-list-item truncate-notification list-group-item-action',
+            classes: '',
         },
+        // resultsElement: {
+        //     type: 'a',
+        //     attributes: [{name: 'href', value: '#'}],
+        //     classes: 'list-group-item my-list-item truncate-notification list-group-item-action',
+        // },
         keyId: '_id',
         keyType: KeyType.string,
         modifiers: {
             normal: '',
-            inactive: 'list-group-item-light',
-            active: 'list-group-item-primary',
+            inactive: 'table-secondary',
+            active: 'table-success',
             warning: ''
         },
+        // modifiers: {
+        //     normal: '',
+        //     inactive: 'list-group-item-light',
+        //     active: 'list-group-item-primary',
+        //     warning: ''
+        // },
         icons: {
             normal: '',
             inactive: '',
@@ -56,32 +69,62 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
                 classes: 'mb-1',
             },
             select: true,
-            icons:(name:string,item:any) => {
-                if (item.type) {
-                    if (item.type === 'cardio') {
-                        return ['fas fa-running ml-2'];
-                    }
-                    else {
-                        return ['fas fa-dumbbell ml-2'];
-                    }
-                }
-                return [];
-            },
+
             delete: {
                 classes: 'btn bg-danger text-white btn-circle btn-md',
                 iconClasses: 'fas fa-trash-alt',
-                attributes:[{name:'data-toggle',value:"tooltip"},{name:'data-placement',value:"right"},{name:'title',value:"Delete this exercise from the workout."}]
+                attributes: [{name: 'data-toggle', value: "tooltip"}, {
+                    name: 'data-placement',
+                    value: "right"
+                }, {name: 'title', value: "Delete this exercise from the workout."}]
             }
         }
     };
 
-    constructor(stateManager:StateManager) {
-        super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exerciseTypes);
-        this.renderer = new ListViewRendererUsingContext(this, this);
-        this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this,<CollectionViewListenerForwarder>this.eventForwarder);
-        this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
-        this.getItemId = this.getItemId.bind(this);
-        ContextualInformationHelper.getInstance().addContextFromView(this,STATE_NAMES.exerciseTypes,'Exercise Types');
+    constructor(stateManager: StateManager) {
+        super(CurrentWorkoutExercisesView.DOMConfig, stateManager, STATE_NAMES.exercises);
+        //this.renderer = new ListViewRendererUsingContext(this, this);
+        const def: DataObjectDefinition | null = ObjectDefinitionRegistry.getInstance().findDefinition(STATE_NAMES.exercises);
+        if (def) {
+            const displayOrders: DisplayOrder[] = [];
+            displayOrders.push({fieldId: 'completed', displayOrder: 1});
+            displayOrders.push({fieldId: 'name', displayOrder: 2});
+            displayOrders.push({fieldId: 'type', displayOrder: 3});
+            displayOrders.push({fieldId: 'duration', displayOrder: 4});
+            displayOrders.push({fieldId: 'sets', displayOrder: 5});
+            displayOrders.push({fieldId: 'reps', displayOrder: 6});
+            displayOrders.push({fieldId: 'weight', displayOrder: 7});
+            displayOrders.push({fieldId: 'distance', displayOrder: 8});
+
+            const runtimeConfig: TableViewRuntimeConfig = {
+                fieldDisplayOrders: displayOrders,
+                itemDetailColumn: -1,
+                hasActions: true,
+                hideModifierFields: true,
+                editableFields: ['completed','duration','sets','reps','weight','distance']
+            }
+
+            const tableUIConfig: TableUIConfig = BootstrapTableConfigHelper.getInstance().generateTableConfig(def, runtimeConfig);
+
+            this.renderer = new TabularViewRendererUsingContext(this, this, tableUIConfig);
+
+
+            this.eventHandlerDelegate = new CollectionViewEventHandlerDelegateUsingContext(this, <CollectionViewListenerForwarder>this.eventForwarder);
+            this.getIdForItemInNamedCollection = this.getIdForItemInNamedCollection.bind(this);
+            this.getItemId = this.getItemId.bind(this);
+            ContextualInformationHelper.getInstance().addContextFromView(this, STATE_NAMES.exercises, 'Exercises');
+        }
+    }
+
+    getItemIcons(name: string, item: any): string[] {
+            if (item.type) {
+                if (item.type === 'cardio') {
+                    return ['fas fa-running ml-2'];
+                } else {
+                    return ['fas fa-dumbbell ml-2'];
+                }
+            }
+            return [];
     }
 
     getItemDescription(from: string, item: any): string {
@@ -89,8 +132,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
         buffer += '<strong>' + item.name + '</strong>: ';
         if (item.type === 'cardio') {
             buffer += item.distance + ' km in ' + item.duration;
-        }
-        else {
+        } else {
             buffer += item.sets + ' sets of ' + item.reps + ' reps in ' + item.duration;
         }
         buffer += '<br/>';
@@ -102,8 +144,8 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
         return true;
     }
 
-    compareItemsForEquality(item1:any, item2:any) :boolean {
-        return isSameMongo(item1,item2);
+    compareItemsForEquality(item1: any, item2: any): boolean {
+        return isSameMongo(item1, item2);
     }
 
     getIdForItemInNamedCollection(name: string, item: any) {
@@ -111,7 +153,7 @@ export class CurrentWorkoutExercisesView extends AbstractStatefulCollectionView 
     }
 
     renderDisplayForItemInNamedCollection(containerEl: HTMLElement, name: string, item: any): void {
-        containerEl.innerHTML =  item.name;
+        containerEl.innerHTML = item.name;
     }
 
     hasPermissionToDeleteItemInNamedCollection(name: string, item: any): boolean {

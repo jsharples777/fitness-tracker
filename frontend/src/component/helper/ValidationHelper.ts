@@ -1,16 +1,19 @@
-import {Form} from "../../framework/ui/form/Form";
 import {
+    ComparisonType,
     ConditionResponse,
+    Form,
+    ViewMode,
     MultipleConditionLogic,
+    ValidationManager,
     ValidationRule
-} from "../../framework/ui/form/validation/ValidationTypeDefs";
-import {FormMode} from "../../framework/ui/form/FormUITypeDefs";
-import {ComparisonType} from "../../framework/CommonTypes";
-import {ValidationManager} from "../../framework/ui/form/validation/ValidationManager";
+} from "ui-framework-jps";
 
 
 export class ValidationHelper {
     private static _instance: ValidationHelper;
+
+    private constructor() {
+    }
 
     public static getInstance(): ValidationHelper {
         if (!(ValidationHelper._instance)) {
@@ -20,117 +23,115 @@ export class ValidationHelper {
 
     }
 
-    private constructor() {}
-
     public setupValidationForExerciseTypeDetailsForm(form: Form) {
         let rule: ValidationRule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'sets',
             response: ConditionResponse.show,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         };
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'reps',
             response: ConditionResponse.show,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'weight',
             response: ConditionResponse.show,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'reps',
             response: ConditionResponse.hide,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'sets',
             response: ConditionResponse.hide,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
 
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'weight',
             response: ConditionResponse.hide,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
 
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'distance',
             response: ConditionResponse.show,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'cardio'
+                    values: ['cardio']
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'distance',
             response: ConditionResponse.hide,
             conditions: [
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 }
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
         rule = {
-            formMode: FormMode.any,
+            viewMode: ViewMode.any,
             targetDataFieldId: 'sets',
             response: ConditionResponse.invalid,
             multipleConditionLogic: MultipleConditionLogic.failOnlyIfFinalConditionIsAFailAndPreviousConditionsAreNotFails,
@@ -138,17 +139,17 @@ export class ValidationHelper {
                 {
                     sourceDataFieldId: 'type',
                     comparison: ComparisonType.hasValue,
-                    values: 'strength'
+                    values: ['strength']
                 },
                 {
                     comparison: ComparisonType.greaterThan,
-                    values: '0'
+                    values: ['0']
                 }
 
 
             ]
         }
-        ValidationManager.getInstance().addRuleToForm(form, rule);
+        ValidationManager.getInstance().addRuleToView(form, rule);
     }
 
 }

@@ -6,7 +6,7 @@ const express_1 = __importDefault(require("express"));
 const MongoDataSource_1 = require("../../db/MongoDataSource");
 const router = express_1.default.Router();
 const debug_1 = __importDefault(require("debug"));
-const SocketManager_1 = __importDefault(require("../../socket/SocketManager"));
+const server_socket_framework_jps_1 = require("server-socket-framework-jps");
 const logger = debug_1.default('api-exercise-types');
 // The `/api/exercise types` endpoint
 router.get('/', (req, res) => {
@@ -47,9 +47,8 @@ router.post('/', (req, res) => {
         else {
             user = "-1";
         }
-        // @ts-ignore
-        const message = { type: "create", stateName: "exerciseType", data: req.body, user: user, };
-        SocketManager_1.default.sendDataMessage(message);
+        const message = { type: server_socket_framework_jps_1.DataMessageType.create, stateName: "exerciseType", data: req.body, user: user, };
+        server_socket_framework_jps_1.SocketManager.getInstance().sendDataMessage(message);
         res.json(req.body);
     })
         .catch((err) => {
@@ -71,7 +70,7 @@ router.put('/', (req, res) => {
         }
         // @ts-ignore
         const message = { type: "update", stateName: "exerciseType", data: req.body, user: user, };
-        SocketManager_1.default.sendDataMessage(message);
+        server_socket_framework_jps_1.SocketManager.getInstance().sendDataMessage(message);
         res.json(req.body);
     })
         .catch((err) => {
@@ -92,7 +91,7 @@ router.delete('/:id', (req, res) => {
         }
         // @ts-ignore
         const message = { type: "delete", stateName: "exerciseType", data: { _id: req.params.id }, user: user, };
-        SocketManager_1.default.sendDataMessage(message);
+        server_socket_framework_jps_1.SocketManager.getInstance().sendDataMessage(message);
         logger(result);
         res.json(result);
     })
