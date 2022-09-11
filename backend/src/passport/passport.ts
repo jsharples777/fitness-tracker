@@ -31,6 +31,7 @@ export function setupPassport(passport: any) {
                 comparison: SearchItemComparison.equals
             }]);
             logger(user);
+            logger(password);
             if (!user) {
                 return done(null, false, {
                     message: 'Username and/or password is incorrect'
@@ -79,7 +80,7 @@ export function setupPassport(passport: any) {
                 user = {
                     _id:v4(),
                     username:username,
-                    password:generateHash(req.body.newPassword)
+                    password:generateHash(password)
                 }
 
 

@@ -1,7 +1,5 @@
 import express from 'express';
-import {MongoDataSource} from "../../db/MongoDataSource";
 import debug from 'debug';
-import {DeleteResult, Document} from 'mongodb';
 import {DB, SearchItem, SearchItemComparison, SortOrderType} from "file-system-database";
 
 const router = express.Router();

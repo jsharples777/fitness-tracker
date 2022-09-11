@@ -26,13 +26,14 @@
     {
       "name": "accounts_idx01",
       "collection": "accounts",
-      "fields": ["_id","username"]
+      "fields": ["username"]
     },
     {
       "name": "workouts_idx01",
       "collection": "workouts",
-      "fields": ["_id","createdBy"]
+      "fields": ["createdBy"]
     }
+
   ]
 
 }

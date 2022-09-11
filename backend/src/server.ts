@@ -7,7 +7,7 @@ dotenv.config();
 import morgan from 'morgan';
 import debug from 'debug';
 
-debug.enable('server db api route mongo-data-source api-exercise-types api-workouts config-manager collection-manager file-manager abstract-partial-buffer collection-implementation index-file-manager index-implementation index-implementation-detail index-manager');
+debug.enable('my-passport search-processor server db api route mongo-data-source api-exercise-types api-workouts config-manager collection-manager file-manager abstract-partial-buffer collection-implementation index-file-manager index-implementation index-implementation-detail index-manager');
 
 // HTTP handlers
 import http from 'http';
@@ -131,6 +131,7 @@ if (isDevelopment) {
 
 serverDebug('Installing routes');
 DB.getInstance().initialise();
+DB.getInstance().collections()
 // routes
 import routes from './routes';
 app.use('/', routes);// add the middleware path routing
@@ -141,9 +142,6 @@ app.use('/api',apiRoutes);
 // Setup authentication
 serverDebug('Setting up Account model and authentication with Passport');
 setupPassport(passport);
-
-// database connection
-serverDebug('Establishing database connection with Mongoose');
 
 // route for the env.js file being served to the client
 serverDebug('Setting the environment variables for the browser to access');
