@@ -5,9 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const express_1 = __importDefault(require("express"));
 const passport_1 = __importDefault(require("passport"));
 const debug_1 = __importDefault(require("debug"));
-const MongoAccount_1 = __importDefault(require("../models/MongoAccount"));
 const auth_1 = require("./auth");
-const server_socket_framework_jps_1 = require("server-socket-framework-jps");
 const router = express_1.default.Router();
 const routeDebug = debug_1.default('route');
 /* GET home page. */
@@ -19,32 +17,11 @@ router.get('/', auth_1.ensureAuthenticated, (req, res, next) => {
 router.get('/register', (req, res) => {
     res.render('register', { layout: "login-register", user: req.user, error: req.flash()["error"] });
 });
-router.post('/register', (req, res, next) => {
-    routeDebug(`Starting route POST /register ${req.body.username}/${req.body.password}`);
-    // @ts-ignore
-    MongoAccount_1.default.register(new MongoAccount_1.default({ username: req.body.username }), req.body.password, (err, account) => {
-        if (err) {
-            routeDebug('Error - failed to register');
-            return res.render('register', { error: err.message });
-        }
-        routeDebug('Registered');
-        const message = {
-            type: server_socket_framework_jps_1.DataMessageType.create,
-            stateName: "user",
-            data: { _id: account._id, username: ('' + account.username) },
-            user: ('' + account._id)
-        };
-        server_socket_framework_jps_1.SocketManager.getInstance().sendDataMessage(message);
-        passport_1.default.authenticate('local')(req, res, () => {
-            req.session.save((err) => {
-                if (err) {
-                    return next(err);
-                }
-                res.redirect('/');
-            });
-        });
-    });
-});
+router.post('/register', passport_1.default.authenticate('register', {
+    successRedirect: '/',
+    failureRedirect: '/register',
+    failureFlash: true
+}));
 router.get('/login', (req, res) => {
     res.render('login', { layout: "login-register", user: req.user, error: req.flash()["error"] });
 });

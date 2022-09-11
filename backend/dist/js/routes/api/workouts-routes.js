@@ -3,15 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 const express_1 = __importDefault(require("express"));
-const MongoDataSource_1 = require("../../db/MongoDataSource");
-const router = express_1.default.Router();
 const debug_1 = __importDefault(require("debug"));
+const file_system_database_1 = require("file-system-database");
+const router = express_1.default.Router();
 const logger = debug_1.default('api-workouts');
 // The `/api/workouts` endpoint
 router.get('/', (req, res) => {
     // find all exercise types
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    let filter = {};
+    let filter;
     let username = '';
     if (req.user) {
         // @ts-ignore
@@ -20,62 +20,40 @@ router.get('/', (req, res) => {
     logger(`Getting workouts for current user ${username}`);
     if (req.user) {
         // @ts-ignore
-        filter = { createdBy: req.user.username };
-    }
-    MongoDataSource_1.MongoDataSource.getInstance().getDatabase().collection(collection).find(filter).sort({ createdOn: 1 }).toArray().then((results) => {
+        filter = { field: 'createdBy', value: req.user.username, comparison: file_system_database_1.SearchItemComparison.equals };
+        const results = file_system_database_1.DB.getInstance().collection(collection).findBy([filter]).sort([{ field: 'createdOn', order: file_system_database_1.SortOrderType.ascending }]).toArray();
         logger(results.length);
         res.json(results);
-    })
-        .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    }
+    else {
+        const results = file_system_database_1.DB.getInstance().collection(collection).find().sort([{ field: 'createdOn', order: file_system_database_1.SortOrderType.ascending }]).toArray();
+        logger(results.length);
+        res.json(results);
+    }
 });
 router.get('/:id', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource_1.MongoDataSource.getInstance().getDatabase().collection(collection).findOne({ _id: req.params.id }).then((result) => {
-        logger(result);
-        if (!result)
-            result = { _id: req.params.id };
-        res.json(result);
-    })
-        .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    const result = file_system_database_1.DB.getInstance().collection(collection).findByKey(req.params.id);
+    logger(result);
+    res.json(result);
 });
 router.post('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource_1.MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
-        logger(value);
-        res.json(req.body);
-    })
-        .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    const value = file_system_database_1.DB.getInstance().collection(collection).insertObject(req.body._id, req.body);
+    logger(value);
+    res.json(req.body);
 });
 router.put('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource_1.MongoDataSource.getInstance().getDatabase().collection(collection).replaceOne({ _id: req.body._id }, req.body).then((result) => {
-        logger(result);
-        res.json(req.body);
-    }).
-        catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    const result = file_system_database_1.DB.getInstance().collection(collection).updateObject(req.body._id, req.body);
+    logger(result);
+    res.json(req.body);
 });
 router.delete('/:id', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource_1.MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({ _id: req.params.id }).then((result) => {
-        logger(result);
-        res.json(result);
-    })
-        .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    const result = file_system_database_1.DB.getInstance().collection(collection).removeObject(req.params.id);
+    logger(result);
+    res.json(result);
 });
 module.exports = router;
 //# sourceMappingURL=workouts-routes.js.map

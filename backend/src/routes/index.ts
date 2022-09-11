@@ -1,10 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import debug from 'debug';
-import MongoAccount from '../models/MongoAccount';
 import {ensureAuthenticated} from "./auth";
-import {DataMessage, DataMessageType, SocketManager} from "server-socket-framework-jps";
-import {DB, SearchItemComparison} from "file-system-database";
 
 const router = express.Router();
 

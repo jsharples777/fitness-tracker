@@ -24,18 +24,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // Configuration and Logging handlers
 /* eslint-disable import/first */
-//@ts-ignore
-const MongoDataSource_1 = require("./db/MongoDataSource");
-//require('dotenv').config();
 const dotenv = __importStar(require("dotenv"));
-//dotenv.config({ path: __dirname+'/.env' });
 dotenv.config();
 const morgan_1 = __importDefault(require("morgan"));
 const debug_1 = __importDefault(require("debug"));
-debug_1.default.enable('server db api route mongo-data-source api-exercise-types api-workouts');
+debug_1.default.enable('my-passport search-processor server db api route mongo-data-source api-exercise-types api-workouts config-manager collection-manager file-manager abstract-partial-buffer collection-implementation index-file-manager index-implementation index-implementation-detail index-manager');
 // HTTP handlers
 const http_1 = __importDefault(require("http"));
 const path_1 = __importDefault(require("path"));
+const file_system_database_1 = require("file-system-database");
 // Express framework and additional middleware
 const express_1 = __importDefault(require("express"));
 const handlebars_1 = __importDefault(require("handlebars"));
@@ -46,11 +43,8 @@ const express_session_1 = __importDefault(require("express-session"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const connect_flash_1 = __importDefault(require("connect-flash"));
 // Authentication middleware
-const mongoose_1 = __importDefault(require("mongoose"));
 const passport_1 = __importDefault(require("passport"));
-const passport_local_1 = __importDefault(require("passport-local"));
-const LocalStrategy = passport_local_1.default.Strategy;
-const MongoAccount_1 = __importDefault(require("./models/MongoAccount"));
+const passport_2 = require("./passport/passport");
 // WebRTC
 const peer_1 = require("peer");
 // HTTPS config
@@ -130,7 +124,8 @@ else {
 }
 // ensure the user is logged in with a path
 serverDebug('Installing routes');
-MongoDataSource_1.MongoDataSource.getInstance();
+file_system_database_1.DB.getInstance().initialise();
+file_system_database_1.DB.getInstance().collections();
 // routes
 const routes_1 = __importDefault(require("./routes"));
 app.use('/', routes_1.default); // add the middleware path routing
@@ -139,16 +134,7 @@ const server_socket_framework_jps_1 = require("server-socket-framework-jps");
 app.use('/api', api_1.default);
 // Setup authentication
 serverDebug('Setting up Account model and authentication with Passport');
-// @ts-ignore
-passport_1.default.use(new LocalStrategy(MongoAccount_1.default.authenticate()));
-// @ts-ignore
-passport_1.default.serializeUser(MongoAccount_1.default.serializeUser());
-// @ts-ignore
-passport_1.default.deserializeUser(MongoAccount_1.default.deserializeUser());
-// database connection
-serverDebug('Establishing database connection with Mongoose');
-// @ts-ignore
-mongoose_1.default.connect(process.env.DB_URL);
+passport_2.setupPassport(passport_1.default);
 // route for the env.js file being served to the client
 serverDebug('Setting the environment variables for the browser to access');
 const port = process.env.PORT || 3000;
