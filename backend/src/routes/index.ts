@@ -4,6 +4,7 @@ import debug from 'debug';
 import MongoAccount from '../models/MongoAccount';
 import {ensureAuthenticated} from "./auth";
 import {DataMessage, DataMessageType, SocketManager} from "server-socket-framework-jps";
+import {DB, SearchItemComparison} from "file-system-database";
 
 const router = express.Router();
 
@@ -22,35 +23,11 @@ router.get('/register', (req, res) => {
     res.render('register', {layout: "login-register", user: req.user, error: req.flash()["error"]});
 });
 
-router.post('/register', (req, res, next) => {
-    routeDebug(`Starting route POST /register ${req.body.username}/${req.body.password}`);
-    // @ts-ignore
-    MongoAccount.register(new MongoAccount({username: req.body.username}),
-        req.body.password,
-        (err: any, account: any) => {
-            if (err) {
-                routeDebug('Error - failed to register');
-                return res.render('register', {error: err.message});
-            }
-            routeDebug('Registered');
-            const message:DataMessage = {
-                type:DataMessageType.create,
-                stateName: "user",
-                data:{ _id: account._id,username:(''+account.username)},
-                user:(''+account._id)
-            };
-            SocketManager.getInstance().sendDataMessage(message);
-
-            passport.authenticate('local')(req, res, () => {
-                req.session.save((err) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    res.redirect('/');
-                });
-            });
-        });
-});
+router.post('/register', passport.authenticate('register', {
+    successRedirect: '/',
+    failureRedirect: '/register',
+    failureFlash: true
+}));
 
 
 router.get('/login', (req, res) => {

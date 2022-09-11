@@ -1,9 +1,9 @@
 import express from 'express';
-import {MongoDataSource} from "../../db/MongoDataSource";
-const router = express.Router();
 import debug from 'debug';
-import {DeleteResult, Document, UpdateResult} from 'mongodb';
 import {DataMessage, DataMessageType, SocketManager} from "server-socket-framework-jps";
+import {DB} from "file-system-database";
+
+const router = express.Router();
 
 
 const logger = debug('api-exercise-types');
@@ -13,93 +13,74 @@ const logger = debug('api-exercise-types');
 router.get('/', (req, res) => {
     // find all exercise types
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).find().sort( { createdOn: 1 } ).toArray().then((results:Document[]) => {
-          logger(results.length);
-          res.json(results);
-        })
-        .catch((err) => {
-            logger(err);
-            res.status(400).json(err);
-        });
+    const results = DB.getInstance().collection(collection).find().toArray();
+    logger(results.length);
+    res.json(results);
 });
 
 router.get('/:id', (req, res) => {
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).findOne({_id:req.params.id}).then((result:Document|null) => {
-        logger(result);
-        if (!result) result = {_id:req.params.id};
-        res.json(result);
-    })
-    .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    const result = DB.getInstance().collection(collection).findByKey(req.params.id);
+    logger(result);
+    res.json(result);
 });
 
 router.post('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
-        logger(value);
+    const value = DB.getInstance().collection(collection).insertObject(req.body._id, req.body);
+    logger(value);
+    // @ts-ignore
+    let user;
+    if (req.user) {
         // @ts-ignore
-        let user;
-        if (req.user) {
-            // @ts-ignore
-            user = req.user.id;
-        }
-        else { user = "-1"}
+        user = req.user.id;
+    } else {
+        user = "-1"
+    }
 
-        const message:DataMessage = {type:DataMessageType.create,stateName: "exerciseType",data:req.body, user:user,}
-        SocketManager.getInstance().sendDataMessage(message);
+    const message: DataMessage = {type: DataMessageType.create, stateName: "exerciseType", data: req.body, user: user,}
+    SocketManager.getInstance().sendDataMessage(message);
 
-        res.json(req.body);
-    })
-    .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    res.json(req.body);
 });
 
 router.put('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).replaceOne({_id:req.body._id},req.body).then((result) => {
-        logger(result);
-            let user;
-            if (req.user) {
-                // @ts-ignore
-                user = req.user.id;
-            }
-            else { user = "-1"}
-            // @ts-ignore
-            const message:DataMessage = {type:"update",stateName: "exerciseType",data:req.body, user:user,}
-            SocketManager.getInstance().sendDataMessage(message);
-            res.json(req.body);
-    })
-    .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
+    const result = DB.getInstance().collection(collection).updateObject(req.body._id, req.body);
+    logger(result);
+    let user;
+    if (req.user) {
+        // @ts-ignore
+        user = req.user.id;
+    } else {
+        user = "-1"
+    }
+    // @ts-ignore
+    const message: DataMessage = {type: "update", stateName: "exerciseType", data: req.body, user: user,}
+    SocketManager.getInstance().sendDataMessage(message);
+    res.json(req.body);
 });
 
 router.delete('/:id', (req, res) => {
     const collection = process.env.DB_COLLECTION_EXERCISE_TYPES || 'exercise-types';
-    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.params.id}).then((result:DeleteResult) => {
+    const result = DB.getInstance().collection(collection).removeObject(req.params.id);
         let user;
         if (req.user) {
             // @ts-ignore
             user = req.user.id;
+        } else {
+            user = "-1"
         }
-        else { user = "-1"}
         // @ts-ignore
-        const message:DataMessage = {type:"delete",stateName: "exerciseType",data:{ _id: req.params.id},user:user,}
+        const message: DataMessage = {
+            type: DataMessageType.delete,
+            stateName: "exerciseType",
+            data: {_id: req.params.id},
+            user: user,
+        }
         SocketManager.getInstance().sendDataMessage(message);
         logger(result);
         res.json(result);
-
-    })
-    .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
 });
 
 export = router;

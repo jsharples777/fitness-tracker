@@ -1,0 +1,38 @@
+{
+  "dbLocation": "./db",
+  "collections": [
+    {
+      "name": "exercise-types",
+      "key": "_id",
+      "bufferType": 2
+    },
+    {
+      "name": "accounts",
+      "key": "_id",
+      "bufferType": 2
+    },
+    {
+      "name": "workouts",
+      "key": "_id",
+      "bufferType": 2
+    },
+    {
+      "name": "identifier",
+      "key": "_id",
+      "bufferType": 2
+    }
+  ],
+  "indexes": [
+    {
+      "name": "accounts_idx01",
+      "collection": "accounts",
+      "fields": ["_id","username"]
+    },
+    {
+      "name": "workouts_idx01",
+      "collection": "workouts",
+      "fields": ["_id","createdBy"]
+    }
+  ]
+
+}

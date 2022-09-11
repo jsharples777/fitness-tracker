@@ -1,8 +1,10 @@
 import express from 'express';
 import {MongoDataSource} from "../../db/MongoDataSource";
-const router = express.Router();
 import debug from 'debug';
-import {DeleteResult, Document, UpdateResult} from 'mongodb';
+import {DeleteResult, Document} from 'mongodb';
+import {DB, SearchItem, SearchItemComparison, SortOrderType} from "file-system-database";
+
+const router = express.Router();
 
 const logger = debug('api-workouts');
 
@@ -11,7 +13,7 @@ const logger = debug('api-workouts');
 router.get('/', (req, res) => {
     // find all exercise types
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    let filter = {};
+    let filter:SearchItem;
     let username = '';
     if (req.user) {
         // @ts-ignore
@@ -20,66 +22,46 @@ router.get('/', (req, res) => {
     logger(`Getting workouts for current user ${username}`);
     if (req.user) {
         // @ts-ignore
-        filter = { createdBy: req.user.username};
-    }
-    MongoDataSource.getInstance().getDatabase().collection(collection).find(filter).sort( { createdOn: 1 } ).toArray().then((results:Document[]) => {
+        filter = { field:'createdBy', value: req.user.username, comparison: SearchItemComparison.equals};
+        const results = DB.getInstance().collection(collection).findBy([filter]).sort([{field:'createdOn',order:SortOrderType.ascending}]).toArray();
         logger(results.length);
         res.json(results);
-    })
-        .catch((err) => {
-            logger(err);
-            res.status(400).json(err);
-        });
+
+    }
+    else {
+        const results = DB.getInstance().collection(collection).find().sort([{field:'createdOn',order:SortOrderType.ascending}]).toArray();
+        logger(results.length);
+        res.json(results);
+
+    }
 });
 
 router.get('/:id', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource.getInstance().getDatabase().collection(collection).findOne({_id:req.params.id}).then((result:Document|null) => {
+    const result = DB.getInstance().collection(collection).findByKey(req.params.id);
         logger(result);
-        if (!result) result = {_id:req.params.id};
         res.json(result);
-    })
-        .catch((err) => {
-            logger(err);
-            res.status(400).json(err);
-        });
 });
 
 router.post('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource.getInstance().getDatabase().collection(collection).insertOne(req.body).then((value) => {
+    const value = DB.getInstance().collection(collection).insertObject(req.body._id, req.body);
         logger(value);
         res.json(req.body);
-    })
-    .catch((err) => {
-        logger(err);
-        res.status(400).json(err);
-    });
 });
 
 router.put('/', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource.getInstance().getDatabase().collection(collection).replaceOne({_id:req.body._id},req.body).then((result) => {
+    const result = DB.getInstance().collection(collection).updateObject(req.body._id, req.body);
         logger(result);
         res.json(req.body);
-    }).
-    catch((err) => {
-    logger(err);
-        res.status(400).json(err);
-    });
 });
 
 router.delete('/:id', (req, res) => {
     const collection = process.env.DB_COLLECTION_WORKOUTS || 'workouts';
-    MongoDataSource.getInstance().getDatabase().collection(collection).deleteOne({_id:req.params.id}).then((result:DeleteResult) => {
-        logger(result);
-        res.json(result);
-
-    })
-        .catch((err) => {
-            logger(err);
-            res.status(400).json(err);
-        });
+    const result = DB.getInstance().collection(collection).removeObject(req.params.id);
+    logger(result);
+    res.json(result);
 });
 
 export = router;

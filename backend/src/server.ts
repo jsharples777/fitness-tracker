@@ -1,24 +1,20 @@
 // Configuration and Logging handlers
 /* eslint-disable import/first */
-//@ts-ignore
-import {MongoDataSource} from "./db/MongoDataSource";
-
-//require('dotenv').config();
-
 import * as dotenv from 'dotenv';
-//dotenv.config({ path: __dirname+'/.env' });
 dotenv.config();
 
 
 import morgan from 'morgan';
 import debug from 'debug';
 
-debug.enable('server db api route mongo-data-source api-exercise-types api-workouts');
+debug.enable('server db api route mongo-data-source api-exercise-types api-workouts config-manager collection-manager file-manager abstract-partial-buffer collection-implementation index-file-manager index-implementation index-implementation-detail index-manager');
 
 // HTTP handlers
 import http from 'http';
 import https from 'https';
 import path from 'path';
+
+import {DB} from 'file-system-database';
 
 // Express framework and additional middleware
 import express from 'express';
@@ -33,13 +29,8 @@ import connectFlash from 'connect-flash';
 
 
 // Authentication middleware
-import mongoose from 'mongoose';
 import passport from 'passport';
-import passportLocal from 'passport-local';
-const LocalStrategy = passportLocal.Strategy;
-import MongoAccount from './models/MongoAccount';
-
-
+import {setupPassport} from "./passport/passport";
 
 // WebRTC
 import { ExpressPeerServer } from 'peer';
@@ -139,7 +130,7 @@ if (isDevelopment) {
 // ensure the user is logged in with a path
 
 serverDebug('Installing routes');
-MongoDataSource.getInstance();
+DB.getInstance().initialise();
 // routes
 import routes from './routes';
 app.use('/', routes);// add the middleware path routing
@@ -149,17 +140,10 @@ app.use('/api',apiRoutes);
 
 // Setup authentication
 serverDebug('Setting up Account model and authentication with Passport');
-// @ts-ignore
-passport.use(new LocalStrategy(MongoAccount.authenticate()));
-// @ts-ignore
-passport.serializeUser(MongoAccount.serializeUser());
-// @ts-ignore
-passport.deserializeUser(MongoAccount.deserializeUser());
+setupPassport(passport);
 
 // database connection
 serverDebug('Establishing database connection with Mongoose');
-// @ts-ignore
-mongoose.connect(process.env.DB_URL);
 
 // route for the env.js file being served to the client
 serverDebug('Setting the environment variables for the browser to access');
