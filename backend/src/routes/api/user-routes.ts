@@ -9,10 +9,11 @@ const logger = debug('api-users');
 // The `/api/users types` endpoint
 
 router.get('/', (req, res) => {
-    // find all exercise types
-    const collection = process.env.DB_COLLECTION_ACCOUNTS || 'accounts';
-    const results = DB.getInstance().collection(collection).find().toArray();
-
+    const view = DB.getInstance().getView('users');
+    let results:any[] = [];
+    if (view) {
+        results = view.content().toArray();
+    }
     logger(results.length);
     res.json(results);
 });

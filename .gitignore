@@ -10,3 +10,7 @@
 /backend/dist/js/*.ts
 /backend/db/queue.json
 /backend/keytmp.pem
+/backend/db/accounts/
+/backend/db/exercise-types/
+/backend/db/identifier/
+/backend/db/workouts/

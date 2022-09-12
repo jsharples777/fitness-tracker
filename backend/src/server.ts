@@ -131,7 +131,8 @@ if (isDevelopment) {
 
 serverDebug('Installing routes');
 DB.getInstance().initialise();
-DB.getInstance().collections()
+DB.getInstance().collections();
+DB.getInstance().addView("accounts","users",['_id','username']);
 // routes
 import routes from './routes';
 app.use('/', routes);// add the middleware path routing
